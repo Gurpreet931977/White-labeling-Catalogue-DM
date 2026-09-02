@@ -1,0 +1,171 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer base {
+  body {
+    background-color: #090C12;
+    color: #F1F5F9;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, .font-syne {
+    font-family: 'Syne', sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Minimal Slim Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #090C12;
+}
+::-webkit-scrollbar-thumb {
+  background: #1E293B;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #F59E0B;
+}
+
+/* Glassmorphic Minimal Panels */
+.glass-panel {
+  background: rgba(17, 23, 36, 0.75);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.glass-panel-gold {
+  background: rgba(25, 34, 54, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+/* Subtle dot grid for clean depth */
+.bg-subtle-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Mobile no-scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Smooth Touch Scrolling on iOS/Android */
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 100% Seamless GPU Accelerated Marquee Loop */
+@keyframes marquee-scroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee-smooth {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-scroll 30s linear infinite;
+}
+
+.animate-marquee-smooth:hover {
+  animation-play-state: paused;
+}
+
+/* ========================================================================= */
+/* ULTRA-MODERN 3D TACTILE PUSH BUTTON SYSTEM (CRYSTAL-CLEAR & VOLUMETRIC) */
+/* ========================================================================= */
+
+.btn-3d {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.025em;
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+  cursor: pointer;
+  user-select: none;
+}
+
+.btn-3d:hover {
+  transform: translateY(-2px);
+}
+
+.btn-3d:active {
+  transform: translateY(3px) !important;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 3D Modern Gold / Amber */
+.btn-3d-amber {
+  background: linear-gradient(180deg, #FDE047 0%, #F59E0B 75%, #D97706 100%);
+  color: #0F172A;
+  box-shadow: 0 4px 0 #92400E, 0 6px 16px rgba(245, 158, 11, 0.35);
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+}
+.btn-3d-amber:hover {
+  box-shadow: 0 6px 0 #92400E, 0 10px 22px rgba(245, 158, 11, 0.45);
+}
+
+/* 3D Modern Electric Cyan */
+.btn-3d-cyan {
+  background: linear-gradient(180deg, #67E8F9 0%, #06B6D4 75%, #0891B2 100%);
+  color: #0F172A;
+  box-shadow: 0 4px 0 #0E7490, 0 6px 16px rgba(6, 182, 212, 0.35);
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+}
+.btn-3d-cyan:hover {
+  box-shadow: 0 6px 0 #0E7490, 0 10px 22px rgba(6, 182, 212, 0.45);
+}
+
+/* 3D Modern Emerald */
+.btn-3d-emerald {
+  background: linear-gradient(180deg, #6EE7B7 0%, #10B981 75%, #059669 100%);
+  color: #0F172A;
+  box-shadow: 0 4px 0 #065F46, 0 6px 16px rgba(16, 185, 129, 0.35);
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+}
+.btn-3d-emerald:hover {
+  box-shadow: 0 6px 0 #065F46, 0 10px 22px rgba(16, 185, 129, 0.45);
+}
+
+/* 3D Modern Dark Titanium */
+.btn-3d-dark {
+  background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+  color: #F8FAFC;
+  box-shadow: 0 4px 0 #020617, 0 6px 14px rgba(0, 0, 0, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+.btn-3d-dark:hover {
+  box-shadow: 0 6px 0 #020617, 0 10px 20px rgba(0, 0, 0, 0.6);
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* 3D Modern Rose */
+.btn-3d-rose {
+  background: linear-gradient(180deg, #FDA4AF 0%, #F43F5E 75%, #E11D48 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 0 #9F1239, 0 6px 16px rgba(244, 63, 94, 0.35);
+  border-top: 1px solid rgba(255, 255, 255, 0.35);
+}
+.btn-3d-rose:hover {
+  box-shadow: 0 6px 0 #9F1239, 0 10px 22px rgba(244, 63, 94, 0.45);
+}
