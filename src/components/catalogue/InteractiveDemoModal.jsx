@@ -4,7 +4,8 @@ import {
   X, 
   Sparkles, 
   ArrowRight, 
-  Check
+  Check,
+  Star
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
 
@@ -193,7 +194,10 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                           <p className="text-[10px] text-slate-400 leading-tight mt-0.5">{doc.specialty}</p>
                           <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] font-mono">
                             <span className="text-[#ebd73f] font-bold">{doc.fee}</span>
-                            <span className="text-slate-400">★ {doc.rating}</span>
+                            <span className="flex items-center gap-1 text-slate-400">
+                              <Star className="w-2.5 h-2.5 text-[#ebd73f] fill-[#ebd73f]" />
+                              <span>{doc.rating}</span>
+                            </span>
                           </div>
                         </div>
                       ))}
@@ -413,7 +417,7 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                     <ArrowRight className="w-4 h-4 text-black" />
                   </button>
                   <p className="text-center text-[10px] font-mono text-slate-500 mt-2">
-                    ✦ Instant simulated flow • No real payment deducted
+                    Instant simulated flow • No real payment deducted
                   </p>
                 </div>
 
