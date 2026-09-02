@@ -299,3 +299,50 @@ body.debug-wireframe * {
   outline: 1px dashed rgba(235, 215, 63, 0.3) !important;
 }
 
+/* Studio Design Styles Animations */
+@keyframes marqueeScroll {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 16s linear infinite;
+}
+
+@keyframes scanlineMove {
+  0% { top: -10%; opacity: 0; }
+  30% { opacity: 0.8; }
+  70% { opacity: 0.8; }
+  100% { top: 110%; opacity: 0; }
+}
+.animate-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ebd73f, #ffffff, #ebd73f, transparent);
+  box-shadow: 0 0 15px #ebd73f, 0 0 30px #ebd73f;
+  animation: scanlineMove 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes floatOrb {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(20px, -20px) scale(1.1); }
+}
+.animate-float-orb {
+  animation: floatOrb 8s ease-in-out infinite;
+}
+
+/* Carbon fiber sports weave */
+.carbon-pattern {
+  background: 
+    radial-gradient(black 15%, transparent 16%) 0 0,
+    radial-gradient(black 15%, transparent 16%) 8px 8px,
+    radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px,
+    radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px;
+  background-color: #111;
+  background-size: 16px 16px;
+}
+

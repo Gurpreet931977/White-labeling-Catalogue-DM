@@ -11,278 +11,146 @@ import {
   Laptop, 
   Palette, 
   Type, 
-  Layers, 
-  Sliders, 
-  CheckCircle2, 
-  Sparkles, 
-  FileText, 
   Code2, 
-  Wand2,
-  Zap,
-  Shield,
+  Zap, 
+  Flame, 
+  Sparkles, 
+  Compass, 
+  Gauge, 
+  Crown,
   Trash2,
-  Compass,
-  Cpu,
-  Flame,
-  LayoutTemplate
+  Sliders,
+  CheckCircle2,
+  Terminal,
+  Activity
 } from 'lucide-react';
 import { sounds } from '../utils/audio';
 
-// 9 Modern, Creative Design Styles & Aesthetics
-export const DESIGN_STYLES = [
+// 6 Creative & Bold Design Styles
+export const CRAZY_STYLES = [
   {
-    id: "premium",
-    name: "Premium Luxury",
-    category: "High-End & Editorial",
-    tagline: "Champagne sheen, refined gold borders, and elegant spaciousness",
-    badge: "LUXURY SUITE",
-    radius: "rounded-2xl",
-    buttonRadius: "rounded-full",
-    borderClass: "border border-white/15 hover:border-[#ebd73f]/60",
-    shadowClass: "shadow-[0_10px_30px_rgba(0,0,0,0.7)]",
-    buttonStyle: "shadow-glow-yellow font-bold tracking-wider",
-    previewCardClass: "bg-[#141414] border border-white/15 rounded-2xl",
-    chipStyle: "rounded-full bg-white/10 text-white/90 border border-white/15",
-    fontPairingId: "panchang-clash"
-  },
-  {
-    id: "glassmorphism",
-    name: "Frosted Glassmorphism",
-    category: "Luminous & Translucent",
-    tagline: "Multi-layered frosted glass with backdrop blur and crystal depth",
-    badge: "FROSTED GLASS",
-    radius: "rounded-3xl",
-    buttonRadius: "rounded-2xl",
-    borderClass: "border border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)]",
-    shadowClass: "shadow-2xl backdrop-blur-2xl bg-white/[0.07]",
-    buttonStyle: "backdrop-blur-xl border border-white/30 font-bold",
-    previewCardClass: "backdrop-blur-xl bg-white/[0.08] border border-white/20 rounded-3xl",
-    chipStyle: "rounded-full backdrop-blur-md bg-white/10 text-white border border-white/20",
-    fontPairingId: "clash-mono"
-  },
-  {
-    id: "futuristic",
-    name: "Cyber Futuristic HUD",
+    id: "cyber-hud",
+    name: "Cyberpunk 2077 HUD",
+    shortName: "Cyber HUD",
+    icon: Terminal,
     category: "Sci-Fi & Terminal",
-    tagline: "Cyberpunk geometry, monospace telemetry, and glowing scanline indicators",
-    badge: "SYS.HUD // v4",
-    radius: "rounded-none",
-    buttonRadius: "rounded-none",
-    borderClass: "border-l-2 border-r-2 border-[#ebd73f]",
-    shadowClass: "shadow-[0_0_25px_rgba(235,215,63,0.25)]",
-    buttonStyle: "uppercase tracking-widest font-mono font-black border border-[#ebd73f]",
-    previewCardClass: "bg-black/90 border border-[#ebd73f]/40 cyber-grid",
-    chipStyle: "font-mono text-[9px] uppercase px-2 py-0.5 border border-[#ebd73f]/50 text-[#ebd73f] bg-black",
-    fontPairingId: "clash-mono"
+    accentGlow: "rgba(235, 215, 63, 0.4)",
+    c60: "#06080b",
+    c30: "#0c1017",
+    c10: "#ebd73f",
+    tagline: "Laser scanlines, HUD targeting telemetry & neon terminal buttons"
   },
   {
-    id: "brutalism",
-    name: "Neo-Brutalism",
-    category: "High-Contrast & Raw",
-    tagline: "Sharp 0px edges, bold high-contrast strokes, and hard flat offset shadows",
-    badge: "NEO-BRUTALIST",
-    radius: "rounded-none",
-    buttonRadius: "rounded-none",
-    borderClass: "border-2 border-white",
-    shadowClass: "shadow-[5px_5px_0px_#ebd73f]",
-    buttonStyle: "border-2 border-black shadow-[3px_3px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 font-black uppercase tracking-tight",
-    previewCardClass: "bg-black border-2 border-white shadow-[4px_4px_0px_#ebd73f]",
-    chipStyle: "border border-white bg-white text-black font-black uppercase text-[9px] px-2 py-0.5",
-    fontPairingId: "syne-inter"
+    id: "neo-brutalist",
+    name: "Neo-Brutalism Drop",
+    shortName: "Neo-Brutalist",
+    icon: Flame,
+    category: "Hypebeast & Raw",
+    accentGlow: "#ebd73f",
+    c60: "#ebd73f",
+    c30: "#ffffff",
+    c10: "#000000",
+    tagline: "Thick 4px black strokes, tilted sticker badges & live marquee ticker"
   },
   {
-    id: "playful",
-    name: "Playful Vibrant",
-    category: "Bouncy & Friendly",
-    tagline: "Juicy curves, pill-shaped interactions, and cheerful micro-animations",
-    badge: "PLAYFUL & POP",
-    radius: "rounded-[28px]",
-    buttonRadius: "rounded-full",
-    borderClass: "border-2 border-white/20",
-    shadowClass: "shadow-xl shadow-black/60",
-    buttonStyle: "rounded-full font-black scale-100 hover:scale-105 active:scale-95 shadow-lg",
-    previewCardClass: "bg-[#161616] border-2 border-white/15 rounded-[28px]",
-    chipStyle: "rounded-full bg-[#ebd73f]/20 text-[#ebd73f] font-bold px-3 py-1",
-    fontPairingId: "syne-inter"
+    id: "liquid-glass",
+    name: "Liquid Aura Chrome",
+    shortName: "Liquid Glass",
+    icon: Sparkles,
+    category: "Iridescent & Crystal",
+    accentGlow: "rgba(168, 85, 247, 0.4)",
+    c60: "#070709",
+    c30: "#13131a",
+    c10: "#c084fc",
+    tagline: "Floating aurora orbs, frosted crystal refraction & glossy depth"
   },
   {
-    id: "sporty",
-    name: "Sporty High-Octane",
-    category: "Athletic & Dynamic",
-    tagline: "Angled speed cuts, carbon fiber texture feel, and high-contrast adrenaline",
-    badge: "HIGH-OCTANE // 60s",
-    radius: "rounded-xl",
-    buttonRadius: "rounded-lg -skew-x-3",
-    borderClass: "border border-white/20 border-l-4 border-l-[#ebd73f]",
-    shadowClass: "shadow-2xl shadow-black",
-    buttonStyle: "font-black italic tracking-wide -skew-x-3 shadow-md",
-    previewCardClass: "bg-[#111111] border border-white/15 rounded-xl border-l-4 border-l-[#ebd73f]",
-    chipStyle: "rounded-md bg-white/10 text-white font-mono uppercase text-[9px] px-2 py-0.5 font-black italic",
-    fontPairingId: "clash-mono"
+    id: "editorial-luxury",
+    name: "Ultra-Luxury Editorial",
+    shortName: "Vogue Luxury",
+    icon: Crown,
+    category: "High-Fashion & Void",
+    accentGlow: "rgba(212, 175, 55, 0.3)",
+    c60: "#050505",
+    c30: "#0f0f0f",
+    c10: "#d4af37",
+    tagline: "High-fashion Roman numerals, gold leaf borders & generous whitespace"
   },
   {
-    id: "foodie",
-    name: "Foodie Warm Artisan",
-    category: "Cozy & Appetizing",
-    tagline: "Rich appetizing warmth, tactile press feel, and organic culinary touches",
-    badge: "ARTISAN KITCHEN",
-    radius: "rounded-2xl",
-    buttonRadius: "rounded-2xl",
-    borderClass: "border border-white/15",
-    shadowClass: "shadow-2xl shadow-black/80",
-    buttonStyle: "font-bold shadow-md active:translate-y-0.5",
-    previewCardClass: "bg-[#13100d] border border-white/15 rounded-2xl",
-    chipStyle: "rounded-xl bg-[#ebd73f]/15 text-[#ebd73f] border border-[#ebd73f]/30 px-2.5 py-0.5 font-bold",
-    fontPairingId: "panchang-clash"
-  },
-  {
-    id: "professional",
-    name: "Professional Executive",
-    category: "Corporate & High-Trust",
-    tagline: "Clean data hierarchy, structured precision, and verified credibility",
-    badge: "ENTERPRISE",
-    radius: "rounded-xl",
-    buttonRadius: "rounded-xl",
-    borderClass: "border border-white/15",
-    shadowClass: "shadow-lg shadow-black/50",
-    buttonStyle: "font-semibold tracking-normal shadow-sm",
-    previewCardClass: "bg-[#121212] border border-white/10 rounded-xl",
-    chipStyle: "rounded-md bg-white/5 text-slate-300 border border-white/10 font-mono text-[10px] px-2 py-0.5",
-    fontPairingId: "minimal-clean"
-  },
-  {
-    id: "minimal",
-    name: "Swiss Minimalist",
-    category: "Pure Whitespace",
-    tagline: "Zero noise, deliberate spatial rhythm, and stark typographic focus",
-    badge: "SWISS STYLE",
-    radius: "rounded-lg",
-    buttonRadius: "rounded-md",
-    borderClass: "border border-white/10",
-    shadowClass: "shadow-none",
-    buttonStyle: "font-medium tracking-tight",
-    previewCardClass: "bg-[#0c0c0c] border border-white/10 rounded-lg",
-    chipStyle: "rounded bg-transparent text-slate-400 border border-white/10 font-mono text-[9px] px-1.5 py-0.5",
-    fontPairingId: "minimal-clean"
-  }
-];
-
-// 60-30-10 Curated Brand Presets
-const PRESET_PALETTES = [
-  {
-    id: "dripp-gold",
-    name: "Dripp Signature Gold",
-    rule: "60-30-10 Luxury",
-    c60: "#080808", // Dominant Background (60%)
-    c30: "#141414", // Secondary Structure/Cards (30%)
-    c10: "#ebd73f", // Accent Highlights/CTAs (10%)
-    textLight: "#ffffff",
-    textMuted: "#8e8e8e"
-  },
-  {
-    id: "silicon-monochrome",
-    name: "High-Contrast Platinum",
-    rule: "60-30-10 Minimalist",
-    c60: "#09090b",
-    c30: "#18181b",
-    c10: "#ffffff",
-    textLight: "#ffffff",
-    textMuted: "#a1a1aa"
-  },
-  {
-    id: "nordic-emerald",
-    name: "Nordic Clinic Emerald",
-    rule: "60-30-10 Healthcare",
-    c60: "#05110d",
-    c30: "#0c211a",
-    c10: "#10b981",
-    textLight: "#ffffff",
-    textMuted: "#6ee7b7"
-  },
-  {
-    id: "electric-cyan",
-    name: "Cyber Performance Cyan",
-    rule: "60-30-10 Sports & Fitness",
-    c60: "#061017",
-    c30: "#0e1f2b",
-    c10: "#06b6d4",
-    textLight: "#ffffff",
-    textMuted: "#67e8f9"
-  },
-  {
-    id: "nightclub-violet",
-    name: "Nocturne Royal Violet",
-    rule: "60-30-10 Nightlife",
-    c60: "#0a0614",
-    c30: "#160e29",
-    c10: "#a855f7",
-    textLight: "#ffffff",
-    textMuted: "#c084fc"
-  },
-  {
-    id: "rosso-lounge",
-    name: "Crimson Velvet Lounge",
-    rule: "60-30-10 Hospitality",
-    c60: "#120709",
-    c30: "#241014",
+    id: "pop-candy",
+    name: "Y2K Pop Candy",
+    shortName: "Bouncy Pop",
+    icon: Zap,
+    category: "Playful & Cheerful",
+    accentGlow: "rgba(244, 63, 94, 0.4)",
+    c60: "#0e0914",
+    c30: "#1b1226",
     c10: "#f43f5e",
-    textLight: "#ffffff",
-    textMuted: "#fda4af"
+    tagline: "Extra bouncy 36px pill curves, squishy buttons & floating sticker fun"
   },
   {
-    id: "warm-terracotta",
-    name: "Artisan Terracotta",
-    rule: "60-30-10 Roastery & Dining",
-    c60: "#120d09",
-    c30: "#241a12",
-    c10: "#f97316",
-    textLight: "#ffffff",
-    textMuted: "#fed7aa"
+    id: "high-octane",
+    name: "High-Octane Racing",
+    shortName: "Carbon Nitro",
+    icon: Gauge,
+    category: "Motorsport & Speed",
+    accentGlow: "rgba(235, 215, 63, 0.5)",
+    c60: "#0a0a0a",
+    c30: "#161616",
+    c10: "#ebd73f",
+    tagline: "Carbon fiber weaves, dual racing stripes & aggressive 12-degree speed skews"
   }
-];
-
-const FONT_PAIRINGS = [
-  { id: "panchang-clash", name: "Cyber Luxury", display: "Panchang", body: "Clash Display", classDisplay: "font-panchang", classBody: "font-clash" },
-  { id: "syne-inter", name: "Contemporary Bold", display: "Syne", body: "Inter", classDisplay: "font-syne", classBody: "font-sans" },
-  { id: "clash-mono", name: "Tech Architectural", display: "Clash Display", body: "JetBrains Mono", classDisplay: "font-clash", classBody: "font-mono" },
-  { id: "minimal-clean", name: "Clean Minimalist", display: "Inter", body: "Inter", classDisplay: "font-sans", classBody: "font-sans" }
 ];
 
 const NICHES = [
-  { id: "cafes", label: "Cafe & Restaurant", defaultName: "The Roast & Kitchen", defaultTagline: "Artisanal Brews & Gourmet Kitchen", item1: "Double Truffle Smash", price1: "349", item2: "Pour-Over Cold Drip", price2: "190" },
-  { id: "clinics", label: "Medical & Dental Clinic", defaultName: "AuraCare Specialist Clinic", defaultTagline: "Advanced Dental & Aesthetic Practice", item1: "Cosmetic Consultation", price1: "800", item2: "HydraGlow Therapy", price2: "2,500" },
-  { id: "gyms", label: "Gym & CrossFit Studio", defaultName: "Titan Performance Club", defaultTagline: "Strength, Conditioning & Recovery", item1: "Pro Athlete Monthly", price1: "2,499", item2: "1-Day Drop-In Pass", price2: "499" },
-  { id: "clubs", label: "Nightclub & VIP Lounge", defaultName: "Velvet Sky Lounge", defaultTagline: "VIP Table Reservations & Cocktails", item1: "Center Dancefloor Booth", price1: "20,000", item2: "Guestlist RSVP Pass", price2: "Free" },
-  { id: "turfs", label: "Sports Turf & Box Arena", defaultName: "BoxArena Sports Complex", defaultTagline: "Hourly Box Cricket & Football", item1: "Prime Evening Slot (1hr)", price1: "1,499", item2: "Morning Saver Slot", price2: "999" },
-  { id: "salons", label: "Luxury Salon & Spa", defaultName: "Maison de Luxe Studio", defaultTagline: "Bespoke Hair & Aesthetic Treatments", item1: "Signature Balayage & Glaze", price1: "6,500", item2: "Korean Glass Facial", price2: "3,800" },
+  { id: "cafes", label: "Cafe & Eatery", defaultName: "The Roast & Kitchen", defaultTag: "Gourmet Smash & Cold Brew", item1: "Double Truffle Smash", price1: "349", item2: "Pour-Over Cold Drip", price2: "190" },
+  { id: "clinics", label: "Medical & Clinic", defaultName: "AuraCare Specialist", defaultTag: "Advanced Aesthetic Practice", item1: "Cosmetic Consultation", price1: "800", item2: "HydraGlow Therapy", price2: "2,500" },
+  { id: "gyms", label: "Gym & CrossFit", defaultName: "Titan Performance Club", defaultTag: "Strength & Conditioning", item1: "Pro Athlete Monthly", price1: "2,499", item2: "1-Day Drop-In Pass", price2: "499" },
+  { id: "clubs", label: "Nightclub & VIP", defaultName: "Velvet Sky Lounge", defaultTag: "VIP Tables & Cocktails", item1: "VIP Dancefloor Booth", price1: "20,000", item2: "Guestlist RSVP Pass", price2: "Free" },
+  { id: "turfs", label: "Sports Turf", defaultName: "BoxArena Complex", defaultTag: "Hourly Box Football & Cricket", item1: "Prime Evening Slot (1hr)", price1: "1,499", item2: "Morning Saver Slot", price2: "999" },
+  { id: "salons", label: "Luxury Salon", defaultName: "Maison de Luxe", defaultTag: "Bespoke Hair & Spa Studio", item1: "Signature Balayage & Glaze", price1: "6,500", item2: "Glass Skin Facial", price2: "3,800" },
 ];
 
-export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
-  // State: Tab, Niche, and Style Selection
+export function WhiteLabelStudio({ onBackToCatalogue }) {
+  // Studio Navigation & Mode
   const [activeTab, setActiveTab] = useState('styles'); // 'styles' | 'brand' | 'colors' | 'export'
-  const [selectedStyle, setSelectedStyle] = useState(DESIGN_STYLES[0]);
+  const [selectedStyle, setSelectedStyle] = useState(CRAZY_STYLES[0]);
   const [selectedNiche, setSelectedNiche] = useState(NICHES[0]);
   const [brandName, setBrandName] = useState(NICHES[0].defaultName);
-  const [tagline, setTagline] = useState(NICHES[0].defaultTagline);
+  const [tagline, setTagline] = useState(NICHES[0].defaultTag);
   const [currency, setCurrency] = useState('₹');
-  const [fontPairing, setFontPairing] = useState(FONT_PAIRINGS[0]);
-  
-  // Logo State (Base64 data or null)
+  const [deviceView, setDeviceView] = useState('desktop'); // 'desktop' | 'mobile'
+
+  // Colors
+  const [color60, setColor60] = useState(CRAZY_STYLES[0].c60);
+  const [color30, setColor30] = useState(CRAZY_STYLES[0].c30);
+  const [color10, setColor10] = useState(CRAZY_STYLES[0].c10);
+
+  // Logo
   const [logoImage, setLogoImage] = useState(null);
   const fileInputRef = useRef(null);
 
-  // 60-30-10 Colors State
-  const [activePreset, setActivePreset] = useState(PRESET_PALETTES[0]);
-  const [color60, setColor60] = useState(PRESET_PALETTES[0].c60); // 60% Dominant (Canvas / Background)
-  const [color30, setColor30] = useState(PRESET_PALETTES[0].c30); // 30% Secondary (Cards / Surfaces)
-  const [color10, setColor10] = useState(PRESET_PALETTES[0].c10); // 10% Accent (CTAs / Highlights)
-  const [deviceView, setDeviceView] = useState('desktop'); // 'desktop' | 'mobile'
+  // Notifications
+  const [copiedToast, setCopiedToast] = useState(null);
 
-  // Interactive Test State in Live Preview
-  const [testModalOpen, setTestModalOpen] = useState(false);
-  const [copiedNotification, setCopiedNotification] = useState(null);
+  // Select Style Handler
+  const handleSelectStyle = (style) => {
+    sounds.playClick();
+    setSelectedStyle(style);
+    setColor60(style.c60);
+    setColor30(style.c30);
+    setColor10(style.c10);
+  };
 
-  // Handle Logo Upload
+  // Niche Change Handler
+  const handleNicheChange = (niche) => {
+    sounds.playClick();
+    setSelectedNiche(niche);
+    setBrandName(niche.defaultName);
+    setTagline(niche.defaultTag);
+  };
+
+  // Logo Upload
   const handleLogoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -295,122 +163,7 @@ export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
     }
   };
 
-  const handleSelectStyle = (style) => {
-    sounds.playClick();
-    setSelectedStyle(style);
-    // Optionally auto-align font pairing with style recommendation
-    const matchedFont = FONT_PAIRINGS.find(fp => fp.id === style.fontPairingId);
-    if (matchedFont) {
-      setFontPairing(matchedFont);
-    }
-  };
-
-  const handleApplyPreset = (preset) => {
-    sounds.playClick();
-    setActivePreset(preset);
-    setColor60(preset.c60);
-    setColor30(preset.c30);
-    setColor10(preset.c10);
-  };
-
-  const handleNicheChange = (niche) => {
-    sounds.playClick();
-    setSelectedNiche(niche);
-    setBrandName(niche.defaultName);
-    setTagline(niche.defaultTagline);
-  };
-
-  // Generate Export Code Strings
-  const generateBrandConfigJson = () => {
-    return JSON.stringify({
-      brandName: brandName,
-      tagline: tagline,
-      niche: selectedNiche.id,
-      currency: currency,
-      designStyle: {
-        id: selectedStyle.id,
-        name: selectedStyle.name,
-        category: selectedStyle.category,
-        radiusPreset: selectedStyle.radius,
-        shadowPreset: selectedStyle.shadowClass
-      },
-      colorRule: "60-30-10",
-      palette: {
-        dominant60_bg: color60,
-        secondary30_surface: color30,
-        accent10_cta: color10
-      },
-      typography: {
-        headingFont: fontPairing.display,
-        bodyFont: fontPairing.body
-      },
-      logoProvided: !!logoImage,
-      exportedAt: new Date().toISOString(),
-      generator: "Dripp Media White-Label Studio v4.2"
-    }, null, 2);
-  };
-
-  const generateTailwindConfig = () => {
-    return `// tailwind.config.js - Custom White-Label Theme for ${brandName} (${selectedStyle.name})
-module.exports = {
-  theme: {
-    extend: {
-      colors: {
-        brand: {
-          bg: '${color60}',       // 60% Dominant Base
-          surface: '${color30}',  // 30% Structure & Cards
-          accent: '${color10}',   // 10% Call-to-Action Focus
-        }
-      },
-      fontFamily: {
-        heading: ['"${fontPairing.display}"', 'sans-serif'],
-        body: ['"${fontPairing.body}"', 'sans-serif'],
-      },
-      borderRadius: {
-        'brand': '${selectedStyle.id === "brutalism" ? "0px" : selectedStyle.id === "playful" ? "28px" : selectedStyle.id === "glassmorphism" ? "24px" : "16px"}',
-      },
-      boxShadow: {
-        'brand-accent': '${selectedStyle.id === "brutalism" ? "4px 4px 0px #000" : selectedStyle.id === "futuristic" ? "0 0 25px rgba(235,215,63,0.35)" : "0 8px 24px rgba(0,0,0,0.5)"}'
-      }
-    }
-  }
-};`;
-  };
-
-  const generateCssVariables = () => {
-    return `/* theme.css - 60-30-10 & ${selectedStyle.name} Styling for ${brandName} */
-:root {
-  --color-brand-60-bg: ${color60};
-  --color-brand-30-surface: ${color30};
-  --color-brand-10-accent: ${color10};
-  --font-heading: '${fontPairing.display}', sans-serif;
-  --font-body: '${fontPairing.body}', sans-serif;
-  --style-id: '${selectedStyle.id}';
-}
-
-body {
-  background-color: var(--color-brand-60-bg);
-  color: #ffffff;
-  font-family: var(--font-body);
-}
-
-.brand-card {
-  background-color: var(--color-brand-30-surface);
-  ${selectedStyle.id === "brutalism" ? "border: 2px solid #ffffff; box-shadow: 4px 4px 0px " + color10 + ";" : ""}
-  ${selectedStyle.id === "glassmorphism" ? "backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2);" : ""}
-  ${selectedStyle.id === "futuristic" ? "border-left: 2px solid " + color10 + "; border-right: 2px solid " + color10 + ";" : ""}
-}
-
-.brand-btn-primary {
-  background-color: var(--color-brand-10-accent);
-  color: #000000;
-  font-weight: 700;
-  ${selectedStyle.id === "brutalism" ? "border: 2px solid #000000; box-shadow: 3px 3px 0px #000000;" : ""}
-  ${selectedStyle.id === "futuristic" ? "text-transform: uppercase; letter-spacing: 0.1em; font-family: monospace;" : ""}
-}`;
-  };
-
-  // Automated File Download Handler
+  // Export JSON & Files
   const downloadFile = (filename, content, mimeType = 'application/json') => {
     sounds.playPop();
     const blob = new Blob([content], { type: mimeType });
@@ -424,80 +177,88 @@ body {
     URL.revokeObjectURL(url);
   };
 
-  const handleDownloadAll = () => {
-    downloadFile('brand-config.json', generateBrandConfigJson(), 'application/json');
-    setTimeout(() => {
-      downloadFile('tailwind-theme.js', generateTailwindConfig(), 'text/javascript');
-    }, 200);
-    setTimeout(() => {
-      downloadFile('theme.css', generateCssVariables(), 'text/css');
-    }, 400);
-
-    setCopiedNotification('All White-Label Code Files Downloaded!');
-    setTimeout(() => setCopiedNotification(null), 3000);
+  const generateConfigJson = () => {
+    return JSON.stringify({
+      brandName,
+      tagline,
+      niche: selectedNiche.id,
+      style: {
+        id: selectedStyle.id,
+        name: selectedStyle.name,
+        category: selectedStyle.category
+      },
+      palette: {
+        dominant60: color60,
+        surface30: color30,
+        accent10: color10
+      },
+      exportedAt: new Date().toISOString()
+    }, null, 2);
   };
 
-  const copyToClipboard = (text, label) => {
+  const handleDownloadAll = () => {
+    downloadFile('brand-config.json', generateConfigJson(), 'application/json');
+    setCopiedToast('Full Brand Code Package Exported!');
+    setTimeout(() => setCopiedToast(null), 3000);
+  };
+
+  const handleCopyJson = () => {
     sounds.playPop();
-    navigator.clipboard.writeText(text);
-    setCopiedNotification(`${label} Copied to Clipboard!`);
-    setTimeout(() => setCopiedNotification(null), 2500);
+    navigator.clipboard.writeText(generateConfigJson());
+    setCopiedToast('Config JSON Copied to Clipboard!');
+    setTimeout(() => setCopiedToast(null), 2500);
   };
 
   return (
-    <div className="min-h-screen bg-[#080808] text-white selection:bg-[#ebd73f] selection:text-black font-sans flex flex-col justify-between">
+    <div className="min-h-screen bg-[#070707] text-white selection:bg-[#ebd73f] selection:text-black font-sans flex flex-col">
       
-      {/* Top Header Navigation */}
-      <header className="sticky top-0 inset-x-0 z-40 bg-[#080808]/95 backdrop-blur-xl border-b border-white/10 py-3 px-4 sm:px-6">
+      {/* Minimal Top Control Bar */}
+      <header className="sticky top-0 inset-x-0 z-40 bg-[#070707]/90 backdrop-blur-xl border-b border-white/10 px-4 sm:px-6 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           
-          {/* Back & Title */}
           <div className="flex items-center gap-3">
             <button
-              onClick={() => {
-                sounds.playClick();
-                onBackToCatalogue();
-              }}
-              className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-[#ebd73f] hover:text-black font-clash font-semibold text-xs transition cursor-pointer"
+              onClick={() => { sounds.playClick(); onBackToCatalogue(); }}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 hover:bg-[#ebd73f] hover:text-black text-xs font-semibold transition cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back to Catalogue</span>
+              <span>Back</span>
             </button>
 
-            <span className="hidden md:inline-block text-white/20">•</span>
+            <span className="text-white/20">•</span>
             
-            <div className="hidden sm:flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#ebd73f] animate-pulse"></span>
-              <span className="font-panchang font-bold text-xs text-white">
-                WHITE-LABEL STUDIO
+              <span className="font-panchang font-bold text-xs tracking-wider">
+                DRIPP STUDIO
               </span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-white/80">
-                EDITOR PANEL
+              <span className="hidden sm:inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-slate-300">
+                {selectedStyle.shortName}
               </span>
             </div>
           </div>
 
-          {/* Device Switcher & Quick Download */}
-          <div className="flex items-center gap-3">
+          {/* Device & Export */}
+          <div className="flex items-center gap-2.5">
             
-            <div className="hidden md:flex items-center gap-1 bg-[#141414] p-1 rounded-xl border border-white/10">
+            <div className="flex items-center bg-[#121212] p-1 rounded-xl border border-white/10">
               <button
                 onClick={() => { sounds.playClick(); setDeviceView('desktop'); }}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-mono transition cursor-pointer ${
+                className={`p-1.5 px-3 rounded-lg text-xs flex items-center gap-1.5 transition cursor-pointer ${
                   deviceView === 'desktop' ? 'bg-[#ebd73f] text-black font-bold' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 <Laptop className="w-3.5 h-3.5" />
-                <span>Desktop</span>
+                <span className="hidden sm:inline">Desktop</span>
               </button>
               <button
                 onClick={() => { sounds.playClick(); setDeviceView('mobile'); }}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-mono transition cursor-pointer ${
+                className={`p-1.5 px-3 rounded-lg text-xs flex items-center gap-1.5 transition cursor-pointer ${
                   deviceView === 'mobile' ? 'bg-[#ebd73f] text-black font-bold' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 <Smartphone className="w-3.5 h-3.5" />
-                <span>Mobile</span>
+                <span className="hidden sm:inline">Mobile</span>
               </button>
             </div>
 
@@ -506,7 +267,7 @@ body {
               className="btn-dripp-primary px-4 py-2 text-xs font-bold flex items-center gap-1.5 shadow-lg cursor-pointer"
             >
               <Download className="w-3.5 h-3.5 text-black" />
-              <span>Export Code Package</span>
+              <span>Export</span>
             </button>
 
           </div>
@@ -514,729 +275,611 @@ body {
         </div>
       </header>
 
-      {/* Copied Notification Toast */}
+      {/* Toast */}
       <AnimatePresence>
-        {copiedNotification && (
+        {copiedToast && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-[#ebd73f] text-black font-bold text-xs font-clash shadow-2xl flex items-center gap-2"
+            className="fixed top-16 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-[#ebd73f] text-black font-bold text-xs shadow-2xl flex items-center gap-2 font-mono"
           >
-            <Check className="w-4 h-4 stroke-[3]" />
-            <span>{copiedNotification}</span>
+            <Check className="w-3.5 h-3.5 stroke-[3]" />
+            <span>{copiedToast}</span>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Main Studio Work Area */}
-      <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow">
+      {/* Main Studio Area */}
+      <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow items-start">
         
-        {/* LEFT COLUMN: Controls & Setup (5 cols) */}
-        <div className="lg:col-span-5 bg-[#0e0e0e] border border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col justify-between shadow-2xl space-y-6">
+        {/* LEFT COLUMN: Clean, Uncluttered Studio Controls (4 cols) */}
+        <div className="lg:col-span-4 bg-[#0d0d0d] border border-white/10 rounded-3xl p-5 space-y-5 shadow-2xl">
           
-          <div>
-            {/* Editor Navigation Tabs */}
-            <div className="flex items-center gap-1 pb-4 border-b border-white/10 overflow-x-auto no-scrollbar">
-              {[
-                { id: 'styles', label: '1. Design Styles', icon: LayoutTemplate },
-                { id: 'brand', label: '2. Brand & Logo', icon: Type },
-                { id: 'colors', label: '3. 60-30-10 Colors', icon: Palette },
-                { id: 'export', label: '4. Code Export', icon: Code2 },
-              ].map((tab) => {
-                const Icon = tab.icon;
-                const isActive = activeTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => { sounds.playClick(); setActiveTab(tab.id); }}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-clash font-semibold transition cursor-pointer shrink-0 ${
-                      isActive 
-                        ? 'bg-white/15 text-[#ebd73f] border border-white/20' 
-                        : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    <Icon className="w-3.5 h-3.5" />
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* TAB 1: 9 DESIGN STYLES & AESTHETICS */}
-            {activeTab === 'styles' && (
-              <div className="pt-5 space-y-4">
-                <div>
-                  <h3 className="font-panchang font-bold text-sm text-white flex items-center justify-between">
-                    <span>Select Design Aesthetic</span>
-                    <span className="text-[10px] font-mono text-[#ebd73f]">{selectedStyle.badge}</span>
-                  </h3>
-                  <p className="text-xs text-slate-400 font-clash mt-1">
-                    Choose from 9 modern visual languages. Instantly updates card geometry, borders, shadows, and interactive feel.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[50vh] overflow-y-auto pr-1">
-                  {DESIGN_STYLES.map((style) => {
-                    const isSelected = selectedStyle.id === style.id;
-                    return (
-                      <div
-                        key={style.id}
-                        onClick={() => handleSelectStyle(style)}
-                        className={`p-3 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-2 ${
-                          isSelected
-                            ? 'bg-[#ebd73f]/15 border-[#ebd73f] shadow-glow-yellow'
-                            : 'bg-white/[0.02] border-white/10 hover:border-white/25 hover:bg-white/[0.05]'
-                        }`}
-                      >
-                        <div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold font-clash text-white">
-                              {style.name}
-                            </span>
-                            {isSelected && <Check className="w-3.5 h-3.5 text-[#ebd73f] stroke-[3]" />}
-                          </div>
-                          <p className="text-[10px] font-mono text-slate-400 mt-0.5">{style.category}</p>
-                        </div>
-                        <p className="text-[10px] text-slate-300 leading-snug line-clamp-2">
-                          {style.tagline}
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* TAB 2: BRAND IDENTITY & LOGO */}
-            {activeTab === 'brand' && (
-              <div className="pt-5 space-y-5">
-                
-                {/* Niche Selector */}
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
-                    Select Business Niche
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {NICHES.map((n) => (
-                      <button
-                        key={n.id}
-                        onClick={() => handleNicheChange(n)}
-                        className={`p-2.5 rounded-xl text-left border text-xs font-clash transition cursor-pointer ${
-                          selectedNiche.id === n.id
-                            ? 'bg-white/15 border-[#ebd73f] text-[#ebd73f] font-bold'
-                            : 'bg-white/[0.02] border-white/10 text-white/60 hover:text-white'
-                        }`}
-                      >
-                        {n.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Brand Name */}
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
-                    Brand / Business Name
-                  </label>
-                  <input
-                    type="text"
-                    value={brandName}
-                    onChange={(e) => setBrandName(e.target.value)}
-                    placeholder="Enter Brand Name..."
-                    className="w-full px-4 py-2.5 rounded-xl bg-black border border-white/15 text-white text-sm font-clash focus:outline-none focus:border-[#ebd73f]"
-                  />
-                </div>
-
-                {/* Tagline */}
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
-                    Tagline / Subtitle
-                  </label>
-                  <input
-                    type="text"
-                    value={tagline}
-                    onChange={(e) => setTagline(e.target.value)}
-                    placeholder="Enter Subtitle Tagline..."
-                    className="w-full px-4 py-2.5 rounded-xl bg-black border border-white/15 text-white text-xs font-clash focus:outline-none focus:border-[#ebd73f]"
-                  />
-                </div>
-
-                {/* Logo Uploader */}
-                <div className="space-y-2">
-                  <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider flex items-center justify-between">
-                    <span>Brand Logo Asset</span>
-                    {logoImage && (
-                      <button
-                        onClick={() => setLogoImage(null)}
-                        className="text-[10px] text-rose-400 hover:underline flex items-center gap-1 cursor-pointer"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                        <span>Remove Logo</span>
-                      </button>
-                    )}
-                  </label>
-
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handleLogoUpload}
-                      accept="image/*"
-                      className="hidden"
-                    />
-
-                    <div 
-                      onClick={() => fileInputRef.current.click()}
-                      className="flex-1 p-3.5 rounded-2xl border border-dashed border-white/20 hover:border-[#ebd73f] bg-black/40 text-center cursor-pointer transition flex flex-col items-center justify-center gap-1.5"
-                    >
-                      <Upload className="w-4 h-4 text-[#ebd73f]" />
-                      <span className="text-xs font-clash text-slate-300">
-                        Upload Custom Logo (.PNG / .SVG)
-                      </span>
-                      <span className="text-[10px] font-mono text-slate-500">
-                        Auto-scaled to header &amp; icon assets
-                      </span>
-                    </div>
-
-                    {logoImage ? (
-                      <div className="w-14 h-14 rounded-2xl bg-black border border-[#ebd73f] p-1.5 flex items-center justify-center shrink-0">
-                        <img src={logoImage} alt="Uploaded Logo" className="max-h-full max-w-full object-contain" />
-                      </div>
-                    ) : (
-                      <div 
-                        className="w-14 h-14 rounded-2xl font-black font-panchang text-black flex items-center justify-center text-sm shadow-md shrink-0"
-                        style={{ backgroundColor: color10 }}
-                      >
-                        {brandName.substring(0, 2).toUpperCase() || 'DM'}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Font Pairing Selection */}
-                <div className="space-y-2">
-                  <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
-                    Typography Pairing
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {FONT_PAIRINGS.map((fp) => (
-                      <button
-                        key={fp.id}
-                        onClick={() => { sounds.playClick(); setFontPairing(fp); }}
-                        className={`p-2.5 rounded-xl border text-left transition cursor-pointer ${
-                          fontPairing.id === fp.id
-                            ? 'bg-white/15 border-[#ebd73f] text-[#ebd73f]'
-                            : 'bg-white/[0.02] border-white/10 text-white/60 hover:text-white'
-                        }`}
-                      >
-                        <p className="text-xs font-bold leading-tight">{fp.name}</p>
-                        <p className="text-[10px] font-mono text-slate-400 mt-0.5">{fp.display} + {fp.body}</p>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-              </div>
-            )}
-
-            {/* TAB 3: 60-30-10 COLOR SCIENCE ENGINE */}
-            {activeTab === 'colors' && (
-              <div className="pt-5 space-y-6">
-                
-                {/* 60-30-10 Explanation Pill */}
-                <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 text-xs font-mono space-y-1">
-                  <p className="text-[#ebd73f] font-bold">The 60-30-10 Color Architecture Rule:</p>
-                  <p className="text-slate-300 text-[11px] leading-relaxed">
-                    <strong>60% Dominant:</strong> Background canvas &amp; atmosphere. <br />
-                    <strong>30% Secondary:</strong> Structural cards, navigation &amp; elevation. <br />
-                    <strong>10% Accent:</strong> High-conversion buttons, pricing &amp; focal calls.
-                  </p>
-                </div>
-
-                {/* Curated Presets */}
-                <div className="space-y-2">
-                  <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
-                    1-Click Professional Presets
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {PRESET_PALETTES.map((preset) => (
-                      <button
-                        key={preset.id}
-                        onClick={() => handleApplyPreset(preset)}
-                        className={`p-2.5 rounded-xl border text-left flex items-center justify-between transition cursor-pointer ${
-                          activePreset.id === preset.id
-                            ? 'bg-white/15 border-[#ebd73f] text-white'
-                            : 'bg-white/[0.02] border-white/10 text-white/70 hover:text-white'
-                        }`}
-                      >
-                        <div>
-                          <p className="text-xs font-bold font-clash">{preset.name}</p>
-                          <p className="text-[10px] font-mono text-slate-400">{preset.rule}</p>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <span className="w-3 h-3 rounded-full border border-white/20" style={{ backgroundColor: preset.c60 }}></span>
-                          <span className="w-3 h-3 rounded-full border border-white/20" style={{ backgroundColor: preset.c30 }}></span>
-                          <span className="w-3 h-3 rounded-full" style={{ backgroundColor: preset.c10 }}></span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Granular Color Choosers with Hex Codes */}
-                <div className="space-y-3.5 pt-2 border-t border-white/10">
-                  <p className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
-                    Granular Color Chooser &amp; Hex Code Inputs
-                  </p>
-
-                  {/* 60% Dominant (Canvas) */}
-                  <div className="p-3 rounded-xl bg-black border border-white/10 flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <input
-                        type="color"
-                        value={color60}
-                        onChange={(e) => setColor60(e.target.value)}
-                        className="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-none"
-                      />
-                      <div>
-                        <p className="text-xs font-bold text-white font-clash">60% Dominant Base (Canvas)</p>
-                        <p className="text-[10px] font-mono text-slate-400">Background atmosphere</p>
-                      </div>
-                    </div>
-                    <input
-                      type="text"
-                      value={color60}
-                      onChange={(e) => setColor60(e.target.value)}
-                      className="w-24 px-2 py-1 rounded-lg bg-white/5 border border-white/20 text-xs font-mono text-center text-white focus:outline-none focus:border-[#ebd73f]"
-                    />
-                  </div>
-
-                  {/* 30% Secondary (Cards/Surfaces) */}
-                  <div className="p-3 rounded-xl bg-black border border-white/10 flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <input
-                        type="color"
-                        value={color30}
-                        onChange={(e) => setColor30(e.target.value)}
-                        className="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-none"
-                      />
-                      <div>
-                        <p className="text-xs font-bold text-white font-clash">30% Secondary Structure</p>
-                        <p className="text-[10px] font-mono text-slate-400">Cards, chrome &amp; panels</p>
-                      </div>
-                    </div>
-                    <input
-                      type="text"
-                      value={color30}
-                      onChange={(e) => setColor30(e.target.value)}
-                      className="w-24 px-2 py-1 rounded-lg bg-white/5 border border-white/20 text-xs font-mono text-center text-white focus:outline-none focus:border-[#ebd73f]"
-                    />
-                  </div>
-
-                  {/* 10% Accent (Focal CTAs) */}
-                  <div className="p-3 rounded-xl bg-black border border-white/10 flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <input
-                        type="color"
-                        value={color10}
-                        onChange={(e) => setColor10(e.target.value)}
-                        className="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-none"
-                      />
-                      <div>
-                        <p className="text-xs font-bold text-white font-clash">10% Accent Action (Focal)</p>
-                        <p className="text-[10px] font-mono text-[#ebd73f]">Buttons, Badges &amp; Prices</p>
-                      </div>
-                    </div>
-                    <input
-                      type="text"
-                      value={color10}
-                      onChange={(e) => setColor10(e.target.value)}
-                      className="w-24 px-2 py-1 rounded-lg bg-white/5 border border-white/20 text-xs font-mono text-center text-white focus:outline-none focus:border-[#ebd73f]"
-                    />
-                  </div>
-
-                </div>
-
-              </div>
-            )}
-
-            {/* TAB 4: CODE EXPORT & DOWNLOAD CENTER */}
-            {activeTab === 'export' && (
-              <div className="pt-5 space-y-4 font-mono text-xs">
-                
-                <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1">
-                  <p className="text-[#ebd73f] font-bold">Turnkey Export Center:</p>
-                  <p className="text-slate-300 text-[11px]">
-                    Download the production-ready configuration, Tailwind design tokens, and CSS variables for {brandName} with {selectedStyle.name} aesthetic.
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <button
-                    onClick={() => downloadFile('brand-config.json', generateBrandConfigJson(), 'application/json')}
-                    className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-left flex items-center justify-between transition cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-[#ebd73f]" />
-                      <span className="text-white font-semibold">1. Download brand-config.json</span>
-                    </div>
-                    <span className="text-[10px] text-slate-400 font-mono">JSON Config</span>
-                  </button>
-
-                  <button
-                    onClick={() => downloadFile('tailwind-theme.js', generateTailwindConfig(), 'text/javascript')}
-                    className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-left flex items-center justify-between transition cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Code2 className="w-4 h-4 text-[#ebd73f]" />
-                      <span className="text-white font-semibold">2. Download tailwind-theme.js</span>
-                    </div>
-                    <span className="text-[10px] text-slate-400 font-mono">Tailwind Config</span>
-                  </button>
-
-                  <button
-                    onClick={() => downloadFile('theme.css', generateCssVariables(), 'text/css')}
-                    className="w-full p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-left flex items-center justify-between transition cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Palette className="w-4 h-4 text-[#ebd73f]" />
-                      <span className="text-white font-semibold">3. Download theme.css</span>
-                    </div>
-                    <span className="text-[10px] text-slate-400 font-mono">CSS Variables</span>
-                  </button>
-                </div>
-
-                {/* Quick Copy Snippets */}
-                <div className="pt-2 flex items-center gap-2">
-                  <button
-                    onClick={() => copyToClipboard(generateBrandConfigJson(), 'Configuration JSON')}
-                    className="flex-1 py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-mono text-[11px] flex items-center justify-center gap-1.5 transition cursor-pointer"
-                  >
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>Copy JSON</span>
-                  </button>
-
-                  <button
-                    onClick={handleDownloadAll}
-                    className="flex-1 py-2.5 px-3 rounded-xl btn-dripp-primary font-bold text-[11px] flex items-center justify-center gap-1.5 transition cursor-pointer"
-                  >
-                    <Download className="w-3.5 h-3.5 text-black" />
-                    <span>Download All Files</span>
-                  </button>
-                </div>
-
-              </div>
-            )}
-
-          </div>
-
-          {/* Bottom Actions */}
-          <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-slate-400">
-            <span>Style: <strong className="text-[#ebd73f]">{selectedStyle.name}</strong></span>
-            <span className="text-slate-400">Niche: {selectedNiche.label}</span>
-          </div>
-
-        </div>
-
-        {/* RIGHT COLUMN: Live Interactive Device Preview (7 cols) */}
-        <div className="lg:col-span-7 bg-[#0c0c0c] border border-white/10 rounded-3xl p-5 sm:p-7 flex flex-col justify-between shadow-2xl overflow-hidden relative">
-          
-          {/* Top Bar of Preview */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-white/10 gap-2">
-            <div className="flex items-center gap-2 font-mono text-xs text-slate-400">
-              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color10 }}></span>
-              <span className="text-white font-bold">CLIENT PREVIEW: {brandName}</span>
-              <span>•</span>
-              <span className="text-[#ebd73f]">{selectedStyle.badge}</span>
-            </div>
-
-            {/* Quick Aesthetic Switcher Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar max-w-full">
-              {DESIGN_STYLES.slice(0, 5).map((st) => (
-                <button
-                  key={st.id}
-                  onClick={() => handleSelectStyle(st)}
-                  className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono transition cursor-pointer shrink-0 ${
-                    selectedStyle.id === st.id
-                      ? 'bg-[#ebd73f] text-black font-bold'
-                      : 'bg-white/5 text-slate-400 hover:text-white border border-white/10'
-                  }`}
-                >
-                  {st.name.split(" ")[0]}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Device Mockup Canvas - Dynamically Styled with selectedStyle */}
-          <div className="my-6 flex items-center justify-center flex-grow overflow-y-auto">
-            
-            <div 
-              className={`transition-all duration-500 shadow-2xl overflow-hidden border ${selectedStyle.radius} ${
-                deviceView === 'mobile' ? 'w-full max-w-[340px] aspect-[9/18]' : 'w-full aspect-[16/10]'
-              }`}
-              style={{ 
-                backgroundColor: color60,
-                borderColor: selectedStyle.id === 'brutalism' ? '#ffffff' : 'rgba(255,255,255,0.15)',
-                boxShadow: selectedStyle.id === 'brutalism' ? `6px 6px 0px ${color10}` : undefined
-              }}
-            >
-              
-              {/* Simulated Navigation Bar */}
-              <div 
-                className={`p-3.5 border-b flex items-center justify-between backdrop-blur-md sticky top-0 z-20 ${
-                  selectedStyle.id === 'brutalism' ? 'border-b-2 border-white bg-black' : 'border-b border-white/10'
+          {/* Navigation Tabs */}
+          <div className="grid grid-cols-3 gap-1 bg-[#141414] p-1 rounded-2xl border border-white/5 text-xs font-clash font-semibold">
+            {[
+              { id: 'styles', label: 'Styles' },
+              { id: 'brand', label: 'Brand' },
+              { id: 'colors', label: 'Colors' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => { sounds.playClick(); setActiveTab(tab.id); }}
+                className={`py-2 rounded-xl transition cursor-pointer ${
+                  activeTab === tab.id 
+                    ? 'bg-[#ebd73f] text-black font-bold shadow-md' 
+                    : 'text-slate-400 hover:text-white'
                 }`}
-                style={{ backgroundColor: selectedStyle.id === 'glassmorphism' ? `${color60}88` : `${color60}ee` }}
               >
-                <div className="flex items-center gap-2.5">
-                  {logoImage ? (
-                    <img src={logoImage} alt={brandName} className="h-7 w-auto object-contain max-w-[70px]" />
-                  ) : (
-                    <div 
-                      className={`w-7 h-7 flex items-center justify-center font-black text-black text-xs shadow-md ${selectedStyle.buttonRadius} ${
-                        selectedStyle.id === 'brutalism' ? 'border-2 border-black' : ''
-                      }`}
-                      style={{ backgroundColor: color10 }}
-                    >
-                      {brandName.substring(0, 1).toUpperCase() || 'W'}
-                    </div>
-                  )}
-
-                  <div>
-                    <p className={`font-bold text-sm text-white leading-none ${fontPairing.classDisplay} ${
-                      selectedStyle.id === 'brutalism' ? 'uppercase tracking-tighter' : ''
-                    }`}>
-                      {brandName}
-                    </p>
-                    <p className="text-[9px] font-mono text-slate-400 mt-0.5 leading-none">
-                      {tagline.substring(0, 26)}...
-                    </p>
-                  </div>
-                </div>
-
-                <button 
-                  className={`px-3 py-1 font-bold text-[10px] text-black shadow-md cursor-pointer transition ${selectedStyle.buttonRadius} ${
-                    selectedStyle.id === 'brutalism' ? 'border-2 border-black shadow-[2px_2px_0px_#000]' : ''
-                  } ${selectedStyle.id === 'sporty' ? '-skew-x-6 italic' : ''}`}
-                  style={{ backgroundColor: color10 }}
-                  onClick={() => setTestModalOpen(true)}
-                >
-                  {selectedStyle.id === 'futuristic' ? '[ EXECUTE ]' : 'Book / Order'}
-                </button>
-              </div>
-
-              {/* Simulated Hero Section */}
-              <div className={`p-5 text-center space-y-3 relative overflow-hidden ${
-                selectedStyle.id === 'futuristic' ? 'cyber-grid' : ''
-              }`}>
-                {selectedStyle.id !== 'brutalism' && (
-                  <div 
-                    className="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full blur-3xl opacity-20 pointer-events-none"
-                    style={{ backgroundColor: color10 }}
-                  ></div>
-                )}
-
-                {/* Badge formatted for the active style */}
-                <span 
-                  className={`inline-block text-[10px] font-mono px-2.5 py-0.5 border ${selectedStyle.chipStyle}`}
-                  style={{ borderColor: selectedStyle.id === 'brutalism' ? '#ffffff' : undefined }}
-                >
-                  {selectedStyle.id === 'futuristic' ? 'SYS.VERIFIED // 60-30-10' : `${selectedStyle.badge} BUILD`}
-                </span>
-
-                <h2 className={`font-bold text-xl sm:text-2xl text-white tracking-tight leading-snug ${fontPairing.classDisplay} ${
-                  selectedStyle.id === 'sporty' ? 'italic' : ''
-                }`}>
-                  Experience <span style={{ color: color10 }}>{brandName}</span>
-                </h2>
-
-                <p className={`text-xs text-slate-300 max-w-sm mx-auto leading-relaxed ${fontPairing.classBody}`}>
-                  {tagline}. Savor recipes, reserve tables, and experience zero-wait service on your phone.
-                </p>
-
-                <div className="pt-2 flex items-center justify-center gap-2">
-                  <button
-                    onClick={() => setTestModalOpen(true)}
-                    className={`px-4 py-2 font-bold text-xs text-black shadow-lg cursor-pointer transition hover:scale-105 ${selectedStyle.buttonRadius} ${
-                      selectedStyle.id === 'brutalism' ? 'border-2 border-black shadow-[3px_3px_0px_#000] uppercase font-black' : ''
-                    } ${selectedStyle.id === 'sporty' ? '-skew-x-6 italic font-black' : ''}`}
-                    style={{ backgroundColor: color10 }}
-                  >
-                    Start Order &amp; Book
-                  </button>
-                  <button
-                    className={`px-3.5 py-2 font-medium text-xs text-white border border-white/20 transition hover:bg-white/10 ${selectedStyle.buttonRadius} ${
-                      selectedStyle.id === 'brutalism' ? 'border-2 border-white' : ''
-                    }`}
-                    style={{ backgroundColor: color30 }}
-                  >
-                    Explore Details
-                  </button>
-                </div>
-              </div>
-
-              {/* Simulated Product / Service Cards (Styled in 30% Surface + Style Radius & Shadow) */}
-              <div className="p-4 pt-0 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                
-                {/* Card 1 */}
-                <div 
-                  className={`p-3.5 space-y-2 relative overflow-hidden ${selectedStyle.radius} ${
-                    selectedStyle.id === 'brutalism' 
-                      ? 'bg-black border-2 border-white shadow-[3px_3px_0px_#ebd73f]' 
-                      : selectedStyle.id === 'glassmorphism'
-                      ? 'backdrop-blur-xl bg-white/[0.08] border border-white/20'
-                      : 'border border-white/10'
-                  }`}
-                  style={{ backgroundColor: selectedStyle.id !== 'glassmorphism' && selectedStyle.id !== 'brutalism' ? color30 : undefined }}
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className={`font-bold text-xs text-white ${fontPairing.classDisplay}`}>
-                        {selectedNiche.item1}
-                      </p>
-                      <p className="text-[10px] text-slate-400 mt-0.5">Signature Selection</p>
-                    </div>
-                    <span className="font-mono font-bold text-xs" style={{ color: color10 }}>
-                      {currency}{selectedNiche.price1}
-                    </span>
-                  </div>
-
-                  <button 
-                    onClick={() => setTestModalOpen(true)}
-                    className={`w-full py-1.5 font-bold text-[10px] text-black transition cursor-pointer ${selectedStyle.buttonRadius} ${
-                      selectedStyle.id === 'brutalism' ? 'border border-black shadow-[2px_2px_0px_#000] uppercase' : ''
-                    } ${selectedStyle.id === 'sporty' ? '-skew-x-3 italic' : ''}`}
-                    style={{ backgroundColor: color10 }}
-                  >
-                    Add / Book Instantly
-                  </button>
-                </div>
-
-                {/* Card 2 */}
-                <div 
-                  className={`p-3.5 space-y-2 relative overflow-hidden ${selectedStyle.radius} ${
-                    selectedStyle.id === 'brutalism' 
-                      ? 'bg-black border-2 border-white shadow-[3px_3px_0px_#ebd73f]' 
-                      : selectedStyle.id === 'glassmorphism'
-                      ? 'backdrop-blur-xl bg-white/[0.08] border border-white/20'
-                      : 'border border-white/10'
-                  }`}
-                  style={{ backgroundColor: selectedStyle.id !== 'glassmorphism' && selectedStyle.id !== 'brutalism' ? color30 : undefined }}
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className={`font-bold text-xs text-white ${fontPairing.classDisplay}`}>
-                        {selectedNiche.item2}
-                      </p>
-                      <p className="text-[10px] text-slate-400 mt-0.5">Crafted On-Demand</p>
-                    </div>
-                    <span className="font-mono font-bold text-xs" style={{ color: color10 }}>
-                      {currency}{selectedNiche.price2}
-                    </span>
-                  </div>
-
-                  <button 
-                    onClick={() => setTestModalOpen(true)}
-                    className={`w-full py-1.5 font-semibold text-[10px] text-white border border-white/20 transition hover:bg-white/10 cursor-pointer ${selectedStyle.buttonRadius}`}
-                  >
-                    Select Option
-                  </button>
-                </div>
-
-              </div>
-
-            </div>
-
+                {tab.label}
+              </button>
+            ))}
           </div>
 
-          {/* Bottom Bar Controls */}
-          <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
-            <div className="flex items-center gap-2 text-slate-400">
-              <span>Dominant: <strong className="text-white">{color60}</strong></span>
-              <span>•</span>
-              <span>Surface: <strong className="text-white">{color30}</strong></span>
-              <span>•</span>
-              <span>Accent: <strong style={{ color: color10 }}>{color10}</strong></span>
-            </div>
+          {/* TAB 1: 6 CRAZY AESTHETIC STYLES */}
+          {activeTab === 'styles' && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-slate-400 font-mono">CHOOSE AESTHETIC</span>
+                <span className="text-[#ebd73f] font-mono text-[10px] font-bold">{selectedStyle.shortName}</span>
+              </div>
 
+              <div className="space-y-2">
+                {CRAZY_STYLES.map((style) => {
+                  const Icon = style.icon;
+                  const isSelected = selectedStyle.id === style.id;
+                  return (
+                    <div
+                      key={style.id}
+                      onClick={() => handleSelectStyle(style)}
+                      className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
+                        isSelected
+                          ? 'bg-[#ebd73f]/15 border-[#ebd73f] shadow-glow-yellow'
+                          : 'bg-[#121212] border-white/5 hover:border-white/20 hover:bg-[#181818]'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div 
+                          className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                          style={{ 
+                            backgroundColor: isSelected ? '#ebd73f' : 'rgba(255,255,255,0.06)',
+                            color: isSelected ? '#000000' : '#ffffff'
+                          }}
+                        >
+                          <Icon className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <p className="font-bold text-xs text-white font-clash">{style.name}</p>
+                          <p className="text-[10px] text-slate-400 font-mono">{style.category}</p>
+                        </div>
+                      </div>
+
+                      {isSelected && (
+                        <div className="w-6 h-6 rounded-full bg-[#ebd73f] text-black flex items-center justify-center">
+                          <Check className="w-3.5 h-3.5 stroke-[3]" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 2: BRAND IDENTITY & LOGO */}
+          {activeTab === 'brand' && (
+            <div className="space-y-4">
+              
+              {/* Niche Selector */}
+              <div className="space-y-1">
+                <label className="text-[10px] font-mono text-slate-400 uppercase">Select Niche</label>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {NICHES.map((n) => (
+                    <button
+                      key={n.id}
+                      onClick={() => handleNicheChange(n)}
+                      className={`p-2 rounded-xl text-left text-xs font-clash transition cursor-pointer border ${
+                        selectedNiche.id === n.id
+                          ? 'bg-[#ebd73f]/15 border-[#ebd73f] text-[#ebd73f] font-bold'
+                          : 'bg-[#121212] border-white/5 text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {n.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Brand Name */}
+              <div className="space-y-1">
+                <label className="text-[10px] font-mono text-slate-400 uppercase">Brand Name</label>
+                <input
+                  type="text"
+                  value={brandName}
+                  onChange={(e) => setBrandName(e.target.value)}
+                  className="w-full px-3.5 py-2 rounded-xl bg-black border border-white/15 text-white text-xs font-clash focus:outline-none focus:border-[#ebd73f]"
+                />
+              </div>
+
+              {/* Tagline */}
+              <div className="space-y-1">
+                <label className="text-[10px] font-mono text-slate-400 uppercase">Tagline</label>
+                <input
+                  type="text"
+                  value={tagline}
+                  onChange={(e) => setTagline(e.target.value)}
+                  className="w-full px-3.5 py-2 rounded-xl bg-black border border-white/15 text-white text-xs font-clash focus:outline-none focus:border-[#ebd73f]"
+                />
+              </div>
+
+              {/* Logo Upload */}
+              <div className="space-y-1.5 pt-1">
+                <label className="text-[10px] font-mono text-slate-400 uppercase flex items-center justify-between">
+                  <span>Custom Logo</span>
+                  {logoImage && (
+                    <button onClick={() => setLogoImage(null)} className="text-rose-400 text-[10px] hover:underline">
+                      Remove
+                    </button>
+                  )}
+                </label>
+
+                <input type="file" ref={fileInputRef} onChange={handleLogoUpload} accept="image/*" className="hidden" />
+
+                <div 
+                  onClick={() => fileInputRef.current.click()}
+                  className="p-3 rounded-2xl border border-dashed border-white/20 hover:border-[#ebd73f] bg-black text-center cursor-pointer transition flex items-center justify-center gap-2"
+                >
+                  <Upload className="w-3.5 h-3.5 text-[#ebd73f]" />
+                  <span className="text-xs text-slate-300 font-clash">
+                    {logoImage ? 'Change Uploaded Logo' : 'Upload PNG / SVG Logo'}
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          )}
+
+          {/* TAB 3: 60-30-10 COLORS */}
+          {activeTab === 'colors' && (
+            <div className="space-y-4">
+              <div className="p-3 rounded-2xl bg-[#121212] border border-white/5 text-xs font-mono">
+                <p className="text-[#ebd73f] font-bold">60-30-10 Balance Engine</p>
+                <p className="text-slate-400 text-[10px] mt-0.5">60% Canvas • 30% Structure • 10% Focus</p>
+              </div>
+
+              {/* Dominant */}
+              <div className="p-2.5 rounded-xl bg-black border border-white/10 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={color60}
+                    onChange={(e) => setColor60(e.target.value)}
+                    className="w-7 h-7 rounded-lg cursor-pointer bg-transparent"
+                  />
+                  <div>
+                    <p className="text-xs font-bold text-white">60% Dominant</p>
+                    <p className="text-[9px] font-mono text-slate-400">Background Canvas</p>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  value={color60}
+                  onChange={(e) => setColor60(e.target.value)}
+                  className="w-20 px-2 py-1 rounded bg-white/5 border border-white/15 text-xs font-mono text-center text-white"
+                />
+              </div>
+
+              {/* Surface */}
+              <div className="p-2.5 rounded-xl bg-black border border-white/10 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={color30}
+                    onChange={(e) => setColor30(e.target.value)}
+                    className="w-7 h-7 rounded-lg cursor-pointer bg-transparent"
+                  />
+                  <div>
+                    <p className="text-xs font-bold text-white">30% Structure</p>
+                    <p className="text-[9px] font-mono text-slate-400">Cards &amp; Panels</p>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  value={color30}
+                  onChange={(e) => setColor30(e.target.value)}
+                  className="w-20 px-2 py-1 rounded bg-white/5 border border-white/15 text-xs font-mono text-center text-white"
+                />
+              </div>
+
+              {/* Accent */}
+              <div className="p-2.5 rounded-xl bg-black border border-white/10 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={color10}
+                    onChange={(e) => setColor10(e.target.value)}
+                    className="w-7 h-7 rounded-lg cursor-pointer bg-transparent"
+                  />
+                  <div>
+                    <p className="text-xs font-bold text-white">10% Accent</p>
+                    <p className="text-[9px] font-mono text-[#ebd73f]">Action CTAs</p>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  value={color10}
+                  onChange={(e) => setColor10(e.target.value)}
+                  className="w-20 px-2 py-1 rounded bg-white/5 border border-white/15 text-xs font-mono text-center text-white"
+                />
+              </div>
+
+            </div>
+          )}
+
+          {/* Quick Copy Action */}
+          <div className="pt-2 border-t border-white/10">
             <button
-              onClick={handleDownloadAll}
-              className="text-[#ebd73f] hover:underline font-bold flex items-center gap-1 cursor-pointer"
+              onClick={handleCopyJson}
+              className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white font-mono text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
             >
-              <span>Download Brand Package</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <Copy className="w-3.5 h-3.5 text-[#ebd73f]" />
+              <span>Copy Config JSON</span>
             </button>
           </div>
 
         </div>
 
-      </main>
-
-      {/* Interactive Simulation Modal Triggered from inside the preview */}
-      <AnimatePresence>
-        {testModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className={`w-full max-w-md p-6 border shadow-2xl text-center space-y-4 ${selectedStyle.radius}`}
-              style={{ 
-                backgroundColor: color30,
-                borderColor: selectedStyle.id === 'brutalism' ? '#ffffff' : 'rgba(255,255,255,0.2)'
-              }}
-            >
-              <div 
-                className={`w-12 h-12 mx-auto flex items-center justify-center text-black font-bold shadow-lg ${selectedStyle.buttonRadius} ${
-                  selectedStyle.id === 'brutalism' ? 'border-2 border-black' : ''
-                }`}
-                style={{ backgroundColor: color10 }}
-              >
-                <Check className="w-6 h-6 stroke-[3]" />
-              </div>
-
-              <div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-white/80">
-                  {selectedStyle.name} Experience
+        {/* RIGHT COLUMN: The Crazy & Creative Live Canvas (8 cols) */}
+        <div className="lg:col-span-8 flex flex-col items-center justify-center min-h-[600px] w-full">
+          
+          {/* Main Device Preview Frame */}
+          <div 
+            className={`w-full transition-all duration-700 relative overflow-hidden shadow-2xl ${
+              deviceView === 'mobile' 
+                ? 'max-w-[340px] rounded-[48px] border-[10px] border-[#222222] shadow-[0_25px_60px_rgba(0,0,0,0.9)]' 
+                : 'rounded-3xl border border-white/15'
+            }`}
+            style={{ 
+              backgroundColor: color60,
+              color: selectedStyle.id === 'neo-brutalist' ? '#000000' : '#ffffff'
+            }}
+          >
+            
+            {/* Desktop Mac Header Dots (only in desktop mode) */}
+            {deviceView === 'desktop' && (
+              <div className="px-4 py-2.5 border-b border-white/10 flex items-center justify-between bg-black/40 backdrop-blur-md">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+                </div>
+                <span className="text-[10px] font-mono text-slate-400">
+                  {brandName.toLowerCase().replace(/\s+/g, '')}.com • {selectedStyle.shortName}
                 </span>
-                <h4 className={`font-bold text-lg text-white mt-1.5 ${fontPairing.classDisplay}`}>
-                  {brandName} Checkout
-                </h4>
-                <p className="text-xs text-slate-300 font-clash mt-1">
-                  Testing customer checkout flow styled in {selectedStyle.name} with your 60-30-10 palette.
-                </p>
+                <span className="text-[9px] font-mono text-[#ebd73f]">ONLINE</span>
               </div>
+            )}
 
-              <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 text-left text-xs font-mono space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">ITEM:</span>
-                  <span className="text-white">{selectedNiche.item1}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">AMOUNT:</span>
-                  <span className="font-bold" style={{ color: color10 }}>{currency}{selectedNiche.price1}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">AESTHETIC:</span>
-                  <span className="text-[#ebd73f]">{selectedStyle.name}</span>
+            {/* Mobile Dynamic Island (only in mobile mode) */}
+            {deviceView === 'mobile' && (
+              <div className="pt-2 pb-1 flex items-center justify-center">
+                <div className="w-24 h-4 rounded-full bg-black border border-white/10 flex items-center justify-end px-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#ebd73f]/60"></span>
                 </div>
               </div>
+            )}
 
-              <button
-                onClick={() => setTestModalOpen(false)}
-                className={`w-full py-2.5 font-bold text-xs text-black cursor-pointer shadow-lg ${selectedStyle.buttonRadius} ${
-                  selectedStyle.id === 'brutalism' ? 'border-2 border-black uppercase font-black' : ''
-                }`}
-                style={{ backgroundColor: color10 }}
-              >
-                Close Simulator
-              </button>
-            </motion.div>
+            {/* ========================================================================= */}
+            {/* STYLE 1: CYBERPUNK 2077 // HUD MATRIX                                    */}
+            {/* ========================================================================= */}
+            {selectedStyle.id === 'cyber-hud' && (
+              <div className="p-6 relative cyber-grid overflow-hidden min-h-[460px] flex flex-col justify-between">
+                <div className="animate-scanline"></div>
+
+                {/* Cyber HUD Corner Telemetry */}
+                <div className="flex items-center justify-between font-mono text-[10px] text-[#ebd73f] border-b border-[#ebd73f]/30 pb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="animate-pulse">SYS.CORE // ONLINE</span>
+                    <span>•</span>
+                    <span className="text-white">QUANTUM 0x9F</span>
+                  </div>
+                  <span>LATENCY: 4.2ms</span>
+                </div>
+
+                {/* Hero */}
+                <div className="py-6 space-y-3">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 border border-[#ebd73f] font-mono text-[9px] text-[#ebd73f] bg-black">
+                    <span>[ TARGET_LOCKED ]</span>
+                  </div>
+
+                  <h2 className="font-panchang font-black text-2xl sm:text-3xl text-white tracking-tight leading-tight">
+                    {brandName} <span className="text-[#ebd73f]">// TERMINAL</span>
+                  </h2>
+                  <p className="font-mono text-xs text-slate-400 max-w-md">
+                    {tagline}. Neural dispatch engine active. Zero-wait sub-second food &amp; reservation protocol.
+                  </p>
+
+                  <button className="px-6 py-3 bg-[#ebd73f] text-black font-mono font-black text-xs uppercase tracking-widest shadow-[0_0_25px_rgba(235,215,63,0.5)] hover:bg-white transition cursor-pointer">
+                    [ INITIALIZE ORDER // ⚡ ]
+                  </button>
+                </div>
+
+                {/* Cyber Crate Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
+                  {[
+                    { name: selectedNiche.item1, price: selectedNiche.price1, code: "MOD.01", status: "98% PREP" },
+                    { name: selectedNiche.item2, price: selectedNiche.price2, code: "MOD.02", status: "READY" },
+                  ].map((item, idx) => (
+                    <div key={idx} className="p-3.5 bg-black/80 border border-[#ebd73f]/40 relative">
+                      <div className="flex justify-between font-mono text-[10px] text-[#ebd73f]">
+                        <span>{item.code}</span>
+                        <span>{item.status}</span>
+                      </div>
+                      <p className="font-mono font-bold text-sm text-white mt-1">{item.name}</p>
+                      <p className="font-mono text-xs text-[#ebd73f] font-bold mt-1">{currency}{item.price}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ========================================================================= */}
+            {/* STYLE 2: NEO-BRUTALISM // HYPEBEAST DROP                                 */}
+            {/* ========================================================================= */}
+            {selectedStyle.id === 'neo-brutalist' && (
+              <div className="bg-[#ebd73f] text-black p-6 min-h-[460px] flex flex-col justify-between relative overflow-hidden font-sans">
+                
+                {/* Marquee Ticker */}
+                <div className="overflow-hidden bg-black text-[#ebd73f] py-1 -mx-6 -mt-6 border-b-4 border-black font-mono text-xs font-black">
+                  <div className="animate-marquee whitespace-nowrap">
+                    <span>★ HIGH ENERGY ★ ZERO WAIT ★ 100% UNFILTERED ★ FRESH DROP ★ INSTANT CHECKOUT ★ HIGH ENERGY ★ ZERO WAIT ★ 100% UNFILTERED ★ FRESH DROP ★&nbsp;</span>
+                    <span>★ HIGH ENERGY ★ ZERO WAIT ★ 100% UNFILTERED ★ FRESH DROP ★ INSTANT CHECKOUT ★ HIGH ENERGY ★ ZERO WAIT ★ 100% UNFILTERED ★ FRESH DROP ★&nbsp;</span>
+                  </div>
+                </div>
+
+                {/* Main Content */}
+                <div className="py-6 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <span className="px-3 py-1 bg-black text-white font-black text-xs uppercase -rotate-2 border-2 border-black shadow-[3px_3px_0px_#fff]">
+                      ★ LIMITED DROP ★
+                    </span>
+                    <span className="px-2 py-1 bg-white text-black font-black text-xs uppercase rotate-2 border-2 border-black">
+                      100% RAW
+                    </span>
+                  </div>
+
+                  <h2 className="font-black text-3xl sm:text-4xl uppercase tracking-tighter leading-none">
+                    {brandName}
+                  </h2>
+                  <p className="font-bold text-xs max-w-md uppercase">
+                    {tagline}. No fluff, straight flavor. Pick your items and secure your order now.
+                  </p>
+
+                  <button className="px-7 py-3.5 bg-black text-[#ebd73f] font-black text-sm uppercase tracking-wider border-3 border-black shadow-[6px_6px_0px_#000] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0px_#000] active:translate-x-1.5 active:translate-y-1.5 active:shadow-none transition cursor-pointer">
+                    GRAB YOUR ORDER ↗
+                  </button>
+                </div>
+
+                {/* Brutalist Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  {[
+                    { name: selectedNiche.item1, price: selectedNiche.price1, tag: "TOP PICK" },
+                    { name: selectedNiche.item2, price: selectedNiche.price2, tag: "FRESH" },
+                  ].map((item, idx) => (
+                    <div key={idx} className="p-3.5 bg-white border-3 border-black shadow-[5px_5px_0px_#000] space-y-1">
+                      <div className="flex justify-between items-start">
+                        <p className="font-black text-xs uppercase">{item.name}</p>
+                        <span className="px-1.5 py-0.5 bg-black text-white text-[9px] font-black">{item.tag}</span>
+                      </div>
+                      <p className="font-black text-base">{currency}{item.price}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ========================================================================= */}
+            {/* STYLE 3: LIQUID AURA // CHROMATIC GLASS                                  */}
+            {/* ========================================================================= */}
+            {selectedStyle.id === 'liquid-glass' && (
+              <div className="p-6 relative min-h-[460px] flex flex-col justify-between overflow-hidden bg-[#09090e]">
+                
+                {/* Floating Aurora Blobs */}
+                <div className="absolute -top-16 -left-16 w-56 h-56 rounded-full bg-purple-600/30 blur-3xl animate-float-orb pointer-events-none"></div>
+                <div className="absolute -bottom-16 -right-16 w-56 h-56 rounded-full bg-[#ebd73f]/25 blur-3xl animate-float-orb pointer-events-none"></div>
+
+                <div className="relative z-10 flex items-center justify-between pb-3 border-b border-white/15">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+                    <span className="font-clash font-bold text-sm text-white">{brandName}</span>
+                  </div>
+                  <span className="px-2.5 py-0.5 rounded-full bg-white/10 border border-white/20 text-[10px] text-purple-300 backdrop-blur-md">
+                    AURA REFRACTION
+                  </span>
+                </div>
+
+                <div className="relative z-10 py-6 space-y-3">
+                  <span className="px-3 py-1 rounded-full text-[10px] font-mono bg-white/10 border border-white/20 backdrop-blur-xl text-white">
+                    FROSTED GLASS ENGINE
+                  </span>
+                  <h2 className="font-clash font-bold text-2xl sm:text-3xl text-white tracking-tight">
+                    {brandName}
+                  </h2>
+                  <p className="text-xs text-slate-300 font-clash max-w-md leading-relaxed">
+                    {tagline}. Experience tactile glass refraction and liquid reservation flows.
+                  </p>
+
+                  <button className="px-6 py-3 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/30 backdrop-blur-2xl text-white font-clash font-bold text-xs shadow-2xl transition cursor-pointer">
+                    Experience Liquid Menu ✦
+                  </button>
+                </div>
+
+                <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  {[selectedNiche.item1, selectedNiche.item2].map((item, idx) => (
+                    <div key={idx} className="p-3.5 rounded-2xl bg-white/[0.08] border border-white/20 backdrop-blur-xl space-y-1">
+                      <p className="font-clash font-bold text-xs text-white">{item}</p>
+                      <p className="font-mono text-xs text-purple-300 font-bold">{currency}{idx === 0 ? selectedNiche.price1 : selectedNiche.price2}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ========================================================================= */}
+            {/* STYLE 4: ULTRA-LUXURY // VOGUE EDITORIAL                                 */}
+            {/* ========================================================================= */}
+            {selectedStyle.id === 'editorial-luxury' && (
+              <div className="p-8 min-h-[460px] flex flex-col justify-between bg-[#050505] text-white">
+                
+                <div className="flex items-center justify-between border-b border-white/15 pb-4">
+                  <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#d4af37]">
+                    VINTAGE // EDITION
+                  </span>
+                  <span className="font-mono text-[9px] text-slate-400">EST. {new Date().getFullYear()}</span>
+                </div>
+
+                <div className="py-8 space-y-4 text-center">
+                  <p className="font-mono text-[10px] tracking-[0.35em] text-[#d4af37] uppercase">
+                    HAUTE CUISINE &amp; HOSPITALITY
+                  </p>
+                  <h2 className="font-panchang font-light text-2xl sm:text-4xl text-white tracking-wider uppercase">
+                    {brandName}
+                  </h2>
+                  <p className="text-xs text-slate-400 font-clash max-w-sm mx-auto italic">
+                    "{tagline}. An understated culinary sanctuary."
+                  </p>
+
+                  <div className="pt-2">
+                    <button className="px-8 py-3 border border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-black font-mono text-[11px] tracking-[0.3em] uppercase transition cursor-pointer">
+                      RESERVE TABLE
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 border-t border-white/15 pt-4 text-left">
+                  <div>
+                    <span className="font-mono text-[9px] text-[#d4af37]">№ 01</span>
+                    <p className="font-clash font-bold text-xs text-white mt-0.5">{selectedNiche.item1}</p>
+                    <p className="font-mono text-[11px] text-slate-400">{currency}{selectedNiche.price1}</p>
+                  </div>
+                  <div>
+                    <span className="font-mono text-[9px] text-[#d4af37]">№ 02</span>
+                    <p className="font-clash font-bold text-xs text-white mt-0.5">{selectedNiche.item2}</p>
+                    <p className="font-mono text-[11px] text-slate-400">{currency}{selectedNiche.price2}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ========================================================================= */}
+            {/* STYLE 5: Y2K POP CANDY // BOUNCY FUN                                     */}
+            {/* ========================================================================= */}
+            {selectedStyle.id === 'pop-candy' && (
+              <div className="p-6 min-h-[460px] flex flex-col justify-between bg-[#12081c] text-white">
+                
+                <div className="flex items-center justify-between pb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">🍕</span>
+                    <span className="font-black text-lg text-[#f43f5e]">{brandName}</span>
+                  </div>
+                  <span className="px-3 py-1 rounded-full bg-[#f43f5e] text-white font-black text-xs shadow-lg">
+                    HOT DROP 🔥
+                  </span>
+                </div>
+
+                <div className="py-6 space-y-3">
+                  <div className="flex items-center gap-1.5 text-lg">
+                    <span>⚡</span>
+                    <span>🤤</span>
+                    <span>✨</span>
+                  </div>
+                  <h2 className="font-black text-3xl text-white tracking-tight">
+                    Crave It? <span className="text-[#f43f5e]">Get It!</span>
+                  </h2>
+                  <p className="text-xs text-slate-300 max-w-sm">
+                    {tagline}. Fresh bites made with maximum love and bouncy vibes!
+                  </p>
+
+                  <button className="px-6 py-3 rounded-full bg-gradient-to-r from-[#f43f5e] to-pink-500 text-white font-black text-xs shadow-xl hover:scale-105 active:scale-95 transition cursor-pointer">
+                    Grab Yours Now! 💖
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {[selectedNiche.item1, selectedNiche.item2].map((item, idx) => (
+                    <div key={idx} className="p-3.5 rounded-[24px] bg-[#221333] border-2 border-pink-500/30 flex justify-between items-center">
+                      <div>
+                        <p className="font-black text-xs text-white">{item}</p>
+                        <p className="text-[10px] text-pink-300 font-bold">100% YUMMY</p>
+                      </div>
+                      <span className="font-black text-sm text-[#f43f5e]">
+                        {currency}{idx === 0 ? selectedNiche.price1 : selectedNiche.price2}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ========================================================================= */}
+            {/* STYLE 6: HIGH-OCTANE // RACING NITRO                                     */}
+            {/* ========================================================================= */}
+            {selectedStyle.id === 'high-octane' && (
+              <div className="p-6 min-h-[460px] flex flex-col justify-between carbon-pattern text-white relative overflow-hidden">
+                
+                {/* Racing Stripes */}
+                <div className="absolute top-0 right-12 w-2 h-full bg-[#ebd73f]/60 -skew-x-12 pointer-events-none"></div>
+                <div className="absolute top-0 right-16 w-1 h-full bg-white/40 -skew-x-12 pointer-events-none"></div>
+
+                <div className="relative z-10 flex items-center justify-between pb-2 border-b border-white/20">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 bg-[#ebd73f] -skew-x-12"></span>
+                    <span className="font-black italic text-sm tracking-wider text-white uppercase">{brandName}</span>
+                  </div>
+                  <span className="font-mono text-[10px] text-[#ebd73f] font-black italic">
+                    0-60 IN 8 MINS
+                  </span>
+                </div>
+
+                <div className="relative z-10 py-6 space-y-3">
+                  <span className="inline-block px-2.5 py-0.5 bg-[#ebd73f] text-black font-black italic text-[10px] -skew-x-12 uppercase">
+                    NITRO SPEED CHECKOUT
+                  </span>
+                  <h2 className="font-black italic text-3xl sm:text-4xl uppercase tracking-wider text-white">
+                    {brandName}
+                  </h2>
+                  <p className="text-xs text-slate-300 font-mono max-w-sm">
+                    {tagline}. High-velocity culinary performance. Built for maximum speed.
+                  </p>
+
+                  <button className="px-7 py-3.5 bg-[#ebd73f] hover:bg-white text-black font-black italic text-xs uppercase tracking-wider -skew-x-12 shadow-2xl transition cursor-pointer">
+                    BOOST ORDER NOW ⚡
+                  </button>
+                </div>
+
+                <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {[
+                    { name: selectedNiche.item1, price: selectedNiche.price1, stat: "STAGE 1" },
+                    { name: selectedNiche.item2, price: selectedNiche.price2, stat: "STAGE 2" }
+                  ].map((item, idx) => (
+                    <div key={idx} className="p-3 bg-black/90 border-l-4 border-l-[#ebd73f] border border-white/15 -skew-x-6 space-y-1">
+                      <div className="flex justify-between items-center">
+                        <p className="font-black italic text-xs text-white">{item.name}</p>
+                        <span className="text-[9px] font-mono text-[#ebd73f]">{item.stat}</span>
+                      </div>
+                      <p className="font-mono font-bold text-sm text-[#ebd73f]">{currency}{item.price}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
           </div>
-        )}
-      </AnimatePresence>
+
+        </div>
+
+      </main>
 
     </div>
   );
