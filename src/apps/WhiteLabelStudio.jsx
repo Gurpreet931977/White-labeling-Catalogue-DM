@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, 
+  ArrowRight,
   ArrowUpRight, 
   Download, 
   Copy, 
@@ -15,18 +16,24 @@ import {
   Zap, 
   Flame, 
   Sparkles, 
-  Compass, 
-  Gauge, 
   Crown,
-  Trash2,
-  Sliders,
-  CheckCircle2,
+  Gauge, 
   Terminal,
-  Activity
+  Utensils,
+  Stethoscope,
+  Dumbbell,
+  Wine,
+  Trophy,
+  Scissors,
+  CheckCircle2,
+  Sliders,
+  Layers,
+  ShoppingBag,
+  ExternalLink
 } from 'lucide-react';
 import { sounds } from '../utils/audio';
 
-// 6 Creative & Bold Design Styles
+// 6 Crazy & Creative Design Styles
 export const CRAZY_STYLES = [
   {
     id: "cyber-hud",
@@ -102,22 +109,280 @@ export const CRAZY_STYLES = [
   }
 ];
 
-const NICHES = [
-  { id: "cafes", label: "Cafe & Eatery", defaultName: "The Roast & Kitchen", defaultTag: "Gourmet Smash & Cold Brew", item1: "Double Truffle Smash", price1: "349", item2: "Pour-Over Cold Drip", price2: "190" },
-  { id: "clinics", label: "Medical & Clinic", defaultName: "AuraCare Specialist", defaultTag: "Advanced Aesthetic Practice", item1: "Cosmetic Consultation", price1: "800", item2: "HydraGlow Therapy", price2: "2,500" },
-  { id: "gyms", label: "Gym & CrossFit", defaultName: "Titan Performance Club", defaultTag: "Strength & Conditioning", item1: "Pro Athlete Monthly", price1: "2,499", item2: "1-Day Drop-In Pass", price2: "499" },
-  { id: "clubs", label: "Nightclub & VIP", defaultName: "Velvet Sky Lounge", defaultTag: "VIP Tables & Cocktails", item1: "VIP Dancefloor Booth", price1: "20,000", item2: "Guestlist RSVP Pass", price2: "Free" },
-  { id: "turfs", label: "Sports Turf", defaultName: "BoxArena Complex", defaultTag: "Hourly Box Football & Cricket", item1: "Prime Evening Slot (1hr)", price1: "1,499", item2: "Morning Saver Slot", price2: "999" },
-  { id: "salons", label: "Luxury Salon", defaultName: "Maison de Luxe", defaultTag: "Bespoke Hair & Spa Studio", item1: "Signature Balayage & Glaze", price1: "6,500", item2: "Glass Skin Facial", price2: "3,800" },
+// Step 1 Categories & Step 2 Models
+export const CATEGORY_MODELS = [
+  {
+    id: "cafes",
+    name: "Cafes & Eateries",
+    icon: Utensils,
+    tagline: "From highway diners with QR table ordering to specialty micro-roasteries",
+    models: [
+      {
+        id: "thc-diner",
+        name: "Casual Diner & QR Table POS",
+        subtitle: "THC Cafe Model",
+        badge: "FULL-STACK LIVE APP",
+        isLiveTHC: true,
+        tagline: "Contactless Table QR Plaque, Kitchen Sound Alerts & PIN Staff Terminal",
+        item1: "Double Truffle Smash Burger",
+        price1: "349",
+        item2: "Cold Brew Float & Fries",
+        price2: "190",
+        specialAction: "Launch Full Live THC Website",
+        stat1: "2.8x Table Speed",
+        stat2: "99.4% Precision"
+      },
+      {
+        id: "artisanal-roastery",
+        name: "Specialty Coffee Roastery",
+        subtitle: "Kōhī Roaster Model",
+        badge: "SUBSCRIPTION ENGINE",
+        isLiveTHC: false,
+        tagline: "Single-Origin Elevation Profiles & Recurring Whole-Bean Subscriptions",
+        item1: "Ethiopia Yirgacheffe G1 Pour-Over",
+        price1: "260",
+        item2: "Monthly Whole-Bean Bag (250g)",
+        price2: "650",
+        specialAction: "Simulate Pour-Over Brew",
+        stat1: "3.4x AOV Lift",
+        stat2: "42% Subs Rate"
+      },
+      {
+        id: "rooftop-bistro",
+        name: "Rooftop Botanical Bistro",
+        subtitle: "Verdant Bistro Model",
+        badge: "PRIX-FIXE RESERVATIONS",
+        isLiveTHC: false,
+        tagline: "Sunset Terrace Seating, Minimum Spend Deposits & Wine Pairings",
+        item1: "Terrace Sunset Table (2-4 Guests)",
+        price1: "3,500",
+        item2: "5-Course Mountain Truffle Tasting",
+        price2: "2,499",
+        specialAction: "Simulate Table Booking",
+        stat1: "96% Pre-Booked",
+        stat2: "0% No-Shows"
+      },
+      {
+        id: "cloud-kitchen",
+        name: "Express Cloud Kitchen",
+        subtitle: "Volt Express Model",
+        badge: "EXPRESS PICKUP TOKEN",
+        isLiveTHC: false,
+        tagline: "60-Second Mobile Pre-Orders, Smash Combos & Counter Queue Tokens",
+        item1: "Double Wagyu Smash Combo Box",
+        price1: "449",
+        item2: "Nashville Hot Chicken Box",
+        price2: "399",
+        specialAction: "Simulate 60s Checkout",
+        stat1: "60s Avg Checkout",
+        stat2: "4.1x Volume"
+      }
+    ]
+  },
+  {
+    id: "clinics",
+    name: "Medical & Dental Clinics",
+    icon: Stethoscope,
+    tagline: "Cosmetic dentistry, smile simulators & telehealth slot bookings",
+    models: [
+      {
+        id: "dental-aesthetic",
+        name: "Cosmetic Dental & Aesthetics",
+        subtitle: "AuraCare Practice",
+        badge: "TREATMENT PLANNER",
+        isLiveTHC: false,
+        tagline: "Digital Smile Simulator, Treatment Deposit & Doctor Scheduling",
+        item1: "Digital Smile Design Consultation",
+        price1: "999",
+        item2: "HydraGlow Skin Resurfacing",
+        price2: "3,200",
+        specialAction: "Book Specialist Slot",
+        stat1: "98% Slot Fill",
+        stat2: "VIP Concierge"
+      },
+      {
+        id: "urgent-telehealth",
+        name: "Urgent Care & Telehealth",
+        subtitle: "PulseCare Virtual",
+        badge: "INSTANT QUEUE",
+        isLiveTHC: false,
+        tagline: "10-Minute Video Consult Queue & Digital E-Prescriptions",
+        item1: "Instant Video Doctor Consult (15m)",
+        price1: "499",
+        item2: "Full Diagnostic Health Screen",
+        price2: "1,899",
+        specialAction: "Join Virtual Queue",
+        stat1: "10m Wait Time",
+        stat2: "100% HIPAA Ready"
+      }
+    ]
+  },
+  {
+    id: "gyms",
+    name: "Gyms & CrossFit",
+    icon: Dumbbell,
+    tagline: "Class booking calendars, workout logs & 24/7 keycard turnstile passes",
+    models: [
+      {
+        id: "crossfit-strength",
+        name: "CrossFit & Strength Arena",
+        subtitle: "Titan Arena Model",
+        badge: "WOD CALENDAR",
+        isLiveTHC: false,
+        tagline: "Live Class Capacity Scheduler & Personal Coaching Marketplace",
+        item1: "Unlimited WOD Class Pass (Monthly)",
+        price1: "3,499",
+        item2: "1-on-1 Olympic Lifting Coach (3x)",
+        price2: "2,500",
+        specialAction: "Reserve Spot in WOD",
+        stat1: "300+ Members",
+        stat2: "Zero Overcrowd"
+      },
+      {
+        id: "fitness-247",
+        name: "24/7 Keycard Fitness Club",
+        subtitle: "Pulse24 Fitness",
+        badge: "DIGITAL PASS",
+        isLiveTHC: false,
+        tagline: "Instant Turnstile QR Pass & Recurring Membership Engine",
+        item1: "24/7 All-Access Monthly Pass",
+        price1: "1,999",
+        item2: "1-Day VIP Drop-In Pass",
+        price2: "499",
+        specialAction: "Generate Mobile Pass",
+        stat1: "Instant Access",
+        stat2: "Auto-Renewal"
+      }
+    ]
+  },
+  {
+    id: "clubs",
+    name: "Nightclubs & VIP Lounges",
+    icon: Wine,
+    tagline: "Interactive 3D table floorplans, bottle service & guestlist RSVP passes",
+    models: [
+      {
+        id: "vip-booths",
+        name: "VIP Bottle Service Lounge",
+        subtitle: "Velvet Sky Lounge",
+        badge: "MINIMUM SPEND",
+        isLiveTHC: false,
+        tagline: "Floorplan Table Selection with Minimum Spend Pre-Authorization",
+        item1: "Center Dancefloor Booth (6 Guests)",
+        price1: "25,000",
+        item2: "Dom Pérignon VIP Table Package",
+        price2: "45,000",
+        specialAction: "Reserve VIP Table",
+        stat1: "100% Pre-Paid",
+        stat2: "VIP Concierge"
+      },
+      {
+        id: "guestlist-tickets",
+        name: "Nightclub Guestlist & RSVP",
+        subtitle: "Nocturne Club",
+        badge: "APPLE WALLET QR",
+        isLiveTHC: false,
+        tagline: "Fast Entry QR Passes, DJ Night Tickets & Ladies Night RSVP",
+        item1: "Friday Headliner General Pass",
+        price1: "1,500",
+        item2: "Couples Guestlist Entry (Before 11PM)",
+        price2: "999",
+        specialAction: "RSVP to Guestlist",
+        stat1: "Sub-Second Entry",
+        stat2: "Dynamic Tiers"
+      }
+    ]
+  },
+  {
+    id: "turfs",
+    name: "Sports Turfs & Arenas",
+    icon: Trophy,
+    tagline: "Hourly box cricket, futsal slot matrices & tournament bracket engines",
+    models: [
+      {
+        id: "box-turf",
+        name: "Box Arena & Futsal Turf",
+        subtitle: "BoxArena Complex",
+        badge: "HOURLY SLOT MATRIX",
+        isLiveTHC: false,
+        tagline: "Visual Time-Slot Grid, Split Payments & Floodlight Bookings",
+        item1: "Prime Floodlit Evening Slot (8-9 PM)",
+        price1: "1,499",
+        item2: "Weekend Morning Saver Slot (7-8 AM)",
+        price2: "999",
+        specialAction: "Lock 60m Turf Slot",
+        stat1: "Zero Double-Book",
+        stat2: "Split-Bill Ready"
+      },
+      {
+        id: "turf-league",
+        name: "Tournament & Sports Hub",
+        subtitle: "ProLeague Arena",
+        badge: "BRACKET LEAGUES",
+        isLiveTHC: false,
+        tagline: "Multi-Team Registration, Match Schedules & Championship Tables",
+        item1: "Corporate Cup Team Registration",
+        price1: "12,000",
+        item2: "Monthly Junior Multi-Sport Pass",
+        price2: "2,999",
+        specialAction: "Register Team",
+        stat1: "16 Teams Live",
+        stat2: "Instant Schedule"
+      }
+    ]
+  },
+  {
+    id: "salons",
+    name: "Luxury Salons & Spas",
+    icon: Scissors,
+    tagline: "Stylist portfolios, treatment duration scheduler & bespoke memberships",
+    models: [
+      {
+        id: "haute-salon",
+        name: "Bespoke Hair & Aesthetic Spa",
+        subtitle: "Maison de Luxe",
+        badge: "STYLIST PORTFOLIO",
+        isLiveTHC: false,
+        tagline: "Select Senior Master Stylist, Treatment Duration & Aftercare",
+        item1: "Signature Balayage & Silk Glaze",
+        price1: "6,500",
+        item2: "Korean Glass Skin Hydration Facial",
+        price2: "3,800",
+        specialAction: "Book Master Stylist",
+        stat1: "95% Re-Booking",
+        stat2: "Portfolio Sync"
+      },
+      {
+        id: "barbershop-club",
+        name: "Gentleman's Grooming Lounge",
+        subtitle: "The Heritage Barber",
+        badge: "WALK-IN QUEUE",
+        isLiveTHC: false,
+        tagline: "Real-Time Barber Chair Queue & Monthly Beard VIP Club",
+        item1: "Hot Towel Straight Razor Shave",
+        price1: "1,200",
+        item2: "Beard Sculpt & Charcoal Detox",
+        price2: "1,800",
+        specialAction: "Join Barber Queue",
+        stat1: "Real-Time Chair",
+        stat2: "VIP Club Pass"
+      }
+    ]
+  }
 ];
 
-export function WhiteLabelStudio({ onBackToCatalogue }) {
-  // Studio Navigation & Mode
-  const [activeTab, setActiveTab] = useState('styles'); // 'styles' | 'brand' | 'colors' | 'export'
+export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
+  // Step Workflow: 1 = Category, 2 = Model, 3 = Styles & Colors, 4 = Export
+  const [currentStep, setCurrentStep] = useState(1);
+
+  // Selections
+  const [selectedCategory, setSelectedCategory] = useState(CATEGORY_MODELS[0]);
+  const [selectedModel, setSelectedModel] = useState(CATEGORY_MODELS[0].models[0]); // Defaults to THC Cafe Model!
   const [selectedStyle, setSelectedStyle] = useState(CRAZY_STYLES[0]);
-  const [selectedNiche, setSelectedNiche] = useState(NICHES[0]);
-  const [brandName, setBrandName] = useState(NICHES[0].defaultName);
-  const [tagline, setTagline] = useState(NICHES[0].defaultTag);
+  
+  // Custom Identity
+  const [brandName, setBrandName] = useState(CATEGORY_MODELS[0].models[0].subtitle);
+  const [tagline, setTagline] = useState(CATEGORY_MODELS[0].models[0].tagline);
   const [currency, setCurrency] = useState('₹');
   const [deviceView, setDeviceView] = useState('desktop'); // 'desktop' | 'mobile'
 
@@ -133,21 +398,32 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
   // Notifications
   const [copiedToast, setCopiedToast] = useState(null);
 
-  // Select Style Handler
-  const handleSelectStyle = (style) => {
+  // Category Selection
+  const handleSelectCategory = (cat) => {
     sounds.playClick();
-    setSelectedStyle(style);
-    setColor60(style.c60);
-    setColor30(style.c30);
-    setColor10(style.c10);
+    setSelectedCategory(cat);
+    setSelectedModel(cat.models[0]);
+    setBrandName(cat.models[0].subtitle);
+    setTagline(cat.models[0].tagline);
+    setCurrentStep(2); // Automatically advance to Step 2: Choose Model!
   };
 
-  // Niche Change Handler
-  const handleNicheChange = (niche) => {
+  // Model Selection
+  const handleSelectModel = (mod) => {
     sounds.playClick();
-    setSelectedNiche(niche);
-    setBrandName(niche.defaultName);
-    setTagline(niche.defaultTag);
+    setSelectedModel(mod);
+    setBrandName(mod.subtitle);
+    setTagline(mod.tagline);
+    setCurrentStep(3); // Automatically advance to Step 3: Styles & Colors!
+  };
+
+  // Style Selection
+  const handleSelectStyle = (st) => {
+    sounds.playClick();
+    setSelectedStyle(st);
+    setColor60(st.c60);
+    setColor30(st.c30);
+    setColor10(st.c10);
   };
 
   // Logo Upload
@@ -163,29 +439,39 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
     }
   };
 
-  // Export JSON & Files
+  // Download Config Files
   const downloadFile = (filename, content, mimeType = 'application/json') => {
     sounds.playPop();
     const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
   const generateConfigJson = () => {
     return JSON.stringify({
-      brandName,
-      tagline,
-      niche: selectedNiche.id,
-      style: {
+      category: selectedCategory.name,
+      model: {
+        id: selectedModel.id,
+        name: selectedModel.name,
+        subtitle: selectedModel.subtitle,
+        tagline: selectedModel.tagline
+      },
+      designStyle: {
         id: selectedStyle.id,
         name: selectedStyle.name,
         category: selectedStyle.category
+      },
+      branding: {
+        brandName,
+        tagline,
+        currency,
+        logoProvided: !!logoImage
       },
       palette: {
         dominant60: color60,
@@ -210,72 +496,90 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#070707] text-white selection:bg-[#ebd73f] selection:text-black font-sans flex flex-col">
+    <div className="min-h-screen bg-[#060606] text-white selection:bg-[#ebd73f] selection:text-black font-sans flex flex-col justify-between">
       
-      {/* Minimal Top Control Bar */}
-      <header className="sticky top-0 inset-x-0 z-40 bg-[#070707]/90 backdrop-blur-xl border-b border-white/10 px-4 sm:px-6 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+      {/* Top Header & Breadcrumb Step Indicator */}
+      <header className="sticky top-0 inset-x-0 z-40 bg-[#060606]/95 backdrop-blur-xl border-b border-white/10 px-4 sm:px-6 py-3">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           
-          <div className="flex items-center gap-3">
+          {/* Back & Title */}
+          <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
             <button
               onClick={() => { sounds.playClick(); onBackToCatalogue(); }}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 hover:bg-[#ebd73f] hover:text-black text-xs font-semibold transition cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-[#ebd73f] hover:text-black text-xs font-semibold transition cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back</span>
+              <span>Catalogue</span>
             </button>
 
-            <span className="text-white/20">•</span>
+            <span className="text-white/20 hidden sm:inline">•</span>
             
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#ebd73f] animate-pulse"></span>
               <span className="font-panchang font-bold text-xs tracking-wider">
-                DRIPP STUDIO
-              </span>
-              <span className="hidden sm:inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-slate-300">
-                {selectedStyle.shortName}
+                WHITE-LABEL STUDIO
               </span>
             </div>
           </div>
 
+          {/* Stepper Tabs */}
+          <div className="flex items-center gap-1 bg-[#111111] p-1 rounded-2xl border border-white/10 text-xs font-clash">
+            {[
+              { step: 1, label: '1. Category' },
+              { step: 2, label: `2. Model (${selectedCategory.name.split(" ")[0]})` },
+              { step: 3, label: '3. Style & Colors' },
+              { step: 4, label: '4. Export' },
+            ].map((s) => (
+              <button
+                key={s.step}
+                onClick={() => { sounds.playClick(); setCurrentStep(s.step); }}
+                className={`px-3 py-1.5 rounded-xl transition cursor-pointer text-[11px] whitespace-nowrap ${
+                  currentStep === s.step
+                    ? 'bg-[#ebd73f] text-black font-bold shadow-md'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+
           {/* Device & Export */}
-          <div className="flex items-center gap-2.5">
-            
-            <div className="flex items-center bg-[#121212] p-1 rounded-xl border border-white/10">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center bg-[#111111] p-1 rounded-xl border border-white/10">
               <button
                 onClick={() => { sounds.playClick(); setDeviceView('desktop'); }}
-                className={`p-1.5 px-3 rounded-lg text-xs flex items-center gap-1.5 transition cursor-pointer ${
+                className={`p-1 px-2.5 rounded-lg text-xs flex items-center gap-1 transition cursor-pointer ${
                   deviceView === 'desktop' ? 'bg-[#ebd73f] text-black font-bold' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 <Laptop className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Desktop</span>
+                <span className="hidden md:inline">Desktop</span>
               </button>
               <button
                 onClick={() => { sounds.playClick(); setDeviceView('mobile'); }}
-                className={`p-1.5 px-3 rounded-lg text-xs flex items-center gap-1.5 transition cursor-pointer ${
+                className={`p-1 px-2.5 rounded-lg text-xs flex items-center gap-1 transition cursor-pointer ${
                   deviceView === 'mobile' ? 'bg-[#ebd73f] text-black font-bold' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 <Smartphone className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Mobile</span>
+                <span className="hidden md:inline">Mobile</span>
               </button>
             </div>
 
             <button
               onClick={handleDownloadAll}
-              className="btn-dripp-primary px-4 py-2 text-xs font-bold flex items-center gap-1.5 shadow-lg cursor-pointer"
+              className="btn-dripp-primary px-3.5 py-1.5 text-xs font-bold flex items-center gap-1 shadow-lg cursor-pointer"
             >
               <Download className="w-3.5 h-3.5 text-black" />
               <span>Export</span>
             </button>
-
           </div>
 
         </div>
       </header>
 
-      {/* Toast */}
+      {/* Toast Notification */}
       <AnimatePresence>
         {copiedToast && (
           <motion.div
@@ -290,50 +594,39 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
         )}
       </AnimatePresence>
 
-      {/* Main Studio Area */}
+      {/* Main Workspace */}
       <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow items-start">
         
-        {/* LEFT COLUMN: Clean, Uncluttered Studio Controls (4 cols) */}
-        <div className="lg:col-span-4 bg-[#0d0d0d] border border-white/10 rounded-3xl p-5 space-y-5 shadow-2xl">
+        {/* LEFT COLUMN: Step-by-Step Interactive Form (5 cols) */}
+        <div className="lg:col-span-5 bg-[#0d0d0d] border border-white/10 rounded-3xl p-5 space-y-5 shadow-2xl">
           
-          {/* Navigation Tabs */}
-          <div className="grid grid-cols-3 gap-1 bg-[#141414] p-1 rounded-2xl border border-white/5 text-xs font-clash font-semibold">
-            {[
-              { id: 'styles', label: 'Styles' },
-              { id: 'brand', label: 'Brand' },
-              { id: 'colors', label: 'Colors' },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => { sounds.playClick(); setActiveTab(tab.id); }}
-                className={`py-2 rounded-xl transition cursor-pointer ${
-                  activeTab === tab.id 
-                    ? 'bg-[#ebd73f] text-black font-bold shadow-md' 
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* TAB 1: 6 CRAZY AESTHETIC STYLES */}
-          {activeTab === 'styles' && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-400 font-mono">CHOOSE AESTHETIC</span>
-                <span className="text-[#ebd73f] font-mono text-[10px] font-bold">{selectedStyle.shortName}</span>
+          {/* STEP 1: CHOOSE CATEGORY */}
+          {currentStep === 1 && (
+            <div className="space-y-4">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] text-[#ebd73f] tracking-widest uppercase">
+                    STEP 01 / SELECT NICHE
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-400">6 AVAILABLE</span>
+                </div>
+                <h3 className="font-panchang font-bold text-base text-white mt-1">
+                  Choose Business Category
+                </h3>
+                <p className="text-xs text-slate-400 font-clash mt-0.5">
+                  Select your client's industry to browse specialized operational models.
+                </p>
               </div>
 
-              <div className="space-y-2">
-                {CRAZY_STYLES.map((style) => {
-                  const Icon = style.icon;
-                  const isSelected = selectedStyle.id === style.id;
+              <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
+                {CATEGORY_MODELS.map((cat) => {
+                  const Icon = cat.icon;
+                  const isSelected = selectedCategory.id === cat.id;
                   return (
                     <div
-                      key={style.id}
-                      onClick={() => handleSelectStyle(style)}
-                      className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
+                      key={cat.id}
+                      onClick={() => handleSelectCategory(cat)}
+                      className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                         isSelected
                           ? 'bg-[#ebd73f]/15 border-[#ebd73f] shadow-glow-yellow'
                           : 'bg-[#121212] border-white/5 hover:border-white/20 hover:bg-[#181818]'
@@ -341,25 +634,23 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
                     >
                       <div className="flex items-center gap-3">
                         <div 
-                          className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                          style={{ 
+                          className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                          style={{
                             backgroundColor: isSelected ? '#ebd73f' : 'rgba(255,255,255,0.06)',
                             color: isSelected ? '#000000' : '#ffffff'
                           }}
                         >
-                          <Icon className="w-4 h-4" />
+                          <Icon className="w-5 h-5" />
                         </div>
                         <div>
-                          <p className="font-bold text-xs text-white font-clash">{style.name}</p>
-                          <p className="text-[10px] text-slate-400 font-mono">{style.category}</p>
+                          <p className="font-bold text-xs text-white font-clash">{cat.name}</p>
+                          <p className="text-[10px] text-slate-400 font-mono mt-0.5">
+                            {cat.models.length} Operational Models
+                          </p>
                         </div>
                       </div>
 
-                      {isSelected && (
-                        <div className="w-6 h-6 rounded-full bg-[#ebd73f] text-black flex items-center justify-center">
-                          <Check className="w-3.5 h-3.5 stroke-[3]" />
-                        </div>
-                      )}
+                      <ArrowRight className="w-4 h-4 text-[#ebd73f]" />
                     </div>
                   );
                 })}
@@ -367,173 +658,294 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
             </div>
           )}
 
-          {/* TAB 2: BRAND IDENTITY & LOGO */}
-          {activeTab === 'brand' && (
+          {/* STEP 2: CHOOSE OPERATIONAL MODEL */}
+          {currentStep === 2 && (
             <div className="space-y-4">
-              
-              {/* Niche Selector */}
-              <div className="space-y-1">
-                <label className="text-[10px] font-mono text-slate-400 uppercase">Select Niche</label>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {NICHES.map((n) => (
-                    <button
-                      key={n.id}
-                      onClick={() => handleNicheChange(n)}
-                      className={`p-2 rounded-xl text-left text-xs font-clash transition cursor-pointer border ${
-                        selectedNiche.id === n.id
-                          ? 'bg-[#ebd73f]/15 border-[#ebd73f] text-[#ebd73f] font-bold'
-                          : 'bg-[#121212] border-white/5 text-slate-400 hover:text-white'
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] text-[#ebd73f] tracking-widest uppercase">
+                    STEP 02 / {selectedCategory.name}
+                  </span>
+                  <button 
+                    onClick={() => setCurrentStep(1)} 
+                    className="text-[10px] text-slate-400 hover:text-white underline cursor-pointer"
+                  >
+                    Change Category
+                  </button>
+                </div>
+                <h3 className="font-panchang font-bold text-base text-white mt-1">
+                  Choose Operational Architecture
+                </h3>
+                <p className="text-xs text-slate-400 font-clash mt-0.5">
+                  Select the exact operational flow (e.g. THC QR diner vs roastery vs bistro).
+                </p>
+              </div>
+
+              <div className="space-y-2.5 max-h-[50vh] overflow-y-auto pr-1">
+                {selectedCategory.models.map((mod) => {
+                  const isSelected = selectedModel.id === mod.id;
+                  return (
+                    <div
+                      key={mod.id}
+                      onClick={() => handleSelectModel(mod)}
+                      className={`p-3.5 rounded-2xl border transition-all cursor-pointer space-y-2 ${
+                        isSelected
+                          ? 'bg-[#ebd73f]/15 border-[#ebd73f] shadow-glow-yellow'
+                          : 'bg-[#121212] border-white/5 hover:border-white/20 hover:bg-[#181818]'
                       }`}
                     >
-                      {n.label}
-                    </button>
-                  ))}
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-xs text-white font-clash">{mod.name}</span>
+                        <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-[#ebd73f] font-bold border border-white/10">
+                          {mod.badge}
+                        </span>
+                      </div>
+
+                      <p className="text-[11px] text-slate-300 font-clash leading-snug">
+                        {mod.tagline}
+                      </p>
+
+                      <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 pt-1 border-t border-white/5">
+                        <span className="text-[#ebd73f]">{mod.stat1}</span>
+                        <span>{mod.stat2}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="pt-2 flex items-center justify-between">
+                <button
+                  onClick={() => setCurrentStep(1)}
+                  className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-semibold transition cursor-pointer"
+                >
+                  ← Back to Categories
+                </button>
+                <button
+                  onClick={() => setCurrentStep(3)}
+                  className="btn-dripp-primary px-5 py-2 text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-lg"
+                >
+                  <span>Customize Styles &amp; Colors</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-black" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 3: CREATIVE STYLES, COLORS & LOGO */}
+          {currentStep === 3 && (
+            <div className="space-y-4">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] text-[#ebd73f] tracking-widest uppercase">
+                    STEP 03 / AESTHETIC &amp; BRANDING
+                  </span>
+                  <button 
+                    onClick={() => setCurrentStep(2)} 
+                    className="text-[10px] text-slate-400 hover:text-white underline cursor-pointer"
+                  >
+                    Change Model
+                  </button>
+                </div>
+                <h3 className="font-panchang font-bold text-base text-white mt-1">
+                  Design Aesthetics &amp; Palette
+                </h3>
+              </div>
+
+              {/* 6 Crazy Styles Selector */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-mono text-slate-400 uppercase flex items-center justify-between">
+                  <span>Creative Design Language</span>
+                  <span className="text-[#ebd73f] font-bold">{selectedStyle.name}</span>
+                </label>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {CRAZY_STYLES.map((st) => {
+                    const Icon = st.icon;
+                    const isSelected = selectedStyle.id === st.id;
+                    return (
+                      <button
+                        key={st.id}
+                        onClick={() => handleSelectStyle(st)}
+                        className={`p-2.5 rounded-xl border text-left flex items-center gap-2 transition cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#ebd73f]/20 border-[#ebd73f] text-[#ebd73f] font-bold shadow-md'
+                            : 'bg-[#121212] border-white/5 text-slate-300 hover:text-white'
+                        }`}
+                      >
+                        <Icon className="w-3.5 h-3.5 shrink-0" />
+                        <span className="text-xs truncate">{st.shortName}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Brand Name */}
-              <div className="space-y-1">
-                <label className="text-[10px] font-mono text-slate-400 uppercase">Brand Name</label>
-                <input
-                  type="text"
-                  value={brandName}
-                  onChange={(e) => setBrandName(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl bg-black border border-white/15 text-white text-xs font-clash focus:outline-none focus:border-[#ebd73f]"
-                />
+              {/* Brand Name & Tagline */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono text-slate-400 uppercase">Brand Name</label>
+                  <input
+                    type="text"
+                    value={brandName}
+                    onChange={(e) => setBrandName(e.target.value)}
+                    className="w-full px-3 py-1.5 rounded-xl bg-black border border-white/15 text-white text-xs font-clash focus:outline-none focus:border-[#ebd73f]"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-mono text-slate-400 uppercase">Tagline</label>
+                  <input
+                    type="text"
+                    value={tagline}
+                    onChange={(e) => setTagline(e.target.value)}
+                    className="w-full px-3 py-1.5 rounded-xl bg-black border border-white/15 text-white text-xs font-clash focus:outline-none focus:border-[#ebd73f]"
+                  />
+                </div>
               </div>
 
-              {/* Tagline */}
+              {/* Logo Uploader */}
               <div className="space-y-1">
-                <label className="text-[10px] font-mono text-slate-400 uppercase">Tagline</label>
-                <input
-                  type="text"
-                  value={tagline}
-                  onChange={(e) => setTagline(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl bg-black border border-white/15 text-white text-xs font-clash focus:outline-none focus:border-[#ebd73f]"
-                />
-              </div>
-
-              {/* Logo Upload */}
-              <div className="space-y-1.5 pt-1">
-                <label className="text-[10px] font-mono text-slate-400 uppercase flex items-center justify-between">
-                  <span>Custom Logo</span>
-                  {logoImage && (
-                    <button onClick={() => setLogoImage(null)} className="text-rose-400 text-[10px] hover:underline">
-                      Remove
-                    </button>
-                  )}
-                </label>
-
                 <input type="file" ref={fileInputRef} onChange={handleLogoUpload} accept="image/*" className="hidden" />
-
                 <div 
                   onClick={() => fileInputRef.current.click()}
-                  className="p-3 rounded-2xl border border-dashed border-white/20 hover:border-[#ebd73f] bg-black text-center cursor-pointer transition flex items-center justify-center gap-2"
+                  className="p-2.5 rounded-xl border border-dashed border-white/20 hover:border-[#ebd73f] bg-black text-center cursor-pointer transition flex items-center justify-center gap-2"
                 >
                   <Upload className="w-3.5 h-3.5 text-[#ebd73f]" />
                   <span className="text-xs text-slate-300 font-clash">
-                    {logoImage ? 'Change Uploaded Logo' : 'Upload PNG / SVG Logo'}
+                    {logoImage ? 'Change Brand Logo' : 'Upload Custom Logo'}
                   </span>
+                  {logoImage && (
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); setLogoImage(null); }} 
+                      className="text-rose-400 text-[10px] hover:underline ml-2"
+                    >
+                      Remove
+                    </button>
+                  )}
                 </div>
+              </div>
+
+              {/* 60-30-10 Colors */}
+              <div className="space-y-1.5 pt-1 border-t border-white/10">
+                <label className="text-[10px] font-mono text-slate-400 uppercase">60-30-10 Color Engine</label>
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="p-2 rounded-xl bg-black border border-white/10 text-center">
+                    <span className="text-[9px] font-mono text-slate-400">60% Canvas</span>
+                    <input
+                      type="color"
+                      value={color60}
+                      onChange={(e) => setColor60(e.target.value)}
+                      className="w-full h-6 rounded mt-1 cursor-pointer bg-transparent"
+                    />
+                  </div>
+                  <div className="p-2 rounded-xl bg-black border border-white/10 text-center">
+                    <span className="text-[9px] font-mono text-slate-400">30% Surface</span>
+                    <input
+                      type="color"
+                      value={color30}
+                      onChange={(e) => setColor30(e.target.value)}
+                      className="w-full h-6 rounded mt-1 cursor-pointer bg-transparent"
+                    />
+                  </div>
+                  <div className="p-2 rounded-xl bg-black border border-white/10 text-center">
+                    <span className="text-[9px] font-mono text-[#ebd73f]">10% Accent</span>
+                    <input
+                      type="color"
+                      value={color10}
+                      onChange={(e) => setColor10(e.target.value)}
+                      className="w-full h-6 rounded mt-1 cursor-pointer bg-transparent"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="pt-2 flex items-center justify-between">
+                <button
+                  onClick={() => setCurrentStep(2)}
+                  className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-semibold transition cursor-pointer"
+                >
+                  ← Back to Models
+                </button>
+                <button
+                  onClick={() => setCurrentStep(4)}
+                  className="btn-dripp-primary px-5 py-2 text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-lg"
+                >
+                  <span>Export Code Package</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-black" />
+                </button>
               </div>
 
             </div>
           )}
 
-          {/* TAB 3: 60-30-10 COLORS */}
-          {activeTab === 'colors' && (
+          {/* STEP 4: EXPORT PACKAGE */}
+          {currentStep === 4 && (
             <div className="space-y-4">
-              <div className="p-3 rounded-2xl bg-[#121212] border border-white/5 text-xs font-mono">
-                <p className="text-[#ebd73f] font-bold">60-30-10 Balance Engine</p>
-                <p className="text-slate-400 text-[10px] mt-0.5">60% Canvas • 30% Structure • 10% Focus</p>
+              <div>
+                <span className="font-mono text-[10px] text-[#ebd73f] tracking-widest uppercase">
+                  STEP 04 / CODE EXPORT
+                </span>
+                <h3 className="font-panchang font-bold text-base text-white mt-1">
+                  Ready for Production Deploy
+                </h3>
+                <p className="text-xs text-slate-400 font-clash mt-0.5">
+                  Package configured for <strong>{selectedModel.name}</strong> styled in <strong>{selectedStyle.name}</strong>.
+                </p>
               </div>
 
-              {/* Dominant */}
-              <div className="p-2.5 rounded-xl bg-black border border-white/10 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={color60}
-                    onChange={(e) => setColor60(e.target.value)}
-                    className="w-7 h-7 rounded-lg cursor-pointer bg-transparent"
-                  />
-                  <div>
-                    <p className="text-xs font-bold text-white">60% Dominant</p>
-                    <p className="text-[9px] font-mono text-slate-400">Background Canvas</p>
-                  </div>
+              <div className="p-3.5 rounded-2xl bg-black border border-white/10 space-y-2 text-xs font-mono">
+                <div className="flex justify-between border-b border-white/5 pb-1">
+                  <span className="text-slate-400">CATEGORY:</span>
+                  <span className="text-white">{selectedCategory.name}</span>
                 </div>
-                <input
-                  type="text"
-                  value={color60}
-                  onChange={(e) => setColor60(e.target.value)}
-                  className="w-20 px-2 py-1 rounded bg-white/5 border border-white/15 text-xs font-mono text-center text-white"
-                />
-              </div>
-
-              {/* Surface */}
-              <div className="p-2.5 rounded-xl bg-black border border-white/10 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={color30}
-                    onChange={(e) => setColor30(e.target.value)}
-                    className="w-7 h-7 rounded-lg cursor-pointer bg-transparent"
-                  />
-                  <div>
-                    <p className="text-xs font-bold text-white">30% Structure</p>
-                    <p className="text-[9px] font-mono text-slate-400">Cards &amp; Panels</p>
-                  </div>
+                <div className="flex justify-between border-b border-white/5 pb-1">
+                  <span className="text-slate-400">MODEL:</span>
+                  <span className="text-[#ebd73f]">{selectedModel.name}</span>
                 </div>
-                <input
-                  type="text"
-                  value={color30}
-                  onChange={(e) => setColor30(e.target.value)}
-                  className="w-20 px-2 py-1 rounded bg-white/5 border border-white/15 text-xs font-mono text-center text-white"
-                />
-              </div>
-
-              {/* Accent */}
-              <div className="p-2.5 rounded-xl bg-black border border-white/10 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={color10}
-                    onChange={(e) => setColor10(e.target.value)}
-                    className="w-7 h-7 rounded-lg cursor-pointer bg-transparent"
-                  />
-                  <div>
-                    <p className="text-xs font-bold text-white">10% Accent</p>
-                    <p className="text-[9px] font-mono text-[#ebd73f]">Action CTAs</p>
-                  </div>
+                <div className="flex justify-between border-b border-white/5 pb-1">
+                  <span className="text-slate-400">AESTHETIC:</span>
+                  <span className="text-white">{selectedStyle.name}</span>
                 </div>
-                <input
-                  type="text"
-                  value={color10}
-                  onChange={(e) => setColor10(e.target.value)}
-                  className="w-20 px-2 py-1 rounded bg-white/5 border border-white/15 text-xs font-mono text-center text-white"
-                />
+                <div className="flex justify-between">
+                  <span className="text-slate-400">PALETTE:</span>
+                  <span className="text-white">{color60} • {color30} • {color10}</span>
+                </div>
               </div>
 
+              <div className="space-y-2">
+                <button
+                  onClick={handleDownloadAll}
+                  className="w-full btn-dripp-primary py-3 px-4 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-xl"
+                >
+                  <Download className="w-4 h-4 text-black" />
+                  <span>Download Complete Brand Package (.json)</span>
+                </button>
+
+                <button
+                  onClick={handleCopyJson}
+                  className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white font-mono text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+                >
+                  <Copy className="w-3.5 h-3.5 text-[#ebd73f]" />
+                  <span>Copy Configuration JSON</span>
+                </button>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={() => setCurrentStep(3)}
+                  className="text-slate-400 hover:text-white text-xs underline cursor-pointer"
+                >
+                  ← Back to Customize Styles &amp; Colors
+                </button>
+              </div>
             </div>
           )}
-
-          {/* Quick Copy Action */}
-          <div className="pt-2 border-t border-white/10">
-            <button
-              onClick={handleCopyJson}
-              className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white font-mono text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
-            >
-              <Copy className="w-3.5 h-3.5 text-[#ebd73f]" />
-              <span>Copy Config JSON</span>
-            </button>
-          </div>
 
         </div>
 
-        {/* RIGHT COLUMN: The Crazy & Creative Live Canvas (8 cols) */}
-        <div className="lg:col-span-8 flex flex-col items-center justify-center min-h-[600px] w-full">
+        {/* RIGHT COLUMN: The Adaptive Crazy Canvas (7 cols) */}
+        <div className="lg:col-span-7 flex flex-col items-center justify-center min-h-[550px] w-full">
           
-          {/* Main Device Preview Frame */}
           <div 
             className={`w-full transition-all duration-700 relative overflow-hidden shadow-2xl ${
               deviceView === 'mobile' 
@@ -546,7 +958,7 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
             }}
           >
             
-            {/* Desktop Mac Header Dots (only in desktop mode) */}
+            {/* Desktop Mac Header Dots */}
             {deviceView === 'desktop' && (
               <div className="px-4 py-2.5 border-b border-white/10 flex items-center justify-between bg-black/40 backdrop-blur-md">
                 <div className="flex items-center gap-1.5">
@@ -555,13 +967,13 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
                 </div>
                 <span className="text-[10px] font-mono text-slate-400">
-                  {brandName.toLowerCase().replace(/\s+/g, '')}.com • {selectedStyle.shortName}
+                  {brandName.toLowerCase().replace(/\s+/g, '')}.com • {selectedModel.name}
                 </span>
-                <span className="text-[9px] font-mono text-[#ebd73f]">ONLINE</span>
+                <span className="text-[9px] font-mono text-[#ebd73f]">VERIFIED</span>
               </div>
             )}
 
-            {/* Mobile Dynamic Island (only in mobile mode) */}
+            {/* Mobile Notch */}
             {deviceView === 'mobile' && (
               <div className="pt-2 pb-1 flex items-center justify-center">
                 <div className="w-24 h-4 rounded-full bg-black border border-white/10 flex items-center justify-end px-2">
@@ -571,47 +983,56 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
             )}
 
             {/* ========================================================================= */}
-            {/* STYLE 1: CYBERPUNK 2077 // HUD MATRIX                                    */}
+            {/* 1. CYBERPUNK 2077 HUD AESTHETIC                                           */}
             {/* ========================================================================= */}
             {selectedStyle.id === 'cyber-hud' && (
               <div className="p-6 relative cyber-grid overflow-hidden min-h-[460px] flex flex-col justify-between">
                 <div className="animate-scanline"></div>
 
-                {/* Cyber HUD Corner Telemetry */}
                 <div className="flex items-center justify-between font-mono text-[10px] text-[#ebd73f] border-b border-[#ebd73f]/30 pb-2">
                   <div className="flex items-center gap-2">
-                    <span className="animate-pulse">SYS.CORE // ONLINE</span>
+                    <span className="animate-pulse">SYS.CORE // {selectedModel.name.toUpperCase()}</span>
                     <span>•</span>
-                    <span className="text-white">QUANTUM 0x9F</span>
+                    <span className="text-white">{selectedModel.badge}</span>
                   </div>
                   <span>LATENCY: 4.2ms</span>
                 </div>
 
-                {/* Hero */}
                 <div className="py-6 space-y-3">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 border border-[#ebd73f] font-mono text-[9px] text-[#ebd73f] bg-black">
-                    <span>[ TARGET_LOCKED ]</span>
+                    <span>[ {selectedCategory.name.toUpperCase()} ENGINE ]</span>
                   </div>
 
                   <h2 className="font-panchang font-black text-2xl sm:text-3xl text-white tracking-tight leading-tight">
                     {brandName} <span className="text-[#ebd73f]">// TERMINAL</span>
                   </h2>
                   <p className="font-mono text-xs text-slate-400 max-w-md">
-                    {tagline}. Neural dispatch engine active. Zero-wait sub-second food &amp; reservation protocol.
+                    {tagline}. Sub-second responsive checkout protocol.
                   </p>
 
-                  <button className="px-6 py-3 bg-[#ebd73f] text-black font-mono font-black text-xs uppercase tracking-widest shadow-[0_0_25px_rgba(235,215,63,0.5)] hover:bg-white transition cursor-pointer">
-                    [ INITIALIZE ORDER // ⚡ ]
-                  </button>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    <button className="px-6 py-3 bg-[#ebd73f] text-black font-mono font-black text-xs uppercase tracking-widest shadow-[0_0_25px_rgba(235,215,63,0.5)] hover:bg-white transition cursor-pointer">
+                      [ {selectedModel.specialAction} // ⚡ ]
+                    </button>
+
+                    {selectedModel.isLiveTHC && onLaunchLiveDemo && (
+                      <button
+                        onClick={onLaunchLiveDemo}
+                        className="px-4 py-3 bg-white/10 hover:bg-white/20 text-white font-mono text-xs uppercase tracking-wider flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5 text-[#ebd73f]" />
+                        <span>Launch Full THC Website</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
 
-                {/* Cyber Crate Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
                   {[
-                    { name: selectedNiche.item1, price: selectedNiche.price1, code: "MOD.01", status: "98% PREP" },
-                    { name: selectedNiche.item2, price: selectedNiche.price2, code: "MOD.02", status: "READY" },
+                    { name: selectedModel.item1, price: selectedModel.price1, code: "MOD.01", status: selectedModel.stat1 },
+                    { name: selectedModel.item2, price: selectedModel.price2, code: "MOD.02", status: selectedModel.stat2 },
                   ].map((item, idx) => (
-                    <div key={idx} className="p-3.5 bg-black/80 border border-[#ebd73f]/40 relative">
+                    <div key={idx} className="p-3.5 bg-black/80 border border-[#ebd73f]/40">
                       <div className="flex justify-between font-mono text-[10px] text-[#ebd73f]">
                         <span>{item.code}</span>
                         <span>{item.status}</span>
@@ -625,7 +1046,7 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
             )}
 
             {/* ========================================================================= */}
-            {/* STYLE 2: NEO-BRUTALISM // HYPEBEAST DROP                                 */}
+            {/* 2. NEO-BRUTALISM DROP AESTHETIC                                          */}
             {/* ========================================================================= */}
             {selectedStyle.id === 'neo-brutalist' && (
               <div className="bg-[#ebd73f] text-black p-6 min-h-[460px] flex flex-col justify-between relative overflow-hidden font-sans">
@@ -633,19 +1054,18 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
                 {/* Marquee Ticker */}
                 <div className="overflow-hidden bg-black text-[#ebd73f] py-1 -mx-6 -mt-6 border-b-4 border-black font-mono text-xs font-black">
                   <div className="animate-marquee whitespace-nowrap">
-                    <span>★ HIGH ENERGY ★ ZERO WAIT ★ 100% UNFILTERED ★ FRESH DROP ★ INSTANT CHECKOUT ★ HIGH ENERGY ★ ZERO WAIT ★ 100% UNFILTERED ★ FRESH DROP ★&nbsp;</span>
-                    <span>★ HIGH ENERGY ★ ZERO WAIT ★ 100% UNFILTERED ★ FRESH DROP ★ INSTANT CHECKOUT ★ HIGH ENERGY ★ ZERO WAIT ★ 100% UNFILTERED ★ FRESH DROP ★&nbsp;</span>
+                    <span>★ {selectedCategory.name.toUpperCase()} ★ {selectedModel.name.toUpperCase()} ★ 100% UNFILTERED ★ FAST ACTION ★&nbsp;</span>
+                    <span>★ {selectedCategory.name.toUpperCase()} ★ {selectedModel.name.toUpperCase()} ★ 100% UNFILTERED ★ FAST ACTION ★&nbsp;</span>
                   </div>
                 </div>
 
-                {/* Main Content */}
                 <div className="py-6 space-y-4">
                   <div className="flex items-center gap-2">
                     <span className="px-3 py-1 bg-black text-white font-black text-xs uppercase -rotate-2 border-2 border-black shadow-[3px_3px_0px_#fff]">
-                      ★ LIMITED DROP ★
+                      ★ {selectedModel.badge} ★
                     </span>
                     <span className="px-2 py-1 bg-white text-black font-black text-xs uppercase rotate-2 border-2 border-black">
-                      100% RAW
+                      RAW
                     </span>
                   </div>
 
@@ -653,19 +1073,29 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
                     {brandName}
                   </h2>
                   <p className="font-bold text-xs max-w-md uppercase">
-                    {tagline}. No fluff, straight flavor. Pick your items and secure your order now.
+                    {tagline}. No fluff, straight execution.
                   </p>
 
-                  <button className="px-7 py-3.5 bg-black text-[#ebd73f] font-black text-sm uppercase tracking-wider border-3 border-black shadow-[6px_6px_0px_#000] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0px_#000] active:translate-x-1.5 active:translate-y-1.5 active:shadow-none transition cursor-pointer">
-                    GRAB YOUR ORDER ↗
-                  </button>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    <button className="px-7 py-3.5 bg-black text-[#ebd73f] font-black text-sm uppercase tracking-wider border-3 border-black shadow-[6px_6px_0px_#000] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0px_#000] active:translate-x-1.5 active:translate-y-1.5 active:shadow-none transition cursor-pointer">
+                      {selectedModel.specialAction} ↗
+                    </button>
+
+                    {selectedModel.isLiveTHC && onLaunchLiveDemo && (
+                      <button
+                        onClick={onLaunchLiveDemo}
+                        className="px-5 py-3.5 bg-white text-black font-black text-sm uppercase tracking-wider border-3 border-black shadow-[4px_4px_0px_#000] hover:translate-x-0.5 hover:translate-y-0.5 cursor-pointer"
+                      >
+                        Launch THC Live App
+                      </button>
+                    )}
+                  </div>
                 </div>
 
-                {/* Brutalist Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   {[
-                    { name: selectedNiche.item1, price: selectedNiche.price1, tag: "TOP PICK" },
-                    { name: selectedNiche.item2, price: selectedNiche.price2, tag: "FRESH" },
+                    { name: selectedModel.item1, price: selectedModel.price1, tag: selectedModel.stat1 },
+                    { name: selectedModel.item2, price: selectedModel.price2, tag: selectedModel.stat2 },
                   ].map((item, idx) => (
                     <div key={idx} className="p-3.5 bg-white border-3 border-black shadow-[5px_5px_0px_#000] space-y-1">
                       <div className="flex justify-between items-start">
@@ -680,12 +1110,10 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
             )}
 
             {/* ========================================================================= */}
-            {/* STYLE 3: LIQUID AURA // CHROMATIC GLASS                                  */}
+            {/* 3. LIQUID AURA // CHROMATIC GLASS                                        */}
             {/* ========================================================================= */}
             {selectedStyle.id === 'liquid-glass' && (
               <div className="p-6 relative min-h-[460px] flex flex-col justify-between overflow-hidden bg-[#09090e]">
-                
-                {/* Floating Aurora Blobs */}
                 <div className="absolute -top-16 -left-16 w-56 h-56 rounded-full bg-purple-600/30 blur-3xl animate-float-orb pointer-events-none"></div>
                 <div className="absolute -bottom-16 -right-16 w-56 h-56 rounded-full bg-[#ebd73f]/25 blur-3xl animate-float-orb pointer-events-none"></div>
 
@@ -695,31 +1123,42 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
                     <span className="font-clash font-bold text-sm text-white">{brandName}</span>
                   </div>
                   <span className="px-2.5 py-0.5 rounded-full bg-white/10 border border-white/20 text-[10px] text-purple-300 backdrop-blur-md">
-                    AURA REFRACTION
+                    {selectedModel.badge}
                   </span>
                 </div>
 
                 <div className="relative z-10 py-6 space-y-3">
                   <span className="px-3 py-1 rounded-full text-[10px] font-mono bg-white/10 border border-white/20 backdrop-blur-xl text-white">
-                    FROSTED GLASS ENGINE
+                    {selectedModel.name}
                   </span>
                   <h2 className="font-clash font-bold text-2xl sm:text-3xl text-white tracking-tight">
                     {brandName}
                   </h2>
                   <p className="text-xs text-slate-300 font-clash max-w-md leading-relaxed">
-                    {tagline}. Experience tactile glass refraction and liquid reservation flows.
+                    {tagline}. Experience tactile crystal refraction and liquid state syncing.
                   </p>
 
-                  <button className="px-6 py-3 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/30 backdrop-blur-2xl text-white font-clash font-bold text-xs shadow-2xl transition cursor-pointer">
-                    Experience Liquid Menu ✦
-                  </button>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    <button className="px-6 py-3 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/30 backdrop-blur-2xl text-white font-clash font-bold text-xs shadow-2xl transition cursor-pointer">
+                      {selectedModel.specialAction} ✦
+                    </button>
+
+                    {selectedModel.isLiveTHC && onLaunchLiveDemo && (
+                      <button
+                        onClick={onLaunchLiveDemo}
+                        className="px-5 py-3 rounded-2xl bg-[#ebd73f] text-black font-clash font-bold text-xs shadow-xl cursor-pointer"
+                      >
+                        Launch THC Live App
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                  {[selectedNiche.item1, selectedNiche.item2].map((item, idx) => (
+                  {[selectedModel.item1, selectedModel.item2].map((item, idx) => (
                     <div key={idx} className="p-3.5 rounded-2xl bg-white/[0.08] border border-white/20 backdrop-blur-xl space-y-1">
                       <p className="font-clash font-bold text-xs text-white">{item}</p>
-                      <p className="font-mono text-xs text-purple-300 font-bold">{currency}{idx === 0 ? selectedNiche.price1 : selectedNiche.price2}</p>
+                      <p className="font-mono text-xs text-purple-300 font-bold">{currency}{idx === 0 ? selectedModel.price1 : selectedModel.price2}</p>
                     </div>
                   ))}
                 </div>
@@ -727,64 +1166,71 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
             )}
 
             {/* ========================================================================= */}
-            {/* STYLE 4: ULTRA-LUXURY // VOGUE EDITORIAL                                 */}
+            {/* 4. ULTRA-LUXURY EDITORIAL                                                 */}
             {/* ========================================================================= */}
             {selectedStyle.id === 'editorial-luxury' && (
               <div className="p-8 min-h-[460px] flex flex-col justify-between bg-[#050505] text-white">
-                
                 <div className="flex items-center justify-between border-b border-white/15 pb-4">
                   <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#d4af37]">
-                    VINTAGE // EDITION
+                    {selectedCategory.name.toUpperCase()} // {selectedModel.badge}
                   </span>
                   <span className="font-mono text-[9px] text-slate-400">EST. {new Date().getFullYear()}</span>
                 </div>
 
                 <div className="py-8 space-y-4 text-center">
                   <p className="font-mono text-[10px] tracking-[0.35em] text-[#d4af37] uppercase">
-                    HAUTE CUISINE &amp; HOSPITALITY
+                    {selectedModel.name}
                   </p>
                   <h2 className="font-panchang font-light text-2xl sm:text-4xl text-white tracking-wider uppercase">
                     {brandName}
                   </h2>
                   <p className="text-xs text-slate-400 font-clash max-w-sm mx-auto italic">
-                    "{tagline}. An understated culinary sanctuary."
+                    "{tagline}"
                   </p>
 
-                  <div className="pt-2">
+                  <div className="pt-2 flex items-center justify-center gap-3">
                     <button className="px-8 py-3 border border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-black font-mono text-[11px] tracking-[0.3em] uppercase transition cursor-pointer">
-                      RESERVE TABLE
+                      {selectedModel.specialAction}
                     </button>
+
+                    {selectedModel.isLiveTHC && onLaunchLiveDemo && (
+                      <button
+                        onClick={onLaunchLiveDemo}
+                        className="px-6 py-3 bg-[#d4af37] text-black font-mono text-[11px] tracking-[0.2em] uppercase font-bold cursor-pointer"
+                      >
+                        Launch THC Live
+                      </button>
+                    )}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 border-t border-white/15 pt-4 text-left">
                   <div>
                     <span className="font-mono text-[9px] text-[#d4af37]">№ 01</span>
-                    <p className="font-clash font-bold text-xs text-white mt-0.5">{selectedNiche.item1}</p>
-                    <p className="font-mono text-[11px] text-slate-400">{currency}{selectedNiche.price1}</p>
+                    <p className="font-clash font-bold text-xs text-white mt-0.5">{selectedModel.item1}</p>
+                    <p className="font-mono text-[11px] text-slate-400">{currency}{selectedModel.price1}</p>
                   </div>
                   <div>
                     <span className="font-mono text-[9px] text-[#d4af37]">№ 02</span>
-                    <p className="font-clash font-bold text-xs text-white mt-0.5">{selectedNiche.item2}</p>
-                    <p className="font-mono text-[11px] text-slate-400">{currency}{selectedNiche.price2}</p>
+                    <p className="font-clash font-bold text-xs text-white mt-0.5">{selectedModel.item2}</p>
+                    <p className="font-mono text-[11px] text-slate-400">{currency}{selectedModel.price2}</p>
                   </div>
                 </div>
               </div>
             )}
 
             {/* ========================================================================= */}
-            {/* STYLE 5: Y2K POP CANDY // BOUNCY FUN                                     */}
+            {/* 5. Y2K POP CANDY                                                          */}
             {/* ========================================================================= */}
             {selectedStyle.id === 'pop-candy' && (
               <div className="p-6 min-h-[460px] flex flex-col justify-between bg-[#12081c] text-white">
-                
                 <div className="flex items-center justify-between pb-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-xl">🍕</span>
+                    <span className="text-xl">✨</span>
                     <span className="font-black text-lg text-[#f43f5e]">{brandName}</span>
                   </div>
                   <span className="px-3 py-1 rounded-full bg-[#f43f5e] text-white font-black text-xs shadow-lg">
-                    HOT DROP 🔥
+                    {selectedModel.badge}
                   </span>
                 </div>
 
@@ -792,29 +1238,40 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
                   <div className="flex items-center gap-1.5 text-lg">
                     <span>⚡</span>
                     <span>🤤</span>
-                    <span>✨</span>
+                    <span>🍕</span>
                   </div>
                   <h2 className="font-black text-3xl text-white tracking-tight">
-                    Crave It? <span className="text-[#f43f5e]">Get It!</span>
+                    {selectedModel.name}
                   </h2>
                   <p className="text-xs text-slate-300 max-w-sm">
-                    {tagline}. Fresh bites made with maximum love and bouncy vibes!
+                    {tagline}
                   </p>
 
-                  <button className="px-6 py-3 rounded-full bg-gradient-to-r from-[#f43f5e] to-pink-500 text-white font-black text-xs shadow-xl hover:scale-105 active:scale-95 transition cursor-pointer">
-                    Grab Yours Now! 💖
-                  </button>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    <button className="px-6 py-3 rounded-full bg-gradient-to-r from-[#f43f5e] to-pink-500 text-white font-black text-xs shadow-xl hover:scale-105 active:scale-95 transition cursor-pointer">
+                      {selectedModel.specialAction} 💖
+                    </button>
+
+                    {selectedModel.isLiveTHC && onLaunchLiveDemo && (
+                      <button
+                        onClick={onLaunchLiveDemo}
+                        className="px-5 py-3 rounded-full bg-white text-black font-black text-xs cursor-pointer shadow-lg"
+                      >
+                        Launch Live THC Site
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {[selectedNiche.item1, selectedNiche.item2].map((item, idx) => (
+                  {[selectedModel.item1, selectedModel.item2].map((item, idx) => (
                     <div key={idx} className="p-3.5 rounded-[24px] bg-[#221333] border-2 border-pink-500/30 flex justify-between items-center">
                       <div>
                         <p className="font-black text-xs text-white">{item}</p>
-                        <p className="text-[10px] text-pink-300 font-bold">100% YUMMY</p>
+                        <p className="text-[10px] text-pink-300 font-bold">{idx === 0 ? selectedModel.stat1 : selectedModel.stat2}</p>
                       </div>
                       <span className="font-black text-sm text-[#f43f5e]">
-                        {currency}{idx === 0 ? selectedNiche.price1 : selectedNiche.price2}
+                        {currency}{idx === 0 ? selectedModel.price1 : selectedModel.price2}
                       </span>
                     </div>
                   ))}
@@ -823,12 +1280,10 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
             )}
 
             {/* ========================================================================= */}
-            {/* STYLE 6: HIGH-OCTANE // RACING NITRO                                     */}
+            {/* 6. HIGH-OCTANE RACING NITRO                                              */}
             {/* ========================================================================= */}
             {selectedStyle.id === 'high-octane' && (
               <div className="p-6 min-h-[460px] flex flex-col justify-between carbon-pattern text-white relative overflow-hidden">
-                
-                {/* Racing Stripes */}
                 <div className="absolute top-0 right-12 w-2 h-full bg-[#ebd73f]/60 -skew-x-12 pointer-events-none"></div>
                 <div className="absolute top-0 right-16 w-1 h-full bg-white/40 -skew-x-12 pointer-events-none"></div>
 
@@ -838,30 +1293,41 @@ export function WhiteLabelStudio({ onBackToCatalogue }) {
                     <span className="font-black italic text-sm tracking-wider text-white uppercase">{brandName}</span>
                   </div>
                   <span className="font-mono text-[10px] text-[#ebd73f] font-black italic">
-                    0-60 IN 8 MINS
+                    {selectedModel.badge}
                   </span>
                 </div>
 
                 <div className="relative z-10 py-6 space-y-3">
                   <span className="inline-block px-2.5 py-0.5 bg-[#ebd73f] text-black font-black italic text-[10px] -skew-x-12 uppercase">
-                    NITRO SPEED CHECKOUT
+                    {selectedModel.name}
                   </span>
                   <h2 className="font-black italic text-3xl sm:text-4xl uppercase tracking-wider text-white">
                     {brandName}
                   </h2>
                   <p className="text-xs text-slate-300 font-mono max-w-sm">
-                    {tagline}. High-velocity culinary performance. Built for maximum speed.
+                    {tagline}
                   </p>
 
-                  <button className="px-7 py-3.5 bg-[#ebd73f] hover:bg-white text-black font-black italic text-xs uppercase tracking-wider -skew-x-12 shadow-2xl transition cursor-pointer">
-                    BOOST ORDER NOW ⚡
-                  </button>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    <button className="px-7 py-3.5 bg-[#ebd73f] hover:bg-white text-black font-black italic text-xs uppercase tracking-wider -skew-x-12 shadow-2xl transition cursor-pointer">
+                      {selectedModel.specialAction} ⚡
+                    </button>
+
+                    {selectedModel.isLiveTHC && onLaunchLiveDemo && (
+                      <button
+                        onClick={onLaunchLiveDemo}
+                        className="px-5 py-3.5 bg-white hover:bg-slate-200 text-black font-black italic text-xs uppercase tracking-wider -skew-x-12 cursor-pointer"
+                      >
+                        Launch Live THC Site
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
-                    { name: selectedNiche.item1, price: selectedNiche.price1, stat: "STAGE 1" },
-                    { name: selectedNiche.item2, price: selectedNiche.price2, stat: "STAGE 2" }
+                    { name: selectedModel.item1, price: selectedModel.price1, stat: selectedModel.stat1 },
+                    { name: selectedModel.item2, price: selectedModel.price2, stat: selectedModel.stat2 }
                   ].map((item, idx) => (
                     <div key={idx} className="p-3 bg-black/90 border-l-4 border-l-[#ebd73f] border border-white/15 -skew-x-6 space-y-1">
                       <div className="flex justify-between items-center">
