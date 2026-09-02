@@ -169,3 +169,128 @@
 .btn-3d-rose:hover {
   box-shadow: 0 6px 0 #9F1239, 0 10px 22px rgba(244, 63, 94, 0.45);
 }
+
+/* ========================================================================= */
+/* DRIPP MEDIA (DEVELOPER MODE) CYBER-LUXURY DESIGN SYSTEM */
+/* ========================================================================= */
+
+.font-panchang {
+  font-family: 'Panchang', 'Syne', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.font-clash {
+  font-family: 'Clash Display', 'Inter', sans-serif;
+}
+
+/* Dripp Signature Shimmer sweep */
+@keyframes shimmerSweep {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+  }
+  100% {
+    transform: translateX(250%) skewX(-25deg);
+  }
+}
+
+.auth-shimmer-sweep {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: skewX(-25deg);
+  pointer-events: none;
+  animation: shimmerSweep 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Dripp Signature Yellow Hero CTA */
+.btn-dripp-primary {
+  position: relative;
+  background: linear-gradient(135deg, #fff37a 0%, #ebd73f 45%, #d4bf1d 100%);
+  color: #040404;
+  font-family: 'Clash Display', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: 9999px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 0 1px rgba(235, 215, 63, 0.35),
+              0 8px 25px rgba(235, 215, 63, 0.35),
+              inset 0 1.5px 0 rgba(255, 255, 255, 0.8);
+}
+.btn-dripp-primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 0 2px rgba(235, 215, 63, 0.6),
+              0 14px 34px rgba(235, 215, 63, 0.5),
+              inset 0 1.5px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Dripp Secondary Glass CTA */
+.btn-dripp-secondary {
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-family: 'Clash Display', sans-serif;
+  font-weight: 600;
+  border-radius: 9999px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-dripp-secondary:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Dripp Cyber Card Background & Grid */
+.dripp-card-bg {
+  background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.04) 0%, rgba(14, 14, 14, 0.85) 75%),
+              linear-gradient(180deg, rgba(22, 22, 22, 0.9) 0%, rgba(10, 10, 10, 0.95) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dripp-card-bg:hover {
+  border-color: rgba(235, 215, 63, 0.4);
+}
+
+/* Subtle grid line overlay */
+.cyber-grid {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+/* Ambient Glow Blobs */
+.ambient-glow-yellow {
+  background: radial-gradient(circle, rgba(235, 215, 63, 0.18) 0%, transparent 70%);
+}
+.ambient-glow-cyan {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.18) 0%, transparent 70%);
+}
+.ambient-glow-purple {
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.18) 0%, transparent 70%);
+}
+.ambient-glow-emerald {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, transparent 70%);
+}
+.ambient-glow-rose {
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.18) 0%, transparent 70%);
+}
+
+/* Developer HUD Scanline & Pulse */
+@keyframes hudPulse {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.4; }
+}
+.animate-hud-pulse {
+  animation: hudPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+

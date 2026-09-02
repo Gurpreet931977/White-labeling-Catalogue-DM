@@ -7,6 +7,17 @@ export default {
   theme: {
     extend: {
       colors: {
+        dripp: {
+          yellow: '#ebd73f',
+          yellowLight: '#fff37a',
+          yellowDark: '#d4bf1d',
+          dark: '#080808',
+          darker: '#040404',
+          surface: '#111111',
+          surfaceLight: '#181818',
+          border: 'rgba(255, 255, 255, 0.09)',
+          muted: '#8e8e8e',
+        },
         thc: {
           dark: '#090C12',
           surface: '#111724',
@@ -22,14 +33,18 @@ export default {
       },
       fontFamily: {
         sans: ['"Inter"', 'system-ui', 'sans-serif'],
-        display: ['"Syne"', '"Inter"', 'sans-serif'],
+        display: ['"Panchang"', '"Syne"', 'sans-serif'],
+        panchang: ['"Panchang"', 'sans-serif'],
+        clash: ['"Clash Display"', 'sans-serif'],
         syne: ['"Syne"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       boxShadow: {
+        'glow-yellow': '0 0 25px -5px rgba(235, 215, 63, 0.45)',
         'glow-gold': '0 0 20px -5px rgba(245, 158, 11, 0.35)',
         'glow-red': '0 0 20px -5px rgba(239, 68, 68, 0.35)',
         'glow-cyan': '0 0 20px -5px rgba(6, 182, 212, 0.35)',
+        'glow-purple': '0 0 25px -5px rgba(168, 85, 247, 0.35)',
         'subtle': '0 4px 20px -2px rgba(0, 0, 0, 0.5)',
       }
     },
