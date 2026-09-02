@@ -3,13 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkles, 
   ArrowRight, 
-  Coffee, 
   SlidersHorizontal, 
   Terminal, 
-  Zap, 
-  ShieldCheck, 
-  Layers,
-  ArrowUpRight
+  LayoutGrid
 } from 'lucide-react';
 import { CATALOGUE_DATA } from '../data/catalogueData';
 import { DrippNavbar } from '../components/catalogue/DrippNavbar';
@@ -52,14 +48,12 @@ export function DrippCatalogueApp({ onLaunchCafeDemo }) {
       <DrippNavbar
         isDevMode={isDevMode}
         setIsDevMode={setIsDevMode}
-        onLaunchCafeDemo={onLaunchCafeDemo}
         onOpenCustomizer={() => setIsCustomizerOpen(true)}
         onOpenQuote={() => setIsQuoteOpen(true)}
       />
 
       {/* Hero Section */}
       <DrippHero
-        onLaunchCafeDemo={onLaunchCafeDemo}
         onOpenCustomizer={() => setIsCustomizerOpen(true)}
         onOpenQuote={() => setIsQuoteOpen(true)}
       />
@@ -71,7 +65,7 @@ export function DrippCatalogueApp({ onLaunchCafeDemo }) {
         <div className="text-center space-y-3 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-[#ebd73f]">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>01 / WHITE-LABEL PORTFOLIO</span>
+            <span>01 / WHITE-LABEL CATALOGUE</span>
           </div>
           <h2 className="font-panchang font-black text-3xl sm:text-4xl md:text-5xl tracking-tight text-white">
             Engineered for High-Conversion Niches.
@@ -107,9 +101,9 @@ export function DrippCatalogueApp({ onLaunchCafeDemo }) {
 
       {/* Interactive Brand Customizer Teaser Banner */}
       <section className="py-16 px-4 sm:px-6 max-w-7xl mx-auto">
-        <div className="relative rounded-3xl p-8 sm:p-12 overflow-hidden bg-gradient-to-br from-[#141414] via-[#0d0d0d] to-[#080808] border border-white/15 shadow-2xl">
+        <div className="relative rounded-3xl p-8 sm:p-12 overflow-hidden bg-gradient-to-br from-[#121212] via-[#0d0d0d] to-[#080808] border border-white/15 shadow-2xl">
           
-          <div className="absolute top-0 right-0 w-96 h-96 ambient-glow-yellow blur-3xl opacity-30 pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 ambient-glow-yellow blur-3xl opacity-20 pointer-events-none"></div>
 
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
@@ -139,16 +133,14 @@ export function DrippCatalogueApp({ onLaunchCafeDemo }) {
                 <ArrowRight className="w-4 h-4" />
               </button>
 
-              <button
-                onClick={() => {
-                  sounds.playClick();
-                  onLaunchCafeDemo();
-                }}
-                className="btn-dripp-secondary py-3.5 px-5 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer"
+              <a
+                href="#niches"
+                onClick={() => sounds.playClick()}
+                className="btn-dripp-secondary py-3.5 px-5 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer text-center"
               >
-                <Coffee className="w-4 h-4 text-amber-400" />
-                <span>View Live Cafe Build</span>
-              </button>
+                <LayoutGrid className="w-4 h-4 text-[#ebd73f]" />
+                <span>Explore All 6 Niches</span>
+              </a>
             </div>
 
           </div>
@@ -182,8 +174,7 @@ export function DrippCatalogueApp({ onLaunchCafeDemo }) {
                 0{idx + 1} / {item.name}
               </span>
               <p className="font-clash font-bold text-base text-white">{item.tech}</p>
-              <div className="flex items-center gap-1.5 text-xs font-mono text-emerald-400 pt-1">
-                <Zap className="w-3.5 h-3.5" />
+              <div className="flex items-center gap-1.5 text-xs font-mono text-[#ebd73f] pt-1">
                 <span>{item.status}</span>
               </div>
             </div>
@@ -194,7 +185,6 @@ export function DrippCatalogueApp({ onLaunchCafeDemo }) {
 
       {/* Footer */}
       <DrippFooter
-        onLaunchCafeDemo={onLaunchCafeDemo}
         onOpenCustomizer={() => setIsCustomizerOpen(true)}
         onOpenQuote={() => setIsQuoteOpen(true)}
       />

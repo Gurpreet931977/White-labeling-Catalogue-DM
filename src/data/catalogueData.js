@@ -2,8 +2,9 @@
  * =========================================================================
  * DRIPP MEDIA - WHITE-LABELING CATALOGUE MASTER DATA
  * =========================================================================
- * High-converting turnkey systems across multiple service niches.
- * Inspired by https://www.drippmedia.com/developermodeon
+ * Designed strictly using Dripp Media brand colors (#ebd73f, #080808, #ffffff)
+ * and brand display fonts (Panchang, Clash Display).
+ * Balanced multi-niche architecture with zero single-niche bias.
  */
 
 export const CATALOGUE_DATA = {
@@ -25,10 +26,10 @@ export const CATALOGUE_DATA = {
     contactWebsite: "https://www.drippmedia.com",
   },
 
-  // Category filters
+  // Balanced Category filters
   categories: [
     { id: "all", label: "All Niches", count: 6 },
-    { id: "cafes", label: "Cafes & Eateries", count: 1, isLiveDemo: true },
+    { id: "cafes", label: "Cafes & Eateries", count: 1 },
     { id: "clinics", label: "Clinics & Healthcare", count: 1 },
     { id: "gyms", label: "Gyms & Fitness", count: 1 },
     { id: "clubs", label: "Nightclubs & Lounges", count: 1 },
@@ -36,7 +37,7 @@ export const CATALOGUE_DATA = {
     { id: "salons", label: "Luxury Salons & Spas", count: 1 },
   ],
 
-  // Niche Showcases
+  // Niche Showcases (Strictly Dripp Media Yellow & Monochrome)
   niches: [
     {
       id: "cafes",
@@ -44,13 +45,13 @@ export const CATALOGUE_DATA = {
       category: "cafes",
       title: "Cafes, Quick-Bites & Lounges",
       clientBrand: "THC - Truckers Halt Cafe",
-      badge: "LIVE FULL-STACK DEMO",
+      badge: "INTERACTIVE SUITE",
       status: "PRODUCTION ACTIVE",
       headline: "Zero-Wait Table QR Ordering, Live Kitchen POS & Real-Time Tracking",
       description: "Complete restaurant operating system with instant contactless table ordering, live order tracker, kitchen ticket terminal, and sound-feedback POS.",
-      accentColor: "#f59e0b",
+      accentColor: "#ebd73f",
       glowClass: "ambient-glow-yellow",
-      cardType: "live-app", // Launches existing THC Cafe app directly!
+      cardType: "live-app",
       metrics: {
         highlightNum: "2.8x",
         highlightLabel: "Table Turnover Rate",
@@ -80,12 +81,12 @@ export const CATALOGUE_DATA = {
       category: "clinics",
       title: "Clinics & Healthcare Practices",
       clientBrand: "AuraCare Specialist Clinic",
-      badge: "INTERACTIVE DEMO",
+      badge: "INTERACTIVE SUITE",
       status: "READY TO DEPLOY",
       headline: "Multi-Doctor Slot Scheduling, Patient Intake & WhatsApp Confirmations",
       description: "High-trust clinical web app for dental, cosmetic dermatology, and physiotherapy practices with instant calendar appointment booking.",
-      accentColor: "#06b6d4",
-      glowClass: "ambient-glow-cyan",
+      accentColor: "#ebd73f",
+      glowClass: "ambient-glow-yellow",
       cardType: "interactive-demo",
       metrics: {
         highlightNum: "64%",
@@ -121,12 +122,12 @@ export const CATALOGUE_DATA = {
       category: "gyms",
       title: "Gyms, CrossFit & Athletic Studios",
       clientBrand: "IronPulse Elite Performance & Gym",
-      badge: "INTERACTIVE DEMO",
+      badge: "INTERACTIVE SUITE",
       status: "READY TO DEPLOY",
       headline: "Membership Tier Checkout, Live Class Timetable & Trainer Pass",
       description: "High-adrenaline fitness portal designed to turn casual gym lookers into recurring monthly members with class booking and free trials.",
-      accentColor: "#ef4444",
-      glowClass: "ambient-glow-rose",
+      accentColor: "#ebd73f",
+      glowClass: "ambient-glow-yellow",
       cardType: "interactive-demo",
       metrics: {
         highlightNum: "3.4x",
@@ -165,12 +166,12 @@ export const CATALOGUE_DATA = {
       category: "clubs",
       title: "Nightclubs, VIP Lounges & Bars",
       clientBrand: "Nocturne VIP Club & Sky Lounge",
-      badge: "INTERACTIVE DEMO",
+      badge: "INTERACTIVE SUITE",
       status: "READY TO DEPLOY",
       headline: "VIP Bottle Service Booking, Guestlist RSVP & Event QR Passes",
       description: "Ultra-luxury nightlife web application featuring dynamic table floor plans, bottle service reservation, and QR guestlist admission.",
-      accentColor: "#a855f7",
-      glowClass: "ambient-glow-purple",
+      accentColor: "#ebd73f",
+      glowClass: "ambient-glow-yellow",
       cardType: "interactive-demo",
       metrics: {
         highlightNum: "4.8x",
@@ -208,12 +209,12 @@ export const CATALOGUE_DATA = {
       category: "turfs",
       title: "Sports Turfs & Box Arenas",
       clientBrand: "BoxArena 360 Multisport Facility",
-      badge: "INTERACTIVE DEMO",
+      badge: "INTERACTIVE SUITE",
       status: "READY TO DEPLOY",
       headline: "Real-Time Hourly Turf Slot Booking, Floodlight Rates & Tournaments",
       description: "End-to-end sports facility booking portal for box cricket, 5v5/7v7 football, and padel tennis with zero double-booking conflicts.",
-      accentColor: "#10b981",
-      glowClass: "ambient-glow-emerald",
+      accentColor: "#ebd73f",
+      glowClass: "ambient-glow-yellow",
       cardType: "interactive-demo",
       metrics: {
         highlightNum: "100%",
@@ -253,12 +254,12 @@ export const CATALOGUE_DATA = {
       category: "salons",
       title: "Luxury Salons & Aesthetic Spas",
       clientBrand: "Maison de Luxe Hair & Aesthetic Spa",
-      badge: "INTERACTIVE DEMO",
+      badge: "INTERACTIVE SUITE",
       status: "READY TO DEPLOY",
       headline: "Stylist Selection, Bespoke Treatment Packages & Bridal Portfolios",
       description: "Editorial-grade aesthetic booking portal for premium salons, skin studios, and bridal beauty bars with stylist seat allocation.",
-      accentColor: "#f43f5e",
-      glowClass: "ambient-glow-rose",
+      accentColor: "#ebd73f",
+      glowClass: "ambient-glow-yellow",
       cardType: "interactive-demo",
       metrics: {
         highlightNum: "3.7x",
@@ -291,18 +292,16 @@ export const CATALOGUE_DATA = {
 
   // White-Label Configuration Presets for the Interactive Customizer
   whiteLabelPresets: [
-    { id: "amber", name: "Cyber Amber", hex: "#ebd73f", bgGlow: "rgba(235, 215, 63, 0.25)" },
-    { id: "cyan", name: "Electric Cyan", hex: "#06b6d4", bgGlow: "rgba(6, 182, 212, 0.25)" },
-    { id: "emerald", name: "Neon Emerald", hex: "#10b981", bgGlow: "rgba(16, 185, 129, 0.25)" },
-    { id: "purple", name: "Ultra Violet", hex: "#a855f7", bgGlow: "rgba(168, 85, 247, 0.25)" },
-    { id: "rose", name: "Crimson Rose", hex: "#f43f5e", bgGlow: "rgba(244, 63, 94, 0.25)" }
+    { id: "amber", name: "Dripp Signature Yellow", hex: "#ebd73f", bgGlow: "rgba(235, 215, 63, 0.25)" },
+    { id: "platinum", name: "Monochrome Platinum", hex: "#f5f5f5", bgGlow: "rgba(245, 245, 245, 0.2)" },
+    { id: "gold", name: "Warm Gold", hex: "#facc15", bgGlow: "rgba(250, 204, 21, 0.25)" },
   ],
 
   // Developer Mode Tech Architecture
   developerSpecs: {
     stack: [
       { name: "Frontend Core", tech: "React 18 + Vite 5", status: "Zero Runtime Overhead" },
-      { name: "Styling Engine", tech: "Tailwind CSS v3 + CSS Variables", status: "Design Tokens Built-in" },
+      { name: "Styling Engine", tech: "Tailwind CSS + Brand Tokens", status: "Pure Dripp Media Palette" },
       { name: "Animation & Motion", tech: "Framer Motion 11", status: "60 FPS GPU-accelerated" },
       { name: "Audio Feedback", tech: "Web Audio API Synths", status: "Sub-10ms Tactile Clicks" },
       { name: "Persistence", tech: "Local Storage + Mock Node API", status: "Production Server Ready" },

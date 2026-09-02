@@ -6,16 +6,14 @@ import {
   Menu, 
   X, 
   Cpu, 
-  Coffee, 
   SlidersHorizontal,
-  PhoneCall
+  LayoutGrid
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
 
 export function DrippNavbar({ 
   isDevMode, 
   setIsDevMode, 
-  onLaunchCafeDemo, 
   onOpenCustomizer,
   onOpenQuote 
 }) {
@@ -33,19 +31,19 @@ export function DrippNavbar({
   return (
     <header className={`fixed top-0 inset-x-0 z-40 transition-all duration-300 ${
       isScrolled 
-        ? 'bg-[#080808]/90 backdrop-blur-xl border-b border-white/10 shadow-2xl shadow-black/80 py-3' 
+        ? 'bg-[#080808]/95 backdrop-blur-xl border-b border-white/10 shadow-2xl shadow-black/90 py-3' 
         : 'bg-transparent py-5'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
         
-        {/* Brand Logo */}
+        {/* Brand Logo - Dripp Media Panchang Typography */}
         <div className="flex items-center gap-3">
           <a 
             href="#hero" 
-            className="group flex items-center gap-2"
+            className="group flex items-center gap-2.5"
             onClick={() => sounds.playClick()}
           >
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#ebd73f] to-[#b39e14] text-black font-black font-panchang flex items-center justify-center text-sm shadow-lg shadow-[#ebd73f]/20 group-hover:scale-105 transition">
+            <div className="w-9 h-9 rounded-xl bg-[#ebd73f] text-black font-black font-panchang flex items-center justify-center text-sm shadow-lg shadow-[#ebd73f]/25 group-hover:scale-105 transition">
               D
             </div>
             <div>
@@ -53,71 +51,60 @@ export function DrippNavbar({
                 <span className="font-panchang font-bold text-lg tracking-wider text-white group-hover:text-[#ebd73f] transition">
                   DRIPP
                 </span>
-                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-white/10 text-white/80 border border-white/10">
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-white/10 text-white/90 border border-white/10">
                   MEDIA
                 </span>
               </div>
-              <p className="text-[9px] font-mono tracking-widest text-[#ebd73f] -mt-0.5">
+              <p className="text-[9px] font-mono tracking-widest text-[#ebd73f] -mt-0.5 font-semibold">
                 WHITE-LABEL SUITE
               </p>
             </div>
           </a>
         </div>
 
-        {/* Desktop Nav Links */}
-        <nav className="hidden lg:flex items-center gap-7 text-xs font-clash font-medium text-white/70">
+        {/* Desktop Nav Links - Pure Dripp Media Fonts & Colors */}
+        <nav className="hidden lg:flex items-center gap-7 text-xs font-clash font-medium text-white/80">
           <a 
             href="#niches" 
-            className="hover:text-white transition flex items-center gap-1"
+            className="hover:text-[#ebd73f] transition flex items-center gap-1.5"
             onClick={() => sounds.playClick()}
           >
             <span className="text-[#ebd73f] font-mono text-[10px]">01/</span>
-            <span>Niches &amp; Catalog</span>
+            <span>Niches &amp; Catalogue</span>
           </a>
-
-          <button
-            onClick={() => {
-              sounds.playClick();
-              onLaunchCafeDemo();
-            }}
-            className="hover:text-amber-400 text-amber-300 font-semibold transition flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-400/10 border border-amber-400/20"
-          >
-            <Coffee className="w-3.5 h-3.5 animate-bounce text-amber-400" />
-            <span>Active Cafe Demo</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          </button>
 
           <button 
             onClick={() => {
               sounds.playClick();
               onOpenCustomizer();
             }} 
-            className="hover:text-white transition flex items-center gap-1"
+            className="hover:text-[#ebd73f] transition flex items-center gap-1.5 cursor-pointer"
           >
+            <span className="text-[#ebd73f] font-mono text-[10px]">02/</span>
             <SlidersHorizontal className="w-3.5 h-3.5 text-[#ebd73f]" />
             <span>Brand Simulator</span>
           </button>
 
           <a 
             href="#developer-specs" 
-            className="hover:text-white transition flex items-center gap-1"
+            className="hover:text-[#ebd73f] transition flex items-center gap-1.5"
             onClick={() => sounds.playClick()}
           >
-            <span className="text-[#ebd73f] font-mono text-[10px]">02/</span>
-            <span>Architecture</span>
+            <span className="text-[#ebd73f] font-mono text-[10px]">03/</span>
+            <span>Architecture &amp; Stack</span>
           </a>
         </nav>
 
         {/* Action Controls */}
         <div className="flex items-center gap-3">
           
-          {/* Developer Mode Switch */}
+          {/* Developer Mode Switch (Dripp Yellow / Dark) */}
           <button
             onClick={() => {
               sounds.playClick();
               setIsDevMode(!isDevMode);
             }}
-            className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-mono transition-all ${
+            className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-mono transition-all cursor-pointer ${
               isDevMode 
                 ? 'bg-[#ebd73f]/15 border-[#ebd73f] text-[#ebd73f] shadow-glow-yellow' 
                 : 'bg-white/5 border-white/10 text-white/60 hover:text-white hover:border-white/25'
@@ -137,7 +124,7 @@ export function DrippNavbar({
               sounds.playClick();
               onOpenQuote();
             }}
-            className="btn-dripp-primary px-4 py-2 text-xs flex items-center gap-1.5 font-bold shadow-lg"
+            className="btn-dripp-primary px-4 py-2 text-xs flex items-center gap-1.5 font-bold shadow-lg cursor-pointer"
           >
             <span className="auth-shimmer-sweep"></span>
             <span>Get Quote</span>
@@ -157,61 +144,53 @@ export function DrippNavbar({
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden mt-3 px-4 py-5 bg-[#0a0a0a]/95 border-b border-white/10 backdrop-blur-2xl space-y-4">
-          <div className="flex flex-col gap-3 font-clash text-sm">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onLaunchCafeDemo();
-              }}
-              className="flex items-center justify-between p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 font-bold"
-            >
-              <div className="flex items-center gap-2">
-                <Coffee className="w-4 h-4 text-amber-400" />
-                <span>Launch Live Cafe Demo</span>
-              </div>
-              <span className="text-[10px] font-mono bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded">
-                LIVE
-              </span>
-            </button>
+        <div className="lg:hidden mt-3 px-4 py-5 bg-[#080808]/98 border-b border-white/10 backdrop-blur-2xl space-y-3 font-clash">
+          <a
+            href="#niches"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-2.5 p-3 rounded-xl bg-white/[0.04] border border-white/10 text-white hover:text-[#ebd73f] transition text-sm"
+          >
+            <LayoutGrid className="w-4 h-4 text-[#ebd73f]" />
+            <span>Explore Niches &amp; Solutions</span>
+          </a>
 
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenCustomizer();
-              }}
-              className="flex items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/10 text-white font-medium"
-            >
-              <SlidersHorizontal className="w-4 h-4 text-[#ebd73f]" />
-              <span>Interactive Brand Simulator</span>
-            </button>
+          <button
+            onClick={() => {
+              setMobileMenuOpen(false);
+              onOpenCustomizer();
+            }}
+            className="w-full flex items-center gap-2.5 p-3 rounded-xl bg-white/[0.04] border border-white/10 text-white hover:text-[#ebd73f] transition text-sm text-left"
+          >
+            <SlidersHorizontal className="w-4 h-4 text-[#ebd73f]" />
+            <span>Interactive Brand Simulator</span>
+          </button>
 
-            <button
-              onClick={() => {
-                setIsDevMode(!isDevMode);
-                setMobileMenuOpen(false);
-              }}
-              className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-xs"
-            >
-              <span className="flex items-center gap-2">
-                <Cpu className="w-4 h-4 text-[#ebd73f]" />
-                <span>Developer HUD Inspection</span>
-              </span>
-              <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                isDevMode ? 'bg-[#ebd73f] text-black' : 'bg-white/10 text-white/60'
-              }`}>
-                {isDevMode ? 'ACTIVE' : 'OFF'}
-              </span>
-            </button>
+          <a
+            href="#developer-specs"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-2.5 p-3 rounded-xl bg-white/[0.04] border border-white/10 text-white hover:text-[#ebd73f] transition text-sm"
+          >
+            <Terminal className="w-4 h-4 text-[#ebd73f]" />
+            <span>Architecture &amp; Tech Specs</span>
+          </a>
 
-            <a
-              href="#niches"
-              onClick={() => setMobileMenuOpen(false)}
-              className="p-3 text-white/80 hover:text-white transition"
-            >
-              Browse All Niches &amp; Catalogs
-            </a>
-          </div>
+          <button
+            onClick={() => {
+              setIsDevMode(!isDevMode);
+              setMobileMenuOpen(false);
+            }}
+            className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-xs"
+          >
+            <span className="flex items-center gap-2">
+              <Cpu className="w-4 h-4 text-[#ebd73f]" />
+              <span>Developer HUD Inspection</span>
+            </span>
+            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+              isDevMode ? 'bg-[#ebd73f] text-black' : 'bg-white/10 text-white/60'
+            }`}>
+              {isDevMode ? 'ACTIVE' : 'OFF'}
+            </span>
+          </button>
         </div>
       )}
     </header>

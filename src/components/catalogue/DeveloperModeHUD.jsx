@@ -3,14 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Terminal, 
   Cpu, 
-  Activity, 
-  Code2, 
-  Zap, 
-  Gauge, 
   ChevronUp, 
   ChevronDown, 
   X,
-  Layers,
+  Zap,
   Database
 } from 'lucide-react';
 import { CATALOGUE_DATA } from '../../data/catalogueData';
@@ -46,8 +42,8 @@ export function DeveloperModeHUD({ isDevMode, onCloseDevMode }) {
     <div className="fixed bottom-4 inset-x-3 sm:inset-x-6 z-50 pointer-events-none flex flex-col items-center">
       <div className="w-full max-w-4xl pointer-events-auto">
         
-        {/* Floating Mini HUD Capsule */}
-        <div className="p-2 sm:p-2.5 rounded-2xl bg-[#0a0a0a]/95 border border-[#ebd73f]/40 backdrop-blur-2xl shadow-2xl shadow-black flex items-center justify-between gap-3 text-xs font-mono">
+        {/* Floating Mini HUD Capsule - Dripp Yellow & Obsidian */}
+        <div className="p-2 sm:p-2.5 rounded-2xl bg-[#080808]/95 border border-[#ebd73f]/40 backdrop-blur-2xl shadow-2xl shadow-black flex items-center justify-between gap-3 text-xs font-mono">
           
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 rounded-xl bg-[#ebd73f]/20 border border-[#ebd73f]/50 flex items-center justify-center text-[#ebd73f]">
@@ -55,10 +51,10 @@ export function DeveloperModeHUD({ isDevMode, onCloseDevMode }) {
             </div>
             
             <div className="flex items-center gap-2">
-              <span className="font-bold text-[#ebd73f]">SYS.MODE // DEV</span>
+              <span className="font-bold text-[#ebd73f]">SYS.DEV // ON</span>
               <span className="hidden sm:inline-block text-white/30">•</span>
-              <span className="hidden sm:inline-flex items-center gap-1 text-emerald-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+              <span className="hidden sm:inline-flex items-center gap-1.5 text-white">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#ebd73f] animate-ping"></span>
                 <span>{fps} FPS GPU</span>
               </span>
               <span className="hidden md:inline-block text-white/30">•</span>
@@ -74,7 +70,7 @@ export function DeveloperModeHUD({ isDevMode, onCloseDevMode }) {
                 sounds.playClick();
                 setIsExpanded(!isExpanded);
               }}
-              className="px-3 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-white text-[11px] font-semibold flex items-center gap-1 transition"
+              className="px-3 py-1 rounded-xl bg-white/10 hover:bg-[#ebd73f] hover:text-black text-white text-[11px] font-semibold flex items-center gap-1 transition cursor-pointer"
             >
               <span>{isExpanded ? 'Hide Specs' : 'Inspect Stack'}</span>
               {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
@@ -85,7 +81,7 @@ export function DeveloperModeHUD({ isDevMode, onCloseDevMode }) {
                 sounds.playClick();
                 onCloseDevMode();
               }}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
               title="Close Dev Mode"
             >
               <X className="w-4 h-4" />
@@ -101,7 +97,7 @@ export function DeveloperModeHUD({ isDevMode, onCloseDevMode }) {
               initial={{ opacity: 0, y: 15, height: 0 }}
               animate={{ opacity: 1, y: 0, height: 'auto' }}
               exit={{ opacity: 0, y: 15, height: 0 }}
-              className="mt-2 p-5 rounded-3xl bg-[#0c0c0c] border border-white/15 backdrop-blur-2xl shadow-2xl text-xs space-y-4 max-h-[60vh] overflow-y-auto"
+              className="mt-2 p-5 rounded-3xl bg-[#0a0a0a] border border-white/15 backdrop-blur-2xl shadow-2xl text-xs space-y-4 max-h-[60vh] overflow-y-auto"
             >
               <div className="flex items-center justify-between pb-3 border-b border-white/10">
                 <div className="flex items-center gap-2">
@@ -118,8 +114,8 @@ export function DeveloperModeHUD({ isDevMode, onCloseDevMode }) {
               {/* Lighthouse 100/100 Row */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {Object.entries(CATALOGUE_DATA.developerSpecs.lighthouse).map(([k, v]) => (
-                  <div key={k} className="p-3 rounded-2xl bg-black/60 border border-white/10 text-center">
-                    <p className="font-panchang font-bold text-2xl text-emerald-400">{v}</p>
+                  <div key={k} className="p-3 rounded-2xl bg-black/70 border border-white/10 text-center">
+                    <p className="font-panchang font-bold text-2xl text-[#ebd73f]">{v}</p>
                     <p className="text-[10px] font-mono text-slate-400 uppercase mt-0.5">{k}</p>
                   </div>
                 ))}
@@ -141,13 +137,13 @@ export function DeveloperModeHUD({ isDevMode, onCloseDevMode }) {
               </div>
 
               {/* How White-Labeling works */}
-              <div className="p-3.5 rounded-2xl bg-[#141414] border border-[#ebd73f]/20 font-mono text-[11px] space-y-1">
+              <div className="p-3.5 rounded-2xl bg-[#111111] border border-[#ebd73f]/25 font-mono text-[11px] space-y-1">
                 <p className="text-white font-bold flex items-center gap-1.5">
                   <Database className="w-3.5 h-3.5 text-[#ebd73f]" />
-                  <span>How White-Label Customization Operates:</span>
+                  <span>Single-File Configuration Engine:</span>
                 </p>
                 <p className="text-slate-300">
-                  Each niche is isolated into a modular config schema (e.g. <code className="text-[#ebd73f]">cafeConfig.js</code>, <code className="text-[#ebd73f]">clinicConfig.js</code>). Rebranding requires simply modifying 1 JSON file with your client's logo, colors, pricing, and domain.
+                  Each niche is isolated into a modular config schema. Rebranding requires simply modifying 1 JSON file with your client's logo, colors, pricing, and domain.
                 </p>
               </div>
 

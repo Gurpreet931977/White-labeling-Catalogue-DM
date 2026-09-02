@@ -4,11 +4,7 @@ import {
   ArrowUpRight, 
   Sparkles, 
   CheckCircle2, 
-  Coffee, 
-  Activity, 
   Sliders, 
-  ExternalLink,
-  ShieldCheck,
   Zap
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
@@ -28,10 +24,10 @@ export function NicheShowcaseCard({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.4 }}
-      className="group relative rounded-3xl overflow-hidden dripp-card-bg border border-white/10 hover:border-white/25 transition-all duration-500 flex flex-col justify-between shadow-2xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
+      className="group relative rounded-3xl overflow-hidden dripp-card-bg border border-white/10 hover:border-[#ebd73f]/50 transition-all duration-500 flex flex-col justify-between shadow-2xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
     >
-      {/* Top Ambient Glow on Card Hover */}
-      <div className={`absolute top-0 right-0 w-64 h-64 ${niche.glowClass} blur-3xl opacity-20 group-hover:opacity-40 transition-opacity pointer-events-none -z-10`}></div>
+      {/* Top Ambient Glow on Card Hover - Dripp Yellow */}
+      <div className="absolute top-0 right-0 w-64 h-64 ambient-glow-yellow blur-3xl opacity-15 group-hover:opacity-40 transition-opacity pointer-events-none -z-10"></div>
 
       {/* Card Header & Mockup Area */}
       <div className="p-5 sm:p-6 pb-0">
@@ -49,31 +45,27 @@ export function NicheShowcaseCard({
           </div>
 
           <div className="flex items-center gap-1.5">
-            <span className={`w-2 h-2 rounded-full ${isLive ? 'bg-emerald-400 animate-pulse' : 'bg-cyan-400'}`}></span>
-            <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${
-              isLive 
-                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' 
-                : 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30'
-            }`}>
+            <span className="w-2 h-2 rounded-full bg-[#ebd73f]"></span>
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border bg-white/5 text-white/90 border-white/15">
               {niche.badge}
             </span>
           </div>
         </div>
 
         {/* Mockup Canvas */}
-        <div className="relative rounded-2xl overflow-hidden bg-black/60 border border-white/10 aspect-[16/10] group-hover:border-white/20 transition-all">
+        <div className="relative rounded-2xl overflow-hidden bg-black/60 border border-white/10 aspect-[16/10] group-hover:border-white/25 transition-all">
           
           {/* Mockup Browser Window Header */}
           <div className="absolute top-0 inset-x-0 h-7 bg-white/[0.04] border-b border-white/10 backdrop-blur-md px-3 flex items-center justify-between z-10">
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-rose-500/70"></span>
-              <span className="w-2 h-2 rounded-full bg-amber-500/70"></span>
-              <span className="w-2 h-2 rounded-full bg-emerald-500/70"></span>
+              <span className="w-2 h-2 rounded-full bg-white/20"></span>
+              <span className="w-2 h-2 rounded-full bg-white/20"></span>
+              <span className="w-2 h-2 rounded-full bg-[#ebd73f]/60"></span>
             </div>
             <span className="font-mono text-[9px] text-white/50 tracking-wider">
               whitelabel.{niche.id}.app
             </span>
-            <div className="flex items-center gap-1 text-[9px] font-mono text-emerald-400">
+            <div className="flex items-center gap-1 text-[9px] font-mono text-[#ebd73f]">
               <span>{niche.metrics.loadSpeed}</span>
             </div>
           </div>
@@ -93,19 +85,19 @@ export function NicheShowcaseCard({
             />
             
             {/* Gradient Scrim */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent"></div>
 
-            {/* In-mockup KPI Float Badge */}
+            {/* In-mockup KPI Float Badge - Strictly Dripp Brand Colors */}
             <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-              <div className="px-2.5 py-1 rounded-xl bg-black/80 backdrop-blur-md border border-white/10 flex items-center gap-1.5">
+              <div className="px-2.5 py-1 rounded-xl bg-black/85 backdrop-blur-md border border-white/10 flex items-center gap-1.5">
                 <Zap className="w-3 h-3 text-[#ebd73f]" />
                 <span className="text-[10px] font-mono text-slate-300">
-                  {niche.metrics.highlightLabel}: <strong className="text-white font-bold">{niche.metrics.highlightNum}</strong>
+                  {niche.metrics.highlightLabel}: <strong className="text-[#ebd73f] font-bold">{niche.metrics.highlightNum}</strong>
                 </span>
               </div>
 
-              <div className="px-2.5 py-1 rounded-xl bg-black/80 backdrop-blur-md border border-white/10 text-[10px] font-mono text-slate-300">
-                {niche.metrics.retentionLabel}: <strong className="text-emerald-400 font-bold">{niche.metrics.retentionNum}</strong>
+              <div className="px-2.5 py-1 rounded-xl bg-black/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-slate-300">
+                {niche.metrics.retentionLabel}: <strong className="text-white font-bold">{niche.metrics.retentionNum}</strong>
               </div>
             </div>
           </div>
@@ -138,16 +130,16 @@ export function NicheShowcaseCard({
         </div>
 
         {/* Feature Highlights List */}
-        <div className="pt-2 border-t border-white/10 space-y-1.5">
+        <div className="pt-2 border-t border-white/10 space-y-1.5 font-clash">
           {niche.features.slice(0, 3).map((feat, idx) => (
-            <div key={idx} className="flex items-start gap-2 text-xs text-slate-400">
+            <div key={idx} className="flex items-start gap-2 text-xs text-slate-300/80">
               <CheckCircle2 className="w-3.5 h-3.5 text-[#ebd73f] shrink-0 mt-0.5" />
               <span className="leading-tight">{feat}</span>
             </div>
           ))}
         </div>
 
-        {/* Card CTA Action Row */}
+        {/* Card CTA Action Row - Equal Balance Across All Niches */}
         <div className="pt-4 flex items-center gap-2.5">
           {isLive ? (
             <button
@@ -155,12 +147,11 @@ export function NicheShowcaseCard({
                 sounds.playClick();
                 onLaunchLive();
               }}
-              className="w-full btn-dripp-primary py-3 px-4 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full btn-dripp-primary py-3 px-4 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-lg"
             >
               <span className="auth-shimmer-sweep"></span>
-              <Coffee className="w-4 h-4 text-black" />
-              <span>Launch Live Cafe App Demo</span>
-              <ArrowUpRight className="w-4 h-4" />
+              <span>Explore Live Demo</span>
+              <ArrowUpRight className="w-4 h-4 text-black" />
             </button>
           ) : (
             <button
@@ -168,11 +159,11 @@ export function NicheShowcaseCard({
                 sounds.playClick();
                 onOpenDemo(niche);
               }}
-              className="w-full py-3 px-4 rounded-full bg-white/10 hover:bg-[#ebd73f] text-white hover:text-black font-clash font-semibold text-xs border border-white/15 hover:border-transparent transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+              className="w-full btn-dripp-primary py-3 px-4 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-lg"
             >
-              <Sparkles className="w-3.5 h-3.5 text-[#ebd73f] group-hover:text-black" />
-              <span>Launch Interactive Demo</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <span className="auth-shimmer-sweep"></span>
+              <span>Explore Interactive Demo</span>
+              <ArrowUpRight className="w-4 h-4 text-black" />
             </button>
           )}
 

@@ -2,19 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, 
-  CheckCircle2, 
-  Calendar, 
-  Clock, 
-  User, 
-  Phone, 
   Sparkles, 
-  QrCode, 
-  Trophy, 
-  MapPin, 
-  CreditCard,
-  Send,
-  ArrowRight,
-  ShieldCheck,
+  ArrowRight, 
   Check
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
@@ -62,20 +51,17 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
           className="fixed inset-0 bg-black/85 backdrop-blur-xl -z-10"
         ></motion.div>
 
-        {/* Modal Window */}
+        {/* Modal Window - Dripp Media Brand Styling */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="w-full max-w-3xl bg-[#0c0c0c] border border-white/15 rounded-3xl overflow-hidden shadow-2xl shadow-black my-8 flex flex-col max-h-[90vh]"
+          className="w-full max-w-3xl bg-[#0a0a0a] border border-white/15 rounded-3xl overflow-hidden shadow-2xl shadow-black my-8 flex flex-col max-h-[90vh]"
         >
           {/* Header */}
           <div className="p-5 sm:p-6 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
             <div className="flex items-center gap-3">
-              <div 
-                className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-black shadow-lg"
-                style={{ backgroundColor: niche.accentColor }}
-              >
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-black shadow-lg bg-[#ebd73f]">
                 <Sparkles className="w-5 h-5" />
               </div>
               <div>
@@ -83,8 +69,8 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                   <span className="font-mono text-[10px] tracking-widest uppercase text-slate-400">
                     {niche.code} • INTERACTIVE DEMO
                   </span>
-                  <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                    ONLINE
+                  <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-[#ebd73f]/20 text-[#ebd73f] border border-[#ebd73f]/30">
+                    READY
                   </span>
                 </div>
                 <h3 className="font-panchang font-bold text-lg text-white">
@@ -95,7 +81,7 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
 
             <button
               onClick={onClose}
-              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition"
+              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -109,21 +95,18 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="p-6 rounded-2xl bg-[#141414] border border-white/15 text-center space-y-5"
+                className="p-6 rounded-2xl bg-[#111111] border border-white/15 text-center space-y-5"
               >
-                <div 
-                  className="w-16 h-16 rounded-full mx-auto flex items-center justify-center text-black shadow-xl"
-                  style={{ backgroundColor: niche.accentColor }}
-                >
+                <div className="w-16 h-16 rounded-full mx-auto flex items-center justify-center text-black shadow-xl bg-[#ebd73f]">
                   <Check className="w-8 h-8 stroke-[3]" />
                 </div>
 
                 <div className="space-y-1">
-                  <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
-                    CONFIRMATION TOKEN DISPATCHED
+                  <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-[#ebd73f]/20 text-[#ebd73f] font-bold border border-[#ebd73f]/30">
+                    SIMULATION COMPLETE
                   </span>
                   <h4 className="font-panchang font-bold text-xl text-white pt-2">
-                    Booking Successfully Simulated!
+                    Booking Successfully Simulated
                   </h4>
                   <p className="text-xs text-slate-300 font-clash max-w-md mx-auto">
                     In the live production build, an automated WhatsApp SMS and Calendar invite is sent instantly to <strong>{customerPhone}</strong>.
@@ -131,7 +114,7 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                 </div>
 
                 {/* Digital Ticket Stash */}
-                <div className="max-w-md mx-auto p-4 rounded-xl bg-black/60 border border-white/10 text-left space-y-3 font-mono text-xs">
+                <div className="max-w-md mx-auto p-4 rounded-xl bg-black/70 border border-white/10 text-left space-y-3 font-mono text-xs">
                   <div className="flex items-center justify-between pb-2 border-b border-white/10">
                     <span className="text-slate-400">TICKET REF:</span>
                     <span className="text-white font-bold">{generatedTicket?.id}</span>
@@ -146,14 +129,14 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-slate-400">DISPATCH TIME:</span>
-                    <span className="text-emerald-400">{generatedTicket?.timestamp}</span>
+                    <span className="text-[#ebd73f]">{generatedTicket?.timestamp}</span>
                   </div>
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
                   <button
                     onClick={handleReset}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-white text-xs font-semibold transition"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-white text-xs font-semibold transition cursor-pointer"
                   >
                     Test Another Simulation
                   </button>
@@ -164,8 +147,7 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                       onClose();
                       onOpenQuote();
                     }}
-                    className="w-full sm:w-auto px-6 py-2.5 rounded-full text-black text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg"
-                    style={{ backgroundColor: niche.accentColor }}
+                    className="w-full sm:w-auto btn-dripp-primary px-6 py-2.5 text-xs font-bold transition flex items-center justify-center gap-2 shadow-lg cursor-pointer"
                   >
                     <span>Deploy This System for Your Business</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -173,7 +155,7 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                 </div>
               </motion.div>
             ) : (
-              /* INTERACTIVE FORM FLOWS BY NICHE */
+              /* INTERACTIVE FORM FLOWS BY NICHE (Pure Dripp Yellow & Monochrome) */
               <form onSubmit={handleConfirmBooking} className="space-y-6">
                 
                 {/* Intro Headline */}
@@ -186,7 +168,7 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                   </p>
                 </div>
 
-                {/* NICHE 1: CLINICS */}
+                {/* NICHE: CLINICS */}
                 {niche.id === 'clinics' && niche.demoData && (
                   <div className="space-y-4">
                     <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
@@ -202,16 +184,16 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                           }}
                           className={`p-3 rounded-2xl border cursor-pointer transition ${
                             selectedItemIndex === idx 
-                              ? 'bg-cyan-500/10 border-cyan-400 shadow-glow-cyan' 
+                              ? 'bg-[#ebd73f]/10 border-[#ebd73f] shadow-glow-yellow' 
                               : 'bg-white/[0.03] border-white/10 hover:border-white/20'
                           }`}
                         >
-                          <img src={doc.image} alt={doc.name} className="w-12 h-12 rounded-xl object-cover mb-2" />
+                          <img src={doc.image} alt={doc.name} className="w-12 h-12 rounded-xl object-cover mb-2 grayscale contrast-125" />
                           <p className="font-clash font-bold text-xs text-white">{doc.name}</p>
                           <p className="text-[10px] text-slate-400 leading-tight mt-0.5">{doc.specialty}</p>
                           <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] font-mono">
-                            <span className="text-cyan-400">{doc.fee}</span>
-                            <span className="text-slate-400">⭐ {doc.rating}</span>
+                            <span className="text-[#ebd73f] font-bold">{doc.fee}</span>
+                            <span className="text-slate-400">★ {doc.rating}</span>
                           </div>
                         </div>
                       ))}
@@ -229,9 +211,9 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                             sounds.playClick();
                             setSelectedSlot(sIdx);
                           }}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-mono transition ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-mono transition cursor-pointer ${
                             selectedSlot === sIdx
-                              ? 'bg-cyan-400 text-black font-bold shadow-md'
+                              ? 'bg-[#ebd73f] text-black font-bold shadow-md'
                               : 'bg-white/[0.04] border border-white/10 text-slate-300 hover:text-white'
                           }`}
                         >
@@ -242,7 +224,7 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                   </div>
                 )}
 
-                {/* NICHE 2: GYMS */}
+                {/* NICHE: GYMS */}
                 {niche.id === 'gyms' && niche.demoData && (
                   <div className="space-y-4">
                     <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
@@ -258,7 +240,7 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                           }}
                           className={`p-3.5 rounded-2xl border cursor-pointer transition ${
                             selectedItemIndex === idx 
-                              ? 'bg-rose-500/10 border-rose-500 shadow-glow-red' 
+                              ? 'bg-[#ebd73f]/10 border-[#ebd73f] shadow-glow-yellow' 
                               : 'bg-white/[0.03] border-white/10 hover:border-white/20'
                           }`}
                         >
@@ -266,7 +248,7 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                             {plan.tag}
                           </span>
                           <p className="font-clash font-bold text-sm text-white mt-2">{plan.name}</p>
-                          <p className="text-lg font-panchang font-black text-rose-400 mt-1">{plan.price}</p>
+                          <p className="text-lg font-panchang font-black text-[#ebd73f] mt-1">{plan.price}</p>
                           <p className="text-[10px] text-slate-400 -mt-1 font-mono">/{plan.cycle}</p>
                           <ul className="mt-3 pt-2 border-t border-white/10 space-y-1 text-[10px] text-slate-300">
                             {plan.perks.map((p, pI) => (
@@ -279,7 +261,7 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                   </div>
                 )}
 
-                {/* NICHE 3: NIGHTCLUBS */}
+                {/* NICHE: NIGHTCLUBS */}
                 {niche.id === 'clubs' && niche.demoData && (
                   <div className="space-y-4">
                     <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
@@ -295,12 +277,12 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                           }}
                           className={`p-3.5 rounded-2xl border cursor-pointer transition ${
                             selectedItemIndex === idx 
-                              ? 'bg-purple-500/10 border-purple-400 shadow-glow-purple' 
+                              ? 'bg-[#ebd73f]/10 border-[#ebd73f] shadow-glow-yellow' 
                               : 'bg-white/[0.03] border-white/10 hover:border-white/20'
                           }`}
                         >
                           <p className="font-clash font-bold text-xs text-white">{table.name}</p>
-                          <p className="text-sm font-panchang font-bold text-purple-400 mt-1">{table.minSpend}</p>
+                          <p className="text-sm font-panchang font-bold text-[#ebd73f] mt-1">{table.minSpend}</p>
                           <p className="text-[10px] font-mono text-slate-400">{table.guests}</p>
                           <p className="text-[10px] text-slate-300 mt-2 border-t border-white/10 pt-1.5 leading-snug">
                             {table.perks}
@@ -311,7 +293,7 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                   </div>
                 )}
 
-                {/* NICHE 4: TURFS */}
+                {/* NICHE: TURFS */}
                 {niche.id === 'turfs' && niche.demoData && (
                   <div className="space-y-4">
                     <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
@@ -327,12 +309,12 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                           }}
                           className={`p-3.5 rounded-2xl border cursor-pointer transition ${
                             selectedItemIndex === idx 
-                              ? 'bg-emerald-500/10 border-emerald-400 shadow-md' 
+                              ? 'bg-[#ebd73f]/10 border-[#ebd73f] shadow-glow-yellow' 
                               : 'bg-white/[0.03] border-white/10 hover:border-white/20'
                           }`}
                         >
                           <p className="font-clash font-bold text-xs text-white leading-tight">{court.name}</p>
-                          <p className="text-sm font-panchang font-bold text-emerald-400 mt-1">{court.rateDay}</p>
+                          <p className="text-sm font-panchang font-bold text-[#ebd73f] mt-1">{court.rateDay}</p>
                           <p className="text-[10px] font-mono text-slate-400 mt-0.5">Floodlights: {court.rateNight}</p>
                         </div>
                       ))}
@@ -350,9 +332,9 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                             sounds.playClick();
                             setSelectedSlot(sIdx);
                           }}
-                          className={`p-2 rounded-xl text-left border transition ${
+                          className={`p-2 rounded-xl text-left border transition cursor-pointer ${
                             selectedSlot === sIdx
-                              ? 'bg-emerald-500 text-black font-bold'
+                              ? 'bg-[#ebd73f] text-black font-bold'
                               : 'bg-white/[0.03] border-white/10 text-white/70 hover:text-white'
                           }`}
                         >
@@ -364,7 +346,7 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                   </div>
                 )}
 
-                {/* NICHE 5: SALONS */}
+                {/* NICHE: SALONS */}
                 {niche.id === 'salons' && niche.demoData && (
                   <div className="space-y-4">
                     <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
@@ -380,13 +362,13 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                           }}
                           className={`p-3.5 rounded-2xl border cursor-pointer transition ${
                             selectedItemIndex === idx 
-                              ? 'bg-rose-500/10 border-rose-400 shadow-md' 
+                              ? 'bg-[#ebd73f]/10 border-[#ebd73f] shadow-glow-yellow' 
                               : 'bg-white/[0.03] border-white/10 hover:border-white/20'
                           }`}
                         >
                           <p className="font-clash font-bold text-xs text-white">{srv.name}</p>
                           <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/10 text-xs font-mono">
-                            <span className="text-rose-400 font-bold">{srv.price}</span>
+                            <span className="text-[#ebd73f] font-bold">{srv.price}</span>
                             <span className="text-slate-400">{srv.duration}</span>
                           </div>
                         </div>
@@ -404,7 +386,7 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                       required
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-xl bg-black border border-white/15 text-white text-xs font-clash focus:outline-none focus:border-white"
+                      className="w-full px-3.5 py-2 rounded-xl bg-black border border-white/15 text-white text-xs font-clash focus:outline-none focus:border-[#ebd73f]"
                     />
                   </div>
 
@@ -415,7 +397,7 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                       required
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-xl bg-black border border-white/15 text-white text-xs font-clash focus:outline-none focus:border-white"
+                      className="w-full px-3.5 py-2 rounded-xl bg-black border border-white/15 text-white text-xs font-clash focus:outline-none focus:border-[#ebd73f]"
                     />
                   </div>
                 </div>
@@ -424,11 +406,11 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
                 <div className="pt-3">
                   <button
                     type="submit"
-                    className="w-full py-3.5 rounded-full font-bold text-xs text-black transition flex items-center justify-center gap-2 shadow-xl cursor-pointer hover:scale-[1.01]"
-                    style={{ backgroundColor: niche.accentColor }}
+                    className="w-full btn-dripp-primary py-3.5 text-xs font-bold flex items-center justify-center gap-2 shadow-xl cursor-pointer"
                   >
+                    <span className="auth-shimmer-sweep"></span>
                     <span>Simulate Instant Customer Booking</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4 text-black" />
                   </button>
                   <p className="text-center text-[10px] font-mono text-slate-500 mt-2">
                     ✦ Instant simulated flow • No real payment deducted
