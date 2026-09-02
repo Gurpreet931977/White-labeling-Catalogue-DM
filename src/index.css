@@ -294,3 +294,8 @@
   animation: hudPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+/* Dev Mode Wireframe Debugger */
+body.debug-wireframe * {
+  outline: 1px dashed rgba(235, 215, 63, 0.3) !important;
+}
+

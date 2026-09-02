@@ -23,7 +23,7 @@ import { sounds } from '../utils/audio';
 
 export function DrippCatalogueApp({ onOpenStudio, onOpenCafeOptions, onLaunchCafeDemo }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [isDevMode, setIsDevMode] = useState(true); // Default ON for developermodeon vibe!
+  const [isDevMode, setIsDevMode] = useState(false); // Default OFF as requested
   const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
   const [selectedDemoNiche, setSelectedDemoNiche] = useState(null);
