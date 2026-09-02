@@ -7,14 +7,17 @@ import {
   X, 
   Cpu, 
   SlidersHorizontal,
-  LayoutGrid
+  LayoutGrid,
+  Utensils,
+  Wand2
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
 
 export function DrippNavbar({ 
   isDevMode, 
   setIsDevMode, 
-  onOpenCustomizer,
+  onOpenStudio,
+  onOpenCafeOptions,
   onOpenQuote 
 }) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -62,8 +65,8 @@ export function DrippNavbar({
           </a>
         </div>
 
-        {/* Desktop Nav Links - Pure Dripp Media Fonts & Colors */}
-        <nav className="hidden lg:flex items-center gap-7 text-xs font-clash font-medium text-white/80">
+        {/* Desktop Nav Links - Clean & Executive for Sales Pitches */}
+        <nav className="hidden lg:flex items-center gap-6 text-xs font-clash font-medium text-white/80">
           <a 
             href="#niches" 
             className="hover:text-[#ebd73f] transition flex items-center gap-1.5"
@@ -76,13 +79,24 @@ export function DrippNavbar({
           <button 
             onClick={() => {
               sounds.playClick();
-              onOpenCustomizer();
+              if (onOpenCafeOptions) onOpenCafeOptions();
             }} 
             className="hover:text-[#ebd73f] transition flex items-center gap-1.5 cursor-pointer"
           >
             <span className="text-[#ebd73f] font-mono text-[10px]">02/</span>
-            <SlidersHorizontal className="w-3.5 h-3.5 text-[#ebd73f]" />
-            <span>Brand Simulator</span>
+            <span>Cafe Models (4 Types)</span>
+          </button>
+
+          <button 
+            onClick={() => {
+              sounds.playClick();
+              if (onOpenStudio) onOpenStudio();
+            }} 
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ebd73f]/10 border border-[#ebd73f]/30 text-[#ebd73f] font-bold transition hover:bg-[#ebd73f] hover:text-black cursor-pointer shadow-sm"
+          >
+            <Wand2 className="w-3.5 h-3.5" />
+            <span>Brand Studio &amp; Editor</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#ebd73f] animate-pulse"></span>
           </button>
 
           <a 
@@ -134,7 +148,7 @@ export function DrippNavbar({
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition"
+            className="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition cursor-pointer"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -151,18 +165,34 @@ export function DrippNavbar({
             className="flex items-center gap-2.5 p-3 rounded-xl bg-white/[0.04] border border-white/10 text-white hover:text-[#ebd73f] transition text-sm"
           >
             <LayoutGrid className="w-4 h-4 text-[#ebd73f]" />
-            <span>Explore Niches &amp; Solutions</span>
+            <span>01/ Niches &amp; Catalogue</span>
           </a>
 
           <button
             onClick={() => {
               setMobileMenuOpen(false);
-              onOpenCustomizer();
+              if (onOpenCafeOptions) onOpenCafeOptions();
             }}
             className="w-full flex items-center gap-2.5 p-3 rounded-xl bg-white/[0.04] border border-white/10 text-white hover:text-[#ebd73f] transition text-sm text-left"
           >
-            <SlidersHorizontal className="w-4 h-4 text-[#ebd73f]" />
-            <span>Interactive Brand Simulator</span>
+            <Utensils className="w-4 h-4 text-[#ebd73f]" />
+            <span>02/ Cafe Models (4 Types)</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setMobileMenuOpen(false);
+              if (onOpenStudio) onOpenStudio();
+            }}
+            className="w-full flex items-center justify-between p-3 rounded-xl bg-[#ebd73f]/15 border border-[#ebd73f] text-[#ebd73f] font-bold text-sm text-left"
+          >
+            <div className="flex items-center gap-2.5">
+              <Wand2 className="w-4 h-4 text-[#ebd73f]" />
+              <span>03/ Brand Studio &amp; Editor</span>
+            </div>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#ebd73f] text-black">
+              STUDIO
+            </span>
           </button>
 
           <a
@@ -171,7 +201,7 @@ export function DrippNavbar({
             className="flex items-center gap-2.5 p-3 rounded-xl bg-white/[0.04] border border-white/10 text-white hover:text-[#ebd73f] transition text-sm"
           >
             <Terminal className="w-4 h-4 text-[#ebd73f]" />
-            <span>Architecture &amp; Tech Specs</span>
+            <span>04/ Architecture &amp; Tech Specs</span>
           </a>
 
           <button

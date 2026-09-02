@@ -5,7 +5,9 @@ import {
   ArrowRight, 
   SlidersHorizontal, 
   Terminal, 
-  LayoutGrid
+  LayoutGrid,
+  Wand2,
+  Code2
 } from 'lucide-react';
 import { CATALOGUE_DATA } from '../data/catalogueData';
 import { DrippNavbar } from '../components/catalogue/DrippNavbar';
@@ -19,7 +21,7 @@ import { InstantQuoteDrawer } from '../components/catalogue/InstantQuoteDrawer';
 import { DrippFooter } from '../components/catalogue/DrippFooter';
 import { sounds } from '../utils/audio';
 
-export function DrippCatalogueApp({ onOpenCafeOptions, onLaunchCafeDemo }) {
+export function DrippCatalogueApp({ onOpenStudio, onOpenCafeOptions, onLaunchCafeDemo }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isDevMode, setIsDevMode] = useState(true); // Default ON for developermodeon vibe!
   const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
@@ -48,12 +50,14 @@ export function DrippCatalogueApp({ onOpenCafeOptions, onLaunchCafeDemo }) {
       <DrippNavbar
         isDevMode={isDevMode}
         setIsDevMode={setIsDevMode}
-        onOpenCustomizer={() => setIsCustomizerOpen(true)}
+        onOpenStudio={onOpenStudio}
+        onOpenCafeOptions={onOpenCafeOptions}
         onOpenQuote={() => setIsQuoteOpen(true)}
       />
 
       {/* Hero Section */}
       <DrippHero
+        onOpenStudio={onOpenStudio}
         onOpenCustomizer={() => setIsCustomizerOpen(true)}
         onOpenQuote={() => setIsQuoteOpen(true)}
       />
@@ -100,7 +104,7 @@ export function DrippCatalogueApp({ onOpenCafeOptions, onLaunchCafeDemo }) {
 
       </section>
 
-      {/* Interactive Brand Customizer Teaser Banner */}
+      {/* Advanced White-Label Studio & Editor Banner */}
       <section className="py-16 px-4 sm:px-6 max-w-7xl mx-auto">
         <div className="relative rounded-3xl p-8 sm:p-12 overflow-hidden bg-gradient-to-br from-[#121212] via-[#0d0d0d] to-[#080808] border border-white/15 shadow-2xl">
           
@@ -110,38 +114,51 @@ export function DrippCatalogueApp({ onOpenCafeOptions, onLaunchCafeDemo }) {
             
             <div className="lg:col-span-8 space-y-4">
               <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-[#ebd73f]/20 text-[#ebd73f] font-bold border border-[#ebd73f]/30">
-                CLIENT SIMULATOR
+                ADVANCED BRAND STUDIO &amp; CODE GENERATOR
               </span>
               <h3 className="font-panchang font-black text-2xl sm:text-3xl md:text-4xl text-white leading-tight">
-                See Your Brand Live in 10 Seconds.
+                Design, Reskin &amp; Download Full Code Files.
               </h3>
               <p className="text-sm text-slate-300 font-clash max-w-xl leading-relaxed">
-                Test our real-time White-Label Simulator: plug in your business name, choose an accent theme, and watch the ordering and booking interface transform instantly.
+                Need to pitch or deploy for a new client? Use our full-page Brand Studio to upload custom logos, select 60-30-10 color palettes with hex codes, test live mobile previews, and download production-ready JSON and Tailwind configuration packages.
               </p>
             </div>
 
-            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-end">
+            <div className="lg:col-span-4 flex flex-col gap-3 justify-end">
               <button
                 onClick={() => {
                   sounds.playClick();
-                  setIsCustomizerOpen(true);
+                  if (onOpenStudio) onOpenStudio();
                 }}
                 className="btn-dripp-primary py-4 px-6 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-xl"
               >
                 <span className="auth-shimmer-sweep"></span>
-                <SlidersHorizontal className="w-4 h-4 text-black" />
-                <span>Launch Brand Simulator</span>
+                <Wand2 className="w-4 h-4 text-black" />
+                <span>Open Brand Studio &amp; Editor</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
-              <a
-                href="#niches"
-                onClick={() => sounds.playClick()}
-                className="btn-dripp-secondary py-3.5 px-5 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer text-center"
-              >
-                <LayoutGrid className="w-4 h-4 text-[#ebd73f]" />
-                <span>Explore All 6 Niches</span>
-              </a>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    sounds.playClick();
+                    setIsCustomizerOpen(true);
+                  }}
+                  className="flex-1 btn-dripp-secondary py-3 px-4 text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer text-center"
+                >
+                  <SlidersHorizontal className="w-3.5 h-3.5 text-[#ebd73f]" />
+                  <span>Quick Simulator</span>
+                </button>
+
+                <a
+                  href="#niches"
+                  onClick={() => sounds.playClick()}
+                  className="flex-1 btn-dripp-secondary py-3 px-4 text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer text-center"
+                >
+                  <LayoutGrid className="w-3.5 h-3.5 text-[#ebd73f]" />
+                  <span>All Niches</span>
+                </a>
+              </div>
             </div>
 
           </div>

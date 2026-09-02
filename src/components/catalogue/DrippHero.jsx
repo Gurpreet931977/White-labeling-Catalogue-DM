@@ -10,6 +10,7 @@ import {
 import { sounds } from '../../utils/audio';
 
 export function DrippHero({ 
+  onOpenStudio,
   onOpenCustomizer, 
   onOpenQuote 
 }) {
@@ -64,7 +65,7 @@ export function DrippHero({
         transition={{ duration: 0.7, delay: 0.2 }}
         className="max-w-2xl text-sm sm:text-base md:text-lg text-slate-300/90 font-clash leading-relaxed mb-8"
       >
-        High-performance, conversion-engineered digital platforms for modern businesses — built with contactless reservations, instant scheduling, interactive ordering, and custom brand identity engines.
+        High-performance, conversion-engineered digital platforms for modern businesses: built with contactless reservations, instant scheduling, interactive ordering, and custom brand identity engines.
       </motion.p>
 
       {/* Hero CTA Group - Balanced, Agency-Wide Actions */}
@@ -86,16 +87,17 @@ export function DrippHero({
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </a>
 
-        {/* Test Brand Simulator */}
+        {/* Open Brand Studio & Editor */}
         <button
           onClick={() => {
             sounds.playClick();
-            onOpenCustomizer();
+            if (onOpenStudio) onOpenStudio();
+            else if (onOpenCustomizer) onOpenCustomizer();
           }}
-          className="btn-dripp-secondary px-6 py-3.5 text-sm flex items-center gap-2 font-semibold hover:border-[#ebd73f]/60 cursor-pointer"
+          className="btn-dripp-secondary px-6 py-3.5 text-sm flex items-center gap-2 font-semibold hover:border-[#ebd73f]/80 cursor-pointer shadow-lg"
         >
           <SlidersHorizontal className="w-4 h-4 text-[#ebd73f]" />
-          <span>Test Brand Simulator</span>
+          <span>Open Brand Studio &amp; Editor</span>
         </button>
 
         {/* Get Instant Quote */}
