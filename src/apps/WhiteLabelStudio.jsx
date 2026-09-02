@@ -17,13 +17,155 @@ import {
   Sparkles, 
   FileText, 
   Code2, 
-  RefreshCw,
-  ShoppingBag,
-  Clock,
-  Eye,
-  Trash2
+  Wand2,
+  Zap,
+  Shield,
+  Trash2,
+  Compass,
+  Cpu,
+  Flame,
+  LayoutTemplate
 } from 'lucide-react';
 import { sounds } from '../utils/audio';
+
+// 9 Modern, Creative Design Styles & Aesthetics
+export const DESIGN_STYLES = [
+  {
+    id: "premium",
+    name: "Premium Luxury",
+    category: "High-End & Editorial",
+    tagline: "Champagne sheen, refined gold borders, and elegant spaciousness",
+    badge: "LUXURY SUITE",
+    radius: "rounded-2xl",
+    buttonRadius: "rounded-full",
+    borderClass: "border border-white/15 hover:border-[#ebd73f]/60",
+    shadowClass: "shadow-[0_10px_30px_rgba(0,0,0,0.7)]",
+    buttonStyle: "shadow-glow-yellow font-bold tracking-wider",
+    previewCardClass: "bg-[#141414] border border-white/15 rounded-2xl",
+    chipStyle: "rounded-full bg-white/10 text-white/90 border border-white/15",
+    fontPairingId: "panchang-clash"
+  },
+  {
+    id: "glassmorphism",
+    name: "Frosted Glassmorphism",
+    category: "Luminous & Translucent",
+    tagline: "Multi-layered frosted glass with backdrop blur and crystal depth",
+    badge: "FROSTED GLASS",
+    radius: "rounded-3xl",
+    buttonRadius: "rounded-2xl",
+    borderClass: "border border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)]",
+    shadowClass: "shadow-2xl backdrop-blur-2xl bg-white/[0.07]",
+    buttonStyle: "backdrop-blur-xl border border-white/30 font-bold",
+    previewCardClass: "backdrop-blur-xl bg-white/[0.08] border border-white/20 rounded-3xl",
+    chipStyle: "rounded-full backdrop-blur-md bg-white/10 text-white border border-white/20",
+    fontPairingId: "clash-mono"
+  },
+  {
+    id: "futuristic",
+    name: "Cyber Futuristic HUD",
+    category: "Sci-Fi & Terminal",
+    tagline: "Cyberpunk geometry, monospace telemetry, and glowing scanline indicators",
+    badge: "SYS.HUD // v4",
+    radius: "rounded-none",
+    buttonRadius: "rounded-none",
+    borderClass: "border-l-2 border-r-2 border-[#ebd73f]",
+    shadowClass: "shadow-[0_0_25px_rgba(235,215,63,0.25)]",
+    buttonStyle: "uppercase tracking-widest font-mono font-black border border-[#ebd73f]",
+    previewCardClass: "bg-black/90 border border-[#ebd73f]/40 cyber-grid",
+    chipStyle: "font-mono text-[9px] uppercase px-2 py-0.5 border border-[#ebd73f]/50 text-[#ebd73f] bg-black",
+    fontPairingId: "clash-mono"
+  },
+  {
+    id: "brutalism",
+    name: "Neo-Brutalism",
+    category: "High-Contrast & Raw",
+    tagline: "Sharp 0px edges, bold high-contrast strokes, and hard flat offset shadows",
+    badge: "NEO-BRUTALIST",
+    radius: "rounded-none",
+    buttonRadius: "rounded-none",
+    borderClass: "border-2 border-white",
+    shadowClass: "shadow-[5px_5px_0px_#ebd73f]",
+    buttonStyle: "border-2 border-black shadow-[3px_3px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 font-black uppercase tracking-tight",
+    previewCardClass: "bg-black border-2 border-white shadow-[4px_4px_0px_#ebd73f]",
+    chipStyle: "border border-white bg-white text-black font-black uppercase text-[9px] px-2 py-0.5",
+    fontPairingId: "syne-inter"
+  },
+  {
+    id: "playful",
+    name: "Playful Vibrant",
+    category: "Bouncy & Friendly",
+    tagline: "Juicy curves, pill-shaped interactions, and cheerful micro-animations",
+    badge: "PLAYFUL & POP",
+    radius: "rounded-[28px]",
+    buttonRadius: "rounded-full",
+    borderClass: "border-2 border-white/20",
+    shadowClass: "shadow-xl shadow-black/60",
+    buttonStyle: "rounded-full font-black scale-100 hover:scale-105 active:scale-95 shadow-lg",
+    previewCardClass: "bg-[#161616] border-2 border-white/15 rounded-[28px]",
+    chipStyle: "rounded-full bg-[#ebd73f]/20 text-[#ebd73f] font-bold px-3 py-1",
+    fontPairingId: "syne-inter"
+  },
+  {
+    id: "sporty",
+    name: "Sporty High-Octane",
+    category: "Athletic & Dynamic",
+    tagline: "Angled speed cuts, carbon fiber texture feel, and high-contrast adrenaline",
+    badge: "HIGH-OCTANE // 60s",
+    radius: "rounded-xl",
+    buttonRadius: "rounded-lg -skew-x-3",
+    borderClass: "border border-white/20 border-l-4 border-l-[#ebd73f]",
+    shadowClass: "shadow-2xl shadow-black",
+    buttonStyle: "font-black italic tracking-wide -skew-x-3 shadow-md",
+    previewCardClass: "bg-[#111111] border border-white/15 rounded-xl border-l-4 border-l-[#ebd73f]",
+    chipStyle: "rounded-md bg-white/10 text-white font-mono uppercase text-[9px] px-2 py-0.5 font-black italic",
+    fontPairingId: "clash-mono"
+  },
+  {
+    id: "foodie",
+    name: "Foodie Warm Artisan",
+    category: "Cozy & Appetizing",
+    tagline: "Rich appetizing warmth, tactile press feel, and organic culinary touches",
+    badge: "ARTISAN KITCHEN",
+    radius: "rounded-2xl",
+    buttonRadius: "rounded-2xl",
+    borderClass: "border border-white/15",
+    shadowClass: "shadow-2xl shadow-black/80",
+    buttonStyle: "font-bold shadow-md active:translate-y-0.5",
+    previewCardClass: "bg-[#13100d] border border-white/15 rounded-2xl",
+    chipStyle: "rounded-xl bg-[#ebd73f]/15 text-[#ebd73f] border border-[#ebd73f]/30 px-2.5 py-0.5 font-bold",
+    fontPairingId: "panchang-clash"
+  },
+  {
+    id: "professional",
+    name: "Professional Executive",
+    category: "Corporate & High-Trust",
+    tagline: "Clean data hierarchy, structured precision, and verified credibility",
+    badge: "ENTERPRISE",
+    radius: "rounded-xl",
+    buttonRadius: "rounded-xl",
+    borderClass: "border border-white/15",
+    shadowClass: "shadow-lg shadow-black/50",
+    buttonStyle: "font-semibold tracking-normal shadow-sm",
+    previewCardClass: "bg-[#121212] border border-white/10 rounded-xl",
+    chipStyle: "rounded-md bg-white/5 text-slate-300 border border-white/10 font-mono text-[10px] px-2 py-0.5",
+    fontPairingId: "minimal-clean"
+  },
+  {
+    id: "minimal",
+    name: "Swiss Minimalist",
+    category: "Pure Whitespace",
+    tagline: "Zero noise, deliberate spatial rhythm, and stark typographic focus",
+    badge: "SWISS STYLE",
+    radius: "rounded-lg",
+    buttonRadius: "rounded-md",
+    borderClass: "border border-white/10",
+    shadowClass: "shadow-none",
+    buttonStyle: "font-medium tracking-tight",
+    previewCardClass: "bg-[#0c0c0c] border border-white/10 rounded-lg",
+    chipStyle: "rounded bg-transparent text-slate-400 border border-white/10 font-mono text-[9px] px-1.5 py-0.5",
+    fontPairingId: "minimal-clean"
+  }
+];
 
 // 60-30-10 Curated Brand Presets
 const PRESET_PALETTES = [
@@ -116,8 +258,9 @@ const NICHES = [
 ];
 
 export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
-  // Brand Setup State
-  const [activeTab, setActiveTab] = useState('brand'); // 'brand' | 'colors' | 'preview' | 'export'
+  // State: Tab, Niche, and Style Selection
+  const [activeTab, setActiveTab] = useState('styles'); // 'styles' | 'brand' | 'colors' | 'export'
+  const [selectedStyle, setSelectedStyle] = useState(DESIGN_STYLES[0]);
   const [selectedNiche, setSelectedNiche] = useState(NICHES[0]);
   const [brandName, setBrandName] = useState(NICHES[0].defaultName);
   const [tagline, setTagline] = useState(NICHES[0].defaultTagline);
@@ -152,6 +295,16 @@ export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
     }
   };
 
+  const handleSelectStyle = (style) => {
+    sounds.playClick();
+    setSelectedStyle(style);
+    // Optionally auto-align font pairing with style recommendation
+    const matchedFont = FONT_PAIRINGS.find(fp => fp.id === style.fontPairingId);
+    if (matchedFont) {
+      setFontPairing(matchedFont);
+    }
+  };
+
   const handleApplyPreset = (preset) => {
     sounds.playClick();
     setActivePreset(preset);
@@ -174,6 +327,13 @@ export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
       tagline: tagline,
       niche: selectedNiche.id,
       currency: currency,
+      designStyle: {
+        id: selectedStyle.id,
+        name: selectedStyle.name,
+        category: selectedStyle.category,
+        radiusPreset: selectedStyle.radius,
+        shadowPreset: selectedStyle.shadowClass
+      },
       colorRule: "60-30-10",
       palette: {
         dominant60_bg: color60,
@@ -191,7 +351,7 @@ export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
   };
 
   const generateTailwindConfig = () => {
-    return `// tailwind.config.js - Custom White-Label Theme for ${brandName}
+    return `// tailwind.config.js - Custom White-Label Theme for ${brandName} (${selectedStyle.name})
 module.exports = {
   theme: {
     extend: {
@@ -205,6 +365,12 @@ module.exports = {
       fontFamily: {
         heading: ['"${fontPairing.display}"', 'sans-serif'],
         body: ['"${fontPairing.body}"', 'sans-serif'],
+      },
+      borderRadius: {
+        'brand': '${selectedStyle.id === "brutalism" ? "0px" : selectedStyle.id === "playful" ? "28px" : selectedStyle.id === "glassmorphism" ? "24px" : "16px"}',
+      },
+      boxShadow: {
+        'brand-accent': '${selectedStyle.id === "brutalism" ? "4px 4px 0px #000" : selectedStyle.id === "futuristic" ? "0 0 25px rgba(235,215,63,0.35)" : "0 8px 24px rgba(0,0,0,0.5)"}'
       }
     }
   }
@@ -212,13 +378,14 @@ module.exports = {
   };
 
   const generateCssVariables = () => {
-    return `/* theme.css - 60-30-10 Color Engine for ${brandName} */
+    return `/* theme.css - 60-30-10 & ${selectedStyle.name} Styling for ${brandName} */
 :root {
   --color-brand-60-bg: ${color60};
   --color-brand-30-surface: ${color30};
   --color-brand-10-accent: ${color10};
   --font-heading: '${fontPairing.display}', sans-serif;
   --font-body: '${fontPairing.body}', sans-serif;
+  --style-id: '${selectedStyle.id}';
 }
 
 body {
@@ -229,13 +396,17 @@ body {
 
 .brand-card {
   background-color: var(--color-brand-30-surface);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  ${selectedStyle.id === "brutalism" ? "border: 2px solid #ffffff; box-shadow: 4px 4px 0px " + color10 + ";" : ""}
+  ${selectedStyle.id === "glassmorphism" ? "backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2);" : ""}
+  ${selectedStyle.id === "futuristic" ? "border-left: 2px solid " + color10 + "; border-right: 2px solid " + color10 + ";" : ""}
 }
 
 .brand-btn-primary {
   background-color: var(--color-brand-10-accent);
   color: #000000;
   font-weight: 700;
+  ${selectedStyle.id === "brutalism" ? "border: 2px solid #000000; box-shadow: 3px 3px 0px #000000;" : ""}
+  ${selectedStyle.id === "futuristic" ? "text-transform: uppercase; letter-spacing: 0.1em; font-family: monospace;" : ""}
 }`;
   };
 
@@ -368,9 +539,10 @@ body {
             {/* Editor Navigation Tabs */}
             <div className="flex items-center gap-1 pb-4 border-b border-white/10 overflow-x-auto no-scrollbar">
               {[
-                { id: 'brand', label: '1. Brand & Logo', icon: Type },
-                { id: 'colors', label: '2. 60-30-10 Colors', icon: Palette },
-                { id: 'export', label: '3. Code Export', icon: Code2 },
+                { id: 'styles', label: '1. Design Styles', icon: LayoutTemplate },
+                { id: 'brand', label: '2. Brand & Logo', icon: Type },
+                { id: 'colors', label: '3. 60-30-10 Colors', icon: Palette },
+                { id: 'export', label: '4. Code Export', icon: Code2 },
               ].map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
@@ -391,7 +563,52 @@ body {
               })}
             </div>
 
-            {/* TAB 1: BRAND IDENTITY & LOGO */}
+            {/* TAB 1: 9 DESIGN STYLES & AESTHETICS */}
+            {activeTab === 'styles' && (
+              <div className="pt-5 space-y-4">
+                <div>
+                  <h3 className="font-panchang font-bold text-sm text-white flex items-center justify-between">
+                    <span>Select Design Aesthetic</span>
+                    <span className="text-[10px] font-mono text-[#ebd73f]">{selectedStyle.badge}</span>
+                  </h3>
+                  <p className="text-xs text-slate-400 font-clash mt-1">
+                    Choose from 9 modern visual languages. Instantly updates card geometry, borders, shadows, and interactive feel.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[50vh] overflow-y-auto pr-1">
+                  {DESIGN_STYLES.map((style) => {
+                    const isSelected = selectedStyle.id === style.id;
+                    return (
+                      <div
+                        key={style.id}
+                        onClick={() => handleSelectStyle(style)}
+                        className={`p-3 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-2 ${
+                          isSelected
+                            ? 'bg-[#ebd73f]/15 border-[#ebd73f] shadow-glow-yellow'
+                            : 'bg-white/[0.02] border-white/10 hover:border-white/25 hover:bg-white/[0.05]'
+                        }`}
+                      >
+                        <div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold font-clash text-white">
+                              {style.name}
+                            </span>
+                            {isSelected && <Check className="w-3.5 h-3.5 text-[#ebd73f] stroke-[3]" />}
+                          </div>
+                          <p className="text-[10px] font-mono text-slate-400 mt-0.5">{style.category}</p>
+                        </div>
+                        <p className="text-[10px] text-slate-300 leading-snug line-clamp-2">
+                          {style.tagline}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* TAB 2: BRAND IDENTITY & LOGO */}
             {activeTab === 'brand' && (
               <div className="pt-5 space-y-5">
                 
@@ -523,7 +740,7 @@ body {
               </div>
             )}
 
-            {/* TAB 2: 60-30-10 COLOR SCIENCE ENGINE */}
+            {/* TAB 3: 60-30-10 COLOR SCIENCE ENGINE */}
             {activeTab === 'colors' && (
               <div className="pt-5 space-y-6">
                 
@@ -644,14 +861,14 @@ body {
               </div>
             )}
 
-            {/* TAB 3: CODE EXPORT & DOWNLOAD CENTER */}
+            {/* TAB 4: CODE EXPORT & DOWNLOAD CENTER */}
             {activeTab === 'export' && (
               <div className="pt-5 space-y-4 font-mono text-xs">
                 
                 <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1">
                   <p className="text-[#ebd73f] font-bold">Turnkey Export Center:</p>
                   <p className="text-slate-300 text-[11px]">
-                    Download the exact production-ready configuration, Tailwind design tokens, and CSS variables for {brandName}.
+                    Download the production-ready configuration, Tailwind design tokens, and CSS variables for {brandName} with {selectedStyle.name} aesthetic.
                   </p>
                 </div>
 
@@ -716,8 +933,8 @@ body {
 
           {/* Bottom Actions */}
           <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-slate-400">
-            <span>Niche: {selectedNiche.label}</span>
-            <span className="text-[#ebd73f]">Status: Live Synchronized</span>
+            <span>Style: <strong className="text-[#ebd73f]">{selectedStyle.name}</strong></span>
+            <span className="text-slate-400">Niche: {selectedNiche.label}</span>
           </div>
 
         </div>
@@ -726,44 +943,61 @@ body {
         <div className="lg:col-span-7 bg-[#0c0c0c] border border-white/10 rounded-3xl p-5 sm:p-7 flex flex-col justify-between shadow-2xl overflow-hidden relative">
           
           {/* Top Bar of Preview */}
-          <div className="flex items-center justify-between pb-4 border-b border-white/10">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-white/10 gap-2">
             <div className="flex items-center gap-2 font-mono text-xs text-slate-400">
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color10 }}></span>
               <span className="text-white font-bold">CLIENT PREVIEW: {brandName}</span>
-              <span className="hidden sm:inline-block text-white/30">•</span>
-              <span className="hidden sm:inline-block text-[11px] text-slate-400 font-mono">
-                {fontPairing.name}
-              </span>
+              <span>•</span>
+              <span className="text-[#ebd73f]">{selectedStyle.badge}</span>
             </div>
 
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">
-                60-30-10 PASS
-              </span>
+            {/* Quick Aesthetic Switcher Pills */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar max-w-full">
+              {DESIGN_STYLES.slice(0, 5).map((st) => (
+                <button
+                  key={st.id}
+                  onClick={() => handleSelectStyle(st)}
+                  className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono transition cursor-pointer shrink-0 ${
+                    selectedStyle.id === st.id
+                      ? 'bg-[#ebd73f] text-black font-bold'
+                      : 'bg-white/5 text-slate-400 hover:text-white border border-white/10'
+                  }`}
+                >
+                  {st.name.split(" ")[0]}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Device Mockup Canvas */}
+          {/* Device Mockup Canvas - Dynamically Styled with selectedStyle */}
           <div className="my-6 flex items-center justify-center flex-grow overflow-y-auto">
             
             <div 
-              className={`transition-all duration-500 shadow-2xl rounded-3xl overflow-hidden border border-white/15 ${
+              className={`transition-all duration-500 shadow-2xl overflow-hidden border ${selectedStyle.radius} ${
                 deviceView === 'mobile' ? 'w-full max-w-[340px] aspect-[9/18]' : 'w-full aspect-[16/10]'
               }`}
-              style={{ backgroundColor: color60 }}
+              style={{ 
+                backgroundColor: color60,
+                borderColor: selectedStyle.id === 'brutalism' ? '#ffffff' : 'rgba(255,255,255,0.15)',
+                boxShadow: selectedStyle.id === 'brutalism' ? `6px 6px 0px ${color10}` : undefined
+              }}
             >
               
               {/* Simulated Navigation Bar */}
               <div 
-                className="p-3.5 border-b border-white/10 flex items-center justify-between backdrop-blur-md sticky top-0 z-20"
-                style={{ backgroundColor: `${color60}ee` }}
+                className={`p-3.5 border-b flex items-center justify-between backdrop-blur-md sticky top-0 z-20 ${
+                  selectedStyle.id === 'brutalism' ? 'border-b-2 border-white bg-black' : 'border-b border-white/10'
+                }`}
+                style={{ backgroundColor: selectedStyle.id === 'glassmorphism' ? `${color60}88` : `${color60}ee` }}
               >
                 <div className="flex items-center gap-2.5">
                   {logoImage ? (
                     <img src={logoImage} alt={brandName} className="h-7 w-auto object-contain max-w-[70px]" />
                   ) : (
                     <div 
-                      className="w-7 h-7 rounded-lg flex items-center justify-center font-black text-black text-xs shadow-md"
+                      className={`w-7 h-7 flex items-center justify-center font-black text-black text-xs shadow-md ${selectedStyle.buttonRadius} ${
+                        selectedStyle.id === 'brutalism' ? 'border-2 border-black' : ''
+                      }`}
                       style={{ backgroundColor: color10 }}
                     >
                       {brandName.substring(0, 1).toUpperCase() || 'W'}
@@ -771,7 +1005,9 @@ body {
                   )}
 
                   <div>
-                    <p className={`font-bold text-sm text-white leading-none ${fontPairing.classDisplay}`}>
+                    <p className={`font-bold text-sm text-white leading-none ${fontPairing.classDisplay} ${
+                      selectedStyle.id === 'brutalism' ? 'uppercase tracking-tighter' : ''
+                    }`}>
                       {brandName}
                     </p>
                     <p className="text-[9px] font-mono text-slate-400 mt-0.5 leading-none">
@@ -780,68 +1016,87 @@ body {
                   </div>
                 </div>
 
-                <div 
-                  className="px-2.5 py-1 rounded-full text-[10px] font-bold text-black shadow-md cursor-pointer font-clash"
+                <button 
+                  className={`px-3 py-1 font-bold text-[10px] text-black shadow-md cursor-pointer transition ${selectedStyle.buttonRadius} ${
+                    selectedStyle.id === 'brutalism' ? 'border-2 border-black shadow-[2px_2px_0px_#000]' : ''
+                  } ${selectedStyle.id === 'sporty' ? '-skew-x-6 italic' : ''}`}
                   style={{ backgroundColor: color10 }}
                   onClick={() => setTestModalOpen(true)}
                 >
-                  Book / Order
-                </div>
+                  {selectedStyle.id === 'futuristic' ? '[ EXECUTE ]' : 'Book / Order'}
+                </button>
               </div>
 
               {/* Simulated Hero Section */}
-              <div className="p-5 text-center space-y-3 relative overflow-hidden">
-                <div 
-                  className="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full blur-3xl opacity-20 pointer-events-none"
-                  style={{ backgroundColor: color10 }}
-                ></div>
+              <div className={`p-5 text-center space-y-3 relative overflow-hidden ${
+                selectedStyle.id === 'futuristic' ? 'cyber-grid' : ''
+              }`}>
+                {selectedStyle.id !== 'brutalism' && (
+                  <div 
+                    className="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full blur-3xl opacity-20 pointer-events-none"
+                    style={{ backgroundColor: color10 }}
+                  ></div>
+                )}
 
+                {/* Badge formatted for the active style */}
                 <span 
-                  className="inline-block text-[10px] font-mono px-2.5 py-0.5 rounded-full border border-white/15 text-white/80"
-                  style={{ backgroundColor: `${color30}aa` }}
+                  className={`inline-block text-[10px] font-mono px-2.5 py-0.5 border ${selectedStyle.chipStyle}`}
+                  style={{ borderColor: selectedStyle.id === 'brutalism' ? '#ffffff' : undefined }}
                 >
-                  VERIFIED 60-30-10 WHITE-LABEL BUILD
+                  {selectedStyle.id === 'futuristic' ? 'SYS.VERIFIED // 60-30-10' : `${selectedStyle.badge} BUILD`}
                 </span>
 
-                <h2 className={`font-bold text-xl sm:text-2xl text-white tracking-tight leading-snug ${fontPairing.classDisplay}`}>
+                <h2 className={`font-bold text-xl sm:text-2xl text-white tracking-tight leading-snug ${fontPairing.classDisplay} ${
+                  selectedStyle.id === 'sporty' ? 'italic' : ''
+                }`}>
                   Experience <span style={{ color: color10 }}>{brandName}</span>
                 </h2>
 
                 <p className={`text-xs text-slate-300 max-w-sm mx-auto leading-relaxed ${fontPairing.classBody}`}>
-                  {tagline}. Savor gourmet recipes, book reservations, and experience zero-wait service on your phone.
+                  {tagline}. Savor recipes, reserve tables, and experience zero-wait service on your phone.
                 </p>
 
                 <div className="pt-2 flex items-center justify-center gap-2">
                   <button
                     onClick={() => setTestModalOpen(true)}
-                    className="px-4 py-2 rounded-full font-bold text-xs text-black shadow-lg cursor-pointer transition hover:scale-105"
+                    className={`px-4 py-2 font-bold text-xs text-black shadow-lg cursor-pointer transition hover:scale-105 ${selectedStyle.buttonRadius} ${
+                      selectedStyle.id === 'brutalism' ? 'border-2 border-black shadow-[3px_3px_0px_#000] uppercase font-black' : ''
+                    } ${selectedStyle.id === 'sporty' ? '-skew-x-6 italic font-black' : ''}`}
                     style={{ backgroundColor: color10 }}
                   >
                     Start Order &amp; Book
                   </button>
                   <button
-                    className="px-3.5 py-2 rounded-full font-medium text-xs text-white border border-white/20 transition hover:bg-white/10"
+                    className={`px-3.5 py-2 font-medium text-xs text-white border border-white/20 transition hover:bg-white/10 ${selectedStyle.buttonRadius} ${
+                      selectedStyle.id === 'brutalism' ? 'border-2 border-white' : ''
+                    }`}
                     style={{ backgroundColor: color30 }}
                   >
-                    Explore Menu
+                    Explore Details
                   </button>
                 </div>
               </div>
 
-              {/* Simulated Product / Service Cards (Styled in 30% Surface) */}
+              {/* Simulated Product / Service Cards (Styled in 30% Surface + Style Radius & Shadow) */}
               <div className="p-4 pt-0 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 
                 {/* Card 1 */}
                 <div 
-                  className="p-3.5 rounded-2xl border border-white/10 space-y-2 relative overflow-hidden"
-                  style={{ backgroundColor: color30 }}
+                  className={`p-3.5 space-y-2 relative overflow-hidden ${selectedStyle.radius} ${
+                    selectedStyle.id === 'brutalism' 
+                      ? 'bg-black border-2 border-white shadow-[3px_3px_0px_#ebd73f]' 
+                      : selectedStyle.id === 'glassmorphism'
+                      ? 'backdrop-blur-xl bg-white/[0.08] border border-white/20'
+                      : 'border border-white/10'
+                  }`}
+                  style={{ backgroundColor: selectedStyle.id !== 'glassmorphism' && selectedStyle.id !== 'brutalism' ? color30 : undefined }}
                 >
                   <div className="flex items-start justify-between">
                     <div>
                       <p className={`font-bold text-xs text-white ${fontPairing.classDisplay}`}>
                         {selectedNiche.item1}
                       </p>
-                      <p className="text-[10px] text-slate-400 mt-0.5">Chef's Signature Selection</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Signature Selection</p>
                     </div>
                     <span className="font-mono font-bold text-xs" style={{ color: color10 }}>
                       {currency}{selectedNiche.price1}
@@ -850,7 +1105,9 @@ body {
 
                   <button 
                     onClick={() => setTestModalOpen(true)}
-                    className="w-full py-1.5 rounded-xl font-bold text-[10px] text-black transition cursor-pointer"
+                    className={`w-full py-1.5 font-bold text-[10px] text-black transition cursor-pointer ${selectedStyle.buttonRadius} ${
+                      selectedStyle.id === 'brutalism' ? 'border border-black shadow-[2px_2px_0px_#000] uppercase' : ''
+                    } ${selectedStyle.id === 'sporty' ? '-skew-x-3 italic' : ''}`}
                     style={{ backgroundColor: color10 }}
                   >
                     Add / Book Instantly
@@ -859,15 +1116,21 @@ body {
 
                 {/* Card 2 */}
                 <div 
-                  className="p-3.5 rounded-2xl border border-white/10 space-y-2 relative overflow-hidden"
-                  style={{ backgroundColor: color30 }}
+                  className={`p-3.5 space-y-2 relative overflow-hidden ${selectedStyle.radius} ${
+                    selectedStyle.id === 'brutalism' 
+                      ? 'bg-black border-2 border-white shadow-[3px_3px_0px_#ebd73f]' 
+                      : selectedStyle.id === 'glassmorphism'
+                      ? 'backdrop-blur-xl bg-white/[0.08] border border-white/20'
+                      : 'border border-white/10'
+                  }`}
+                  style={{ backgroundColor: selectedStyle.id !== 'glassmorphism' && selectedStyle.id !== 'brutalism' ? color30 : undefined }}
                 >
                   <div className="flex items-start justify-between">
                     <div>
                       <p className={`font-bold text-xs text-white ${fontPairing.classDisplay}`}>
                         {selectedNiche.item2}
                       </p>
-                      <p className="text-[10px] text-slate-400 mt-0.5">Crafted Fresh On-Demand</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Crafted On-Demand</p>
                     </div>
                     <span className="font-mono font-bold text-xs" style={{ color: color10 }}>
                       {currency}{selectedNiche.price2}
@@ -876,7 +1139,7 @@ body {
 
                   <button 
                     onClick={() => setTestModalOpen(true)}
-                    className="w-full py-1.5 rounded-xl font-semibold text-[10px] text-white border border-white/20 transition hover:bg-white/10 cursor-pointer"
+                    className={`w-full py-1.5 font-semibold text-[10px] text-white border border-white/20 transition hover:bg-white/10 cursor-pointer ${selectedStyle.buttonRadius}`}
                   >
                     Select Option
                   </button>
@@ -919,22 +1182,30 @@ body {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-md p-6 rounded-3xl border border-white/20 shadow-2xl text-center space-y-4"
-              style={{ backgroundColor: color30 }}
+              className={`w-full max-w-md p-6 border shadow-2xl text-center space-y-4 ${selectedStyle.radius}`}
+              style={{ 
+                backgroundColor: color30,
+                borderColor: selectedStyle.id === 'brutalism' ? '#ffffff' : 'rgba(255,255,255,0.2)'
+              }}
             >
               <div 
-                className="w-12 h-12 rounded-full mx-auto flex items-center justify-center text-black font-bold shadow-lg"
+                className={`w-12 h-12 mx-auto flex items-center justify-center text-black font-bold shadow-lg ${selectedStyle.buttonRadius} ${
+                  selectedStyle.id === 'brutalism' ? 'border-2 border-black' : ''
+                }`}
                 style={{ backgroundColor: color10 }}
               >
                 <Check className="w-6 h-6 stroke-[3]" />
               </div>
 
               <div>
-                <h4 className={`font-bold text-lg text-white ${fontPairing.classDisplay}`}>
-                  {brandName} Checkout Simulator
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-white/80">
+                  {selectedStyle.name} Experience
+                </span>
+                <h4 className={`font-bold text-lg text-white mt-1.5 ${fontPairing.classDisplay}`}>
+                  {brandName} Checkout
                 </h4>
                 <p className="text-xs text-slate-300 font-clash mt-1">
-                  Testing customer checkout flow rendered with your 60-30-10 brand palette and typography.
+                  Testing customer checkout flow styled in {selectedStyle.name} with your 60-30-10 palette.
                 </p>
               </div>
 
@@ -948,14 +1219,16 @@ body {
                   <span className="font-bold" style={{ color: color10 }}>{currency}{selectedNiche.price1}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400">STATUS:</span>
-                  <span className="text-emerald-400">MOCK TOKEN ACTIVE</span>
+                  <span className="text-slate-400">AESTHETIC:</span>
+                  <span className="text-[#ebd73f]">{selectedStyle.name}</span>
                 </div>
               </div>
 
               <button
                 onClick={() => setTestModalOpen(false)}
-                className="w-full py-2.5 rounded-xl font-bold text-xs text-black cursor-pointer shadow-lg"
+                className={`w-full py-2.5 font-bold text-xs text-black cursor-pointer shadow-lg ${selectedStyle.buttonRadius} ${
+                  selectedStyle.id === 'brutalism' ? 'border-2 border-black uppercase font-black' : ''
+                }`}
                 style={{ backgroundColor: color10 }}
               >
                 Close Simulator
