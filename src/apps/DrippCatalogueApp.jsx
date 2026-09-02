@@ -19,7 +19,7 @@ import { InstantQuoteDrawer } from '../components/catalogue/InstantQuoteDrawer';
 import { DrippFooter } from '../components/catalogue/DrippFooter';
 import { sounds } from '../utils/audio';
 
-export function DrippCatalogueApp({ onLaunchCafeDemo }) {
+export function DrippCatalogueApp({ onOpenCafeOptions, onLaunchCafeDemo }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isDevMode, setIsDevMode] = useState(true); // Default ON for developermodeon vibe!
   const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
@@ -90,6 +90,7 @@ export function DrippCatalogueApp({ onLaunchCafeDemo }) {
                 key={niche.id}
                 niche={niche}
                 onLaunchLive={onLaunchCafeDemo}
+                onOpenCafeOptions={onOpenCafeOptions}
                 onOpenDemo={(item) => setSelectedDemoNiche(item)}
                 onOpenSpecs={handleOpenSpecs}
               />

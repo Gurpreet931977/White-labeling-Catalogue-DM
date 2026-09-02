@@ -1,0 +1,260 @@
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  ArrowLeft, 
+  ArrowUpRight, 
+  Sparkles, 
+  Coffee, 
+  CheckCircle2, 
+  Sliders, 
+  ArrowRight,
+  Layers,
+  Utensils
+} from 'lucide-react';
+import { CAFE_VARIANTS } from '../data/cafeVariantsData';
+import { CafeDemoModal } from '../components/catalogue/CafeDemoModal';
+import { InstantQuoteDrawer } from '../components/catalogue/InstantQuoteDrawer';
+import { DrippFooter } from '../components/catalogue/DrippFooter';
+import { sounds } from '../utils/audio';
+
+export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo }) {
+  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [selectedVariantModal, setSelectedVariantModal] = useState(null);
+  const [isQuoteOpen, setIsQuoteOpen] = useState(false);
+
+  const filters = [
+    { id: 'all', label: 'All 4 Cafe Models' },
+    { id: 'Casual Dine-In & QR POS', label: 'Casual Dine-In & QR POS' },
+    { id: 'Specialty Coffee & Roastery', label: 'Specialty Roastery' },
+    { id: 'Rooftop & Fine Dining', label: 'Rooftop Bistro' },
+    { id: 'Cloud Kitchen & Express Takeaway', label: 'Cloud Kitchen' },
+  ];
+
+  const filteredVariants = selectedFilter === 'all'
+    ? CAFE_VARIANTS
+    : CAFE_VARIANTS.filter((v) => v.type === selectedFilter);
+
+  return (
+    <div className="min-h-screen bg-[#080808] text-white selection:bg-[#ebd73f] selection:text-black font-sans relative overflow-x-hidden">
+      
+      {/* Top Header Navigation */}
+      <header className="sticky top-0 inset-x-0 z-40 bg-[#080808]/95 backdrop-blur-xl border-b border-white/10 py-3.5 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                sounds.playClick();
+                onBackToCatalogue();
+              }}
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-[#ebd73f] hover:text-black font-clash font-semibold text-xs transition cursor-pointer"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Master Catalogue</span>
+            </button>
+
+            <span className="hidden md:inline-block text-white/20">•</span>
+            <span className="hidden md:inline-flex items-center gap-1.5 font-mono text-[11px] text-[#ebd73f]">
+              <span>CAFE &amp; RESTAURANT ARCHITECTURES</span>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                sounds.playClick();
+                setIsQuoteOpen(true);
+              }}
+              className="btn-dripp-primary px-4 py-2 text-xs font-bold flex items-center gap-1.5 shadow-lg cursor-pointer"
+            >
+              <span className="auth-shimmer-sweep"></span>
+              <span>Get Turnkey Quote</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="pt-16 pb-12 px-4 sm:px-6 text-center max-w-5xl mx-auto space-y-4">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs font-mono text-[#ebd73f]">
+          <Utensils className="w-3.5 h-3.5" />
+          <span>DRIPP MEDIA // WHITE-LABEL SUITE</span>
+        </div>
+
+        <h1 className="font-panchang font-black text-3xl sm:text-5xl md:text-6xl text-white tracking-tight leading-tight">
+          Choose Your <span className="text-[#ebd73f]">Cafe Architecture</span>.
+        </h1>
+
+        <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-300 font-clash leading-relaxed">
+          Not all cafes operate the same. Select from 4 distinctive turnkey white-label systems tailored for quick table turnover, artisanal bean subscriptions, romantic view dining, or high-speed cloud takeaway.
+        </p>
+
+        {/* Filter Pills */}
+        <div className="flex items-center justify-start sm:justify-center overflow-x-auto no-scrollbar gap-2 pt-6">
+          {filters.map((f) => (
+            <button
+              key={f.id}
+              onClick={() => {
+                sounds.playClick();
+                setSelectedFilter(f.id);
+              }}
+              className={`px-4 py-2 rounded-full text-xs font-clash font-semibold transition shrink-0 cursor-pointer ${
+                selectedFilter === f.id
+                  ? 'bg-[#ebd73f] text-black shadow-glow-yellow font-bold'
+                  : 'bg-[#141414] hover:bg-[#1f1f1f] text-white/70 hover:text-white border border-white/10'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Grid of 4 Archetype Cards */}
+      <section className="pb-24 px-4 sm:px-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <AnimatePresence>
+            {filteredVariants.map((item) => (
+              <motion.div
+                layout
+                key={item.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="group relative rounded-3xl overflow-hidden dripp-card-bg border border-white/10 hover:border-[#ebd73f]/50 transition-all duration-500 flex flex-col justify-between shadow-2xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
+              >
+                <div className="p-6 sm:p-7 pb-0 space-y-4">
+                  
+                  {/* Card Header */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-xs font-bold text-[#ebd73f]">
+                        {item.code}
+                      </span>
+                      <span className="text-white/20">•</span>
+                      <span className="text-xs font-mono text-slate-400 uppercase">
+                        {item.type}
+                      </span>
+                    </div>
+
+                    <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full border bg-white/5 text-white/90 border-white/15">
+                      {item.badge}
+                    </span>
+                  </div>
+
+                  {/* Mockup Preview Window */}
+                  <div className="relative rounded-2xl overflow-hidden bg-black/60 border border-white/10 aspect-[16/9] group-hover:border-white/25 transition-all">
+                    <div className="absolute top-0 inset-x-0 h-7 bg-white/[0.04] border-b border-white/10 backdrop-blur-md px-3 flex items-center justify-between z-10 font-mono text-[9px] text-white/50">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-white/20"></span>
+                        <span className="w-2 h-2 rounded-full bg-white/20"></span>
+                        <span className="w-2 h-2 rounded-full bg-[#ebd73f]/60"></span>
+                      </div>
+                      <span>{item.modelName}</span>
+                      <span className="text-[#ebd73f]">{item.metrics.speed}</span>
+                    </div>
+
+                    <img 
+                      src={item.previewImage} 
+                      alt={item.title} 
+                      className="w-full h-full object-cover pt-7 opacity-80 group-hover:scale-105 transition-transform duration-700"
+                    />
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
+
+                    {/* In-Card KPI Pills */}
+                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-[10px] font-mono">
+                      <div className="px-2.5 py-1 rounded-xl bg-black/85 backdrop-blur-md border border-white/10 text-slate-300">
+                        {item.metrics.turnover}
+                      </div>
+                      <div className="px-2.5 py-1 rounded-xl bg-black/85 backdrop-blur-md border border-white/10 text-[#ebd73f] font-bold">
+                        {item.metrics.accuracy}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card Title & Desc */}
+                  <div>
+                    <h3 className="font-panchang font-bold text-xl text-white group-hover:text-[#ebd73f] transition-colors leading-snug">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs font-mono text-[#ebd73f] mt-1">
+                      Target: {item.idealFor}
+                    </p>
+                    <p className="text-xs text-slate-300/80 font-clash mt-2 leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
+
+                  {/* Feature Bullets */}
+                  <div className="pt-2 border-t border-white/10 space-y-1.5 font-clash">
+                    {item.features.slice(0, 4).map((f, fIdx) => (
+                      <div key={fIdx} className="flex items-start gap-2 text-xs text-slate-300/80">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#ebd73f] shrink-0 mt-0.5" />
+                        <span>{f}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                </div>
+
+                {/* Card Action Button */}
+                <div className="p-6 sm:p-7 pt-4">
+                  {item.isLiveTHC ? (
+                    <button
+                      onClick={() => {
+                        sounds.playClick();
+                        onLaunchTHCDemo();
+                      }}
+                      className="w-full btn-dripp-primary py-3.5 px-5 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-xl"
+                    >
+                      <span className="auth-shimmer-sweep"></span>
+                      <span>Launch Full Live App (THC Cafe Model)</span>
+                      <ArrowUpRight className="w-4 h-4 text-black" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        sounds.playClick();
+                        setSelectedVariantModal(item);
+                      }}
+                      className="w-full btn-dripp-primary py-3.5 px-5 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-xl"
+                    >
+                      <span className="auth-shimmer-sweep"></span>
+                      <span>Launch Interactive Showcase ({item.modelName})</span>
+                      <ArrowUpRight className="w-4 h-4 text-black" />
+                    </button>
+                  )}
+                </div>
+
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <DrippFooter
+        onOpenCustomizer={() => {}}
+        onOpenQuote={() => setIsQuoteOpen(true)}
+      />
+
+      {/* Interactive Modal for other Cafe archetypes */}
+      <CafeDemoModal
+        variant={selectedVariantModal}
+        isOpen={!!selectedVariantModal}
+        onClose={() => setSelectedVariantModal(null)}
+        onOpenQuote={() => setIsQuoteOpen(true)}
+      />
+
+      {/* Instant Quote Drawer */}
+      <InstantQuoteDrawer
+        isOpen={isQuoteOpen}
+        onClose={() => setIsQuoteOpen(false)}
+      />
+
+    </div>
+  );
+}

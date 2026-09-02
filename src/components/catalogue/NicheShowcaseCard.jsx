@@ -13,7 +13,8 @@ export function NicheShowcaseCard({
   niche, 
   onLaunchLive, 
   onOpenDemo, 
-  onOpenSpecs 
+  onOpenSpecs,
+  onOpenCafeOptions 
 }) {
   const isLive = niche.cardType === 'live-app';
 
@@ -141,16 +142,20 @@ export function NicheShowcaseCard({
 
         {/* Card CTA Action Row - Equal Balance Across All Niches */}
         <div className="pt-4 flex items-center gap-2.5">
-          {isLive ? (
+          {niche.id === 'cafes' ? (
             <button
               onClick={() => {
                 sounds.playClick();
-                onLaunchLive();
+                if (onOpenCafeOptions) {
+                  onOpenCafeOptions();
+                } else {
+                  onLaunchLive();
+                }
               }}
               className="w-full btn-dripp-primary py-3 px-4 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-lg"
             >
               <span className="auth-shimmer-sweep"></span>
-              <span>Explore Live Demo</span>
+              <span>Choose Cafe Options (4 Models)</span>
               <ArrowUpRight className="w-4 h-4 text-black" />
             </button>
           ) : (

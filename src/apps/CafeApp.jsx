@@ -32,7 +32,7 @@ import { CartProvider, useCart } from '../context/CartContext';
 import { OrderProvider, useOrder } from '../context/OrderContext';
 import { sounds } from '../utils/audio';
 
-function CafeContent({ onBackToCatalogue }) {
+function CafeContent({ onBackToCatalogue, onBackToVariants }) {
   const [currentView, setCurrentView] = useState('home'); // home | menu | tracker | admin
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
@@ -80,23 +80,23 @@ function CafeContent({ onBackToCatalogue }) {
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-amber-400 selection:text-slate-950 font-sans relative">
       
       {/* Top Dripp Media White-Label Header / Return Bar */}
-      {onBackToCatalogue && (
-        <div className="bg-[#0c0c0c] border-b border-white/10 px-4 py-2 text-xs flex items-center justify-between z-50 sticky top-0 backdrop-blur-md">
+      {(onBackToVariants || onBackToCatalogue) && (
+        <div className="bg-[#080808] border-b border-white/10 px-4 py-2 text-xs flex items-center justify-between z-50 sticky top-0 backdrop-blur-md font-mono">
           <div className="flex items-center gap-2">
             <button
               onClick={() => {
                 sounds.playClick();
-                onBackToCatalogue();
+                if (onBackToVariants) onBackToVariants();
+                else if (onBackToCatalogue) onBackToCatalogue();
               }}
-              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-[#ebd73f] hover:text-black font-semibold text-white transition-all text-[11px]"
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-[#ebd73f] hover:text-black font-semibold text-white transition-all text-[11px] cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back to Dripp Media Catalogue</span>
+              <span>Back to Cafe Options</span>
             </button>
             <span className="hidden sm:inline-block text-white/30">•</span>
-            <span className="hidden sm:inline-flex items-center gap-1.5 text-amber-400 font-mono text-[11px]">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>LIVE DEMO: CAFE &amp; QR ORDERING SUITE</span>
+            <span className="hidden sm:inline-flex items-center gap-1.5 text-[#ebd73f] text-[11px]">
+              <span>ACTIVE MODEL: THC CAFE &amp; QR POS</span>
             </span>
           </div>
 
@@ -106,19 +106,21 @@ function CafeContent({ onBackToCatalogue }) {
                 sounds.playClick();
                 handleNavigateAdmin();
               }}
-              className="text-[11px] text-slate-400 hover:text-white transition flex items-center gap-1 font-mono"
+              className="text-[11px] text-slate-400 hover:text-white transition flex items-center gap-1 font-mono cursor-pointer"
             >
               <span>Staff POS (PIN: 7788)</span>
             </button>
-            <button
-              onClick={() => {
-                sounds.playClick();
-                onBackToCatalogue();
-              }}
-              className="text-[11px] font-bold text-[#ebd73f] hover:underline"
-            >
-              Switch Niche
-            </button>
+            {onBackToCatalogue && (
+              <button
+                onClick={() => {
+                  sounds.playClick();
+                  onBackToCatalogue();
+                }}
+                className="text-[11px] font-bold text-[#ebd73f] hover:underline cursor-pointer"
+              >
+                Master Catalogue
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -380,12 +382,15 @@ function CafeContent({ onBackToCatalogue }) {
   );
 }
 
-export default function CafeApp({ onBackToCatalogue }) {
+export default function CafeApp({ onBackToCatalogue, onBackToVariants }) {
   return (
     <AuthProvider>
       <OrderProvider>
         <CartProvider>
-          <CafeContent onBackToCatalogue={onBackToCatalogue} />
+          <CafeContent 
+            onBackToCatalogue={onBackToCatalogue} 
+            onBackToVariants={onBackToVariants} 
+          />
         </CartProvider>
       </OrderProvider>
     </AuthProvider>
