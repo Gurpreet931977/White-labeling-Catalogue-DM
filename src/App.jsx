@@ -3,6 +3,7 @@ import { DrippCatalogueApp } from './apps/DrippCatalogueApp';
 import { CafeVariantsPage } from './apps/CafeVariantsPage';
 import { WhiteLabelStudio } from './apps/WhiteLabelStudio';
 import CafeApp from './apps/CafeApp';
+import { StudioPasswordGate, isStudioAuthenticated } from './components/studio/StudioPasswordGate';
 
 export default function App() {
   // Support 'catalogue' (default), 'studio', 'cafe-variants', or 'cafe-demo'
@@ -12,6 +13,9 @@ export default function App() {
     if (window.location.hash === '#studio' || window.location.hash === '#editor') return 'studio';
     return 'catalogue';
   });
+
+  // Studio password gate — persists for this browser tab session only
+  const [studioAuthed, setStudioAuthed] = useState(() => isStudioAuthenticated());
 
   // Keep hash in sync for clean URL sharing & browser back/forward
   useEffect(() => {
@@ -71,8 +75,16 @@ export default function App() {
     );
   }
 
-  // 3. Dedicated White-Label Studio & Editor Panel
+  // 3. Dedicated White-Label Studio & Editor Panel — MASTER PASSWORD PROTECTED
   if (appMode === 'studio') {
+    if (!studioAuthed) {
+      return (
+        <StudioPasswordGate
+          onAuthenticated={() => setStudioAuthed(true)}
+          onBack={() => setAppMode('catalogue')}
+        />
+      );
+    }
     return (
       <WhiteLabelStudio 
         onBackToCatalogue={() => setAppMode('catalogue')}
