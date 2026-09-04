@@ -22,7 +22,7 @@ const ICONS = {
 
 export function NicheFilterTabs({ categories, selectedCategory, onSelectCategory }) {
   return (
-    <div className="flex items-center justify-start sm:justify-center overflow-x-auto no-scrollbar gap-2.5 py-3 px-2">
+    <div className="flex flex-wrap items-center justify-center gap-2.5 py-3 px-2 max-w-4xl mx-auto">
       {categories.map((cat) => {
         const Icon = ICONS[cat.id] || LayoutGrid;
         const isSelected = selectedCategory === cat.id;

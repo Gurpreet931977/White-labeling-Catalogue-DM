@@ -6,7 +6,6 @@ import {
   Clock, 
   QrCode, 
   Leaf, 
-  Lock, 
   UserCheck, 
   CheckCircle2, 
   Award, 
@@ -22,7 +21,10 @@ import {
   Check,
   Sparkles,
   ArrowRight,
-  Utensils
+  Utensils,
+  Store,
+  Truck,
+  Calendar
 } from 'lucide-react';
 import { CATEGORIES, MENU_ITEMS, CULINARY_SYNONYMS } from '../../data/menuData';
 import { useCart } from '../../context/CartContext';
@@ -100,10 +102,10 @@ function scoreItemAgainstQuery(item, query) {
   return score;
 }
 
-export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequireAuth }) {
-  const { activeTable, diningMode, addToCart } = useCart();
+export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequireAuth, onOpenReservation }) {
+  const { activeTable, diningMode, addToCart, operationalModel, loyaltyVisits } = useCart();
   const { menuItems, menuStockOverrides, requestTableService } = useOrder();
-  const { customerUser, isCustomerLoggedIn } = useAuth();
+  const { customerUser } = useAuth();
   const liveItems = menuItems || MENU_ITEMS;
 
   const [serviceFeedback, setServiceFeedback] = useState(null);
@@ -189,19 +191,14 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
   }, [activeCategory, searchQuery, isVegOnly, bestsellerOnly, liveItems]);
 
   const handleItemAdd = (item) => {
-    const isOutOfStock = menuStockOverrides[item.id];
-    if (isOutOfStock) return;
-
-    if (!isCustomerLoggedIn) {
-      if (onRequireAuth) onRequireAuth(() => {
-        if (item.customizable) {
-          onSelectItemForCustomize(item);
-        } else {
-          addToCart(item, 1);
-        }
-      });
+    if (operationalModel === 'showcase') {
+      sounds.playClick();
+      if (onOpenReservation) onOpenReservation();
       return;
     }
+
+    const isOutOfStock = menuStockOverrides[item.id];
+    if (isOutOfStock) return;
 
     if (item.customizable) {
       onSelectItemForCustomize(item);
@@ -214,25 +211,47 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
     <section id="menu-section" className="py-8 sm:py-12 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Table Connection & Customer Status Strip */}
+        {/* Connection & Fulfillment Status Strip */}
         <div className="mb-6 p-3.5 sm:p-4 rounded-2xl bg-slate-900/90 border border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center text-amber-400 shrink-0">
-              <QrCode className="w-4 h-4" />
+              {operationalModel === 'self-serve' ? (
+                <Store className="w-4 h-4 text-cyan-400" />
+              ) : operationalModel === 'delivery' ? (
+                <Truck className="w-4 h-4 text-emerald-400" />
+              ) : operationalModel === 'showcase' ? (
+                <Calendar className="w-4 h-4 text-purple-400" />
+              ) : operationalModel === 'loyalty' ? (
+                <Award className="w-4 h-4 text-amber-400" />
+              ) : (
+                <QrCode className="w-4 h-4 text-amber-400" />
+              )}
             </div>
             <div>
               <p className="text-white font-syne font-bold text-xs sm:text-sm flex items-center gap-2">
                 <span>
-                  {diningMode === 'counter'
-                    ? 'Counter Pickup Mode'
+                  {operationalModel === 'self-serve'
+                    ? 'Express Counter Pickup Station'
+                    : operationalModel === 'delivery'
+                    ? 'Direct Doorstep Delivery'
+                    : operationalModel === 'showcase'
+                    ? 'Curated Tasting & Menu Showcase'
+                    : operationalModel === 'loyalty'
+                    ? `Loyalty Club Table #${activeTable || '04'} (${loyaltyVisits || 1}/7 Stamps)`
                     : `Table #${activeTable || '04'} Connected`}
                 </span>
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
               </p>
               <p className="text-slate-400 text-[11px] font-mono">
-                {diningMode === 'counter'
-                  ? 'Your order token will be called at counter'
-                  : 'Orders will be delivered directly to your table'}
+                {operationalModel === 'self-serve'
+                  ? 'Your live queue token will be called at the counter window'
+                  : operationalModel === 'delivery'
+                  ? '30-40 min thermal courier delivery • Free > ₹499'
+                  : operationalModel === 'showcase'
+                  ? 'Browse authentic Italian recipes and reserve a VIP table'
+                  : operationalModel === 'loyalty'
+                  ? 'Orders placed automatically earn +1 punch stamp upon billing'
+                  : 'Orders will be prepared fresh and served directly to your seat'}
               </p>
             </div>
           </div>
@@ -244,18 +263,28 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
                 <span>Ordering as {customerUser.name?.split(' ')[0]}</span>
               </div>
             )}
-            <button
-              onClick={() => { sounds.playClick(); onOpenScanner(); }}
-              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-mono font-medium transition flex items-center gap-1 border border-white/5"
-            >
-              <QrCode className="w-3 h-3" />
-              <span>Change Table</span>
-            </button>
+            {operationalModel === 'showcase' ? (
+              <button
+                onClick={() => { sounds.playClick(); if (onOpenReservation) onOpenReservation(); }}
+                className="px-3 py-1.5 rounded-xl bg-amber-400/20 hover:bg-amber-400 text-amber-300 hover:text-slate-950 text-xs font-mono font-bold transition flex items-center gap-1 border border-amber-400/30"
+              >
+                <Calendar className="w-3 h-3" />
+                <span>Book Table Pass</span>
+              </button>
+            ) : (operationalModel === 'table-qr' || operationalModel === 'loyalty' || (operationalModel === 'hybrid' && diningMode === 'table')) ? (
+              <button
+                onClick={() => { sounds.playClick(); onOpenScanner(); }}
+                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-mono font-medium transition flex items-center gap-1 border border-white/5"
+              >
+                <QrCode className="w-3 h-3" />
+                <span>Change Table</span>
+              </button>
+            ) : null}
           </div>
         </div>
 
         {/* In-Dining Quick Table Service Action Bar */}
-        {diningMode === 'table' && (
+        {(operationalModel === 'table-qr' || operationalModel === 'loyalty' || (operationalModel === 'hybrid' && diningMode === 'table')) && (
           <div className="mb-4 sm:mb-6 p-2.5 sm:p-3 rounded-2xl bg-slate-950/80 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 shadow-inner">
             <div className="flex items-center gap-2 text-xs text-slate-400 font-mono w-full sm:w-auto justify-between sm:justify-start">
               <div className="flex items-center gap-1.5">
@@ -766,20 +795,41 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
                       </span>
 
                       <button
-                        disabled={isOutOfStock}
+                        disabled={isOutOfStock && operationalModel !== 'showcase'}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleItemAdd(item);
                         }}
                         className={`px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl font-bold font-syne text-[11px] sm:text-xs flex items-center justify-center gap-1 transition shrink-0 ${
-                          isOutOfStock
+                          isOutOfStock && operationalModel !== 'showcase'
                             ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
                             : 'btn-3d btn-3d-amber'
                         }`}
                       >
-                        <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
-                        <span>ADD<span className="hidden sm:inline"> TO ORDER</span></span>
-                        {!isCustomerLoggedIn && <Lock className="w-2.5 h-2.5 sm:w-3 sm:h-3 ml-0.5 opacity-80" />}
+                        {operationalModel === 'showcase' ? (
+                          <>
+                            <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                            <span>RESERVE TABLE</span>
+                          </>
+                        ) : (
+                          <>
+                            <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
+                            <span>
+                              {operationalModel === 'self-serve' 
+                                ? 'PICKUP' 
+                                : operationalModel === 'delivery' 
+                                ? 'DELIVER' 
+                                : 'ADD'}
+                              <span className="hidden sm:inline">
+                                {operationalModel === 'self-serve' 
+                                  ? ' ORDER' 
+                                  : operationalModel === 'delivery' 
+                                  ? ' TO BAG' 
+                                  : ' TO ORDER'}
+                              </span>
+                            </span>
+                          </>
+                        )}
                       </button>
                     </div>
                   </motion.div>

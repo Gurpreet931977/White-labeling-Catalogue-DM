@@ -70,10 +70,22 @@ export function CartProvider({ children }) {
       setDiningMode('counter');
     } else if (operationalModel === 'delivery') {
       setDiningMode('delivery');
-    } else if (operationalModel === 'table-qr') {
+    } else if (operationalModel === 'table-qr' || operationalModel === 'loyalty') {
       setDiningMode('table');
     }
     localStorage.setItem('thc_operational_model', operationalModel);
+  }, [operationalModel]);
+
+  // Listen to external model change events from Variants page or Studio
+  useEffect(() => {
+    const handleModelChange = (e) => {
+      const newModel = e?.detail?.model || localStorage.getItem('thc_operational_model');
+      if (newModel && newModel !== operationalModel) {
+        setOperationalModel(newModel);
+      }
+    };
+    window.addEventListener('thc_model_change', handleModelChange);
+    return () => window.removeEventListener('thc_model_change', handleModelChange);
   }, [operationalModel]);
 
   // Auto-sync whenever logged in customerUser updates

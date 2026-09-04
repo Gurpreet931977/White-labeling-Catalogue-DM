@@ -11,10 +11,17 @@ import {
   Star, 
   Lock, 
   ChevronRight, 
-  ChevronLeft 
+  ChevronLeft,
+  Store,
+  Truck,
+  Calendar,
+  Sparkles,
+  RefreshCw,
+  MapPin
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { BRAND_CONFIG } from '../../data/cafeConfig';
+import { useCart } from '../../context/CartContext';
+import { BRAND_CONFIG, MODEL_SYSTEM_CONFIG } from '../../data/cafeConfig';
 import { sounds } from '../../utils/audio';
 
 // =========================================================================
@@ -337,8 +344,17 @@ const SHOWCASE_DISHES = [
   }
 ];
 
-export function HeroSection({ onExploreMenu, onOpenScanner, onOpenAdmin }) {
+export function HeroSection({ 
+  onExploreMenu, 
+  onOpenScanner, 
+  onOpenAdmin,
+  onOpenReservation,
+  onOpenLoyaltyModal
+}) {
   const { isCustomerLoggedIn } = useAuth();
+  const { operationalModel, diningMode, setDiningMode } = useCart();
+  const currentModelConfig = MODEL_SYSTEM_CONFIG[operationalModel] || MODEL_SYSTEM_CONFIG['table-qr'];
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
@@ -438,14 +454,14 @@ export function HeroSection({ onExploreMenu, onOpenScanner, onOpenAdmin }) {
           {/* Left Column: Refined Editorial Copy */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
             
-            {/* Minimal Bistro Tag */}
+            {/* Model Operational Badge */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-white/10 text-xs font-mono text-slate-300"
             >
               <Compass className="w-3.5 h-3.5 text-amber-400" />
-              <span>{BRAND_CONFIG.hero.locationTag}</span>
+              <span>{currentModelConfig.badge}</span>
             </motion.div>
 
             {/* Main Headline */}
@@ -455,9 +471,9 @@ export function HeroSection({ onExploreMenu, onOpenScanner, onOpenAdmin }) {
               transition={{ delay: 0.1 }}
               className="text-4xl sm:text-6xl xl:text-7xl font-black text-white font-syne tracking-tight leading-[1.08]"
             >
-              {BRAND_CONFIG.hero.headlineLine1} <br />
+              {currentModelConfig.headlineLine1} <br />
               <span className="bg-gradient-to-r from-amber-300 via-amber-200 to-yellow-100 bg-clip-text text-transparent">
-                {BRAND_CONFIG.hero.headlineLine2}
+                {currentModelConfig.headlineLine2}
               </span>
             </motion.h1>
 
@@ -468,7 +484,7 @@ export function HeroSection({ onExploreMenu, onOpenScanner, onOpenAdmin }) {
               transition={{ delay: 0.15 }}
               className="text-slate-400 text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal"
             >
-              {BRAND_CONFIG.hero.description}
+              {currentModelConfig.description}
             </motion.p>
 
             {/* Action CTAs */}
@@ -478,25 +494,104 @@ export function HeroSection({ onExploreMenu, onOpenScanner, onOpenAdmin }) {
               transition={{ delay: 0.2 }}
               className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2"
             >
-              {/* Explore Menu Button */}
+              {/* Primary Button */}
               <button
-                onClick={() => { sounds.playClick(); onExploreMenu(); }}
-                className="btn-3d btn-3d-amber px-6 py-3.5 rounded-2xl font-syne font-bold text-xs sm:text-sm flex items-center gap-2 group"
+                onClick={() => {
+                  sounds.playClick();
+                  onExploreMenu();
+                }}
+                className="btn-3d btn-3d-amber px-6 py-3.5 rounded-2xl font-syne font-bold text-xs sm:text-sm flex items-center gap-2 group cursor-pointer"
               >
                 <UtensilsCrossed className="w-4 h-4 transition-transform group-hover:rotate-12" />
-                <span>EXPLORE MENU</span>
-                {!isCustomerLoggedIn && <Lock className="w-3.5 h-3.5 text-slate-900" />}
+                <span>{currentModelConfig.primaryCta}</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </button>
 
-              {/* Scan Table QR Button */}
-              <button
-                onClick={() => { sounds.playClick(); onOpenScanner(); }}
-                className="btn-3d btn-3d-dark px-5 py-3.5 rounded-2xl font-syne font-semibold text-xs sm:text-sm flex items-center gap-2"
-              >
-                <QrCode className="w-4 h-4 text-amber-400" />
-                <span>SCAN TABLE QR</span>
-              </button>
+              {/* Secondary Contextual Button based on Model */}
+              {operationalModel === 'table-qr' && (
+                <button
+                  onClick={() => { sounds.playClick(); onOpenScanner(); }}
+                  className="btn-3d btn-3d-dark px-5 py-3.5 rounded-2xl font-syne font-semibold text-xs sm:text-sm flex items-center gap-2 cursor-pointer"
+                >
+                  <QrCode className="w-4 h-4 text-amber-400" />
+                  <span>SCAN TABLE QR</span>
+                </button>
+              )}
+
+              {operationalModel === 'self-serve' && (
+                <button
+                  onClick={() => { sounds.playClick(); onExploreMenu(); }}
+                  className="btn-3d btn-3d-dark px-5 py-3.5 rounded-2xl font-syne font-semibold text-xs sm:text-sm flex items-center gap-2 border-cyan-500/30 text-cyan-300 cursor-pointer"
+                >
+                  <Store className="w-4 h-4 text-cyan-400" />
+                  <span>ORDER FOR PICKUP</span>
+                </button>
+              )}
+
+              {operationalModel === 'showcase' && (
+                <button
+                  onClick={() => {
+                    sounds.playClick();
+                    if (onOpenReservation) onOpenReservation();
+                  }}
+                  className="btn-3d btn-3d-dark px-5 py-3.5 rounded-2xl font-syne font-semibold text-xs sm:text-sm flex items-center gap-2 border-amber-400/40 text-amber-300 hover:text-white cursor-pointer"
+                >
+                  <Calendar className="w-4 h-4 text-amber-400" />
+                  <span>BOOK TABLE RESERVATION</span>
+                </button>
+              )}
+
+              {operationalModel === 'delivery' && (
+                <button
+                  onClick={() => { sounds.playClick(); onExploreMenu(); }}
+                  className="btn-3d btn-3d-dark px-5 py-3.5 rounded-2xl font-syne font-semibold text-xs sm:text-sm flex items-center gap-2 border-emerald-500/30 text-emerald-300 cursor-pointer"
+                >
+                  <Truck className="w-4 h-4 text-emerald-400" />
+                  <span>DOORSTEP DELIVERY</span>
+                </button>
+              )}
+
+              {operationalModel === 'hybrid' && (
+                <div className="inline-flex rounded-2xl bg-slate-900 border border-white/10 p-1">
+                  <button
+                    type="button"
+                    onClick={() => { sounds.playClick(); setDiningMode('table'); }}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-syne font-bold flex items-center gap-1.5 transition cursor-pointer ${
+                      diningMode === 'table'
+                        ? 'bg-amber-400 text-slate-950 shadow-md'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <QrCode className="w-3.5 h-3.5" />
+                    <span>Dine-In Table</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { sounds.playClick(); setDiningMode('delivery'); }}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-syne font-bold flex items-center gap-1.5 transition cursor-pointer ${
+                      diningMode === 'delivery'
+                        ? 'bg-emerald-400 text-slate-950 shadow-md'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <Truck className="w-3.5 h-3.5" />
+                    <span>Doorstep Delivery</span>
+                  </button>
+                </div>
+              )}
+
+              {operationalModel === 'loyalty' && (
+                <button
+                  onClick={() => {
+                    sounds.playClick();
+                    if (onOpenLoyaltyModal) onOpenLoyaltyModal();
+                  }}
+                  className="btn-3d btn-3d-dark px-5 py-3.5 rounded-2xl font-syne font-semibold text-xs sm:text-sm flex items-center gap-2 border-amber-400/30 text-amber-300 cursor-pointer"
+                >
+                  <Award className="w-4 h-4 text-amber-400" />
+                  <span>OPEN PUNCH CARD</span>
+                </button>
+              )}
             </motion.div>
 
             {/* Micro Highlights Badges with Real 2D Animated Vectors */}
@@ -506,7 +601,7 @@ export function HeroSection({ onExploreMenu, onOpenScanner, onOpenAdmin }) {
               transition={{ delay: 0.3 }}
               className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-6 border-t border-white/5 max-w-xl mx-auto lg:mx-0"
             >
-              {/* Badge 1: 10-15 Min Serve */}
+              {/* Badge 1 */}
               <motion.div
                 whileHover={{ y: -3, scale: 1.02 }}
                 className="p-3 rounded-2xl bg-slate-900/80 hover:bg-slate-900 border border-white/5 hover:border-amber-400/30 transition-all flex items-center gap-3 group shadow-sm"
@@ -514,13 +609,15 @@ export function HeroSection({ onExploreMenu, onOpenScanner, onOpenAdmin }) {
                 <AnimatedSpeedIcon />
                 <div className="text-left">
                   <p className="text-white text-xs font-bold font-syne group-hover:text-amber-300 transition">
-                    {BRAND_CONFIG.hero.deliveryTag}
+                    {currentModelConfig.highlights[0]?.title}
                   </p>
-                  <p className="text-[10px] text-slate-400 font-mono">Fast Table Serve</p>
+                  <p className="text-[10px] text-slate-400 font-mono">
+                    {currentModelConfig.highlights[0]?.subtitle}
+                  </p>
                 </div>
               </motion.div>
 
-              {/* Badge 2: Contactless Pay */}
+              {/* Badge 2 */}
               <motion.div
                 whileHover={{ y: -3, scale: 1.02 }}
                 className="p-3 rounded-2xl bg-slate-900/80 hover:bg-slate-900 border border-white/5 hover:border-cyan-400/30 transition-all flex items-center gap-3 group shadow-sm"
@@ -528,13 +625,15 @@ export function HeroSection({ onExploreMenu, onOpenScanner, onOpenAdmin }) {
                 <AnimatedPaymentIcon />
                 <div className="text-left">
                   <p className="text-white text-xs font-bold font-syne group-hover:text-cyan-300 transition">
-                    {BRAND_CONFIG.hero.paymentTag}
+                    {currentModelConfig.highlights[1]?.title}
                   </p>
-                  <p className="text-[10px] text-slate-400 font-mono">Instant Pay</p>
+                  <p className="text-[10px] text-slate-400 font-mono">
+                    {currentModelConfig.highlights[1]?.subtitle}
+                  </p>
                 </div>
               </motion.div>
 
-              {/* Badge 3: 24/7 Kitchen */}
+              {/* Badge 3 */}
               <motion.div
                 whileHover={{ y: -3, scale: 1.02 }}
                 className="p-3 rounded-2xl bg-slate-900/80 hover:bg-slate-900 border border-white/5 hover:border-rose-400/30 transition-all flex items-center gap-3 group shadow-sm"
@@ -542,9 +641,11 @@ export function HeroSection({ onExploreMenu, onOpenScanner, onOpenAdmin }) {
                 <AnimatedFlameIcon />
                 <div className="text-left">
                   <p className="text-white text-xs font-bold font-syne group-hover:text-rose-300 transition">
-                    {BRAND_CONFIG.hero.kitchenTag}
+                    {currentModelConfig.highlights[2]?.title}
                   </p>
-                  <p className="text-[10px] text-slate-400 font-mono">Always Sizzling</p>
+                  <p className="text-[10px] text-slate-400 font-mono">
+                    {currentModelConfig.highlights[2]?.subtitle}
+                  </p>
                 </div>
               </motion.div>
             </motion.div>
@@ -661,12 +762,19 @@ export function HeroSection({ onExploreMenu, onOpenScanner, onOpenAdmin }) {
                           <span>Ready in {currentDish.prepTime}</span>
                         </div>
 
-                        {/* Order Dish Trigger Button */}
+                        {/* Order / Reserve Dish Trigger Button */}
                         <button
-                          onClick={() => { sounds.playClick(); onExploreMenu(); }}
+                          onClick={() => {
+                            sounds.playClick();
+                            if (operationalModel === 'showcase' && onOpenReservation) {
+                              onOpenReservation();
+                            } else {
+                              onExploreMenu();
+                            }
+                          }}
                           className="btn-3d btn-3d-amber px-3.5 py-1.5 rounded-xl font-bold text-xs font-syne flex items-center gap-1"
                         >
-                          <span>Order Dish</span>
+                          <span>{operationalModel === 'showcase' ? 'Reserve to Taste' : 'Order Dish'}</span>
                           <ChevronRight className="w-3.5 h-3.5" />
                         </button>
 

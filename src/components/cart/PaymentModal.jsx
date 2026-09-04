@@ -184,7 +184,6 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
                 </div>
                 <p className="text-[11px] text-slate-400">GPay, PhonePe, Paytm, UPI</p>
               </button>
-
               <button
                 type="button"
                 onClick={() => { sounds.playClick(); setPaymentType('counter'); }}
@@ -196,26 +195,34 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
               >
                 <div className="flex items-center gap-2 mb-1">
                   <Receipt className="w-4 h-4 text-cyan-400" />
-                  <span className="font-bold text-xs">Pay at Counter</span>
+                  <span className="font-bold text-xs">
+                    {diningMode === 'delivery' ? 'Cash on Delivery' : 'Pay at Counter'}
+                  </span>
                 </div>
-                <p className="text-[11px] text-slate-400">Pay cash/card after eating</p>
+                <p className="text-[11px] text-slate-400">
+                  {diningMode === 'delivery' ? 'Pay rider at doorstep' : 'Cash or card at desk'}
+                </p>
               </button>
             </div>
           </div>
 
-          {/* Step 2: Confirmation based on selected method */}
+          {/* Step 2 Content */}
           {paymentType === 'online' ? (
             <div className="space-y-4">
               <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-center space-y-2">
-                <div className="w-36 h-36 bg-white p-2.5 rounded-2xl mx-auto flex items-center justify-center shadow-md">
-                  <QrCode className="w-32 h-32 text-black" />
+                <div className="w-10 h-10 rounded-xl bg-amber-400/10 text-amber-400 flex items-center justify-center mx-auto">
+                  <QrCode className="w-5 h-5" />
                 </div>
-                <p className="text-white font-bold text-xs">
-                  Scan QR with any UPI App (GPay / PhonePe / Paytm)
+                <h4 className="font-bold text-white text-sm">Instant UPI QR Payment</h4>
+                <p className="text-slate-400 text-xs">
+                  Pay to: <span className="text-amber-400 font-mono font-bold">{CAFE_CONFIG.mockUpiId}</span>
                 </p>
-                <p className="text-slate-400 text-xs font-mono">
-                  UPI ID: {CAFE_CONFIG.mockUpiId}
-                </p>
+                <div className="py-2 flex items-center justify-center gap-2">
+                  <span className="px-2 py-0.5 rounded-md bg-white/5 text-[10px] text-slate-300 font-mono">GPay</span>
+                  <span className="px-2 py-0.5 rounded-md bg-white/5 text-[10px] text-slate-300 font-mono">PhonePe</span>
+                  <span className="px-2 py-0.5 rounded-md bg-white/5 text-[10px] text-slate-300 font-mono">Paytm</span>
+                  <span className="px-2 py-0.5 rounded-md bg-white/5 text-[10px] text-slate-300 font-mono">Any UPI</span>
+                </div>
               </div>
 
               <button
@@ -241,16 +248,28 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
               <div className="p-4 rounded-2xl bg-slate-950 border border-cyan-500/30 text-left space-y-2">
                 <h4 className="font-bold text-white text-sm flex items-center gap-2">
                   <Receipt className="w-4 h-4 text-cyan-400" />
-                  <span>Cash Payment at Billing Counter</span>
+                  <span>
+                    {diningMode === 'delivery' 
+                      ? 'Cash on Delivery (COD)' 
+                      : 'Cash Payment at Billing Counter'}
+                  </span>
                 </h4>
                 <p className="text-slate-300 text-xs leading-relaxed">
-                  Your food order will go straight to the kitchen now. You can pay <strong>₹{grandTotal}</strong> in cash or card at the cafe counter when you finish.
+                  {diningMode === 'delivery' ? (
+                    <>Your order will be prepared and dispatched immediately. You can pay <strong>₹{grandTotal}</strong> in cash or UPI QR to the delivery rider at your doorstep.</>
+                  ) : (
+                    <>Your food order will go straight to the kitchen now. You can pay <strong>₹{grandTotal}</strong> in cash or card at the cafe counter when you finish.</>
+                  )}
                 </p>
               </div>
 
               <button
                 disabled={isProcessing}
-                onClick={() => handleCompleteOrder('counter', 'pending', 'Pay at Counter')}
+                onClick={() => handleCompleteOrder(
+                  diningMode === 'delivery' ? 'cod' : 'counter', 
+                  'pending', 
+                  diningMode === 'delivery' ? 'Cash on Delivery (COD)' : 'Pay at Counter'
+                )}
                 className="w-full py-3.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-sm shadow-md transition flex items-center justify-center gap-2"
               >
                 {isProcessing ? (
@@ -261,7 +280,11 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
                 ) : (
                   <>
                     <CheckCircle2 className="w-5 h-5" />
-                    <span>Confirm Order Now (₹{grandTotal})</span>
+                    <span>
+                      {diningMode === 'delivery' 
+                        ? `Confirm Cash on Delivery (₹${grandTotal})` 
+                        : `Confirm Order Now (₹${grandTotal})`}
+                    </span>
                   </>
                 )}
               </button>

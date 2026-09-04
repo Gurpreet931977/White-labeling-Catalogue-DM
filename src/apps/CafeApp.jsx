@@ -62,14 +62,9 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentView]);
 
-  // Handle Menu Navigation with Auth Gating
+  // Handle Menu Navigation (Unlocked for all models)
   const handleNavigateMenu = () => {
-    if (!isCustomerLoggedIn) {
-      requireCustomerAuth(() => {
-        setCurrentView('menu');
-      });
-      return;
-    }
+    sounds.playClick();
     setCurrentView('menu');
   };
 
@@ -250,12 +245,15 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
               onExploreMenu={handleNavigateMenu}
               onOpenScanner={() => setIsScannerOpen(true)}
               onOpenAdmin={handleNavigateAdmin}
+              onOpenReservation={() => setIsReservationOpen(true)}
+              onOpenLoyaltyModal={() => setIsLoyaltyModalOpen(true)}
             />
             <LiveCafeVibe />
             <SignatureHighlights
               onSelectItemForCustomize={(item) => setSelectedItemForCustomize(item)}
               onExploreAll={handleNavigateMenu}
               onRequireAuth={(cb) => requireCustomerAuth(cb)}
+              onOpenReservation={() => setIsReservationOpen(true)}
             />
             <CafeExperience />
             <CustomerReviews />
@@ -269,6 +267,7 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
               onSelectItemForCustomize={(item) => setSelectedItemForCustomize(item)}
               onOpenScanner={() => setIsScannerOpen(true)}
               onRequireAuth={(cb) => requireCustomerAuth(cb)}
+              onOpenReservation={() => setIsReservationOpen(true)}
             />
           </div>
         )}

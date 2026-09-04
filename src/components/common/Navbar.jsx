@@ -97,10 +97,6 @@ export function Navbar({
 
   const handleMenuClick = () => {
     sounds.playClick();
-    if (!isCustomerLoggedIn) {
-      if (onRequireAuth) onRequireAuth(() => navTo('menu'));
-      return;
-    }
     navTo('menu');
   };
 
@@ -200,9 +196,6 @@ export function Navbar({
             >
               <UtensilsCrossed className="w-3.5 h-3.5" />
               <span>Explore Menu</span>
-              {!isCustomerLoggedIn && (
-                <Lock className="w-3 h-3 text-amber-400/80 ml-0.5" />
-              )}
             </button>
 
             <button
@@ -227,7 +220,11 @@ export function Navbar({
             <button
               onClick={() => {
                 sounds.playClick();
-                if (operationalModel === 'table-qr' || diningMode === 'table') onOpenScanner();
+                if (operationalModel === 'table-qr' || operationalModel === 'loyalty' || (operationalModel === 'hybrid' && diningMode === 'table')) {
+                  onOpenScanner();
+                } else if (operationalModel === 'showcase' && onOpenReservation) {
+                  onOpenReservation();
+                }
               }}
               className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-slate-900/80 border border-white/10 hover:border-amber-400/50 text-xs font-mono font-medium text-amber-300 transition"
               title="Service Station"
@@ -421,7 +418,6 @@ export function Navbar({
                 <UtensilsCrossed className="w-4 h-4 text-amber-400" />
                 <span>Explore Full Menu</span>
               </div>
-              {!isCustomerLoggedIn && <Lock className="w-3.5 h-3.5 text-amber-400" />}
             </button>
             <button
               onClick={handleAdminClick}

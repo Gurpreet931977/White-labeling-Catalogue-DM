@@ -12,7 +12,10 @@ import {
   ArrowLeft,
   Receipt,
   MapPin,
-  Flame
+  Flame,
+  Truck,
+  Store,
+  Award
 } from 'lucide-react';
 import { useOrder } from '../../context/OrderContext';
 import { BRAND_CONFIG } from '../../data/cafeConfig';
@@ -48,12 +51,26 @@ export function LiveOrderTracker({ onOrderMore, onBackHome }) {
     );
   }
 
-  const steps = [
-    { key: 'placed', label: '1. Order Placed', desc: 'Order received by kitchen', icon: Receipt },
-    { key: 'cooking', label: '2. Cooking', desc: 'Chef is preparing your food fresh', icon: ChefHat },
-    { key: 'ready', label: '3. Ready to Serve', desc: activeCustomerOrder.diningMode === 'table' ? 'Food being served to your table now!' : 'Please pick up food at the counter!', icon: Bell },
-    { key: 'served', label: '4. Enjoy Meal', desc: 'Food served! Have a wonderful meal!', icon: Sparkles }
-  ];
+  const steps = activeCustomerOrder.diningMode === 'delivery'
+    ? [
+        { key: 'placed', label: '1. Order Confirmed', desc: 'Received & routed to kitchen', icon: Receipt },
+        { key: 'cooking', label: '2. Wood-Fired Bake', desc: 'Chef preparing fresh dishes', icon: ChefHat },
+        { key: 'ready', label: '3. Rider Dispatched', desc: 'Courier out for doorstep delivery', icon: Truck },
+        { key: 'served', label: '4. Delivered', desc: 'Arrived hot at your door!', icon: Sparkles }
+      ]
+    : (activeCustomerOrder.diningMode === 'counter' || activeCustomerOrder.pickupToken)
+    ? [
+        { key: 'placed', label: '1. Token Issued', desc: `${activeCustomerOrder.pickupToken || 'Queue Token'} active`, icon: Receipt },
+        { key: 'cooking', label: '2. Kitchen Prep', desc: 'Sizzling at express counter', icon: ChefHat },
+        { key: 'ready', label: '3. Token Called', desc: 'Ready for pickup at counter window', icon: Bell },
+        { key: 'served', label: '4. Tray Collected', desc: 'Have a fantastic meal!', icon: Sparkles }
+      ]
+    : [
+        { key: 'placed', label: '1. Order Placed', desc: 'Order received by kitchen', icon: Receipt },
+        { key: 'cooking', label: '2. Cooking', desc: 'Chef is preparing your food fresh', icon: ChefHat },
+        { key: 'ready', label: '3. Serving to Table', desc: `Food being served to Table #${activeCustomerOrder.tableNumber || '04'}!`, icon: Bell },
+        { key: 'served', label: '4. Enjoy Meal', desc: 'Food served! Have a wonderful meal!', icon: Sparkles }
+      ];
 
   const getStepIndex = (status) => {
     switch (status) {
@@ -107,12 +124,26 @@ export function LiveOrderTracker({ onOrderMore, onBackHome }) {
               Live Order Status
             </h2>
             <div className="flex items-center gap-1.5 text-amber-400 font-bold text-xs mt-0.5">
-              <MapPin className="w-3.5 h-3.5" />
-              <span>
-                {activeCustomerOrder.diningMode === 'table'
-                  ? `Table #${activeCustomerOrder.tableNumber || '04'} • Dine In`
-                  : 'Counter Pickup'}
-              </span>
+              {activeCustomerOrder.diningMode === 'delivery' ? (
+                <>
+                  <Truck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-emerald-300">
+                    Doorstep Delivery • {activeCustomerOrder.deliveryAddress || 'Home Address'}
+                  </span>
+                </>
+              ) : (activeCustomerOrder.diningMode === 'counter' || activeCustomerOrder.pickupToken) ? (
+                <>
+                  <Store className="w-3.5 h-3.5 text-cyan-400" />
+                  <span className="text-cyan-300">
+                    {activeCustomerOrder.pickupToken ? `${activeCustomerOrder.pickupToken} • Express Counter Pickup` : 'Counter Pickup'}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <MapPin className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{`Table #${activeCustomerOrder.tableNumber || '04'} • Dine In Table Service`}</span>
+                </>
+              )}
             </div>
           </div>
 
@@ -127,6 +158,55 @@ export function LiveOrderTracker({ onOrderMore, onBackHome }) {
             </div>
           </div>
         </div>
+
+        {/* BIG COUNTER TOKEN BANNER FOR SELF-SERVE QSR */}
+        {activeCustomerOrder.pickupToken && (
+          <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-cyan-950/60 via-slate-950 to-slate-950 border border-cyan-500/40 text-center space-y-1 shadow-lg">
+            <span className="text-[10px] uppercase font-mono font-bold text-cyan-300 tracking-wider">
+              Your Counter Pickup Token
+            </span>
+            <div className="text-3xl sm:text-4xl font-black font-mono text-cyan-300 tracking-wider animate-pulse">
+              {activeCustomerOrder.pickupToken}
+            </div>
+            <p className="text-xs text-slate-300 font-clash">
+              {activeCustomerOrder.status === 'ready' 
+                ? '🔔 Token Called! Please collect your tray at Counter Window #1.'
+                : 'Keep this screen open. Your token number will be called at the counter when food is ready.'}
+            </p>
+          </div>
+        )}
+
+        {/* LIVE COURIER DISPATCH CARD FOR DOORSTEP DELIVERY */}
+        {activeCustomerOrder.diningMode === 'delivery' && (
+          <div className="p-4 rounded-2xl bg-slate-950 border border-emerald-500/30 space-y-2.5">
+            <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2 text-emerald-400 font-bold font-syne">
+                <Truck className="w-4 h-4" />
+                <span>Doorstep Courier Dispatch</span>
+              </div>
+              <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold">
+                {activeCustomerOrder.status === 'ready' ? 'RIDER ON THE WAY' : 'INSULATED HOT-BAG'}
+              </span>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs pt-1 border-t border-white/5">
+              <div className="space-y-0.5">
+                <p className="text-slate-400 text-[10px] uppercase font-mono">Delivering To:</p>
+                <p className="text-white font-medium text-xs">
+                  {activeCustomerOrder.deliveryAddress || 'Home Address'}
+                </p>
+                {activeCustomerOrder.deliveryNotes && (
+                  <p className="text-slate-400 text-[10px] italic">
+                    Note: "{activeCustomerOrder.deliveryNotes}"
+                  </p>
+                )}
+              </div>
+              <div className="text-left sm:text-right space-y-0.5">
+                <p className="text-slate-400 text-[10px] uppercase font-mono">Courier Rider:</p>
+                <p className="text-emerald-300 font-mono font-bold">Raju K. (Hero Electric #04)</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Live Step Progression */}
         <div className="space-y-4">

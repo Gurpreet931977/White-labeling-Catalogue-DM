@@ -94,6 +94,7 @@ export function ModelSwitcherModal({ isOpen, onClose }) {
   const handleSelectModel = (modelId) => {
     sounds.playSuccess();
     setOperationalModel(modelId);
+    window.dispatchEvent(new CustomEvent('thc_model_change', { detail: { model: modelId } }));
     onClose();
   };
 

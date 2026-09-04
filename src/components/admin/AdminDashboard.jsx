@@ -747,9 +747,13 @@ export function AdminDashboard({ onBackToClient }) {
                               <span className="px-3 py-1 rounded-xl bg-amber-400 text-slate-950 font-black text-xs font-mono tracking-wider shadow-sm">
                                 TABLE #{order.tableNumber || '04'}
                               </span>
+                            ) : order.diningMode === 'delivery' ? (
+                              <span className="px-3 py-1 rounded-xl bg-emerald-400 text-slate-950 font-black text-xs font-mono tracking-wider shadow-sm">
+                                🛵 DELIVERY
+                              </span>
                             ) : (
                               <span className="px-3 py-1 rounded-xl bg-cyan-400 text-slate-950 font-black text-xs font-mono tracking-wider shadow-sm">
-                                COUNTER PICKUP
+                                {order.pickupToken || 'COUNTER PICKUP'}
                               </span>
                             )}
 
@@ -771,6 +775,12 @@ export function AdminDashboard({ onBackToClient }) {
                             {order.customerPhone ? `+91 ${order.customerPhone}` : 'Dine-In Guest'}
                           </span>
                         </div>
+
+                        {order.deliveryAddress && (
+                          <div className="p-2 rounded-lg bg-slate-950 border border-emerald-500/20 text-[11px] text-emerald-300 font-mono">
+                            📍 {order.deliveryAddress}
+                          </div>
+                        )}
 
                         {/* Payment Status Banner */}
                         <div className={`p-2.5 rounded-xl border flex items-center justify-between text-xs ${

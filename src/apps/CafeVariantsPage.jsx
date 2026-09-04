@@ -9,7 +9,14 @@ import {
   Sliders, 
   ArrowRight,
   Layers,
-  Utensils
+  Utensils,
+  LayoutGrid,
+  QrCode,
+  Store,
+  Calendar,
+  Truck,
+  RefreshCw,
+  Award
 } from 'lucide-react';
 import { CAFE_VARIANTS } from '../data/cafeVariantsData';
 import { CafeDemoModal } from '../components/catalogue/CafeDemoModal';
@@ -23,13 +30,13 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo }) {
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
 
   const filters = [
-    { id: 'all', label: 'All 6 Operating Models' },
-    { id: 'Dine-In Table QR & POS', label: 'Table QR Dine-In' },
-    { id: 'Self-Serve & Counter Pickup', label: 'Self-Serve Counter' },
-    { id: 'Brand Showcase Landing Page', label: 'Showcase Landing' },
-    { id: 'Direct Online Doorstep Delivery', label: 'Doorstep Delivery' },
-    { id: 'Hybrid Dine-In & Delivery', label: 'Hybrid Dual Mode' },
-    { id: 'Loyalty Club & Visit Tracker', label: 'Loyalty Rewards' },
+    { id: 'all', label: 'All 6 Models', icon: LayoutGrid },
+    { id: 'Dine-In Table QR & POS', label: 'Table QR Dine-In', icon: QrCode },
+    { id: 'Self-Serve & Counter Pickup', label: 'Self-Serve Counter', icon: Store },
+    { id: 'Brand Showcase Landing Page', label: 'Showcase Landing', icon: Calendar },
+    { id: 'Direct Online Doorstep Delivery', label: 'Doorstep Delivery', icon: Truck },
+    { id: 'Hybrid Dine-In & Delivery', label: 'Hybrid Dual-Mode', icon: RefreshCw },
+    { id: 'Loyalty Club & Visit Tracker', label: 'Loyalty Rewards', icon: Award },
   ];
 
   const filteredVariants = selectedFilter === 'all'
@@ -94,23 +101,28 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo }) {
         </p>
 
         {/* Filter Pills */}
-        <div className="flex items-center justify-start sm:justify-center overflow-x-auto no-scrollbar gap-2 pt-6">
-          {filters.map((f) => (
-            <button
-              key={f.id}
-              onClick={() => {
-                sounds.playClick();
-                setSelectedFilter(f.id);
-              }}
-              className={`px-4 py-2 rounded-full text-xs font-clash font-semibold transition shrink-0 cursor-pointer ${
-                selectedFilter === f.id
-                  ? 'bg-[#ebd73f] text-black shadow-glow-yellow font-bold'
-                  : 'bg-[#141414] hover:bg-[#1f1f1f] text-white/70 hover:text-white border border-white/10'
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 pt-6 max-w-4xl mx-auto px-2">
+          {filters.map((f) => {
+            const Icon = f.icon;
+            const isSelected = selectedFilter === f.id;
+            return (
+              <button
+                key={f.id}
+                onClick={() => {
+                  sounds.playClick();
+                  setSelectedFilter(f.id);
+                }}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-clash font-semibold transition-all duration-200 cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#ebd73f] text-black shadow-glow-yellow scale-105 font-bold ring-2 ring-[#ebd73f]/50'
+                    : 'bg-[#121212] hover:bg-[#1c1c1c] text-white/70 hover:text-white border border-white/10 hover:border-white/20 hover:scale-[1.02]'
+                }`}
+              >
+                <Icon className={`w-3.5 h-3.5 transition-colors ${isSelected ? 'text-black' : 'text-[#ebd73f]'}`} />
+                <span>{f.label}</span>
+              </button>
+            );
+          })}
         </div>
       </section>
 
@@ -130,20 +142,23 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo }) {
                 <div className="p-6 pb-0 space-y-4">
                   
                   {/* Card Header */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-[#ebd73f]">
-                        {item.code}
-                      </span>
-                      <span className="text-white/20">•</span>
-                      <span className="text-xs font-mono text-slate-400 uppercase">
-                        {item.type}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-bold text-[#ebd73f] tracking-wider whitespace-nowrap">
+                          {item.code}
+                        </span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#ebd73f]/60 animate-pulse"></span>
+                      </div>
+
+                      <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full border bg-white/5 text-white/90 border-white/15 shrink-0 whitespace-nowrap">
+                        {item.badge}
                       </span>
                     </div>
 
-                    <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full border bg-white/5 text-white/90 border-white/15">
-                      {item.badge}
-                    </span>
+                    <div className="text-[11px] font-mono text-slate-400 uppercase tracking-wide truncate">
+                      {item.type}
+                    </div>
                   </div>
 
                   {/* Mockup Preview Window */}
@@ -219,6 +234,7 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo }) {
                     onClick={() => {
                       sounds.playClick();
                       localStorage.setItem('thc_operational_model', item.id);
+                      window.dispatchEvent(new CustomEvent('thc_model_change', { detail: { model: item.id } }));
                       onLaunchTHCDemo();
                     }}
                     className="btn-dripp-primary py-2.5 px-3 text-xs font-bold flex items-center justify-center gap-1 cursor-pointer shadow-xl"

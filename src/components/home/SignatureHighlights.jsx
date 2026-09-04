@@ -1,26 +1,20 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Clock, ThumbsUp, Flame, ArrowRight, Lock } from 'lucide-react';
+import { Plus, Clock, ThumbsUp, Flame, ArrowRight } from 'lucide-react';
 import { MENU_ITEMS } from '../../data/menuData';
 import { useCart } from '../../context/CartContext';
-import { useAuth } from '../../context/AuthContext';
 import { sounds } from '../../utils/audio';
 
-export function SignatureHighlights({ onSelectItemForCustomize, onExploreAll, onRequireAuth }) {
-  const { addToCart } = useCart();
-  const { isCustomerLoggedIn } = useAuth();
+export function SignatureHighlights({ onSelectItemForCustomize, onExploreAll, onRequireAuth, onOpenReservation }) {
+  const { addToCart, operationalModel } = useCart();
   const bestsellers = MENU_ITEMS.filter(item => item.isBestseller).slice(0, 6);
 
   const handleAction = (e, item) => {
     e.stopPropagation();
-    if (!isCustomerLoggedIn) {
-      if (onRequireAuth) onRequireAuth(() => {
-        if (item.customizable) {
-          onSelectItemForCustomize(item);
-        } else {
-          addToCart(item, 1);
-        }
-      });
+    if (operationalModel === 'showcase') {
+      sounds.playClick();
+      if (onOpenReservation) onOpenReservation();
+      else onExploreAll();
       return;
     }
 
@@ -128,8 +122,15 @@ export function SignatureHighlights({ onSelectItemForCustomize, onExploreAll, on
                   className="btn-3d btn-3d-amber px-3.5 py-1.5 rounded-xl font-bold font-syne text-xs flex items-center gap-1.5"
                 >
                   <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-                  <span>ADD TO ORDER</span>
-                  {!isCustomerLoggedIn && <Lock className="w-3 h-3 ml-0.5 opacity-75" />}
+                  <span>
+                    {operationalModel === 'showcase' 
+                      ? 'RESERVE TABLE' 
+                      : operationalModel === 'self-serve'
+                      ? 'FOR PICKUP'
+                      : operationalModel === 'delivery'
+                      ? 'FOR DELIVERY'
+                      : 'ADD TO ORDER'}
+                  </span>
                 </button>
               </div>
             </motion.div>
