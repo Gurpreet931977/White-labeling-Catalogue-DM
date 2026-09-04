@@ -101,8 +101,10 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
         estimatedMins: diningMode === 'delivery' ? 35 : (12 + Math.floor(Math.random() * 6)),
       });
 
-      // AUTO-INCREMENT LOYALTY VISIT STAMP ON BILL PAYMENT!
-      incrementLoyaltyVisit('billing');
+      // AUTO-INCREMENT LOYALTY VISIT STAMP ON BILL PAYMENT (Only in dedicated Loyalty Model)
+      if (operationalModel === 'loyalty') {
+        incrementLoyaltyVisit('billing');
+      }
 
       triggerCelebration();
       clearCart();
@@ -149,14 +151,16 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
             </p>
           </div>
 
-          {/* Integrated Loyalty Stamp Notice */}
-          <div className="p-2.5 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-between text-[11px] font-mono text-amber-300 mb-5">
-            <div className="flex items-center gap-1.5">
-              <Award className="w-3.5 h-3.5 text-amber-400" />
-              <span>Loyalty Club: +1 Stamp earned on billing!</span>
+          {/* Integrated Loyalty Stamp Notice (ONLY in dedicated Loyalty Model) */}
+          {operationalModel === 'loyalty' && (
+            <div className="p-2.5 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-between text-[11px] font-mono text-amber-300 mb-5">
+              <div className="flex items-center gap-1.5">
+                <Award className="w-3.5 h-3.5 text-amber-400" />
+                <span>Loyalty Club: +1 Stamp earned on billing!</span>
+              </div>
+              <span className="font-bold">Stamp {Math.min(7, loyaltyVisits + 1)}/7</span>
             </div>
-            <span className="font-bold">Stamp {Math.min(7, loyaltyVisits + 1)}/7</span>
-          </div>
+          )}
 
           {/* Simple Step 1: Choose Payment Method */}
           <div className="space-y-3 mb-5">

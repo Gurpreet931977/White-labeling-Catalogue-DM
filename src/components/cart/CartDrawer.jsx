@@ -558,7 +558,7 @@ export function CartDrawer({
                           type="text"
                           value={promoInput}
                           onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
-                          placeholder="e.g. CAFE10 or LOYALTY50"
+                          placeholder={operationalModel === 'loyalty' ? "e.g. LOYALTY50" : "e.g. CAFE10"}
                           className="flex-1 px-3 py-1.5 rounded-xl bg-slate-900 border border-white/5 text-xs text-white uppercase font-mono placeholder:text-slate-600 focus:outline-none focus:border-amber-400"
                         />
                         <button

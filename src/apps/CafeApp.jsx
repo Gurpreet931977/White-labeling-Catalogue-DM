@@ -167,7 +167,7 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
           onOpenScanner={() => setIsScannerOpen(true)}
           onOpenTracker={() => setCurrentView('tracker')}
           onRequireAuth={(cb) => requireCustomerAuth(cb)}
-          onOpenLoyaltyModal={() => setIsLoyaltyModalOpen(true)}
+          onOpenLoyaltyModal={operationalModel === 'loyalty' ? () => setIsLoyaltyModalOpen(true) : null}
           onOpenReservation={() => setIsReservationOpen(true)}
           onOpenModelSwitcher={() => setIsModelSwitcherOpen(true)}
         />
@@ -390,7 +390,7 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
         }}
         onRequireAuth={(cb) => requireCustomerAuth(cb)}
         onOpenReservation={() => setIsReservationOpen(true)}
-        onOpenLoyaltyModal={() => setIsLoyaltyModalOpen(true)}
+        onOpenLoyaltyModal={operationalModel === 'loyalty' ? () => setIsLoyaltyModalOpen(true) : null}
       />
 
       {/* 5. Payment Gateway Modal */}
@@ -414,12 +414,14 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
         onClose={() => setIsModelSwitcherOpen(false)}
       />
 
-      {/* 8. 7-Visit Loyalty Punch Card Modal */}
-      <LoyaltyCardModal
-        isOpen={isLoyaltyModalOpen}
-        onClose={() => setIsLoyaltyModalOpen(false)}
-        onOpenCart={() => setIsCartOpen(true)}
-      />
+      {/* 8. 7-Visit Loyalty Punch Card Modal (Dedicated to 'loyalty' operational model) */}
+      {operationalModel === 'loyalty' && (
+        <LoyaltyCardModal
+          isOpen={isLoyaltyModalOpen}
+          onClose={() => setIsLoyaltyModalOpen(false)}
+          onOpenCart={() => setIsCartOpen(true)}
+        />
+      )}
 
       {/* 9. VIP Table Reservation Modal */}
       <TableReservationModal

@@ -255,8 +255,8 @@ export function Navbar({
               )}
             </button>
 
-            {/* Loyalty Club Punch Card Button */}
-            {onOpenLoyaltyModal && (
+            {/* Loyalty Club Punch Card Button (ONLY in dedicated Loyalty Model) */}
+            {operationalModel === 'loyalty' && onOpenLoyaltyModal && (
               <button
                 onClick={() => { sounds.playClick(); onOpenLoyaltyModal(); }}
                 className={`flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border transition text-xs font-mono font-bold ${
