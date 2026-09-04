@@ -164,11 +164,10 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
         return false;
       }
 
-      // 3. Category Filter (including drinks aggregation)
+      // 3. Category Filter (including italian-specials aggregation)
       if (activeCategory !== 'all') {
-        if (activeCategory === 'drinks') {
-          const isDrink = item.category === 'drinks' || item.category === 'chai-coffee' || item.category === 'shakes-coolers';
-          if (!isDrink) return false;
+        if (activeCategory === 'italian-specials') {
+          if (!item.isItalian && item.category !== 'woodfired-pizza' && item.category !== 'pastas-mains') return false;
         } else if (item.category !== activeCategory) {
           return false;
         }
@@ -590,8 +589,8 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
                         const isSelected = activeCategory === cat.id;
                         const count = cat.id === 'all'
                           ? liveItems.length
-                          : cat.id === 'drinks'
-                          ? liveItems.filter(i => i.category === 'drinks' || i.category === 'chai-coffee' || i.category === 'shakes-coolers').length
+                          : cat.id === 'italian-specials'
+                          ? liveItems.filter(i => i.isItalian || i.category === 'woodfired-pizza' || i.category === 'pastas-mains').length
                           : liveItems.filter(i => i.category === cat.id).length;
 
                         return (

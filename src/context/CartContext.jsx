@@ -1,20 +1,22 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CAFE_CONFIG } from '../data/cafeConfig';
-import { useAuth } from './AuthContext';
 import { sounds } from '../utils/audio';
+import { useAuth } from './AuthContext';
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const { customerUser } = useAuth();
 
+  // Cart items state with localStorage persistence
   const [cart, setCart] = useState(() => {
-    try {
-      const saved = localStorage.getItem('thc_cart');
-      return saved ? JSON.parse(saved) : [];
-    } catch (e) {
-      return [];
-    }
+    const saved = localStorage.getItem('thc_cart');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // Operational Model: 'table-qr' | 'self-serve' | 'showcase' | 'delivery' | 'hybrid' | 'loyalty'
+  const [operationalModel, setOperationalModel] = useState(() => {
+    return localStorage.getItem('thc_operational_model') || 'table-qr';
   });
 
   const [activeTable, setActiveTable] = useState(() => {
@@ -28,15 +30,51 @@ export function CartProvider({ children }) {
     return saved ? parseInt(saved, 10) : 4; // Default to Table 4 demo
   });
 
-  const [diningMode, setDiningMode] = useState('table'); // 'table' | 'counter'
+  // diningMode: 'table' | 'counter' | 'delivery'
+  const [diningMode, setDiningMode] = useState(() => {
+    if (operationalModel === 'self-serve') return 'counter';
+    if (operationalModel === 'delivery') return 'delivery';
+    return 'table';
+  });
+
   const [customerName, setCustomerName] = useState(() => {
-    return customerUser?.name || localStorage.getItem('thc_customer_name') || 'Highway Foodie';
+    return customerUser?.name || localStorage.getItem('thc_customer_name') || 'Cafe Foodie';
   });
   const [customerPhone, setCustomerPhone] = useState(() => {
     return customerUser?.phone || localStorage.getItem('thc_customer_phone') || '9876543210';
   });
+
+  // Delivery details state
+  const [deliveryAddress, setDeliveryAddress] = useState(() => {
+    return localStorage.getItem('thc_delivery_address') || 'Flat 402, Pinecrest Residences, Rajpur Road';
+  });
+  const [deliveryNotes, setDeliveryNotes] = useState('');
+
+  // Loyalty Program State (7-Visit Digital Punch-Card)
+  // Default starts at 3 visits so clients can immediately see the progress and stamp to 7!
+  const [loyaltyVisits, setLoyaltyVisits] = useState(() => {
+    const saved = localStorage.getItem('thc_loyalty_visits');
+    return saved ? parseInt(saved, 10) : 3;
+  });
+
+  const [lastCheckinTime, setLastCheckinTime] = useState(() => {
+    return localStorage.getItem('thc_last_checkin') || null;
+  });
+
   const [appliedPromo, setAppliedPromo] = useState(null);
   const [tipAmount, setTipAmount] = useState(20);
+
+  // Sync diningMode when operationalModel switches
+  useEffect(() => {
+    if (operationalModel === 'self-serve') {
+      setDiningMode('counter');
+    } else if (operationalModel === 'delivery') {
+      setDiningMode('delivery');
+    } else if (operationalModel === 'table-qr') {
+      setDiningMode('table');
+    }
+    localStorage.setItem('thc_operational_model', operationalModel);
+  }, [operationalModel]);
 
   // Auto-sync whenever logged in customerUser updates
   useEffect(() => {
@@ -63,6 +101,40 @@ export function CartProvider({ children }) {
   useEffect(() => {
     localStorage.setItem('thc_customer_phone', customerPhone);
   }, [customerPhone]);
+
+  useEffect(() => {
+    localStorage.setItem('thc_delivery_address', deliveryAddress);
+  }, [deliveryAddress]);
+
+  useEffect(() => {
+    localStorage.setItem('thc_loyalty_visits', loyaltyVisits.toString());
+  }, [loyaltyVisits]);
+
+  // Loyalty Actions
+  const incrementLoyaltyVisit = (source = 'billing') => {
+    sounds.playSuccess();
+    setLoyaltyVisits(prev => {
+      const next = prev >= 7 ? 1 : prev + 1;
+      localStorage.setItem('thc_loyalty_visits', next.toString());
+      return next;
+    });
+    setLastCheckinTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    localStorage.setItem('thc_last_checkin', new Date().toISOString());
+  };
+
+  const resetLoyalty = () => {
+    sounds.playClick();
+    setLoyaltyVisits(1);
+    localStorage.setItem('thc_loyalty_visits', '1');
+  };
+
+  const is7thVisitUnlocked = loyaltyVisits >= 7;
+
+  // Claim 7th visit reward: applies LOYALTY50 promo code directly!
+  const claim7thVisitReward = () => {
+    sounds.playSuccess();
+    applyPromoCode('LOYALTY50');
+  };
 
   const addToCart = (item, quantity = 1, spice = null, addons = [], notes = '') => {
     sounds.playAddToCart();
@@ -161,9 +233,14 @@ export function CartProvider({ children }) {
     }
   }
 
+  const isDeliveryActive = diningMode === 'delivery' || operationalModel === 'delivery';
+  const deliveryFee = isDeliveryActive
+    ? (subtotal >= (CAFE_CONFIG.delivery?.freeDeliveryThreshold || 499) ? 0 : (CAFE_CONFIG.delivery?.standardFee || 40))
+    : 0;
+
   const taxableAmount = Math.max(0, subtotal - discountAmount);
   const gstAmount = Math.round(taxableAmount * CAFE_CONFIG.gstRate);
-  const grandTotal = taxableAmount + gstAmount + (tipAmount || 0);
+  const grandTotal = taxableAmount + gstAmount + deliveryFee + (tipAmount || 0);
 
   return (
     <CartContext.Provider
@@ -185,6 +262,20 @@ export function CartProvider({ children }) {
         setCustomerName,
         customerPhone,
         setCustomerPhone,
+        operationalModel,
+        setOperationalModel,
+        deliveryAddress,
+        setDeliveryAddress,
+        deliveryNotes,
+        setDeliveryNotes,
+        deliveryFee,
+        isDeliveryActive,
+        loyaltyVisits,
+        incrementLoyaltyVisit,
+        resetLoyalty,
+        is7thVisitUnlocked,
+        claim7thVisitReward,
+        lastCheckinTime,
         addToCart,
         updateQuantity,
         removeFromCart,

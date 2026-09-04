@@ -11,7 +11,10 @@ import {
   Loader2,
   Lock,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  Award,
+  Store,
+  Truck
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useCart } from '../../context/CartContext';
@@ -31,6 +34,12 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
     diningMode, 
     customerName, 
     customerPhone, 
+    operationalModel,
+    deliveryAddress,
+    deliveryNotes,
+    deliveryFee,
+    loyaltyVisits,
+    incrementLoyaltyVisit,
     clearCart 
   } = useCart();
 
@@ -67,22 +76,33 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
         notes: i.notes
       }));
 
+      const pickupToken = (operationalModel === 'self-serve' || diningMode === 'counter')
+        ? `TOKEN #C-${Math.floor(10 + Math.random() * 89)}`
+        : null;
+
       const newOrder = await placeOrder({
         tableNumber: diningMode === 'table' ? activeTable : null,
         diningMode: diningMode,
-        customerName: customerName || 'Highway Guest',
+        pickupToken,
+        deliveryAddress: diningMode === 'delivery' ? deliveryAddress : null,
+        deliveryNotes: diningMode === 'delivery' ? deliveryNotes : null,
+        customerName: customerName || 'Cafe Guest',
         customerPhone: customerPhone || '9876543210',
         items: orderItems,
         subtotal,
         discount: discountAmount,
+        deliveryFee: diningMode === 'delivery' ? deliveryFee : 0,
         gst: gstAmount,
         tip: tipAmount,
         total: grandTotal,
         paymentMethod: method,
         paymentStatus: status,
         paymentGateway: gatewayName,
-        estimatedMins: 12 + Math.floor(Math.random() * 6),
+        estimatedMins: diningMode === 'delivery' ? 35 : (12 + Math.floor(Math.random() * 6)),
       });
+
+      // AUTO-INCREMENT LOYALTY VISIT STAMP ON BILL PAYMENT!
+      incrementLoyaltyVisit('billing');
 
       triggerCelebration();
       clearCart();
@@ -114,13 +134,28 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
           </button>
 
           {/* Title */}
-          <div className="text-center mb-5">
+          <div className="text-center mb-4">
             <h3 className="text-xl sm:text-2xl font-bold text-white font-syne">
               Complete Your Order
             </h3>
             <p className="text-amber-400 text-sm font-bold mt-1">
-              Total Bill: ₹{grandTotal} • {diningMode === 'table' ? `Table #${activeTable || '04'}` : 'Counter Pickup'}
+              Total Bill: ₹{grandTotal} • {
+                diningMode === 'table'
+                  ? `Table #${activeTable || '04'}`
+                  : diningMode === 'delivery'
+                  ? 'Doorstep Delivery'
+                  : 'Counter Pickup'
+              }
             </p>
+          </div>
+
+          {/* Integrated Loyalty Stamp Notice */}
+          <div className="p-2.5 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-between text-[11px] font-mono text-amber-300 mb-5">
+            <div className="flex items-center gap-1.5">
+              <Award className="w-3.5 h-3.5 text-amber-400" />
+              <span>Loyalty Club: +1 Stamp earned on billing!</span>
+            </div>
+            <span className="font-bold">Stamp {Math.min(7, loyaltyVisits + 1)}/7</span>
           </div>
 
           {/* Simple Step 1: Choose Payment Method */}

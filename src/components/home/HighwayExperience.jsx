@@ -6,18 +6,18 @@ import { BRAND_CONFIG } from '../../data/cafeConfig';
 // CUSTOM ANIMATED 2D VECTOR ICONS (MODERN, LAYERED, NO EMOJIS)
 // =========================================================================
 
-/** 1. Animated 2D Authentic Lounge & Highway Cruiser Icon */
-function AnimatedLoungeIcon() {
+/** 1. Animated 2D Handcrafted Italian Kitchen & Wood-Fired Oven Icon */
+function AnimatedItalianKitchenIcon() {
   return (
-    <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 via-amber-500/10 to-slate-950 border border-amber-400/30 flex items-center justify-center shadow-lg shadow-amber-500/10 overflow-hidden group">
-      {/* Ambient Pulsing Glow */}
+    <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 via-orange-500/10 to-slate-950 border border-amber-400/30 flex items-center justify-center shadow-lg shadow-amber-500/10 overflow-hidden group">
+      {/* Ambient Pulsing Hearth Glow */}
       <motion.div
         animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.7, 0.3] }}
-        transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+        transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
         className="absolute inset-0 bg-amber-400/20 rounded-full blur-md"
       />
 
-      {/* Floating Highway Cruiser Truck */}
+      {/* Layered 2D Wood-Fired Oven & Pizza Peel */}
       <motion.svg
         animate={{ y: [0, -2, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -25,48 +25,46 @@ function AnimatedLoungeIcon() {
         viewBox="0 0 24 24"
         fill="none"
       >
-        {/* Main Vehicle Body */}
+        {/* Oven Brick Dome Outline */}
         <path
-          d="M1 4C1 3.44772 1.44772 3 2 3H14C14.5523 3 15 3.44772 15 4V14H1V4Z"
-          fill="url(#truck-body-grad)"
+          d="M3 19C3 12 7 6 12 6C17 6 21 12 21 19H3Z"
+          fill="url(#oven-dome-grad)"
           stroke="#F59E0B"
           strokeWidth="1.2"
         />
-        {/* Cabin Front */}
+        {/* Oven Hearth Opening */}
         <path
-          d="M15 7H18.5C18.8978 7 19.2794 7.15804 19.5607 7.43934L22.5607 10.4393C22.842 10.7206 23 11.1022 23 11.5V14C23 14.5523 22.5523 15 22 15H15V7Z"
-          fill="url(#cabin-grad)"
-          stroke="#F59E0B"
-          strokeWidth="1.2"
+          d="M7 19C7 14 9.2 11 12 11C14.8 11 17 14 17 19H7Z"
+          fill="#1E1B18"
+          stroke="#D97706"
+          strokeWidth="1"
         />
-        {/* Cabin Window */}
-        <path
-          d="M16 8.5H18.2L20.8 11H16V8.5Z"
-          fill="#FEF3C7"
-          opacity="0.8"
+        {/* Radiant Inner Ember Glow */}
+        <motion.ellipse
+          animate={{ rx: [3.5, 4.2, 3.5], opacity: [0.7, 1, 0.7] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          cx="12"
+          cy="18"
+          rx="4"
+          ry="1.5"
+          fill="#F59E0B"
         />
-        {/* Headlight Beam Pulse */}
+        {/* Chimney / Steam Exhaust */}
+        <path d="M11 6V3H13V6" stroke="#F59E0B" strokeWidth="1.2" strokeLinecap="round" />
         <motion.path
-          animate={{ opacity: [0.3, 0.9, 0.3] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-          d="M23 13L24.5 12.5V14.5L23 14V13Z"
-          fill="#FDE047"
+          animate={{ opacity: [0.3, 0.9, 0.3], y: [0, -2, 0] }}
+          transition={{ duration: 1.4, repeat: Infinity }}
+          d="M12 2C11.5 1.5 12.5 1 12 0.5"
+          stroke="#FDE047"
+          strokeWidth="1"
+          strokeLinecap="round"
         />
-        {/* Back Wheel with rotating rim */}
-        <circle cx="5.5" cy="16.5" r="2.5" fill="#0F172A" stroke="#F59E0B" strokeWidth="1.2" />
-        <circle cx="5.5" cy="16.5" r="1" fill="#FDE047" />
-        {/* Front Wheel with rotating rim */}
-        <circle cx="17.5" cy="16.5" r="2.5" fill="#0F172A" stroke="#F59E0B" strokeWidth="1.2" />
-        <circle cx="17.5" cy="16.5" r="1" fill="#FDE047" />
 
         <defs>
-          <linearGradient id="truck-body-grad" x1="1" y1="3" x2="15" y2="14" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#FBBF24" />
-            <stop offset="1" stopColor="#D97706" />
-          </linearGradient>
-          <linearGradient id="cabin-grad" x1="15" y1="7" x2="23" y2="15" gradientUnits="userSpaceOnUse">
+          <linearGradient id="oven-dome-grad" x1="3" y1="6" x2="21" y2="19" gradientUnits="userSpaceOnUse">
             <stop stopColor="#F59E0B" />
-            <stop offset="1" stopColor="#B45309" />
+            <stop offset="0.7" stopColor="#B45309" />
+            <stop offset="1" stopColor="#78350F" />
           </linearGradient>
         </defs>
       </motion.svg>
@@ -74,8 +72,8 @@ function AnimatedLoungeIcon() {
   );
 }
 
-/** 2. Animated 2D Mountain Peaks & Fresh Breeze Icon */
-function AnimatedMountainIcon() {
+/** 2. Animated 2D Specialty Coffee Roastery & Velvet Microfoam Icon */
+function AnimatedCoffeeRoastIcon() {
   return (
     <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-slate-950 border border-emerald-400/30 flex items-center justify-center shadow-lg shadow-emerald-500/10 overflow-hidden group">
       {/* Ambient Pulsing Glow */}
@@ -85,64 +83,57 @@ function AnimatedMountainIcon() {
         className="absolute inset-0 bg-emerald-400/20 rounded-full blur-md"
       />
 
-      {/* Floating Mountain Peaks */}
+      {/* Layered Coffee Cup & Rising Steaming Swirls */}
       <svg className="w-6 h-6 relative z-10" viewBox="0 0 24 24" fill="none">
-        {/* Background Sun/Moon Orb */}
-        <motion.circle
-          animate={{ scale: [0.95, 1.05, 0.95] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          cx="17"
-          cy="7"
-          r="3"
-          fill="url(#mountain-sun-grad)"
-        />
-
-        {/* Back Mountain Peak */}
+        {/* Coffee Cup Body */}
         <path
-          d="M13 8L21 20H9L13 8Z"
-          fill="url(#mountain-back-grad)"
-          stroke="#0D9488"
-          strokeWidth="1"
-          strokeLinejoin="round"
-        />
-
-        {/* Front Majestic Mountain Peak */}
-        <path
-          d="M7.5 5L15.5 20H1.5L7.5 5Z"
-          fill="url(#mountain-front-grad)"
+          d="M3 8C3 13.5 6 17 12 17C18 17 21 13.5 21 8H3Z"
+          fill="url(#coffee-cup-grad)"
           stroke="#10B981"
           strokeWidth="1.2"
-          strokeLinejoin="round"
         />
-
-        {/* Snow Cap on Front Peak */}
+        {/* Cup Handle */}
         <path
-          d="M7.5 5L9.5 9L8 10L7 9L5.5 10L7.5 5Z"
-          fill="#ECFDF5"
+          d="M19 10C20.5 10 21.5 11 21.5 12.5C21.5 14 20.5 15 19 15"
+          stroke="#34D399"
+          strokeWidth="1.2"
+          strokeLinecap="round"
         />
+        {/* Cup Saucer Base */}
+        <line x1="4" y1="19" x2="20" y2="19" stroke="#059669" strokeWidth="1.4" strokeLinecap="round" />
 
-        {/* Animated Mountain Breeze Wave */}
+        {/* Rising Steam Swirl 1 */}
         <motion.path
-          animate={{ x: [-2, 2, -2], opacity: [0.4, 0.9, 0.4] }}
-          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-          d="M1 18C4 17 8 18.5 12 17.5C16 16.5 20 18 23 17"
+          animate={{ y: [0, -3, 0], opacity: [0.4, 0.9, 0.4] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          d="M8 5C7.5 4 8.5 3 8 2"
           stroke="#6EE7B7"
-          strokeWidth="1"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+        />
+        {/* Rising Steam Swirl 2 */}
+        <motion.path
+          animate={{ y: [0, -3, 0], opacity: [0.4, 0.9, 0.4] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+          d="M12 5C11.5 4 12.5 3 12 2"
+          stroke="#A7F3D0"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+        />
+        {/* Rising Steam Swirl 3 */}
+        <motion.path
+          animate={{ y: [0, -3, 0], opacity: [0.4, 0.9, 0.4] }}
+          transition={{ duration: 1.9, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
+          d="M16 5C15.5 4 16.5 3 16 2"
+          stroke="#6EE7B7"
+          strokeWidth="1.2"
           strokeLinecap="round"
         />
 
         <defs>
-          <linearGradient id="mountain-sun-grad" x1="14" y1="4" x2="20" y2="10" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#FEF08A" />
-            <stop offset="1" stopColor="#F59E0B" />
-          </linearGradient>
-          <linearGradient id="mountain-front-grad" x1="1.5" y1="5" x2="15.5" y2="20" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#34D399" />
-            <stop offset="1" stopColor="#065F46" />
-          </linearGradient>
-          <linearGradient id="mountain-back-grad" x1="9" y1="8" x2="21" y2="20" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#14B8A6" />
-            <stop offset="1" stopColor="#115E59" />
+          <linearGradient id="coffee-cup-grad" x1="3" y1="8" x2="21" y2="17" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#059669" />
+            <stop offset="1" stopColor="#064E3B" />
           </linearGradient>
         </defs>
       </svg>
@@ -190,8 +181,8 @@ function AnimatedTableTechIcon() {
   );
 }
 
-/** 4. Animated 2D Midnight Kitchen / 24/7 Clock & Moon Icon */
-function AnimatedMidnightIcon() {
+/** 4. Animated 2D Cozy Bistro Ambience & Warm Lo-Fi Lamp Icon */
+function AnimatedBistroAmbienceIcon() {
   return (
     <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 via-indigo-500/10 to-slate-950 border border-purple-400/30 flex items-center justify-center shadow-lg shadow-purple-500/10 overflow-hidden group">
       {/* Ambient Pulsing Glow */}
@@ -201,52 +192,61 @@ function AnimatedMidnightIcon() {
         className="absolute inset-0 bg-purple-400/20 rounded-full blur-md"
       />
 
-      {/* Floating Micro Star 1 */}
+      {/* Floating Micro Star / Music Spark 1 */}
       <motion.div
         animate={{ scale: [0.5, 1.2, 0.5], opacity: [0.3, 1, 0.3] }}
         transition={{ duration: 1.8, repeat: Infinity }}
         className="absolute top-2.5 right-3 w-1 h-1 rounded-full bg-amber-300 pointer-events-none"
       />
 
-      {/* Floating Micro Star 2 */}
+      {/* Floating Micro Star / Music Spark 2 */}
       <motion.div
         animate={{ scale: [0.4, 1.1, 0.4], opacity: [0.2, 0.9, 0.2] }}
         transition={{ duration: 2.2, repeat: Infinity, delay: 0.6 }}
         className="absolute bottom-3 left-3 w-1 h-1 rounded-full bg-purple-300 pointer-events-none"
       />
 
-      {/* Layered 2D Crescent Moon & Kitchen Spark */}
+      {/* Layered 2D Warm Pendant Bistro Lamp & Acoustic Wave */}
       <motion.svg
-        animate={{ rotate: [-4, 4, -4] }}
+        animate={{ rotate: [-2, 2, -2] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        className="w-6 h-6 relative z-10"
+        className="w-6 h-6 relative z-10 origin-top"
         viewBox="0 0 24 24"
         fill="none"
       >
-        {/* Glowing Golden Crescent Moon */}
+        {/* Lamp Cord */}
+        <line x1="12" y1="2" x2="12" y2="7" stroke="#A855F7" strokeWidth="1.2" />
+        {/* Lamp Shade Dome */}
         <path
-          d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"
-          fill="url(#moon-grad)"
+          d="M7 13C7 9.5 9.2 7 12 7C14.8 7 17 9.5 17 13H7Z"
+          fill="url(#lamp-shade-grad)"
           stroke="#C084FC"
           strokeWidth="1.2"
-          strokeLinejoin="round"
         />
-
-        {/* 24/7 Kitchen Sparkle / Steam Core */}
-        <motion.path
-          animate={{ scale: [0.8, 1.2, 0.8], opacity: [0.7, 1, 0.7] }}
+        {/* Warm Filament Glow Bulb */}
+        <motion.circle
+          animate={{ opacity: [0.6, 1, 0.6], scale: [0.9, 1.1, 0.9] }}
           transition={{ duration: 1.6, repeat: Infinity }}
-          d="M9 10C9 10 9.5 8.5 11 8.5C12.5 8.5 12.5 10 13 11C13.5 12 14.5 12 14.5 12"
-          stroke="#FDE047"
-          strokeWidth="1"
-          strokeLinecap="round"
+          cx="12"
+          cy="15"
+          r="2.5"
+          fill="#FDE047"
+        />
+        {/* Ambient Light Cone */}
+        <path
+          d="M7 13L4 21H20L17 13Z"
+          fill="url(#light-cone-grad)"
+          opacity="0.25"
         />
 
         <defs>
-          <linearGradient id="moon-grad" x1="3" y1="3" x2="21" y2="21" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#FDE047" />
-            <stop offset="0.6" stopColor="#C084FC" />
-            <stop offset="1" stopColor="#7E22CE" />
+          <linearGradient id="lamp-shade-grad" x1="7" y1="7" x2="17" y2="13" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#A855F7" />
+            <stop offset="1" stopColor="#6B21A8" />
+          </linearGradient>
+          <linearGradient id="light-cone-grad" x1="12" y1="13" x2="12" y2="21" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#FDE047" stopOpacity="0.8" />
+            <stop offset="1" stopColor="#F59E0B" stopOpacity="0" />
           </linearGradient>
         </defs>
       </motion.svg>
@@ -255,15 +255,15 @@ function AnimatedMidnightIcon() {
 }
 
 // =========================================================================
-// MAIN HIGHWAY EXPERIENCE SECTION
+// MAIN EXPERIENCE SECTION
 // =========================================================================
 
-export function HighwayExperience() {
+export function CafeExperience() {
   const animatedIcons = [
-    <AnimatedLoungeIcon key="lounge" />,
-    <AnimatedMountainIcon key="mountain" />,
+    <AnimatedItalianKitchenIcon key="kitchen" />,
+    <AnimatedCoffeeRoastIcon key="coffee" />,
     <AnimatedTableTechIcon key="tech" />,
-    <AnimatedMidnightIcon key="midnight" />
+    <AnimatedBistroAmbienceIcon key="ambience" />
   ];
 
   return (
@@ -276,7 +276,7 @@ export function HighwayExperience() {
             More Than Just a Cafe
           </h2>
           <p className="text-slate-400 text-xs sm:text-sm mt-2 leading-relaxed">
-            {BRAND_CONFIG.tagline} • Crafted for exceptional food lovers and late-night cravings.
+            {BRAND_CONFIG.tagline} • Crafted for true food lovers, slow coffee moments, and comfortable gatherings.
           </p>
         </div>
 
@@ -311,3 +311,4 @@ export function HighwayExperience() {
     </section>
   );
 }
+export { CafeExperience as HighwayExperience };

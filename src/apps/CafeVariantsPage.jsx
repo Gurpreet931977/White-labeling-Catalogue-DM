@@ -23,11 +23,13 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo }) {
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
 
   const filters = [
-    { id: 'all', label: 'All 4 Cafe Models' },
-    { id: 'Casual Dine-In & QR POS', label: 'Casual Dine-In & QR POS' },
-    { id: 'Specialty Coffee & Roastery', label: 'Specialty Roastery' },
-    { id: 'Rooftop & Fine Dining', label: 'Rooftop Bistro' },
-    { id: 'Cloud Kitchen & Express Takeaway', label: 'Cloud Kitchen' },
+    { id: 'all', label: 'All 6 Operating Models' },
+    { id: 'Dine-In Table QR & POS', label: 'Table QR Dine-In' },
+    { id: 'Self-Serve & Counter Pickup', label: 'Self-Serve Counter' },
+    { id: 'Brand Showcase Landing Page', label: 'Showcase Landing' },
+    { id: 'Direct Online Doorstep Delivery', label: 'Doorstep Delivery' },
+    { id: 'Hybrid Dine-In & Delivery', label: 'Hybrid Dual Mode' },
+    { id: 'Loyalty Club & Visit Tracker', label: 'Loyalty Rewards' },
   ];
 
   const filteredVariants = selectedFilter === 'all'
@@ -88,7 +90,7 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo }) {
         </h1>
 
         <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-300 font-clash leading-relaxed">
-          Not all cafes operate the same. Select from 4 distinctive turnkey white-label systems tailored for quick table turnover, artisanal bean subscriptions, romantic view dining, or high-speed cloud takeaway.
+          Not all cafes operate the same. Select from 6 purpose-built turnkey white-label systems tailored for table QR service, self-serve counter pickups, brand showcase landing pages, direct online delivery, hybrid dining, or 7-visit loyalty rewards.
         </p>
 
         {/* Filter Pills */}
@@ -112,9 +114,9 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo }) {
         </div>
       </section>
 
-      {/* Grid of 4 Archetype Cards */}
+      {/* Grid of 6 Archetype Cards */}
       <section className="pb-24 px-4 sm:px-6 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence>
             {filteredVariants.map((item) => (
               <motion.div
@@ -125,7 +127,7 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo }) {
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="group relative rounded-3xl overflow-hidden dripp-card-bg border border-white/10 hover:border-[#ebd73f]/50 transition-all duration-500 flex flex-col justify-between shadow-2xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
               >
-                <div className="p-6 sm:p-7 pb-0 space-y-4">
+                <div className="p-6 pb-0 space-y-4">
                   
                   {/* Card Header */}
                   <div className="flex items-center justify-between">
@@ -152,7 +154,7 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo }) {
                         <span className="w-2 h-2 rounded-full bg-white/20"></span>
                         <span className="w-2 h-2 rounded-full bg-[#ebd73f]/60"></span>
                       </div>
-                      <span>{item.modelName}</span>
+                      <span className="truncate max-w-[140px]">{item.modelName}</span>
                       <span className="text-[#ebd73f]">{item.metrics.speed}</span>
                     </div>
 
@@ -177,56 +179,54 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo }) {
 
                   {/* Card Title & Desc */}
                   <div>
-                    <h3 className="font-panchang font-bold text-xl text-white group-hover:text-[#ebd73f] transition-colors leading-snug">
+                    <h3 className="font-panchang font-bold text-lg text-white group-hover:text-[#ebd73f] transition-colors leading-snug">
                       {item.title}
                     </h3>
-                    <p className="text-xs font-mono text-[#ebd73f] mt-1">
+                    <p className="text-[11px] font-mono text-[#ebd73f] mt-1 line-clamp-1">
                       Target: {item.idealFor}
                     </p>
-                    <p className="text-xs text-slate-300/80 font-clash mt-2 leading-relaxed">
+                    <p className="text-xs text-slate-300/80 font-clash mt-2 leading-relaxed line-clamp-3">
                       {item.description}
                     </p>
                   </div>
 
                   {/* Feature Bullets */}
                   <div className="pt-2 border-t border-white/10 space-y-1.5 font-clash">
-                    {item.features.slice(0, 4).map((f, fIdx) => (
-                      <div key={fIdx} className="flex items-start gap-2 text-xs text-slate-300/80">
+                    {item.features.slice(0, 3).map((f, fIdx) => (
+                      <div key={fIdx} className="flex items-start gap-2 text-[11px] text-slate-300/80">
                         <CheckCircle2 className="w-3.5 h-3.5 text-[#ebd73f] shrink-0 mt-0.5" />
-                        <span>{f}</span>
+                        <span className="line-clamp-1">{f}</span>
                       </div>
                     ))}
                   </div>
 
                 </div>
 
-                {/* Card Action Button */}
-                <div className="p-6 sm:p-7 pt-4">
-                  {item.isLiveTHC ? (
-                    <button
-                      onClick={() => {
-                        sounds.playClick();
-                        onLaunchTHCDemo();
-                      }}
-                      className="w-full btn-dripp-primary py-3.5 px-5 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-xl"
-                    >
-                      <span className="auth-shimmer-sweep"></span>
-                      <span>Launch Full Live App (THC Cafe Model)</span>
-                      <ArrowUpRight className="w-4 h-4 text-black" />
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        sounds.playClick();
-                        setSelectedVariantModal(item);
-                      }}
-                      className="w-full btn-dripp-primary py-3.5 px-5 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-xl"
-                    >
-                      <span className="auth-shimmer-sweep"></span>
-                      <span>Launch Interactive Showcase ({item.modelName})</span>
-                      <ArrowUpRight className="w-4 h-4 text-black" />
-                    </button>
-                  )}
+                {/* Card Action Buttons: Simulator Preview + Live Launch */}
+                <div className="p-6 pt-4 grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => {
+                      sounds.playClick();
+                      setSelectedVariantModal(item);
+                    }}
+                    className="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-white font-clash text-xs font-semibold flex items-center justify-center gap-1.5 transition border border-white/10 cursor-pointer"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-[#ebd73f]" />
+                    <span>Simulator</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      sounds.playClick();
+                      localStorage.setItem('thc_operational_model', item.id);
+                      onLaunchTHCDemo();
+                    }}
+                    className="btn-dripp-primary py-2.5 px-3 text-xs font-bold flex items-center justify-center gap-1 cursor-pointer shadow-xl"
+                  >
+                    <span className="auth-shimmer-sweep"></span>
+                    <span>Launch</span>
+                    <ArrowUpRight className="w-3.5 h-3.5 text-black" />
+                  </button>
                 </div>
 
               </motion.div>

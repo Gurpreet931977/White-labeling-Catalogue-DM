@@ -2,48 +2,48 @@
  * =========================================================================
  * BRAND & CAFE CONFIGURATION (WHITE-LABEL CONFIG)
  * =========================================================================
- * To re-brand this website for any new cafe, restaurant, lounge, or cloud kitchen,
+ * To re-brand this website for any new cafe, restaurant, lounge, or bistro,
  * simply change the values in this single configuration file!
  * All components across the frontend and admin panel read dynamically from here.
  */
 
 export const BRAND_CONFIG = {
   // Brand Identity
-  brandName: "Truckers Halt Cafe",
+  brandName: "THC Cafe & Bistro",
   shortName: "THC Cafe",
   logoInitials: "THC",
-  tagline: "Fuel Your Soul • 24/7 Highway Kitchen & Lounge",
+  tagline: "Artisan Kitchen • Handcrafted Italian & Specialty Brews",
   
   // Hero Section Customization
   hero: {
-    locationTag: "NH-72A • HIGHWAY LOUNGE",
-    headlineLine1: "Fuel Your",
-    headlineLine2: "Highway Soul.",
-    description: "Scan your table plaque, order sizzling mountain platters, chef specials, and fresh beverages directly to your seat. Fast kitchen with live status tracking.",
-    deliveryTag: "10-15 Min Serve",
+    locationTag: "ARTISAN BISTRO • ITALIAN KITCHEN",
+    headlineLine1: "Savor Every",
+    headlineLine2: "Artisan Flavor.",
+    description: "Scan your table QR, indulge in hand-stretched wood-fired pizzas, silky Italian pastas, single-origin espresso, and gourmet cafe classics delivered fresh to your seat.",
+    deliveryTag: "10-15 Min Table Serve",
     paymentTag: "UPI / Cash / Card",
-    kitchenTag: "24/7 Kitchen"
+    kitchenTag: "Fresh All-Day Kitchen"
   },
 
   // Contact & Location Details
   contact: {
     city: "Dehradun",
     state: "Uttarakhand",
-    shortAddress: "Rajpur Road Highway Pitstop",
-    fullAddress: "Old Mussoorie Highway, Rajpur Road, Dehradun, Uttarakhand 248009",
+    shortAddress: "Rajpur Road Bistro Hub",
+    fullAddress: "Rajpur Road, Near Clock Tower, Dehradun, Uttarakhand 248001",
     phone: "+91 98970 00842",
     whatsapp: "919897000842",
     email: "contact@thccafe.in",
     googleMapsUrl: "https://maps.google.com",
-    openingHours: "Open 24/7 (Late Night Kitchen Active)",
-    announcementText: "Use code: HIGHWAY10 for 10% OFF • Scan Table QR to Order Instantly"
+    openingHours: "Open Daily • 9:00 AM – 11:30 PM",
+    announcementText: "Use code: CAFE10 for 10% OFF • Scan Table QR to Order Instantly"
   },
 
   // Ratings & Social Proof
   rating: {
     score: 4.9,
-    reviewsCount: "2,480+ Reviews",
-    tagline: "4.9 / 5 Verified Highway Rating"
+    reviewsCount: "3,150+ Reviews",
+    tagline: "4.9 / 5 Verified Bistro Rating"
   },
 
   // Dining Tables Setup
@@ -79,30 +79,59 @@ export const BRAND_CONFIG = {
     panelTitle: "Staff & Kitchen Order Terminal"
   },
 
+  // Delivery Program Configuration
+  delivery: {
+    enabled: true,
+    standardFee: 40,
+    freeDeliveryThreshold: 499,
+    estimatedMinutes: "30-40 mins",
+    serviceRadiusKm: 8,
+    deliveryNotice: "Freshly packaged in thermal insulated bags"
+  },
+
+  // Loyalty Program Configuration
+  loyalty: {
+    enabled: true,
+    totalStampsRequired: 7,
+    milestoneRewardTitle: "50% OFF Entire Order (or Free Signature Item)",
+    milestonePromoCode: "LOYALTY50",
+    milestoneDiscountPercent: 50,
+    clubName: "THC Artisan Club",
+    stampIcon: "Coffee"
+  },
+
+  // Self-Serve / Counter Pickup Configuration
+  selfServe: {
+    counterName: "Express Pickup Counter",
+    tokenPrefix: "C-",
+    pickupNotice: "Collect from counter window when your token chime rings"
+  },
+
   // Discount Coupons
   promoCodes: {
-    HIGHWAY10: { discountPercent: 10, minOrder: 299, desc: "10% off for highway travelers" },
-    TASTE15: { discountPercent: 15, minOrder: 499, desc: "15% off regular guests" },
-    NIGHTOWL: { discountAmount: 100, minOrder: 699, desc: "₹100 Flat off for late-night foodies" },
+    CAFE10: { discountPercent: 10, minOrder: 299, desc: "10% off for all cafe guests" },
+    ITALIA15: { discountPercent: 15, minOrder: 499, desc: "15% off on artisan pizzas & pastas" },
+    BISTRO100: { discountAmount: 100, minOrder: 699, desc: "₹100 Flat off for gourmet meals" },
+    LOYALTY50: { discountPercent: 50, minOrder: 99, desc: "🎉 7th Visit Milestone: 50% OFF entire bill!" }
   },
 
   // Key Experience Highlights
   experiences: [
     {
-      title: "Authentic Lounge Vibe",
-      desc: "Inspired by cozy road trip culture fused with modern aesthetics, ambient music, and comfortable seating."
+      title: "Handcrafted Italian Kitchen",
+      desc: "Slow-fermented wood-fired crusts, silky artisanal pasta sauces, San Marzano tomatoes, and fresh buffalo mozzarella."
     },
     {
-      title: "Fresh Mountain Flavors",
-      desc: "Crisp mountain ingredients, handcrafted seasonings, sizzling platters, and authentic earthen kulhad beverages."
+      title: "Specialty Roasted Brews",
+      desc: "Single-origin Arabica beans roasted to perfection, velvet microfoam flat whites, cold brews, and signature iced coffees."
     },
     {
       title: "Zero-Wait Table Tech",
-      desc: "Scan the QR code on your table, customize your spice level, pay online or cash, and track live cooking status on your phone."
+      desc: "Scan the QR code on your table, customize your dishes, pay online or cash, and track live cooking status on your phone."
     },
     {
-      title: "24/7 Always Open Kitchen",
-      desc: "Cruising late at night or craving a midnight snack, our chefs keep the kitchen sizzling round the clock."
+      title: "Cozy Bistro Ambience",
+      desc: "Warm ambient acoustics, aesthetic indoor and terrace seating, perfect for work dates, friendly catch-ups, or relaxed evenings."
     }
   ],
 
@@ -110,30 +139,30 @@ export const BRAND_CONFIG = {
   customerReviews: [
     {
       name: "Aman Rawat",
-      role: "Regular Traveler",
+      role: "Regular Foodie",
       rating: 5,
       location: "Dehradun",
-      review: "The late-night food after a long road trip is phenomenal! Scanning table QR and paying via UPI directly without waiting for a waiter is so convenient.",
+      review: "The Wood-Fired Margherita and Truffle Alfredo are simply the best in the city. Scanning table QR and paying via UPI directly from our table is so seamless!",
       avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
-      ordered: "Butter Maggi & Kulhad Chai"
+      ordered: "Margherita Basilico & Cold Brew"
     },
     {
       name: "Sneha Kapoor",
-      role: "Food Enthusiast",
+      role: "Coffee & Food Critic",
       rating: 5,
-      location: "Highway Route",
-      review: "Warm ambiance and delicious food! The monster burger and hot beverages are outstanding. Plus the live status on phone showed exactly when my food was ready.",
+      location: "Rajpur Road",
+      review: "Warm cozy ambiance with delightful lo-fi tunes. The sourdough panini and Iced Caramel Macchiato were perfection. Love seeing live kitchen updates on phone!",
       avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80",
-      ordered: "18-Wheeler Monster Burger"
+      ordered: "Smoked Chicken Panini & Macchiato"
     },
     {
       name: "Dr. Karan Sharma",
-      role: "Road Tripper",
+      role: "Bistro Enthusiast",
       rating: 5,
-      location: "Weekend Getaway",
-      review: "The Grand Sizzler Platter was enormous and the smokey tandoori spices were 10/10. Definitely making this our permanent pitstop on this highway.",
+      location: "Civil Lines",
+      review: "The Tiramisu Classico and Truffle Parmesan Fries were incredible. Beautiful aesthetic interior, fast table service, and friendly staff. Our new favorite cafe hangout.",
       avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80",
-      ordered: "THC Grand Sizzler Platter"
+      ordered: "Tiramisu Classico & Truffle Fries"
     }
   ]
 };

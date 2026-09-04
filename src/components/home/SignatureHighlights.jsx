@@ -40,13 +40,13 @@ export function SignatureHighlights({ onSelectItemForCustomize, onExploreAll, on
           <div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 border border-white/10 text-slate-300 text-xs font-mono mb-2">
               <Flame className="w-3.5 h-3.5 text-amber-400" />
-              <span>Chef's Highway Selection</span>
+              <span>Chef's Artisan Selection</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-black text-white font-syne tracking-tight">
               Signature Highlights
             </h2>
             <p className="text-slate-400 text-xs sm:text-sm mt-1 max-w-lg">
-              Most ordered highway delicacies by road trippers, bikers, and Doon valley foodies.
+              Most loved artisan delicacies, handcrafted Italian pizzas, silky pastas, and specialty brews.
             </p>
           </div>
 
@@ -54,7 +54,7 @@ export function SignatureHighlights({ onSelectItemForCustomize, onExploreAll, on
             onClick={() => { sounds.playClick(); onExploreAll(); }}
             className="inline-flex items-center gap-1.5 text-xs font-bold font-syne text-amber-400 hover:text-amber-300 transition group self-start md:self-auto"
           >
-            <span>VIEW ALL 24 DISHES</span>
+            <span>VIEW FULL MENU</span>
             <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
           </button>
         </div>

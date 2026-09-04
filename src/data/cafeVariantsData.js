@@ -7,143 +7,226 @@
  */
 
 export const CAFE_VARIANTS = [
+  // -------------------------------------------------------------------------
+  // ARCHETYPE 01: Table QR & Dine-In POS
+  // -------------------------------------------------------------------------
   {
-    id: "thc-diner",
-    type: "Casual Dine-In & QR POS",
+    id: "table-qr",
+    type: "Dine-In Table QR & POS",
     code: "ARCHETYPE // 01",
-    title: "Casual Dine-In, Highway Hub & QR Table POS",
-    modelName: "THC Cafe Model",
+    title: "Artisan Cafe, Dine-In & QR Table POS",
+    modelName: "Dine-In Table QR Model",
     badge: "FULL-STACK LIVE APP",
     isLiveTHC: true,
-    tagline: "High-Traffic Fast-Casual Dining with Contactless Table QR Plaque & Staff Terminal",
-    description: "The complete restaurant operating system deployed for Truckers Halt Cafe. Includes table QR scanning, custom item add-ons, UPI/Cash payments, live sound alerts, and PIN-protected kitchen POS.",
+    tagline: "Contactless In-Cafe Dining with Table QR Plaques, Food Customization & Live POS",
+    description: "Built for dine-in cafes and restaurants where waitstaff serve directly to tables. Diners scan their table QR plaque, customize dish spices and add-ons, pay via UPI or cash, and track live cooking status on their phone.",
     metrics: {
-      turnover: "2.8x Table Speed",
+      turnover: "2.8x Table Turnover",
       accuracy: "99.4% Order Precision",
       speed: "0.28s Instant Load"
     },
-    idealFor: "Highway pitstops, casual burger lounges, family diners, bustling urban cafes",
+    idealFor: "Artisan cafes, Italian trattorias, bistro lounges, family restaurants, multi-table eateries",
     features: [
-      "Contactless Table Plaque QR scanner with instant table binding",
-      "Interactive spice, add-on & combo customization modal",
-      "Real-time live cooking tracker with audio bell chime alerts",
-      "PIN-protected kitchen display & staff order terminal (PIN: 7788)",
-      "Built-in UPI QR and Cash-at-counter payment routing",
-      "Single-file branding & menu JSON architecture"
+      "Contactless Table Plaque QR scanner with instant table binding (Tables 1–12)",
+      "Interactive spice, cheese, add-on & combo customization modal",
+      "Real-time live cooking tracker with kitchen bell chime alerts",
+      "PIN-protected kitchen order terminal & staff POS (PIN: 7788)",
+      "Integrated UPI QR & Cash-at-counter payment routing",
+      "Direct table-service call button for server assistance"
     ],
-    techStack: "React 18 + Vite 5, Web Audio API, LocalStorage Sync, POS API Plugin",
-    previewImage: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800&q=80"
+    techStack: "React 18, Table Binding Engine, Web Audio API, POS Plugin",
+    previewImage: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800&q=80",
+    demoData: {
+      activeTableDemo: 4,
+      tablesCount: 12,
+      serviceType: "Table Service to Seat"
+    }
   },
 
+  // -------------------------------------------------------------------------
+  // ARCHETYPE 02: Self-Serve & Counter Pickup (QSR)
+  // -------------------------------------------------------------------------
   {
-    id: "artisanal-roastery",
-    type: "Specialty Coffee & Roastery",
+    id: "self-serve",
+    type: "Self-Serve & Counter Pickup",
     code: "ARCHETYPE // 02",
-    title: "Specialty Micro-Roastery & Pour-Over Espresso Bar",
-    modelName: "Kōhī Roaster Model",
-    badge: "INTERACTIVE SHOWCASE",
-    isLiveTHC: false,
-    tagline: "Third-Wave Coffeehouse with Bean Origin Notes & Recurring Coffee Subscriptions",
-    description: "Designed for specialty coffee roasters and third-wave cafes. Features detailed bean elevation & wash profiles, brew method selection (V60, Aeropress, Cold Drip), and monthly whole-bean subscription checkout.",
+    title: "Express Self-Serve & Counter Pickup QSR",
+    modelName: "Self-Serve Counter Model",
+    badge: "QSR READY",
+    isLiveTHC: true,
+    tagline: "Zero Table Service • Mobile & Kiosk Ordering with Live Counter Queue Tokens",
+    description: "Engineered for high-volume coffee shops, burger joints, and fast-casual eateries that do not serve to tables. Customers order on their phones or counter kiosks, receive an automated Order Token (e.g. TOKEN #C-14), and pick up from the counter when their chime rings.",
     metrics: {
-      turnover: "3.4x AOV Lift",
-      accuracy: "42% Subscription Rate",
-      speed: "0.25s Instant Load"
+      turnover: "45s Average Order",
+      accuracy: "0% Table Mixups",
+      speed: "3.2x Counter Velocity"
     },
-    idealFor: "Third-wave coffee shops, artisanal bakeries, boutique espresso bars, bean roasters",
+    idealFor: "Coffee kiosks, grab-and-go bakeries, smash burger shops, food court counters, college cafes",
     features: [
-      "Interactive coffee bean origin picker (Ethiopian Yirgacheffe, Gesha, Bourbon)",
-      "Brew method customizer (V60 Pour-Over, Chemex, Aeropress, Espresso)",
-      "Monthly & weekly whole-bean / grounds subscription engine",
-      "Roast date freshness transparency indicator",
-      "Barista brew guides & tasting wheel notes",
-      "Merchandise & home brewing gear storefront"
+      "Zero table dependencies — customers order and self-serve",
+      "Automated Counter Token generator (e.g. TOKEN #C-01 to #C-99)",
+      "Loud acoustic bell chime alert when kitchen marks order Ready",
+      "Large-screen Counter Display queue board compatibility",
+      "Instant 1-tap UPI QR and contactless card checkout",
+      "Reduces front-of-house staff overhead by up to 60%"
     ],
-    techStack: "React 18, Subscription State Engine, Flavor Wheel Matrix, Stripe/Razorpay",
-    previewImage: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80",
+    techStack: "React 18, Token Queue Engine, Web Audio Chime, Digital Counter Board",
+    previewImage: "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?auto=format&fit=crop&w=800&q=80",
     demoData: {
-      beans: [
-        { name: "Ethiopia Yirgacheffe G1", notes: "Jasmine, Bergamot, Peach", roast: "Light Roast", elevation: "2,100m", price: "₹650 / 250g" },
-        { name: "Colombia Pink Bourbon", notes: "Pink Grapefruit, Honey, Papaya", roast: "Medium-Light", elevation: "1,850m", price: "₹850 / 250g" },
-        { name: "Monsooned Malabar AA", notes: "Dark Chocolate, Spices, Earthy", roast: "Dark Roast", elevation: "1,200m", price: "₹520 / 250g" }
-      ],
-      brewMethods: ["V60 Hand Drip", "Cold Drip (18h)", "Aeropress", "Classic Flat White"],
-      subFrequencies: ["Bi-Weekly Delivery (Save 15%)", "Monthly Box (Save 10%)", "One-Time Bag"]
+      tokenFormat: "TOKEN #C-14",
+      pickupStation: "Express Service Counter",
+      readyChimeSound: "Double Bell Alert"
     }
   },
 
+  // -------------------------------------------------------------------------
+  // ARCHETYPE 03: Brand Showcase & Curated Menu Landing Page
+  // -------------------------------------------------------------------------
   {
-    id: "rooftop-bistro",
-    type: "Rooftop & Fine Dining",
+    id: "showcase",
+    type: "Brand Showcase Landing Page",
     code: "ARCHETYPE // 03",
-    title: "Rooftop Botanical Bistro & Experiential Dining",
-    modelName: "Verdant Bistro Model",
-    badge: "INTERACTIVE SHOWCASE",
-    isLiveTHC: false,
-    tagline: "Panoramic Table Seating Reservation, Prix-Fixe Menus & Wine Cellar Pairings",
-    description: "Engineered for high-end aesthetic bistros, glasshouse eateries, and sunset lounges. Features visual floor table allocation, advance minimum-spend reservation deposits, and seasonal multi-course chef tastings.",
+    title: "Aesthetic Brand Showcase & Menu Landing Page",
+    modelName: "Brand Showcase Model",
+    badge: "PURE ELEGANCE",
+    isLiveTHC: true,
+    tagline: "High-Converting Digital Flagship with Curated Menu Showcase & VIP Table Reservations",
+    description: "Designed for boutique cafes, romantic bistros, and luxury roasteries that want an ultra-premium website to tell their brand story and showcase their menu, without in-store POS ordering. Includes VIP table booking, opening hours, Google Maps directions, and chef highlights.",
     metrics: {
-      turnover: "96% Table Pre-Booking",
-      accuracy: "Zero Walkout No-Shows",
-      speed: "0.29s Instant Load"
-    },
-    idealFor: "Rooftop lounges, garden glasshouse cafes, romantic date bistros, fine dining",
-    features: [
-      "Visual seating zone selection (Sunset Terrace, Glass Greenhouse, Cozy Alcove)",
-      "Advance table reservation with minimum spend deposit checkout",
-      "Multi-course Chef's seasonal prix-fixe menu with wine pairings",
-      "Live music & jazz sundowner event reservations",
-      "Dietary concierge & anniversary/celebration custom requests",
-      "Automated WhatsApp VIP table confirmation pass"
-    ],
-    techStack: "React 18, Seating Floorplan Engine, Advance Deposit Gateway, WhatsApp Hooks",
-    previewImage: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
-    demoData: {
-      zones: [
-        { name: "Terrace Sunset Deck", minSpend: "₹3,500 / table", capacity: "2-4 Guests", vibe: "Panoramic Valley View" },
-        { name: "Botanical Greenhouse", minSpend: "₹2,500 / table", capacity: "4-6 Guests", vibe: "Foliage & Candlelight" },
-        { name: "Mezzanine Wine Corner", minSpend: "₹2,000 / table", capacity: "2 Guests", vibe: "Intimate & Quiet" }
-      ],
-      menus: [
-        { title: "5-Course Mountain Truffle Tasting", price: "₹2,499 / person" },
-        { title: "Artisanal Woodfire & Pairing Dinner", price: "₹1,899 / person" }
-      ]
-    }
-  },
-
-  {
-    id: "cloud-kitchen",
-    type: "Cloud Kitchen & Express Takeaway",
-    code: "ARCHETYPE // 04",
-    title: "Express Cloud Kitchen & High-Velocity Takeaway",
-    modelName: "Volt Express Model",
-    badge: "INTERACTIVE SHOWCASE",
-    isLiveTHC: false,
-    tagline: "60-Second Mobile Pre-Orders, Takeaway Queue Token & Smash Combo Builder",
-    description: "Built for delivery-first cloud brands, smash burger kitchens, and express coffee kiosks. Designed for lightning-fast 3-click ordering, step-by-step combo meal builder, and real-time counter pickup queue tokens.",
-    metrics: {
-      turnover: "60s Avg Checkout",
-      accuracy: "4.1x Pickup Volume",
+      turnover: "94% Reservation Rate",
+      accuracy: "Zero No-Shows",
       speed: "0.22s Blazing Speed"
     },
-    idealFor: "Cloud kitchens, smash burger joints, takeaway kiosks, delivery-first food brands",
+    idealFor: "Boutique espresso bars, sunset rooftop bistros, heritage tea rooms, fine dining cafes",
     features: [
-      "3-Click express checkout engineered for maximum conversion",
-      "Interactive combo meal step-builder (Main + Gourmet Side + Beverage)",
-      "Live pickup queue counter display token with estimated prep timer",
-      "Aggregator-independent direct ordering (0% commissions)",
-      "One-tap repeat order from order history",
-      "Apple Pay, Google Pay & UPI instant checkout flow"
+      "Hero brand storytelling with 3D signature dish showcase carousel",
+      "Interactive digital menu browser with dietary tags and ingredients",
+      "VIP Table Reservation engine with date, time, and party size selector",
+      "Automated WhatsApp reservation confirmation ticket pass",
+      "Google Maps interactive location pin & opening hours tracker",
+      "Social media Instagram feed gallery integration"
     ],
-    techStack: "React 18, Ultra-Fast State Machine, Express Token Engine, Webhook Dispatch",
-    previewImage: "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=80",
+    techStack: "React 18, Reservation State Engine, WhatsApp Dispatch, Framer Motion 3D",
+    previewImage: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
     demoData: {
-      combos: [
-        { name: "Double Wagyu Smash Combo", price: "₹449", includes: "Double Smash + Truffle Fries + Cold Brew Float" },
-        { name: "Nashville Hot Chicken Box", price: "₹399", includes: "Spicy Tenders + Butter Brioche Bun + Spiced Slaw" },
-        { name: "Truffle Smashed Portobello Box", price: "₹389", includes: "Crispy Mushroom + Parmesan Herb Fries + Mint Soda" }
-      ],
-      pickupTimes: ["Ready in 10-12 Mins", "Ready in 15-20 Mins", "Scheduled Pickup"]
+      seatingZones: ["Indoor Warm Dining", "Terrace Sunset Deck", "Private Alcove"],
+      reservationPass: "VIP-RES-9042",
+      operatingHours: "Open Daily • 9:00 AM – 11:30 PM"
+    }
+  },
+
+  // -------------------------------------------------------------------------
+  // ARCHETYPE 04: Direct Online Doorstep Delivery (Cloud Kitchen)
+  // -------------------------------------------------------------------------
+  {
+    id: "delivery",
+    type: "Direct Online Doorstep Delivery",
+    code: "ARCHETYPE // 04",
+    title: "Independent Online Delivery & Cloud Kitchen Platform",
+    modelName: "Direct Delivery Model",
+    badge: "0% COMMISSIONS",
+    isLiveTHC: true,
+    tagline: "Direct-to-Consumer Doorstep Delivery with Address Capture & Live Rider Tracker",
+    description: "Built for cloud kitchens, delivery-first food brands, and cafes wanting to bypass 30% Swiggy/Zomato commissions. Features full customer delivery address capture, live delivery fee calculation, estimated doorstep ETA, and direct UPI/COD checkout.",
+    metrics: {
+      turnover: "30% Margin Saved",
+      accuracy: "99.8% Address Capture",
+      speed: "35m Avg Doorstep Delivery"
+    },
+    idealFor: "Cloud kitchens, artisan pizza delivery, late-night food brands, dessert delivery hubs",
+    features: [
+      "Doorstep delivery address capture with landmark & delivery notes",
+      "Dynamic delivery fee calculation (Free delivery above ₹499)",
+      "Real-time cooking & courier dispatch tracker with live countdown",
+      "Instant UPI QR, Credit Card, and Cash on Delivery (COD) payment",
+      "Direct customer phone and WhatsApp order receipt routing",
+      "100% own-brand customer database ownership (No aggregator lock-in)"
+    ],
+    techStack: "React 18, Geo Address Engine, Dispatch Machine, WhatsApp Receipt Webhook",
+    previewImage: "https://images.unsplash.com/photo-1526367790999-0150786686a2?auto=format&fit=crop&w=800&q=80",
+    demoData: {
+      deliveryRadius: "Up to 8 km",
+      defaultFee: "₹40 (Free above ₹499)",
+      avgDoorstepETA: "30-40 Mins"
+    }
+  },
+
+  // -------------------------------------------------------------------------
+  // ARCHETYPE 05: Hybrid Dine-In & Doorstep Delivery Dual Mode
+  // -------------------------------------------------------------------------
+  {
+    id: "hybrid",
+    type: "Hybrid Dine-In & Delivery",
+    code: "ARCHETYPE // 05",
+    title: "Omnichannel Hybrid Dine-In & Doorstep Delivery Suite",
+    modelName: "Hybrid Omnichannel Model",
+    badge: "ALL-IN-ONE HYBRID",
+    isLiveTHC: true,
+    tagline: "Seamless 3-in-1 Switcher: Table QR Dine-In, Doorstep Delivery & Express Takeaway",
+    description: "The ultimate restaurant architecture combining the best of all worlds. Seamlessly allows customers to order to their table while dining in, order food delivered directly to their doorstep from home, or schedule a quick takeaway pickup on their commute.",
+    metrics: {
+      turnover: "3.5x Revenue Channels",
+      accuracy: "Unified Order POS",
+      speed: "1-Click Mode Toggle"
+    },
+    idealFor: "Modern multi-revenue cafes, artisan pizzerias, bustling city bistros, dessert cafes",
+    features: [
+      "Interactive 3-way mode switcher (Dine-In Table vs Doorstep Delivery vs Takeaway)",
+      "Smart context-aware cart: requests table # when in cafe, address when at home",
+      "Unified kitchen POS routing separating dine-in tickets from delivery parcels",
+      "Universal promo coupon engine working across all ordering modes",
+      "Customer account order history with reorder from home functionality",
+      "Live order status tracker tailored to dine-in prep or delivery transit"
+    ],
+    techStack: "React 18, Omnichannel State Router, Dual-POS Filter, Web Audio API",
+    previewImage: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80",
+    demoData: {
+      supportedModes: ["Table QR Dine-In", "Doorstep Delivery", "Express Takeaway"],
+      tableOption: "Active (Tables 1-12)",
+      deliveryOption: "Active (Doorstep Delivery)"
+    }
+  },
+
+  // -------------------------------------------------------------------------
+  // ARCHETYPE 06: Loyalty Rewards & 7-Visit Punch-Card Club
+  // -------------------------------------------------------------------------
+  {
+    id: "loyalty",
+    type: "Loyalty Club & Visit Tracker",
+    code: "ARCHETYPE // 06",
+    title: "Loyalty Club & 7-Visit Digital Punch-Card POS",
+    modelName: "Loyalty Rewards Model",
+    badge: "HIGH RETENTION",
+    isLiveTHC: true,
+    tagline: "Integrated Billing Visit Tracking • 7-Stamp Punch Card Unlocks 50% OFF or Free Item",
+    description: "Designed to build obsessive customer loyalty and drive repeat visits. Features an interactive 7-stamp digital punch card. Every time billing is completed or customer checks in, their visit count marks up automatically. On their 7th visit, a massive 50% OFF reward unlocks directly at checkout!",
+    metrics: {
+      turnover: "4.8x Repeat Visits",
+      accuracy: "87% Loyalty Adoption",
+      speed: "+62% Customer LTV"
+    },
+    idealFor: "Coffee shops, neighborhood cafes, bubble tea lounges, artisan bakeries, dessert clubs",
+    features: [
+      "Interactive 7-stamp digital punch card with animated gold stamp badges",
+      "Automatic visit tracking integrated directly with billing & payment completion",
+      "In-store 'Mark Presence / Daily Check-in' customer kiosk button",
+      "Milestone rewards: Free Signature Beverage or 50% OFF entire bill on 7th visit",
+      "Instant checkout redemption: 1-tap applies milestone reward during billing",
+      "Member VIP Pass with tier progression (Bronze, Silver, Gold Member)"
+    ],
+    techStack: "React 18, Punch-Card State Machine, Billing Milestone Hook, Confetti Engine",
+    previewImage: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80",
+    demoData: {
+      totalStamps: 7,
+      currentDemoStamp: 3,
+      milestoneReward: "50% OFF Entire Order (or Free Item) on 7th Visit",
+      billingSync: "Automatic +1 Stamp on Every Paid Bill"
     }
   }
 ];
+
+// Compatibility lookup map
+export const CAFE_VARIANTS_MAP = CAFE_VARIANTS.reduce((acc, v) => {
+  acc[v.id] = v;
+  return acc;
+}, {});

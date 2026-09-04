@@ -49,8 +49,8 @@ import { BRAND_CONFIG } from '../../data/cafeConfig';
 import { sounds } from '../../utils/audio';
 
 // Station Category Mappings
-const KITCHEN_CATEGORIES = ['burgers', 'parathas-maggie', 'sides', 'highway-specials', 'maggi-paratha', 'burgers-rolls', 'tandoor-starters', 'midnight-munchies'];
-const BAR_CATEGORIES = ['mountain-chai', 'cold-beverages', 'shakes-desserts', 'drinks', 'chai-coffee', 'shakes-coolers'];
+const KITCHEN_CATEGORIES = ['woodfired-pizza', 'pastas-mains', 'paninis-burgers', 'appetizers-sides', 'desserts', 'italian-specials', 'burgers', 'sides'];
+const BAR_CATEGORIES = ['coffee-brews', 'shakes-coolers', 'drinks', 'cold-beverages', 'chai-coffee'];
 
 // Preset Food Images for fast 1-tap addition
 const PRESET_DISH_IMAGES = [
@@ -142,7 +142,7 @@ export function AdminDashboard({ onBackToClient }) {
   // Form State for Add / Edit Item
   const [itemForm, setItemForm] = useState({
     name: '',
-    category: 'highway-specials',
+    category: 'woodfired-pizza',
     price: 199,
     prepTime: '10-12 mins',
     diet: 'veg', // 'veg' | 'nonveg' | 'egg'
@@ -164,7 +164,7 @@ export function AdminDashboard({ onBackToClient }) {
     setEditingItem(null);
     setItemForm({
       name: '',
-      category: 'highway-specials',
+      category: 'woodfired-pizza',
       price: 199,
       prepTime: '10-12 mins',
       diet: 'veg',
@@ -172,7 +172,7 @@ export function AdminDashboard({ onBackToClient }) {
       image: PRESET_DISH_IMAGES[0].url,
       isBestseller: false,
       isSpicy: false,
-      spiceOptions: ['Mild Zing', 'Highway Medium', 'Trucker Hot'],
+      spiceOptions: ['Mild Zing', 'Classic Herb', 'Spicy Arrabbiata'],
       newSpiceInput: '',
       addons: [
         { id: `add-${Date.now()}-1`, name: 'Extra Cheese Slice', price: 35 },
@@ -188,7 +188,7 @@ export function AdminDashboard({ onBackToClient }) {
     setEditingItem(item);
     setItemForm({
       name: item.name || '',
-      category: item.category || 'highway-specials',
+      category: item.category || 'woodfired-pizza',
       price: item.price || 199,
       prepTime: item.prepTime || '10 mins',
       diet: item.isEgg ? 'egg' : item.isVeg ? 'veg' : 'nonveg',

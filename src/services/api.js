@@ -33,7 +33,7 @@ export const api = {
         user: {
           id: `usr_${Date.now()}`,
           role: 'customer',
-          name: name || 'Highway Guest',
+          name: name || 'Cafe Guest',
           phone: phone || '9876543210',
           email: email || `${phone || 'guest'}@thccafe.in`,
           avatar: avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(name || 'guest')}`

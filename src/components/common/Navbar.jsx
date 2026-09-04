@@ -18,7 +18,12 @@ import {
   Tag,
   Flame,
   Zap,
-  CreditCard
+  CreditCard,
+  Award,
+  Calendar,
+  Layers,
+  Store,
+  Truck
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useOrder } from '../../context/OrderContext';
@@ -33,21 +38,21 @@ const ANNOUNCEMENTS = [
     color: 'text-amber-400',
     badge: 'PROMO CODE',
     badgeColor: 'bg-amber-400/15 text-amber-300 border-amber-400/30',
-    text: 'Use code: HIGHWAY10 for 10% OFF on all orders'
+    text: 'Use code: CAFE10 for 10% OFF on all orders'
   },
   {
     icon: QrCode,
     color: 'text-cyan-400',
     badge: 'TABLE QR TECH',
     badgeColor: 'bg-cyan-400/15 text-cyan-300 border-cyan-400/30',
-    text: 'Scan your table plaque to order directly to your seat with zero wait'
+    text: 'Scan your table QR to order directly to your seat with zero wait'
   },
   {
     icon: Flame,
     color: 'text-rose-400',
-    badge: 'SIZZLING KITCHEN',
+    badge: 'ARTISAN KITCHEN',
     badgeColor: 'bg-rose-400/15 text-rose-300 border-rose-400/30',
-    text: '24/7 Hot Meals • Sizzling platters, monster burgers & Doon Valley kulhad chai'
+    text: 'Fresh All-Day Kitchen • Handcrafted wood-fired pizzas, silky pastas & specialty brews'
   },
   {
     icon: CreditCard,
@@ -64,9 +69,19 @@ export function Navbar({
   onOpenCart, 
   onOpenScanner,
   onOpenTracker,
-  onRequireAuth
+  onRequireAuth,
+  onOpenLoyaltyModal,
+  onOpenReservation,
+  onOpenModelSwitcher
 }) {
-  const { itemCount, activeTable, diningMode } = useCart();
+  const { 
+    itemCount, 
+    activeTable, 
+    diningMode, 
+    operationalModel, 
+    loyaltyVisits, 
+    is7thVisitUnlocked 
+  } = useCart();
   const { activeCustomerOrder } = useOrder();
   const { customerUser, isCustomerLoggedIn, customerLogout, isAdminLoggedIn } = useAuth();
 
@@ -207,18 +222,57 @@ export function Navbar({
           </nav>
 
           {/* Right Action Area */}
-          <div className="flex items-center gap-2.5">
-            {/* Table Badge / Scanner Button */}
+          <div className="flex items-center gap-2">
+            {/* Context Badge (Table, Counter, Delivery, or Showcase) */}
             <button
-              onClick={() => { sounds.playClick(); onOpenScanner(); }}
-              className="flex items-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-xl bg-slate-900/80 border border-white/10 hover:border-amber-400/50 text-xs font-mono font-medium text-amber-300 transition"
-              title="Change Table or Scan QR"
+              onClick={() => {
+                sounds.playClick();
+                if (operationalModel === 'table-qr' || diningMode === 'table') onOpenScanner();
+              }}
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-slate-900/80 border border-white/10 hover:border-amber-400/50 text-xs font-mono font-medium text-amber-300 transition"
+              title="Service Station"
             >
-              <QrCode className="w-3.5 h-3.5 text-amber-400" />
-              <span className="hidden sm:inline">
-                {diningMode === 'counter' ? 'Counter' : `Table #${activeTable || '04'}`}
-              </span>
+              {operationalModel === 'self-serve' || diningMode === 'counter' ? (
+                <>
+                  <Store className="w-3.5 h-3.5 text-cyan-400" />
+                  <span className="hidden sm:inline">Counter Pickup</span>
+                </>
+              ) : operationalModel === 'delivery' || diningMode === 'delivery' ? (
+                <>
+                  <Truck className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="hidden sm:inline">Doorstep Delivery</span>
+                </>
+              ) : operationalModel === 'showcase' ? (
+                <>
+                  <Compass className="w-3.5 h-3.5 text-purple-400" />
+                  <span className="hidden sm:inline">Showcase</span>
+                </>
+              ) : (
+                <>
+                  <QrCode className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="hidden sm:inline">{`Table #${activeTable || '04'}`}</span>
+                </>
+              )}
             </button>
+
+            {/* Loyalty Club Punch Card Button */}
+            {onOpenLoyaltyModal && (
+              <button
+                onClick={() => { sounds.playClick(); onOpenLoyaltyModal(); }}
+                className={`flex items-center gap-1.5 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border transition text-xs font-mono font-bold ${
+                  is7thVisitUnlocked
+                    ? 'bg-gradient-to-r from-amber-500/20 to-emerald-500/20 border-amber-400 text-amber-300 shadow-md animate-pulse'
+                    : 'bg-slate-900/80 border-white/10 text-slate-300 hover:border-amber-400/40 hover:text-amber-300'
+                }`}
+                title="Open 7-Visit Loyalty Punch Card"
+              >
+                <Award className="w-3.5 h-3.5 text-amber-400" />
+                <span className="hidden sm:inline">Loyalty</span>
+                <span className="px-1.5 py-0.2 rounded-md bg-amber-400/20 text-amber-300 text-[10px]">
+                  {loyaltyVisits}/7
+                </span>
+              </button>
+            )}
 
             {/* Active Order Live Tracker Pill */}
             {activeCustomerOrder && (
@@ -306,20 +360,31 @@ export function Navbar({
               {soundActive ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
             </button>
 
-            {/* 3D Tactile Order Bag Button */}
-            <button
-              onClick={() => { sounds.playClick(); onOpenCart(); }}
-              className="btn-3d btn-3d-amber relative flex items-center gap-2 px-3.5 py-2 rounded-xl text-slate-950 font-bold font-syne text-xs transition shadow-lg"
-              title="View Order Bag & Checkout"
-            >
-              <ShoppingBag className="w-4 h-4 stroke-[2.5]" />
-              <span className="hidden sm:inline tracking-wide">Order Bag</span>
-              {itemCount > 0 && (
-                <span className="px-1.5 py-0.5 rounded-full bg-slate-950 text-amber-400 text-[10px] font-mono font-black shadow-inner">
-                  {itemCount}
-                </span>
-              )}
-            </button>
+            {/* 3D Tactile Order Bag Button or Book Table for Showcase */}
+            {operationalModel === 'showcase' && onOpenReservation ? (
+              <button
+                onClick={() => { sounds.playClick(); onOpenReservation(); }}
+                className="btn-3d btn-3d-amber relative flex items-center gap-2 px-3.5 py-2 rounded-xl text-slate-950 font-bold font-syne text-xs transition shadow-lg cursor-pointer"
+                title="Book VIP Table Reservation"
+              >
+                <Calendar className="w-4 h-4 stroke-[2.5]" />
+                <span className="hidden sm:inline tracking-wide">Book Table</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => { sounds.playClick(); onOpenCart(); }}
+                className="btn-3d btn-3d-amber relative flex items-center gap-2 px-3.5 py-2 rounded-xl text-slate-950 font-bold font-syne text-xs transition shadow-lg cursor-pointer"
+                title="View Order Bag & Checkout"
+              >
+                <ShoppingBag className="w-4 h-4 stroke-[2.5]" />
+                <span className="hidden sm:inline tracking-wide">Order Bag</span>
+                {itemCount > 0 && (
+                  <span className="px-1.5 py-0.5 rounded-full bg-slate-950 text-amber-400 text-[10px] font-mono font-black shadow-inner">
+                    {itemCount}
+                  </span>
+                )}
+              </button>
+            )}
 
             {/* Mobile Hamburger */}
             <button

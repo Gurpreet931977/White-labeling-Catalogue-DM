@@ -10,7 +10,13 @@ import {
   Clock, 
   Flame, 
   ShoppingBag,
-  Layers
+  Layers,
+  Store,
+  Truck,
+  Award,
+  Compass,
+  QrCode,
+  Gift
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
 
@@ -27,10 +33,17 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
     e.preventDefault();
     sounds.playSuccess();
     setGeneratedTicket({
-      id: `CAFE-${Math.floor(100000 + Math.random() * 900000)}`,
+      id: `${variant.id.toUpperCase()}-${Math.floor(100000 + Math.random() * 900000)}`,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       modelName: variant.modelName,
-      type: variant.type
+      type: variant.type,
+      details: variant.id === 'loyalty'
+        ? "Visit #7 Completed • 50% OFF Applied!"
+        : variant.id === 'self-serve'
+        ? "TOKEN #C-14 • Ready for Counter Pickup"
+        : variant.id === 'delivery'
+        ? "Order Dispatched • Doorstep Delivery in 35 mins"
+        : "Order Bound to Table #04"
     });
     setBookingSuccess(true);
   };
@@ -39,6 +52,19 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
     setBookingSuccess(false);
     setGeneratedTicket(null);
   };
+
+  const getVariantIcon = () => {
+    switch (variant.id) {
+      case 'self-serve': return Store;
+      case 'showcase': return Compass;
+      case 'delivery': return Truck;
+      case 'hybrid': return Layers;
+      case 'loyalty': return Award;
+      default: return QrCode;
+    }
+  };
+
+  const VariantIcon = getVariantIcon();
 
   return (
     <AnimatePresence>
@@ -64,7 +90,7 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
           <div className="p-5 sm:p-6 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-black shadow-lg bg-[#ebd73f]">
-                <Coffee className="w-5 h-5" />
+                <VariantIcon className="w-5 h-5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
@@ -104,13 +130,13 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
 
                 <div className="space-y-1">
                   <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-[#ebd73f]/20 text-[#ebd73f] font-bold border border-[#ebd73f]/30">
-                    ORDER TOKEN CONFIRMED
+                    SIMULATION SUCCESSFUL
                   </span>
                   <h4 className="font-panchang font-bold text-xl text-white pt-2">
-                    Simulated Experience Completed
+                    {generatedTicket?.details}
                   </h4>
                   <p className="text-xs text-slate-300 font-clash max-w-md mx-auto">
-                    In the live production build for <strong>{variant.modelName}</strong>, this updates kitchen tokens and dispatches an automated receipt.
+                    In the live deployment for <strong>{variant.modelName}</strong>, this dispatches real-time POS receipts, triggers audio chimes, and syncs with the database.
                   </p>
                 </div>
 
@@ -167,173 +193,149 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
                   </p>
                 </div>
 
-                {/* ARTISANAL ROASTERY SIMULATOR */}
-                {variant.id === 'artisanal-roastery' && variant.demoData && (
-                  <div className="space-y-4">
+                {/* MODEL 1: TABLE QR POS SIMULATION */}
+                {variant.id === 'table-qr' && (
+                  <div className="space-y-3">
                     <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
-                      1. Select Single-Origin Bean Profile
+                      1. Select Test Table Plaque (Tables 1-12)
                     </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      {variant.demoData.beans.map((bean, idx) => (
-                        <div
-                          key={idx}
-                          onClick={() => {
-                            sounds.playClick();
-                            setSelectedIndex(idx);
-                          }}
-                          className={`p-3.5 rounded-2xl border cursor-pointer transition ${
-                            selectedIndex === idx 
-                              ? 'bg-[#ebd73f]/10 border-[#ebd73f] shadow-glow-yellow' 
-                              : 'bg-white/[0.03] border-white/10 hover:border-white/20'
-                          }`}
-                        >
-                          <p className="font-clash font-bold text-xs text-white">{bean.name}</p>
-                          <p className="text-[10px] text-slate-400 mt-0.5">Notes: {bean.notes}</p>
-                          <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] font-mono">
-                            <span className="text-[#ebd73f] font-bold">{bean.price}</span>
-                            <span className="text-slate-400">{bean.elevation}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block pt-2">
-                      2. Choose Brew Method or Whole Bean Subscription
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                      {variant.demoData.brewMethods.map((method, mIdx) => (
+                    <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((tableNum) => (
                         <button
                           type="button"
-                          key={mIdx}
-                          onClick={() => {
-                            sounds.playClick();
-                            setSelectedSub(mIdx);
-                          }}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-mono transition cursor-pointer ${
-                            selectedSub === mIdx
-                              ? 'bg-[#ebd73f] text-black font-bold shadow-md'
-                              : 'bg-white/[0.04] border border-white/10 text-slate-300 hover:text-white'
-                          }`}
-                        >
-                          {method}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* ROOFTOP BISTRO SIMULATOR */}
-                {variant.id === 'rooftop-bistro' && variant.demoData && (
-                  <div className="space-y-4">
-                    <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
-                      1. Select Sunset Dining Zone
-                    </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      {variant.demoData.zones.map((zone, idx) => (
-                        <div
-                          key={idx}
-                          onClick={() => {
-                            sounds.playClick();
-                            setSelectedIndex(idx);
-                          }}
-                          className={`p-3.5 rounded-2xl border cursor-pointer transition ${
-                            selectedIndex === idx 
-                              ? 'bg-[#ebd73f]/10 border-[#ebd73f] shadow-glow-yellow' 
-                              : 'bg-white/[0.03] border-white/10 hover:border-white/20'
-                          }`}
-                        >
-                          <p className="font-clash font-bold text-xs text-white">{zone.name}</p>
-                          <p className="text-[10px] text-slate-400 mt-0.5">{zone.vibe}</p>
-                          <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] font-mono">
-                            <span className="text-[#ebd73f] font-bold">{zone.minSpend}</span>
-                            <span className="text-slate-400">{zone.capacity}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block pt-2">
-                      2. Seasonal Chef Tasting Menu
-                    </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {variant.demoData.menus.map((menu, mIdx) => (
-                        <div
-                          key={mIdx}
-                          onClick={() => {
-                            sounds.playClick();
-                            setSelectedSub(mIdx);
-                          }}
-                          className={`p-3 rounded-xl border cursor-pointer transition ${
-                            selectedSub === mIdx
-                              ? 'bg-[#ebd73f] text-black font-bold'
+                          key={tableNum}
+                          onClick={() => { sounds.playClick(); setSelectedIndex(tableNum); }}
+                          className={`p-3 rounded-xl border text-xs font-mono font-bold transition cursor-pointer ${
+                            selectedIndex === tableNum
+                              ? 'bg-[#ebd73f] text-black border-[#ebd73f]'
                               : 'bg-white/[0.03] border-white/10 text-white/70 hover:text-white'
                           }`}
                         >
-                          <p className="text-xs">{menu.title}</p>
-                          <p className="text-[11px] font-mono mt-0.5">{menu.price}</p>
+                          T-{tableNum}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* MODEL 2: SELF-SERVE COUNTER SIMULATION */}
+                {variant.id === 'self-serve' && (
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
+                      1. Counter Queue Token Simulator
+                    </label>
+                    <div className="p-4 rounded-2xl bg-black border border-cyan-400/40 flex items-center justify-between">
+                      <div className="space-y-1">
+                        <span className="text-[10px] font-mono text-cyan-400">ASSIGNED TOKEN NUMBER</span>
+                        <h5 className="font-mono font-black text-2xl text-white">TOKEN #C-14</h5>
+                        <p className="text-xs text-slate-400">Audio chime alerts when order is Ready at Window</p>
+                      </div>
+                      <span className="px-3 py-1.5 rounded-full bg-cyan-400/20 text-cyan-300 font-mono text-xs font-bold border border-cyan-400/30">
+                        EXPRESS QUEUE
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* MODEL 3: BRAND SHOWCASE LANDING SIMULATION */}
+                {variant.id === 'showcase' && (
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
+                      1. VIP Seating Zone Reservation Preview
+                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                      {["Indoor Warm Bistro", "Terrace Sunset View", "Private Wine Alcove"].map((zone, idx) => (
+                        <div
+                          key={idx}
+                          onClick={() => { sounds.playClick(); setSelectedIndex(idx); }}
+                          className={`p-3 rounded-xl border cursor-pointer transition ${
+                            selectedIndex === idx
+                              ? 'bg-[#ebd73f]/15 border-[#ebd73f] text-white'
+                              : 'bg-white/[0.03] border-white/10 text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          <p className="font-syne font-bold text-xs text-white">{zone}</p>
+                          <p className="text-[10px] font-mono text-amber-400 mt-1">Instant VIP Pass</p>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* CLOUD KITCHEN EXPRESS SIMULATOR */}
-                {variant.id === 'cloud-kitchen' && variant.demoData && (
-                  <div className="space-y-4">
+                {/* MODEL 4: DIRECT ONLINE DELIVERY SIMULATION */}
+                {variant.id === 'delivery' && (
+                  <div className="space-y-3">
                     <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
-                      1. Select Fast-Casual Smash Box Combo
+                      1. Doorstep Delivery Coordinates &amp; Fee
                     </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      {variant.demoData.combos.map((combo, idx) => (
+                    <div className="p-4 rounded-2xl bg-black border border-emerald-400/40 space-y-2">
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="text-slate-400">Coverage Radius:</span>
+                        <span className="text-white font-bold">Up to 8 km</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="text-slate-400">Estimated Transit ETA:</span>
+                        <span className="text-emerald-400 font-bold">30-40 Mins</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs font-mono">
+                        <span className="text-slate-400">Platform Commission:</span>
+                        <span className="text-[#ebd73f] font-bold">0% (Keep 100% Profits)</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* MODEL 5: HYBRID DUAL MODE SIMULATION */}
+                {variant.id === 'hybrid' && (
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
+                      1. Interactive Omnichannel Switcher
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {["Table QR Dine-In", "Doorstep Delivery", "Counter Takeaway"].map((mode, mIdx) => (
                         <div
-                          key={idx}
-                          onClick={() => {
-                            sounds.playClick();
-                            setSelectedIndex(idx);
-                          }}
-                          className={`p-3.5 rounded-2xl border cursor-pointer transition ${
-                            selectedIndex === idx 
-                              ? 'bg-[#ebd73f]/10 border-[#ebd73f] shadow-glow-yellow' 
-                              : 'bg-white/[0.03] border-white/10 hover:border-white/20'
+                          key={mIdx}
+                          onClick={() => { sounds.playClick(); setSelectedIndex(mIdx); }}
+                          className={`p-3 rounded-xl border text-center cursor-pointer transition ${
+                            selectedIndex === mIdx
+                              ? 'bg-[#ebd73f] text-black font-bold'
+                              : 'bg-white/[0.03] border-white/10 text-white/70'
                           }`}
                         >
-                          <p className="font-clash font-bold text-xs text-white">{combo.name}</p>
-                          <p className="text-[10px] text-slate-400 mt-1 leading-snug">{combo.includes}</p>
-                          <p className="mt-2 pt-2 border-t border-white/10 text-xs font-mono text-[#ebd73f] font-bold">
-                            {combo.price}
-                          </p>
+                          <p className="text-xs">{mode}</p>
                         </div>
                       ))}
                     </div>
+                  </div>
+                )}
 
-                    <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block pt-2">
-                      2. Express Pickup Window
+                {/* MODEL 6: 7-VISIT LOYALTY CLUB SIMULATION */}
+                {variant.id === 'loyalty' && (
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
+                      1. Digital 7-Stamp Punch Card Progression
                     </label>
-                    <div className="flex flex-wrap gap-2">
-                      {variant.demoData.pickupTimes.map((time, tIdx) => (
-                        <button
-                          type="button"
-                          key={tIdx}
-                          onClick={() => {
-                            sounds.playClick();
-                            setSelectedSub(tIdx);
-                          }}
-                          className={`px-3.5 py-2 rounded-xl text-xs font-mono transition cursor-pointer ${
-                            selectedSub === tIdx
-                              ? 'bg-[#ebd73f] text-black font-bold shadow-md'
-                              : 'bg-white/[0.04] border border-white/10 text-slate-300 hover:text-white'
-                          }`}
-                        >
-                          {time}
-                        </button>
-                      ))}
+                    <div className="p-4 rounded-2xl bg-slate-900 border border-amber-400/40 space-y-3">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-slate-300 font-syne font-bold">THC Artisan Club Card</span>
+                        <span className="text-amber-400 font-mono font-bold">Stamps: 6 of 7 (Next = 50% OFF)</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        {[1, 2, 3, 4, 5, 6].map(n => (
+                          <div key={n} className="flex-1 h-3 rounded-full bg-amber-400 shadow-sm shadow-amber-400/50" />
+                        ))}
+                        <div className="flex-1 h-3 rounded-full bg-purple-500/60 border border-purple-400 animate-pulse" />
+                      </div>
+                      <p className="text-[11px] text-slate-400 font-clash">
+                        Simulating this order will record the <strong>7th Visit</strong> and unlock <strong>50% OFF</strong>!
+                      </p>
                     </div>
                   </div>
                 )}
 
                 {/* Customer Name Input */}
                 <div className="space-y-1 pt-2">
-                  <label className="text-[11px] font-mono text-slate-400">Customer Name / Table Guest</label>
+                  <label className="text-[11px] font-mono text-slate-400">Customer Name / Guest</label>
                   <input
                     type="text"
                     required
@@ -350,7 +352,7 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
                     className="w-full btn-dripp-primary py-3.5 text-xs font-bold flex items-center justify-center gap-2 shadow-xl cursor-pointer"
                   >
                     <span className="auth-shimmer-sweep"></span>
-                    <span>Simulate Instant Order &amp; Token Checkout</span>
+                    <span>Simulate {variant.modelName}</span>
                     <ArrowRight className="w-4 h-4 text-black" />
                   </button>
                 </div>

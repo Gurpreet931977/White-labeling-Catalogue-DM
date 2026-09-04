@@ -35,8 +35,8 @@ export function LiveCafeVibe() {
               <span className="text-[10px] font-mono font-semibold text-cyan-400 uppercase tracking-wider">
                 Dining Ambience
               </span>
-              <h4 className="text-lg font-bold text-white font-syne">Cozy Lounge & Kitchen</h4>
-              <p className="text-slate-400 text-xs">{BRAND_CONFIG.contact.shortAddress} • Fresh hot food</p>
+              <h4 className="text-lg font-bold text-white font-syne">Aesthetic Bistro & Kitchen</h4>
+              <p className="text-slate-400 text-xs">{BRAND_CONFIG.contact.shortAddress} • Handcrafted artisan dining</p>
             </div>
             <div className="w-11 h-11 rounded-2xl bg-white/5 flex items-center justify-center text-cyan-400">
               <Coffee className="w-5 h-5" />
@@ -49,8 +49,8 @@ export function LiveCafeVibe() {
               <span className="text-[10px] font-mono font-semibold text-amber-400 uppercase tracking-wider">
                 Now Playing at {BRAND_CONFIG.shortName}
               </span>
-              <h4 className="text-lg font-bold text-white font-syne">Retro & Acoustic Lo-Fi</h4>
-              <p className="text-slate-400 text-xs">Curated road trip soundtrack & acoustic hits</p>
+              <h4 className="text-lg font-bold text-white font-syne">Acoustic Lo-Fi & Warm Jazz</h4>
+              <p className="text-slate-400 text-xs">Curated cafe soundtrack & relaxing ambient beats</p>
             </div>
             <div className="w-11 h-11 rounded-2xl bg-white/5 flex items-center justify-center text-amber-400">
               <Music className="w-5 h-5" />

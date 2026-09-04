@@ -16,7 +16,7 @@ import { Footer } from '../components/common/Footer';
 import { HeroSection } from '../components/home/HeroSection';
 import { LiveCafeVibe } from '../components/home/LiveCafeVibe';
 import { SignatureHighlights } from '../components/home/SignatureHighlights';
-import { HighwayExperience } from '../components/home/HighwayExperience';
+import { CafeExperience } from '../components/home/HighwayExperience';
 import { CustomerReviews } from '../components/home/CustomerReviews';
 import { MenuSection } from '../components/menu/MenuSection';
 import { ItemCustomizeModal } from '../components/menu/ItemCustomizeModal';
@@ -27,6 +27,9 @@ import { AdminDashboard } from '../components/admin/AdminDashboard';
 import { QRScannerModal } from '../components/common/QRScannerModal';
 import { CustomerAuthModal } from '../components/auth/CustomerAuthModal';
 import { AdminLoginModal } from '../components/auth/AdminLoginModal';
+import { ModelSwitcherModal } from '../components/common/ModelSwitcherModal';
+import { LoyaltyCardModal } from '../components/loyalty/LoyaltyCardModal';
+import { TableReservationModal } from '../components/common/TableReservationModal';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { CartProvider, useCart } from '../context/CartContext';
 import { OrderProvider, useOrder } from '../context/OrderContext';
@@ -37,9 +40,12 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+  const [isModelSwitcherOpen, setIsModelSwitcherOpen] = useState(false);
+  const [isLoyaltyModalOpen, setIsLoyaltyModalOpen] = useState(false);
+  const [isReservationOpen, setIsReservationOpen] = useState(false);
   const [selectedItemForCustomize, setSelectedItemForCustomize] = useState(null);
 
-  const { itemCount, grandTotal } = useCart();
+  const { itemCount, grandTotal, operationalModel } = useCart();
   const { activeCustomerOrder, liveOrderToast, setLiveOrderToast } = useOrder();
   const { 
     isCustomerLoggedIn, 
@@ -95,9 +101,28 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
               <span>Back to Cafe Options</span>
             </button>
             <span className="hidden sm:inline-block text-white/30">•</span>
-            <span className="hidden sm:inline-flex items-center gap-1.5 text-[#ebd73f] text-[11px]">
-              <span>ACTIVE MODEL: THC CAFE &amp; QR POS</span>
-            </span>
+            
+            {/* Interactive Active Model Switcher Button */}
+            <button
+              onClick={() => { sounds.playClick(); setIsModelSwitcherOpen(true); }}
+              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#ebd73f]/15 hover:bg-[#ebd73f]/25 text-[#ebd73f] text-[11px] font-semibold border border-[#ebd73f]/30 transition cursor-pointer"
+              title="Click to Switch Operating Model"
+            >
+              <Layers className="w-3 h-3 text-[#ebd73f]" />
+              <span>
+                MODEL: {
+                  operationalModel === 'self-serve' ? 'Self-Serve Counter QSR' :
+                  operationalModel === 'showcase' ? 'Brand Showcase & Menu' :
+                  operationalModel === 'delivery' ? 'Online Doorstep Delivery' :
+                  operationalModel === 'hybrid' ? 'Hybrid Dine-In & Delivery' :
+                  operationalModel === 'loyalty' ? 'Loyalty Club & 7-Visit POS' :
+                  'Artisan Dine-In & Table QR'
+                }
+              </span>
+              <span className="px-1.5 py-0.2 rounded bg-[#ebd73f] text-black text-[9px] font-bold">
+                SWITCH
+              </span>
+            </button>
           </div>
 
           <div className="flex items-center gap-3">
@@ -142,6 +167,9 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
           onOpenScanner={() => setIsScannerOpen(true)}
           onOpenTracker={() => setCurrentView('tracker')}
           onRequireAuth={(cb) => requireCustomerAuth(cb)}
+          onOpenLoyaltyModal={() => setIsLoyaltyModalOpen(true)}
+          onOpenReservation={() => setIsReservationOpen(true)}
+          onOpenModelSwitcher={() => setIsModelSwitcherOpen(true)}
         />
       )}
 
@@ -229,7 +257,7 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
               onExploreAll={handleNavigateMenu}
               onRequireAuth={(cb) => requireCustomerAuth(cb)}
             />
-            <HighwayExperience />
+            <CafeExperience />
             <CustomerReviews />
           </>
         )}
@@ -361,6 +389,8 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
           setIsScannerOpen(true);
         }}
         onRequireAuth={(cb) => requireCustomerAuth(cb)}
+        onOpenReservation={() => setIsReservationOpen(true)}
+        onOpenLoyaltyModal={() => setIsLoyaltyModalOpen(true)}
       />
 
       {/* 5. Payment Gateway Modal */}
@@ -376,6 +406,25 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
       <QRScannerModal
         isOpen={isScannerOpen}
         onClose={() => setIsScannerOpen(false)}
+      />
+
+      {/* 7. Active Operating Model Switcher Modal */}
+      <ModelSwitcherModal
+        isOpen={isModelSwitcherOpen}
+        onClose={() => setIsModelSwitcherOpen(false)}
+      />
+
+      {/* 8. 7-Visit Loyalty Punch Card Modal */}
+      <LoyaltyCardModal
+        isOpen={isLoyaltyModalOpen}
+        onClose={() => setIsLoyaltyModalOpen(false)}
+        onOpenCart={() => setIsCartOpen(true)}
+      />
+
+      {/* 9. VIP Table Reservation Modal */}
+      <TableReservationModal
+        isOpen={isReservationOpen}
+        onClose={() => setIsReservationOpen(false)}
       />
 
     </div>
