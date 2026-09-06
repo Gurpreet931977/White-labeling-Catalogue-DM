@@ -111,6 +111,7 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
                   operationalModel === 'delivery' ? 'Online Doorstep Delivery' :
                   operationalModel === 'hybrid' ? 'Hybrid Dine-In & Delivery' :
                   operationalModel === 'loyalty' ? 'Loyalty Club & 7-Visit POS' :
+                  operationalModel === 'gamified-loyalty' ? 'Gamified Loyalty Pass' :
                   'Artisan Dine-In & Table QR'
                 }
               </span>

@@ -222,6 +222,44 @@ export const CAFE_VARIANTS = [
       milestoneReward: "50% OFF Entire Order (or Free Item) on 7th Visit",
       billingSync: "Automatic +1 Stamp on Every Paid Bill"
     }
+  },
+
+  // -------------------------------------------------------------------------
+  // ARCHETYPE 07: Gamified Loyalty Pass & Kiosk (Coffee & Bakery)
+  // -------------------------------------------------------------------------
+  {
+    id: "gamified-loyalty",
+    type: "Gamified Loyalty (Coffee & Bakery)",
+    code: "ARCHETYPE // 07",
+    title: "Gamified Coffee & Bakery Loyalty Pass & Kiosk",
+    modelName: "Gamified Loyalty Pass & Kiosk",
+    badge: "JUST LOYALTY • 100% GAMIFIED",
+    isLiveTHC: true,
+    tagline: "Dedicated Loyalty Pass for Coffee & Bakery • Jiggly Micro-Animations, Streaks & Gamified Stamps",
+    description: "Zero POS or food menu clutter. A pure gamified customer loyalty club and in-store counter kiosk designed specifically for coffee shops, espresso bars, and artisan bakeries. Features bouncy Lottie-style micro-animations, jiggly tactile stamps, daily caffeine streaks, mystery scratch cards, and digital Apple/Google wallet passes.",
+    metrics: {
+      turnover: "6.2x Repeat Visits",
+      accuracy: "94% Member Retention",
+      speed: "+78% Coffee LTV"
+    },
+    idealFor: "Espresso bars, artisan bakeries, specialty roasteries, sourdough clubs, patisseries, donut shops",
+    features: [
+      "Tactile 8-stamp digital punch card with bouncy jiggly squash-and-stretch micro-animations",
+      "Lottie-style animated steaming coffee cup & squishy croissant mascots with spring physics",
+      "Daily Caffeine & Pastry Streak tracker with flickering flame & daily multipliers",
+      "Interactive Mystery Scratch Card & Daily Surprise Box with celebratory confetti blast",
+      "Dual View Modes: Customer Mobile Wallet Pass and In-Store Staff Counter Kiosk",
+      "Coffee Roastery Mode (Latte, Cold Brew, Beans) vs Artisan Bakery Mode (Croissant, Sourdough, Donuts)"
+    ],
+    techStack: "React 18, Framer Motion Spring Physics, Web Audio API, Canvas Confetti",
+    previewImage: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+    demoData: {
+      totalStamps: 8,
+      currentDemoStamp: 4,
+      milestoneReward: "Free Signature Specialty Coffee + Flaky Butter Pastry",
+      streakDays: 5,
+      memberLevel: "Espresso Scout (Level 2)"
+    }
   }
 ];
 

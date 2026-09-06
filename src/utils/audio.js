@@ -195,6 +195,67 @@ class SoundController {
       });
     } catch (e) {}
   }
+
+  // Gamified Rubber Stamp Squish & Pop
+  playStampSquish() {
+    if (!this.enabled) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+
+      // Deep squish thud
+      const thud = this.ctx.createOscillator();
+      const thudGain = this.ctx.createGain();
+      thud.type = 'sine';
+      thud.frequency.setValueAtTime(160, now);
+      thud.frequency.exponentialRampToValueAtTime(70, now + 0.08);
+      thudGain.gain.setValueAtTime(0.35, now);
+      thudGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+      thud.connect(thudGain);
+      thudGain.connect(this.ctx.destination);
+      thud.start(now);
+      thud.stop(now + 0.1);
+
+      // Bright rubber pop
+      const pop = this.ctx.createOscillator();
+      const popGain = this.ctx.createGain();
+      pop.type = 'triangle';
+      pop.frequency.setValueAtTime(540, now + 0.03);
+      pop.frequency.exponentialRampToValueAtTime(980, now + 0.09);
+      popGain.gain.setValueAtTime(0.2, now + 0.03);
+      popGain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+      pop.connect(popGain);
+      popGain.connect(this.ctx.destination);
+      pop.start(now + 0.03);
+      pop.stop(now + 0.18);
+    } catch (e) {}
+  }
+
+  // Gamified Level Up / Milestone Fanfare
+  playRewardFanfare() {
+    if (!this.enabled) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+
+      // Major Triad Arpeggio (C5 - E5 - G5 - C6) + High Sparkle
+      const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+      notes.forEach((freq, idx) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+        gain.gain.setValueAtTime(0.18, now + idx * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.45);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now + idx * 0.08);
+        osc.stop(now + idx * 0.08 + 0.45);
+      });
+    } catch (e) {}
+  }
 }
 
 export const sounds = new SoundController();

@@ -24,19 +24,20 @@ import { InstantQuoteDrawer } from '../components/catalogue/InstantQuoteDrawer';
 import { DrippFooter } from '../components/catalogue/DrippFooter';
 import { sounds } from '../utils/audio';
 
-export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo }) {
+export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo, onLaunchLoyaltyApp }) {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [selectedVariantModal, setSelectedVariantModal] = useState(null);
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
 
   const filters = [
-    { id: 'all', label: 'All 6 Models', icon: LayoutGrid },
+    { id: 'all', label: 'All 7 Models', icon: LayoutGrid },
     { id: 'Dine-In Table QR & POS', label: 'Table QR Dine-In', icon: QrCode },
     { id: 'Self-Serve & Counter Pickup', label: 'Self-Serve Counter', icon: Store },
     { id: 'Brand Showcase Landing Page', label: 'Showcase Landing', icon: Calendar },
     { id: 'Direct Online Doorstep Delivery', label: 'Doorstep Delivery', icon: Truck },
     { id: 'Hybrid Dine-In & Delivery', label: 'Hybrid Dual-Mode', icon: RefreshCw },
-    { id: 'Loyalty Club & Visit Tracker', label: 'Loyalty Rewards', icon: Award },
+    { id: 'Loyalty Club & Visit Tracker', label: 'Loyalty POS', icon: Award },
+    { id: 'Gamified Loyalty (Coffee & Bakery)', label: 'Gamified Loyalty', icon: Sparkles },
   ];
 
   const filteredVariants = selectedFilter === 'all'
@@ -97,7 +98,7 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo }) {
         </h1>
 
         <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-300 font-clash leading-relaxed">
-          Not all cafes operate the same. Select from 6 purpose-built turnkey white-label systems tailored for table QR service, self-serve counter pickups, brand showcase landing pages, direct online delivery, hybrid dining, or 7-visit loyalty rewards.
+          Not all cafes operate the same. Select from 7 purpose-built turnkey white-label systems tailored for table QR service, self-serve counter pickups, brand showcase landing pages, direct online delivery, hybrid dining, 7-visit loyalty rewards, or 100% gamified coffee &amp; bakery loyalty passes.
         </p>
 
         {/* Filter Pills */}
@@ -235,7 +236,12 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo }) {
                       sounds.playClick();
                       localStorage.setItem('thc_operational_model', item.id);
                       window.dispatchEvent(new CustomEvent('thc_model_change', { detail: { model: item.id } }));
-                      onLaunchTHCDemo();
+                      if (item.id === 'gamified-loyalty') {
+                        if (onLaunchLoyaltyApp) onLaunchLoyaltyApp();
+                        else onLaunchTHCDemo();
+                      } else {
+                        onLaunchTHCDemo();
+                      }
                     }}
                     className="btn-dripp-primary py-2.5 px-3 text-xs font-bold flex items-center justify-center gap-1 cursor-pointer shadow-xl"
                   >

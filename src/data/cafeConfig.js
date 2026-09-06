@@ -294,5 +294,23 @@ export const MODEL_SYSTEM_CONFIG = {
     cartTitle: 'Loyalty Rewards Bag',
     fulfillmentLabel: '🍽️ Table Service & Loyalty Billing',
     allowOrdering: true,
+  },
+  'gamified-loyalty': {
+    id: 'gamified-loyalty',
+    badge: 'COFFEE & BAKERY LOYALTY • 100% GAMIFIED',
+    headlineLine1: 'Sip, Savor, Stamp.',
+    headlineLine2: 'Jiggly Rewards Club.',
+    description: 'Pure gamified customer loyalty club designed for neighborhood coffee shops and artisan bakeries. No food menu or POS clutter—just interactive 8-stamp punch cards, daily caffeine streaks, and secret pastry drops.',
+    primaryCta: 'OPEN LOYALTY PASS',
+    secondaryCta: 'BARISTA KIOSK',
+    secondaryAction: 'gamified-pass',
+    highlights: [
+      { title: '8-Stamp Pass', subtitle: 'Jiggly Tactile Stamps', type: 'speed' },
+      { title: 'Daily Streaks', subtitle: 'Multiplier Rewards', type: 'payment' },
+      { title: 'Mystery Treats', subtitle: 'Scratch & Win Box', type: 'kitchen' },
+    ],
+    cartTitle: 'Perk Vault',
+    fulfillmentLabel: '☕ Coffee & Bakery Loyalty Pass',
+    allowOrdering: false,
   }
 };

@@ -37,7 +37,9 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       modelName: variant.modelName,
       type: variant.type,
-      details: variant.id === 'loyalty'
+      details: variant.id === 'gamified-loyalty'
+        ? "8-Slot Passport Stamped • Free Drink + Pastry Perk Unlocked!"
+        : variant.id === 'loyalty'
         ? "Visit #7 Completed • 50% OFF Applied!"
         : variant.id === 'self-serve'
         ? "TOKEN #C-14 • Ready for Counter Pickup"
@@ -55,6 +57,7 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
 
   const getVariantIcon = () => {
     switch (variant.id) {
+      case 'gamified-loyalty': return Sparkles;
       case 'self-serve': return Store;
       case 'showcase': return Compass;
       case 'delivery': return Truck;
@@ -329,6 +332,40 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
                       <p className="text-[11px] text-slate-400 font-clash">
                         Simulating this order will record the <strong>7th Visit</strong> and unlock <strong>50% OFF</strong>!
                       </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* MODEL 7: GAMIFIED COFFEE & BAKERY LOYALTY SIMULATION */}
+                {variant.id === 'gamified-loyalty' && (
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
+                      1. Interactive 8-Slot Gamified Stamp Progression
+                    </label>
+                    <div className="p-4 rounded-2xl bg-slate-900 border border-amber-400/40 space-y-3">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-white font-syne font-bold flex items-center gap-1.5">
+                          <span>☕</span>
+                          <span>Artisan Coffee &amp; Bakery Passport</span>
+                        </span>
+                        <span className="text-[#ebd73f] font-mono font-bold">Stamps: 7 of 8 (Next = FREE DRINK)</span>
+                      </div>
+                      
+                      <div className="grid grid-cols-8 gap-1.5 pt-1">
+                        {[1, 2, 3, 4, 5, 6, 7].map(n => (
+                          <div key={n} className="h-6 rounded-lg bg-[#ebd73f] flex items-center justify-center font-bold text-[9px] text-black shadow-sm">
+                            ✓
+                          </div>
+                        ))}
+                        <div className="h-6 rounded-lg bg-purple-500/40 border border-purple-400 flex items-center justify-center text-[10px] text-purple-200 font-bold animate-pulse">
+                          🎁
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[11px] text-slate-400 font-clash pt-1">
+                        <span>Daily Streak: <strong className="text-orange-400">5-Day Hot Streak 🔥</strong></span>
+                        <span className="text-emerald-400 font-bold">Lottie Micro-Animations Active</span>
+                      </div>
                     </div>
                   </div>
                 )}

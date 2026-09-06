@@ -83,6 +83,17 @@ const MODELS = [
     badgeColor: 'bg-rose-400/20 text-rose-300 border-rose-400/30',
     description: 'Interactive 7-stamp digital punch card. Every time a bill is settled or presence is checked in, visits mark up. 7th visit unlocks 50% OFF at checkout!',
     idealFor: 'Repeat-business cafes, coffee bars, bubble tea & dessert clubs'
+  },
+  {
+    id: 'gamified-loyalty',
+    code: 'ARCHETYPE // 07',
+    name: 'Gamified Coffee & Bakery Loyalty Pass',
+    subtitle: '100% Gamified Rewards & Kiosk',
+    icon: Sparkles,
+    badge: 'JUST LOYALTY • GAMIFIED',
+    badgeColor: 'bg-amber-400/25 text-amber-300 border-amber-400/50 shadow-sm',
+    description: 'Zero POS or food menu clutter. A pure gamified loyalty club and barista counter kiosk with bouncy Lottie micro-animations, jiggly stamps, daily caffeine streaks, and mystery scratch treats.',
+    idealFor: 'Espresso bars, roasteries, artisan bakeries, sourdough clubs & patisseries'
   }
 ];
 
