@@ -2,16 +2,30 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CAFE_CONFIG } from '../data/cafeConfig';
 import { sounds } from '../utils/audio';
 import { useAuth } from './AuthContext';
+import { sanitizeMenuItem } from './OrderContext';
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const { customerUser } = useAuth();
 
-  // Cart items state with localStorage persistence
+  // Cart items state with localStorage persistence and food image sanitization
   const [cart, setCart] = useState(() => {
-    const saved = localStorage.getItem('thc_cart');
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem('thc_cart');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          return parsed.map(ci => ({
+            ...ci,
+            item: sanitizeMenuItem(ci.item)
+          }));
+        }
+      }
+      return [];
+    } catch {
+      return [];
+    }
   });
 
   // Operational Model: 'table-qr' | 'self-serve' | 'showcase' | 'delivery' | 'hybrid' | 'loyalty'

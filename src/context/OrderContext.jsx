@@ -53,12 +53,63 @@ const FALLBACK_ORDERS = [
   }
 ];
 
+// Sanitizes any item image to guarantee ONLY high-definition closeup food photography is used
+export function sanitizeMenuItem(item) {
+  if (!item) return item;
+  let image = item.image;
+  const nameLower = (item.name || '').toLowerCase();
+  
+  // Detect fish photo (photo-1599488615731-7e5c2823ff28) or non-food image
+  const isFishPhoto = image && (
+    image.includes('photo-1599488615731-7e5c2823ff28') ||
+    image.includes('aquarium') ||
+    image.includes('fish')
+  );
+
+  // Replace with dedicated ultra-high-definition closeup food photography
+  if (nameLower.includes('butter chicken') && (nameLower.includes('kathi') || nameLower.includes('roll') || isFishPhoto)) {
+    image = '/images/butter_chicken_kathi_roll.jpg';
+  } else if ((nameLower.includes('murgh tikka') || nameLower.includes('bhatti') || nameLower.includes('chicken tikka')) && (isFishPhoto || !image || image.includes('photo-1599488615731-7e5c2823ff28'))) {
+    image = '/images/charcoal_murgh_tikka.jpg';
+  } else if (nameLower.includes('paneer tikka') && (nameLower.includes('kathi') || nameLower.includes('roll') || (image && image.includes('photo-1626777552726-4a6b54c97e46')))) {
+    image = '/images/paneer_tikka_kathi_roll.jpg';
+  } else if (nameLower.includes('focaccia') || nameLower.includes('garlic pull-apart')) {
+    image = '/images/cheesy_garlic_focaccia.jpg';
+  } else if (isFishPhoto) {
+    image = '/images/butter_chicken_kathi_roll.jpg';
+  }
+
+  return { ...item, image };
+}
+
+export function sanitizeMenuItemsList(items) {
+  if (!Array.isArray(items) || items.length === 0) return MENU_ITEMS;
+  return items.map(sanitizeMenuItem);
+}
+
+const MENU_DATA_VERSION = 'v2026_closeup_food_v2';
+
 export function OrderProvider({ children }) {
-  // Live Menu Items with localStorage & cross-tab persistence
+  // Live Menu Items with localStorage & cross-tab persistence and automatic closeup food image sanitization
   const [menuItems, setMenuItems] = useState(() => {
     try {
+      const savedVersion = localStorage.getItem('thc_custom_menu_version');
       const saved = localStorage.getItem('thc_custom_menu_items');
-      return saved ? JSON.parse(saved) : MENU_ITEMS;
+      
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const sanitized = sanitizeMenuItemsList(parsed);
+          // If the saved version was older, update localStorage with the sanitized closeup food items
+          if (savedVersion !== MENU_DATA_VERSION) {
+            localStorage.setItem('thc_custom_menu_version', MENU_DATA_VERSION);
+            localStorage.setItem('thc_custom_menu_items', JSON.stringify(sanitized));
+          }
+          return sanitized;
+        }
+      }
+      localStorage.setItem('thc_custom_menu_version', MENU_DATA_VERSION);
+      return MENU_ITEMS;
     } catch (e) {
       return MENU_ITEMS;
     }
@@ -413,6 +464,7 @@ export function OrderProvider({ children }) {
   const resetMenuToDefaults = () => {
     sounds.playClick();
     setMenuItems(MENU_ITEMS);
+    localStorage.setItem('thc_custom_menu_version', MENU_DATA_VERSION);
     localStorage.removeItem('thc_custom_menu_items');
   };
 

@@ -224,7 +224,7 @@ export const MENU_ITEMS = [
     prepTime: "10 mins",
     isVeg: true,
     isBestseller: true,
-    image: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80",
+    image: "/images/cheesy_garlic_focaccia.jpg",
     description: "Freshly baked olive oil focaccia loaded with roasted garlic herb butter, bubbling melted mozzarella, and fresh rosemary sprigs.",
     customizable: true,
     spiceOptions: ["Mild Garlic", "Spicy Herb Butter"],
@@ -643,22 +643,72 @@ export const MENU_ITEMS = [
     description: "Dense and creamy baked New York cheesecake on a buttery graham cracker crust, topped with tart wild blueberry compote.",
     customizable: false,
     addons: [],
-    searchKeywords: ["cheesecake", "blueberry cheesecake", "cake", "dessert", "sweet"]
+    searchKeywords: ["churros", "cinnamon", "caramel", "chocolate", "dessert", "sweet"]
+  },
+
+  // ==========================================
+  // 8. ARTISAN ROLLS & TANDOOR GRILLS
+  // ==========================================
+  {
+    id: "thc-33",
+    name: "Highway Paneer Tikka Kathi Roll",
+    category: "paninis-burgers",
+    price: 189,
+    rating: 4.9,
+    reviews: 620,
+    prepTime: "10 mins",
+    isVeg: true,
+    isBestseller: true,
+    image: "/images/paneer_tikka_kathi_roll.jpg",
+    description: "Charcoal roasted cottage cheese paneer tikka wrapped in a flaky laccha paratha with mint glaze and lemon-tossed crunchy onions.",
+    customizable: true,
+    spiceOptions: ["Classic Tikka", "Spicy Herb Zing", "Fiery Tadka"],
+    addons: [
+      { id: "extra-cheese", name: "Grated Mozzarella Blanket (+₹35)", price: 35 },
+      { id: "mint-mayo", name: "Tandoori Mint Aioli (+₹20)", price: 20 }
+    ],
+    searchKeywords: ["kathi roll", "paneer roll", "paneer tikka", "wrap", "roll", "tandoori roll", "paneer"]
   },
   {
-    id: "thc-32",
-    name: "Crispy Cinnamon Churros with Dulce De Leche",
-    category: "desserts",
-    price: 179,
-    rating: 4.8,
-    reviews: 360,
-    prepTime: "7 mins",
-    isVeg: true,
-    image: "https://images.unsplash.com/photo-1624300629298-e9de39c13be5?auto=format&fit=crop&w=800&q=80",
-    description: "Golden fried cinnamon sugar dusted churro loops served with molten warm chocolate ganache and homemade dulce de leche caramel dip.",
-    customizable: false,
-    addons: [],
-    searchKeywords: ["churros", "cinnamon", "caramel", "chocolate", "dessert", "sweet"]
+    id: "thc-34",
+    name: "Smokey Butter Chicken Kathi Roll",
+    category: "paninis-burgers",
+    price: 229,
+    rating: 5.0,
+    reviews: 810,
+    prepTime: "10 mins",
+    isVeg: false,
+    isBestseller: true,
+    image: "/images/butter_chicken_kathi_roll.jpg",
+    description: "Tender tandoori chicken cooked in rich aromatic makhani gravy, rolled in a crispy egg-coated artisanal paratha with pickled onions and mint drizzle.",
+    customizable: true,
+    spiceOptions: ["Rich & Mild Makhani", "Spicy Makhani Zing", "Extra Hot Honey Zing"],
+    addons: [
+      { id: "extra-chicken", name: "Extra Shredded Tandoori Chicken (+₹55)", price: 55 },
+      { id: "extra-egg", name: "Double Egg Paratha Layer (+₹25)", price: 25 }
+    ],
+    searchKeywords: ["kathi roll", "butter chicken", "chicken roll", "chicken wrap", "wrap", "roll", "non veg roll", "chicken"]
+  },
+  {
+    id: "thc-35",
+    name: "Charcoal Bhatti Murgh Tikka (6 Pcs)",
+    category: "appetizers-sides",
+    price: 320,
+    rating: 4.9,
+    reviews: 540,
+    prepTime: "15 mins",
+    isVeg: false,
+    isBestseller: true,
+    isSpicy: true,
+    image: "/images/charcoal_murgh_tikka.jpg",
+    description: "Juicy boneless chicken chunks marinated in mustard oil, roasted cumin, Kashmiri deghi mirch and grilled over clay tandoor coals with charred smoky edges.",
+    customizable: true,
+    spiceOptions: ["Traditional Bhatti", "Gunpowder Spicy (Hot)", "Garlic Butter Glaze"],
+    addons: [
+      { id: "garlic-butter", name: "Smothered in Garlic Butter (+₹30)", price: 30 },
+      { id: "roomali-roti", name: "2 Fresh Artisan Roomali Rotis (+₹40)", price: 40 }
+    ],
+    searchKeywords: ["chicken tikka", "murgh tikka", "tandoori chicken", "tikka", "kebab", "tandoor", "grill", "chicken"]
   }
 ];
 
@@ -675,6 +725,12 @@ export const CULINARY_SYNONYMS = {
   "panini": ["panini", "sandwich", "toastie", "ciabatta"],
   "sandwich": ["panini", "sandwich", "toastie", "sourdough", "avocado toast"],
   "burger": ["burgers", "smash", "patty", "brioche", "cheeseburger"],
+  "kathi roll": ["kathi", "roll", "wrap", "paneer roll", "chicken roll", "butter chicken roll", "tikka roll"],
+  "roll": ["kathi", "roll", "wrap", "paneer roll", "chicken roll", "butter chicken roll"],
+  "wrap": ["kathi", "roll", "wrap", "paneer roll", "chicken roll", "butter chicken roll"],
+  "tikka": ["tikka", "murgh tikka", "paneer tikka", "bhatti", "tandoor", "kebab"],
+  "chicken": ["chicken", "murgh", "tikka", "butter chicken", "pepperoni", "panini"],
+  "paneer": ["paneer", "paneer tikka", "cottage cheese", "cheese"],
   "coffee": ["brew", "cappuccino", "espresso", "flat white", "macchiato", "cold brew", "latte", "spanish latte"],
   "tea": ["chai", "tea", "pot", "cardamom", "ginger", "iced tea"],
   "chai": ["tea", "chai", "pot", "cardamom", "ginger"],

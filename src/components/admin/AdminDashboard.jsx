@@ -45,16 +45,18 @@ import { sounds } from '../../utils/audio';
 const KITCHEN_CATEGORIES = ['woodfired-pizza', 'pastas-mains', 'paninis-burgers', 'appetizers-sides', 'desserts', 'italian-specials', 'burgers', 'sides'];
 const BAR_CATEGORIES = ['coffee-brews', 'shakes-coolers', 'drinks', 'cold-beverages', 'chai-coffee'];
 
-// Preset Food Images for fast addition
+// Preset Food Images for fast addition (all verified closeup food photography)
 const PRESET_DISH_IMAGES = [
-  { label: 'Sizzler / Platter', url: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80' },
-  { label: 'Burger & Rolls', url: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80' },
-  { label: 'Tandoori / Grill', url: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80' },
-  { label: 'Maggi / Noodles', url: 'https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&w=800&q=80' },
-  { label: 'Penne Pasta', url: 'https://images.unsplash.com/photo-1645112411341-6c4fd023714a?auto=format&fit=crop&w=800&q=80' },
-  { label: 'Chai & Hot Brew', url: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800&q=80' },
+  { label: 'Butter Chicken Roll', url: '/images/butter_chicken_kathi_roll.jpg' },
+  { label: 'Paneer Tikka Roll', url: '/images/paneer_tikka_kathi_roll.jpg' },
+  { label: 'Charcoal Murgh Tikka', url: '/images/charcoal_murgh_tikka.jpg' },
+  { label: 'Cheesy Garlic Focaccia', url: '/images/cheesy_garlic_focaccia.jpg' },
+  { label: 'Smash Burger', url: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80' },
+  { label: 'Artisan Penne Pasta', url: 'https://images.unsplash.com/photo-1645112411341-6c4fd023714a?auto=format&fit=crop&w=800&q=80' },
+  { label: 'Truffle Fries', url: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80' },
+  { label: 'Specialty Chai & Coffee', url: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=800&q=80' },
   { label: 'Shake & Chiller', url: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=800&q=80' },
-  { label: 'Loaded Fries', url: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80' }
+  { label: 'Decadent Tiramisu', url: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=800&q=80' }
 ];
 
 // Live Elapsed Stopwatch Timer Component
