@@ -36,7 +36,7 @@ export function ValenceHeroPass({ customer, tier, totalSlots = 6, onShowQrModal 
         whileHover={{ y: -3, rotate: 0.5 }}
         whileTap={{ scale: 0.99 }}
         onClick={() => {
-          sounds.playStampSquish();
+          sounds.playScanSuccess();
           if (onShowQrModal) onShowQrModal();
         }}
         className="relative w-full rounded-3xl bg-[#7A1F1F] text-[#F2ECD8] border-3 border-[#1F1614] cursor-pointer overflow-hidden transition-all duration-300"
@@ -128,9 +128,18 @@ export function ValenceHeroPass({ customer, tier, totalSlots = 6, onShowQrModal 
               )}
             </button>
 
-            {/* Embedded Optical QR Block */}
-            <div className="flex items-center gap-3 bg-[#FAF6EA] text-[#1F1614] p-2.5 rounded-2xl border-2 border-[#1F1614] shadow-[3px_3px_0px_#1F1614] w-fit">
-              <div className="w-10 h-10 bg-white p-1 rounded-lg border border-[#1F1614] flex items-center justify-center shrink-0">
+            {/* Embedded Optical QR Button */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                sounds.playScanSuccess();
+                if (onShowQrModal) onShowQrModal();
+              }}
+              className="flex items-center gap-3 bg-[#FAF6EA] hover:bg-white text-[#1F1614] p-2.5 rounded-2xl border-2 border-[#1F1614] shadow-[3px_3px_0px_#1F1614] hover:shadow-[4px_4px_0px_#1F1614] active:translate-y-0.5 cursor-pointer transition-all w-fit group/opt"
+              title="Click to expand optical QR key"
+            >
+              <div className="w-10 h-10 bg-white p-1 rounded-lg border border-[#1F1614] flex items-center justify-center shrink-0 group-hover/opt:scale-105 transition-transform">
                 {/* SVG Mini QR Code */}
                 <svg viewBox="0 0 24 24" className="w-full h-full text-[#7A1F1F]">
                   <rect x="2" y="2" width="7" height="7" fill="currentColor" />
@@ -156,10 +165,10 @@ export function ValenceHeroPass({ customer, tier, totalSlots = 6, onShowQrModal 
                 </div>
                 <div className="font-groovy text-xs text-[#1F1614] flex items-center gap-1">
                   <span>TAP TO EXPAND</span>
-                  <Maximize2 className="w-3 h-3 text-[#7A1F1F]" />
+                  <Maximize2 className="w-3 h-3 text-[#7A1F1F] group-hover/opt:translate-x-0.5 transition-transform" />
                 </div>
               </div>
-            </div>
+            </button>
 
           </div>
 

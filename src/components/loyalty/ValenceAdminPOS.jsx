@@ -209,7 +209,7 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
           </div>
 
           {/* Product Items Grid (Warm Cream Cards with Solid Oxblood Borders) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[520px] overflow-y-auto pr-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 p-1 pb-2">
             {filteredItems.map((item) => (
               <motion.div
                 key={item.id}

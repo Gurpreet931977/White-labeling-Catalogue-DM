@@ -47,6 +47,11 @@ export default function App() {
   // Handle browser back/forward buttons
   useEffect(() => {
     const handleHashChange = () => {
+      // In-page section jumps should never switch appMode
+      if (window.location.hash.startsWith('#section-')) {
+        return;
+      }
+
       if (window.location.hash === '#loyalty' || window.location.hash === '#loyalty-pass') {
         setAppMode('loyalty-app');
       } else if (window.location.hash === '#cafe-demo') {
