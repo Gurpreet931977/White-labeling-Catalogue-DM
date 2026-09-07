@@ -165,14 +165,47 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
     setTimeout(() => setFeedbackToast(null), 3500);
   };
 
+  // Daily Mystery Box Reveal Action
+  const handleRevealMystery = () => {
+    if (mysteryRevealed || mysteryShaking) return;
+    sounds.playClick();
+    setMysteryShaking(true);
+    setTimeout(() => {
+      setMysteryShaking(false);
+      setMysteryRevealed(true);
+      const mysteryGifts = [
+        { title: 'Free Barista Oat Milk Upgrade', desc: 'Complimentary plant-based milk swap on any brew.', code: 'OAT-MILK-FREE' },
+        { title: '50% Off Morning Bakery Pastry', desc: 'Half-price croissant, roll, or muffin before noon.', code: 'PASTRY-50' },
+        { title: 'Double Star Boost (+50 XP)', desc: 'Accelerates progress towards Master Roaster tier.', code: 'XP-BOOST-50' },
+        { title: 'Free Extra Double-Shot Espresso', desc: 'Extra double-shot on the house on any beverage.', code: 'EXTRA-SHOT' }
+      ];
+      const picked = mysteryGifts[Math.floor(Math.random() * mysteryGifts.length)];
+      setMysteryReward(picked);
+      sounds.playRewardFanfare();
+      triggerConfetti();
+      showToast(`Secret Perk Revealed: ${picked.title}!`);
+    }, 1200);
+  };
+
+  // Open Redemption Voucher Modal
+  const handleOpenRedeem = (perk) => {
+    sounds.playClick();
+    setActiveRedemptionVoucher({
+      title: perk.title,
+      desc: perk.desc,
+      code: perk.code || 'PASS-REWARD'
+    });
+    setRedemptionTimer(300);
+  };
+
   // When customer taps an unstamped slot in Customer Pass View:
   // "ofcourse customer should not be able to mark the stamps."
   const handleCustomerSlotClick = (slotIndex) => {
     sounds.playClick();
     if (slotIndex > currentCustomer.stamps) {
-      showToast('🔒 Stamps are marked automatically when the cafe settles your bill!');
+      showToast('Stamps are marked automatically when the cafe settles your bill!');
     } else {
-      showToast(`✓ Stamp #${slotIndex} earned from your past visit billing!`);
+      showToast(`Stamp #${slotIndex} earned from your past visit billing!`);
     }
   };
 
@@ -193,16 +226,16 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
       setPosRecentReceipt(result);
 
       if (result.hasStreakBonus) {
-        showToast(`⚡ 5-Day Streak Active! +2 STAMPS marked for ${result.customer.name}!`);
+        showToast(`5-Day Streak Active! +2 STAMPS marked for ${result.customer.name}!`);
       } else {
-        showToast(`✨ +1 Stamp marked for ${result.customer.name}!`);
+        showToast(`+1 Stamp marked for ${result.customer.name}!`);
       }
 
       if (result.isRewardUnlocked) {
         setTimeout(() => {
           sounds.playRewardFanfare();
           triggerConfetti();
-          showToast(`🎉 MILESTONE REACHED! ${result.customer.name} unlocked their Free Gift!`);
+          showToast(`MILESTONE REACHED! ${result.customer.name} unlocked their Free Gift!`);
         }, 500);
       }
     }
@@ -270,10 +303,10 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
 
   // Customer Tier computation
   const getTier = (xp = 420) => {
-    if (xp >= 650) return { name: 'Master Roaster & Baker', level: 4, icon: '👑', badge: 'DIAMOND VIP' };
-    if (xp >= 350) return { name: 'Artisan Craftsman', level: 3, icon: '🥖', badge: 'GOLD MEMBER' };
-    if (xp >= 150) return { name: 'Espresso Scout', level: 2, icon: '🥐', badge: 'SILVER MEMBER' };
-    return { name: 'Bean Cadet', level: 1, icon: '☕', badge: 'BRONZE MEMBER' };
+    if (xp >= 650) return { name: 'Master Roaster & Baker', level: 4, badge: 'DIAMOND VIP' };
+    if (xp >= 350) return { name: 'Artisan Craftsman', level: 3, badge: 'GOLD MEMBER' };
+    if (xp >= 150) return { name: 'Espresso Scout', level: 2, badge: 'SILVER MEMBER' };
+    return { name: 'Bean Cadet', level: 1, badge: 'BRONZE MEMBER' };
   };
 
   const currentTier = getTier(currentCustomer.xp || 420);
@@ -285,20 +318,14 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
   const hasStreakBonus = (currentCustomer.streakDays || 0) >= (adminConfig.streakBonusThreshold || 5);
 
   return (
-    <div className={`min-h-screen font-sans selection:bg-[#ebd73f] selection:text-black relative transition-colors duration-500 overflow-x-hidden ${
-      themeMode === 'coffee' ? 'bg-[#0a0705] text-amber-50' : 'bg-[#0c0809] text-rose-50'
-    }`}>
+    <div className="min-h-screen bg-cafe-paper text-[#1A1310] font-jakarta selection:bg-[#2044E2] selection:text-white relative transition-colors duration-500 overflow-x-hidden">
       
-      {/* Dynamic Ambient Blur Glows */}
-      <div className={`fixed -top-32 -left-32 w-96 h-96 rounded-full blur-[140px] pointer-events-none transition-all duration-700 ${
-        themeMode === 'coffee' ? 'bg-amber-600/15' : 'bg-rose-500/15'
-      }`} />
-      <div className={`fixed -bottom-32 -right-32 w-96 h-96 rounded-full blur-[140px] pointer-events-none transition-all duration-700 ${
-        themeMode === 'coffee' ? 'bg-yellow-500/10' : 'bg-pink-500/15'
-      }`} />
+      {/* Subtle Warm Coffee Ambient Blurs */}
+      <div className="fixed -top-32 -left-32 w-96 h-96 rounded-full blur-[140px] pointer-events-none bg-[#C25E3E]/5" />
+      <div className="fixed -bottom-32 -right-32 w-96 h-96 rounded-full blur-[140px] pointer-events-none bg-[#D4A373]/10" />
 
       {/* Top Header Navigation */}
-      <header className="sticky top-0 inset-x-0 z-40 bg-black/85 backdrop-blur-xl border-b border-white/10 px-4 sm:px-6 py-3">
+      <header className="sticky top-0 inset-x-0 z-40 bg-[#F6F1EA]/90 backdrop-blur-xl border-b border-[#E8DDD0] px-4 sm:px-6 py-3">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
           
           <div className="flex items-center gap-2 sm:gap-3">
@@ -308,36 +335,36 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                 if (onBackToVariants) onBackToVariants();
                 else if (onBackToCatalogue) onBackToCatalogue();
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-[#ebd73f] hover:text-black font-semibold text-xs transition cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#EAE2D7] hover:bg-[#1A1310] hover:text-[#FFFDF9] text-[#1A1310] font-semibold text-xs transition cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Models</span>
             </button>
 
-            <span className="hidden sm:inline-block text-white/20">•</span>
+            <span className="hidden sm:inline-block text-[#D8CFC4]">•</span>
 
             {/* Model Switcher Button */}
             <button
               onClick={() => { sounds.playClick(); setIsModelSwitcherOpen(true); }}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#ebd73f]/15 hover:bg-[#ebd73f]/25 text-[#ebd73f] text-xs font-semibold border border-[#ebd73f]/30 transition cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FFFFFF] hover:bg-[#F2ECE4] text-[#1A1310] text-xs font-semibold border border-[#DDD4C7] shadow-sm transition cursor-pointer"
             >
-              <Layers className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">ARCHETYPE // 07:</span>
-              <span>Gamified Loyalty Pass</span>
-              <span className="px-1.5 py-0.2 rounded bg-[#ebd73f] text-black text-[9px] font-bold">SWITCH</span>
+              <Layers className="w-3.5 h-3.5 text-[#C25E3E]" />
+              <span className="hidden md:inline font-space text-[11px] text-[#7A6C60]">ARCHETYPE // 07:</span>
+              <span className="font-medium">Gamified Loyalty Pass</span>
+              <span className="px-1.5 py-0.5 rounded bg-[#1A1310] text-[#FFFDF9] text-[9px] font-space font-bold">SWITCH</span>
             </button>
           </div>
 
           {/* Right Controls: View Switcher (Customer Pass vs Cafe POS & Admin) */}
           <div className="flex items-center gap-2 sm:gap-3">
             
-            <div className="flex items-center p-1 rounded-full bg-white/5 border border-white/10 text-xs">
+            <div className="flex items-center p-1 rounded-full bg-[#EAE2D7] border border-[#DDD4C7] text-xs">
               <button
                 onClick={() => { sounds.playClick(); setViewMode('customer'); }}
                 className={`px-3.5 py-1.5 rounded-full font-semibold transition flex items-center gap-1.5 cursor-pointer ${
                   viewMode === 'customer'
-                    ? 'bg-[#ebd73f] text-black font-bold shadow-md'
-                    : 'text-white/60 hover:text-white'
+                    ? 'bg-[#1A1310] text-[#FFFDF9] font-bold shadow-sm'
+                    : 'text-[#6B5E54] hover:text-[#1A1310]'
                 }`}
               >
                 <Smartphone className="w-3.5 h-3.5" />
@@ -348,8 +375,8 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                 onClick={() => { sounds.playClick(); setViewMode('pos_admin'); }}
                 className={`px-3.5 py-1.5 rounded-full font-semibold transition flex items-center gap-1.5 cursor-pointer ${
                   viewMode === 'pos_admin'
-                    ? 'bg-[#ebd73f] text-black font-bold shadow-md'
-                    : 'text-white/60 hover:text-white'
+                    ? 'bg-[#1A1310] text-[#FFFDF9] font-bold shadow-sm'
+                    : 'text-[#6B5E54] hover:text-[#1A1310]'
                 }`}
               >
                 <Receipt className="w-3.5 h-3.5" />
@@ -363,10 +390,10 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                 const state = sounds.toggleSound();
                 setSoundEnabled(state);
               }}
-              className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition cursor-pointer"
+              className="p-2 rounded-full bg-[#EAE2D7] hover:bg-[#DDD4C7] text-[#1A1310] transition cursor-pointer"
               title={soundEnabled ? 'Mute Sounds' : 'Unmute Sounds'}
             >
-              {soundEnabled ? <Volume2 className="w-4 h-4 text-[#ebd73f]" /> : <VolumeX className="w-4 h-4 text-slate-500" />}
+              {soundEnabled ? <Volume2 className="w-4 h-4 text-[#C25E3E]" /> : <VolumeX className="w-4 h-4 text-[#A89C90]" />}
             </button>
 
           </div>
@@ -381,9 +408,9 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
             initial={{ opacity: 0, y: -20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className="fixed top-18 inset-x-0 mx-auto w-fit z-50 px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-bold text-xs shadow-2xl shadow-amber-500/40 flex items-center gap-2 pointer-events-none"
+            className="fixed top-18 inset-x-0 mx-auto w-fit z-50 px-5 py-2.5 rounded-full bg-[#1A1310] text-[#FFFDF9] border border-[#3A2E26] font-semibold text-xs shadow-2xl flex items-center gap-2 pointer-events-none"
           >
-            <Sparkles className="w-4 h-4" />
+            <Sparkles className="w-4 h-4 text-[#D4A373]" />
             <span>{feedbackToast}</span>
           </motion.div>
         )}
@@ -393,9 +420,9 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
       <main className="max-w-4xl mx-auto px-4 py-6 space-y-6">
         
         {/* Sub-Header / Niche Switcher Banner */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 sm:p-5 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-md">
-          <div className="flex items-center gap-3 text-center sm:text-left">
-            <div className="w-12 h-12 rounded-2xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-center shrink-0">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-3xl bg-[#FFFFFF] border border-[#E8DDD0] shadow-sm">
+          <div className="flex items-center gap-3.5 text-center sm:text-left">
+            <div className="w-12 h-12 rounded-2xl bg-[#FAF6F0] border border-[#E8DDD0] flex items-center justify-center shrink-0">
               {themeMode === 'coffee' ? (
                 <LottieSteamingCup size={36} />
               ) : (
@@ -404,27 +431,27 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
             </div>
             <div>
               <div className="flex items-center gap-2 justify-center sm:justify-start">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#ebd73f] font-bold">
+                <span className="text-[10px] font-space uppercase tracking-widest text-[#C25E3E] font-bold">
                   {themeMode === 'coffee' ? 'SPECIALTY ESPRESSO ROASTERS' : 'ARTISAN SOURDOUGH & PATISSERIE'}
                 </span>
-                <span className="px-2 py-0.2 rounded-full bg-[#ebd73f]/20 text-[#ebd73f] text-[9px] font-mono font-bold">
+                <span className="px-2 py-0.5 rounded-full bg-[#FAF5EE] text-[#1A1310] border border-[#DDD4C7] text-[10px] font-space font-bold">
                   {totalSlots}-STAMP MODEL
                 </span>
               </div>
-              <h2 className="font-panchang font-bold text-lg text-white">
+              <h2 className="font-fraunces font-bold text-xl sm:text-2xl text-[#1A1310] mt-0.5">
                 {themeMode === 'coffee' ? 'Brew & Bean Rewards Club' : 'Crumb & Crust Bakery Passport'}
               </h2>
             </div>
           </div>
 
           {/* Theme Selector Button Pills */}
-          <div className="flex items-center gap-2 p-1 rounded-2xl bg-black/60 border border-white/10 shrink-0">
+          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[#F6F1EA] border border-[#E8DDD0] shrink-0">
             <button
               onClick={() => { sounds.playClick(); setThemeMode('coffee'); }}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
                 themeMode === 'coffee'
-                  ? 'bg-amber-400 text-slate-950 font-bold shadow-md'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#1A1310] text-[#FFFDF9] font-bold shadow-sm'
+                  : 'text-[#6B5E54] hover:text-[#1A1310]'
               }`}
             >
               <Coffee className="w-3.5 h-3.5" />
@@ -435,8 +462,8 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
               onClick={() => { sounds.playClick(); setThemeMode('bakery'); }}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
                 themeMode === 'bakery'
-                  ? 'bg-amber-400 text-slate-950 font-bold shadow-md'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#1A1310] text-[#FFFDF9] font-bold shadow-sm'
+                  : 'text-[#6B5E54] hover:text-[#1A1310]'
               }`}
             >
               <Store className="w-3.5 h-3.5" />
@@ -452,10 +479,10 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
           <div className="space-y-6">
             
             {/* Quick Customer Switcher Bar (For Demo Verification) */}
-            <div className="p-3 rounded-2xl bg-black/40 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono">
-              <div className="flex items-center gap-2 text-slate-400">
-                <Users className="w-4 h-4 text-[#ebd73f]" />
-                <span>Viewing Customer Account:</span>
+            <div className="p-3.5 rounded-2xl bg-[#FFFFFF] border border-[#E8DDD0] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs font-space">
+              <div className="flex items-center gap-2 text-[#7A6C60]">
+                <Users className="w-4 h-4 text-[#C25E3E]" />
+                <span>ACTIVE MEMBER ACCOUNT:</span>
               </div>
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <select
@@ -464,7 +491,7 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                     sounds.playClick();
                     setSelectedCustomerId(e.target.value);
                   }}
-                  className="px-3 py-1.5 rounded-xl bg-slate-900 border border-white/20 text-white font-mono text-xs focus:outline-none focus:border-[#ebd73f] cursor-pointer w-full sm:w-auto"
+                  className="px-3 py-1.5 rounded-xl bg-[#F6F1EA] border border-[#DDD4C7] text-[#1A1310] font-space text-xs focus:outline-none focus:border-[#2044E2] cursor-pointer w-full sm:w-auto font-medium"
                 >
                   {customers.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -478,7 +505,7 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                     sounds.playClick();
                     setHistoryCustomer(currentCustomer);
                   }}
-                  className="px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs whitespace-nowrap transition cursor-pointer flex items-center gap-1"
+                  className="px-3 py-1.5 rounded-xl bg-[#FAF5EE] hover:bg-[#1A1310] hover:text-[#FFFDF9] text-[#1A1310] border border-[#DDD4C7] text-xs whitespace-nowrap transition cursor-pointer flex items-center gap-1 font-semibold"
                 >
                   <Receipt className="w-3.5 h-3.5" />
                   <span>Bills</span>
@@ -486,101 +513,114 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
               </div>
             </div>
 
-            {/* VIP Member Card (Apple/Google Wallet Style) */}
+            {/* VIP MEMBER CARD (Physical Tactile VIP Wallet Pass) */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              className="relative rounded-3xl overflow-hidden p-6 sm:p-8 border border-amber-400/30 shadow-2xl bg-gradient-to-br from-stone-900 via-stone-950 to-black text-white"
+              whileHover={{ rotate: 0 }}
+              className="relative rounded-3xl overflow-hidden p-6 sm:p-8 bg-gradient-to-br from-[#1C1613] via-[#231C18] to-[#120E0C] text-[#FFFDF9] shadow-2xl border border-[#3A2E26] transform rotate-[-0.6deg] transition-transform duration-300 select-none"
             >
-              {/* Card Ambient Shimmer Background */}
-              <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-
+              {/* Tactile debossed edge border */}
+              <div className="absolute inset-2.5 rounded-2xl border border-[#D4A373]/25 pointer-events-none" />
+              
               {/* Card Top Row */}
               <div className="flex items-start justify-between relative z-10">
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-mono text-[#ebd73f] tracking-widest uppercase font-bold">
+                    <span className="text-[11px] font-space tracking-[0.25em] text-[#D4A373] uppercase font-bold">
                       {themeMode === 'coffee' ? 'VIP ROASTERY PASS' : 'GOLDEN CRUST CLUB'}
                     </span>
-                    <span className="px-2 py-0.5 rounded-full bg-amber-400/15 text-amber-300 font-mono text-[9px] font-bold border border-amber-400/30">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#D4A373]/20 text-[#E8C5A0] font-space text-[9px] font-bold border border-[#D4A373]/40 tracking-wider">
                       {currentTier.badge}
                     </span>
                   </div>
-                  <h3 className="font-panchang font-black text-2xl sm:text-3xl text-white">
+                  <h3 className="font-fraunces font-bold text-3xl sm:text-4xl text-[#FFFDF9] tracking-tight">
                     {currentCustomer.name}
                   </h3>
-                  <p className="text-xs font-mono text-slate-400">
-                    ID: #{currentCustomer.phone} • Scan at checkout to earn stamps
+                  <p className="text-xs font-space text-[#A8988B] tracking-wider">
+                    MEMBER #{currentCustomer.phone} • TACTILE PASS
                   </p>
                 </div>
 
                 {/* Interactive Mascot with Jiggly Spring Physics */}
                 <div className="flex flex-col items-center">
-                  {themeMode === 'coffee' ? (
-                    <LottieSteamingCup size={64} className="hover:animate-jiggle" />
-                  ) : (
-                    <LottieJigglyCroissant size={64} className="hover:animate-jiggle" />
-                  )}
-                  <span className="text-[9px] font-mono text-amber-400/80 mt-1">
+                  <div className="p-2 rounded-2xl bg-[#2D221C] border border-[#42332A] shadow-inner">
+                    {themeMode === 'coffee' ? (
+                      <LottieSteamingCup size={54} className="hover:animate-jiggle" />
+                    ) : (
+                      <LottieJigglyCroissant size={54} className="hover:animate-jiggle" />
+                    )}
+                  </div>
+                  <span className="text-[9px] font-space text-[#D4A373] mt-1 tracking-wide">
                     Tap to jiggle!
                   </span>
                 </div>
               </div>
 
               {/* XP & Level Progress Bar */}
-              <div className="mt-6 pt-5 border-t border-white/10 space-y-2 relative z-10">
+              <div className="mt-6 pt-5 border-t border-[#3A2E26] space-y-2 relative z-10">
                 <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-1.5 font-bold font-syne text-white">
+                  <div className="flex items-center gap-1.5 font-bold font-jakarta text-[#FFFDF9]">
                     <span>{currentTier.icon}</span>
                     <span>Tier: {currentTier.name}</span>
                   </div>
-                  <span className="font-mono text-[#ebd73f] font-bold">{currentCustomer.xp || 420} / 650 XP</span>
+                  <span className="font-space text-[#D4A373] font-bold">{currentCustomer.xp || 420} / 650 XP</span>
                 </div>
 
-                <div className="h-3 w-full rounded-full bg-white/10 overflow-hidden p-0.5 border border-white/10">
+                <div className="h-2.5 w-full rounded-full bg-[#120E0C] overflow-hidden p-0.5 border border-[#3A2E26]">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${Math.min(100, ((currentCustomer.xp || 420) / 650) * 100)}%` }}
                     transition={{ duration: 1, ease: 'easeOut' }}
-                    className="h-full rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-[#ebd73f] shadow-glow-yellow"
+                    className="h-full rounded-full bg-gradient-to-r from-[#C25E3E] via-[#E07A5F] to-[#D4A373]"
                   />
-                </div>
-              </div>
-
-              {/* Quick Card Stats Pill Row */}
-              <div className="mt-5 grid grid-cols-3 gap-2.5 pt-2 relative z-10">
-                <div className="p-3 rounded-2xl bg-white/[0.04] border border-white/5 text-center">
-                  <span className="text-[10px] font-mono text-slate-400 block">Stamps Marked</span>
-                  <span className="font-panchang font-bold text-lg text-[#ebd73f]">{currentCustomer.stamps || 0} / {totalSlots}</span>
-                </div>
-                
-                <div className="p-3 rounded-2xl bg-white/[0.04] border border-white/5 text-center">
-                  <span className="text-[10px] font-mono text-slate-400 block">Current Streak</span>
-                  <span className="font-panchang font-bold text-lg text-orange-400 flex items-center justify-center gap-1">
-                    <span>{currentCustomer.streakDays || 1}</span>
-                    <Flame className="w-4 h-4 fill-orange-400" />
-                  </span>
-                </div>
-
-                <div className="p-3 rounded-2xl bg-white/[0.04] border border-white/5 text-center">
-                  <span className="text-[10px] font-mono text-slate-400 block">Milestone Status</span>
-                  <span className={`font-panchang font-bold text-xs sm:text-sm mt-1 block ${
-                    isMilestoneReached ? 'text-emerald-400 animate-pulse' : 'text-amber-300'
-                  }`}>
-                    {isMilestoneReached ? '🎉 Ready to Claim!' : `${stampsRemaining} to Unlock`}
-                  </span>
                 </div>
               </div>
 
             </motion.div>
 
             {/* ============================================================= */}
-            {/* TARGET FREE GIFT TRANSPARENCY BANNER                          */}
+            {/* STATS ROW (3 DISTINCT TACTILE COUNTER BADGES)                 */}
             {/* ============================================================= */}
-            <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-transparent border-2 border-amber-400/50 shadow-xl space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex items-start gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-400 text-black flex items-center justify-center font-black shrink-0 shadow-lg shadow-amber-400/20">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="p-4 rounded-2xl bg-[#FFFFFF] border border-[#E8DDD0] text-center shadow-sm">
+                <span className="text-[10px] font-space text-[#7A6C60] block uppercase tracking-wider">
+                  Stamps Marked
+                </span>
+                <span className="font-fraunces font-bold text-2xl sm:text-3xl text-[#2044E2] block mt-0.5">
+                  {currentCustomer.stamps || 0} / {totalSlots}
+                </span>
+              </div>
+              
+              <div className="p-4 rounded-2xl bg-[#FFFFFF] border border-[#E8DDD0] text-center shadow-sm">
+                <span className="text-[10px] font-space text-[#7A6C60] block uppercase tracking-wider">
+                  Current Streak
+                </span>
+                <span className="font-fraunces font-bold text-2xl sm:text-3xl text-[#C25E3E] flex items-center justify-center gap-1 mt-0.5">
+                  <span>{currentCustomer.streakDays || 1}d</span>
+                  <Flame className="w-5 h-5 fill-[#C25E3E]" />
+                </span>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-[#FFFFFF] border border-[#E8DDD0] text-center shadow-sm">
+                <span className="text-[10px] font-space text-[#7A6C60] block uppercase tracking-wider">
+                  Milestone Status
+                </span>
+                <span className={`font-jakarta font-bold text-xs sm:text-sm mt-2 block ${
+                  isMilestoneReached ? 'text-[#2D6A4F] animate-pulse' : 'text-[#7A6C60]'
+                }`}>
+                  {isMilestoneReached ? 'Ready to Claim!' : `${stampsRemaining} to Unlock`}
+                </span>
+              </div>
+            </div>
+
+            {/* ============================================================= */}
+            {/* TARGET FREE GIFT TRANSPARENCY BANNER (ARTISAN CERTIFICATE)    */}
+            {/* ============================================================= */}
+            <div className="p-5 sm:p-6 rounded-3xl bg-[#FFFFFF] border-2 border-[#1A1310] shadow-sm space-y-3 relative overflow-hidden">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-13 h-13 rounded-2xl bg-[#1A1310] text-[#D4A373] flex items-center justify-center font-black shrink-0 shadow-md">
                     {currentGift.id === 'discount50' ? (
                       <Percent className="w-6 h-6 stroke-[3]" />
                     ) : currentGift.type === 'beverage' ? (
@@ -591,17 +631,17 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-400 text-black">
+                      <span className="text-[9px] font-space font-bold px-2 py-0.5 rounded-full bg-[#1A1310] text-[#FFFDF9] uppercase tracking-wider">
                         YOUR ASSIGNED REWARD
                       </span>
-                      <span className="text-xs font-mono text-amber-300 font-bold">
+                      <span className="text-xs font-space text-[#C25E3E] font-bold">
                         Slot #{totalSlots} Milestone
                       </span>
                     </div>
-                    <h3 className="font-panchang font-bold text-lg sm:text-xl text-white mt-1">
+                    <h3 className="font-fraunces font-bold text-xl sm:text-2xl text-[#1A1310] mt-0.5">
                       {currentGift.title}
                     </h3>
-                    <p className="text-xs text-slate-300 font-clash mt-0.5">
+                    <p className="text-xs text-[#7A6C60] font-jakarta mt-0.5">
                       {currentGift.desc}
                     </p>
                   </div>
@@ -620,16 +660,16 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                           code: `CLAIM-${currentGift.id.toUpperCase()}`
                         });
                       }}
-                      className="btn-dripp-primary px-5 py-3 text-xs font-bold flex items-center gap-2 shadow-glow-yellow cursor-pointer animate-pulse"
+                      className="px-6 py-3 rounded-2xl bg-[#2044E2] hover:bg-[#1635B8] text-white font-jakarta font-bold text-xs flex items-center gap-2 shadow-lg cursor-pointer transition"
                     >
                       <Gift className="w-4 h-4" />
                       <span>Claim Free Gift Now</span>
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   ) : (
-                    <div className="px-4 py-2.5 rounded-2xl bg-black/60 border border-white/10 text-right">
-                      <span className="text-[10px] font-mono text-slate-400 block">Stamps to Free Gift</span>
-                      <span className="font-mono text-amber-400 font-bold text-sm">
+                    <div className="px-4 py-2.5 rounded-2xl bg-[#F6F1EA] border border-[#E8DDD0] text-right">
+                      <span className="text-[10px] font-space text-[#7A6C60] block uppercase">Stamps to Free Gift</span>
+                      <span className="font-space text-[#1A1310] font-bold text-sm">
                         {stampsRemaining} more {stampsRemaining === 1 ? 'stamp' : 'stamps'}
                       </span>
                     </div>
@@ -638,89 +678,42 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
               </div>
 
               {/* Notice that billing automatically marks stamps */}
-              <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400">
+              <div className="pt-2.5 border-t border-[#E8DDD0] flex items-center justify-between text-[11px] font-space text-[#7A6C60]">
                 <span className="flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Stamps mark automatically on each bill paid at counter or online.</span>
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#2044E2]" />
+                  <span>Stamps mark automatically on each bill paid at counter.</span>
                 </span>
-                <span className="text-[#ebd73f] font-bold">1 Bill = +1 Stamp</span>
+                <span className="text-[#1A1310] font-bold">1 Bill = +1 Stamp</span>
               </div>
             </div>
 
             {/* ============================================================= */}
-            {/* 5-DAY STREAK SPEED-UP HIGHLIGHT CARD                          */}
+            {/* DYNAMIC DIGITAL PUNCH CARD (AUTHENTIC COTTON STAMP CARD)      */}
             {/* ============================================================= */}
-            <div className={`p-5 rounded-3xl border transition-all ${
-              hasStreakBonus
-                ? 'bg-gradient-to-r from-orange-500/20 via-amber-500/15 to-transparent border-orange-400/60 shadow-lg shadow-orange-500/20'
-                : 'bg-[#111111] border-white/10'
-            }`}>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-start gap-3">
-                  <div className="shrink-0">
-                    <LottieStreakFlame days={currentCustomer.streakDays || 1} size={48} />
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono font-bold uppercase text-orange-400 flex items-center gap-1">
-                        <Flame className="w-4 h-4 fill-orange-400" />
-                        <span>{currentCustomer.streakDays || 1}-Day Caffeine Streak</span>
-                      </span>
-                      {hasStreakBonus && (
-                        <span className="px-2 py-0.5 rounded-full bg-orange-500 text-black text-[9px] font-mono font-bold animate-pulse">
-                          ⚡ SPEED-UP ACTIVE
-                        </span>
-                      )}
-                    </div>
-                    
-                    {hasStreakBonus ? (
-                      <p className="text-xs sm:text-sm text-orange-200 font-clash leading-relaxed">
-                        <strong>Awesome job!</strong> You maintained a 5-day streak! Your next billing will <strong>skip a day and award 2 STAMPS AT ONCE</strong>!
-                      </p>
-                    ) : (
-                      <p className="text-xs text-slate-400 font-clash leading-relaxed">
-                        Reach a 5-day streak to unlock the <strong>Speed-Up Power</strong> (earning 2 stamps at a time on your next bill).
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="text-right shrink-0">
-                  <span className="text-[10px] font-mono text-slate-400 block">Next Bill Yield</span>
-                  <span className={`font-panchang font-bold text-base ${hasStreakBonus ? 'text-orange-400' : 'text-slate-300'}`}>
-                    {hasStreakBonus ? '⚡ +2 STAMPS' : '+1 STAMP'}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* ============================================================= */}
-            {/* DYNAMIC DIGITAL PUNCH CARD (6 TO 12 SLOTS)                    */}
-            {/* ============================================================= */}
-            <div className="p-6 sm:p-7 rounded-3xl bg-[#111111] border border-white/10 space-y-5">
+            <div className="p-6 sm:p-7 rounded-3xl bg-[#FFFFFF] stamp-card-stitch shadow-sm space-y-5">
               
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#E8DDD0]">
                 <div>
                   <div className="flex items-center gap-2">
-                    <Award className="w-5 h-5 text-[#ebd73f]" />
-                    <h3 className="font-panchang font-bold text-lg text-white">
+                    <Award className="w-5 h-5 text-[#C25E3E]" />
+                    <h3 className="font-fraunces font-bold text-2xl text-[#1A1310]">
                       {totalSlots}-Slot Digital Punch Card
                     </h3>
                   </div>
-                  <p className="text-xs text-slate-400 font-clash mt-0.5">
-                    Stamps are synchronized with your cafe bills. Customer pass is read-only.
+                  <p className="text-xs text-[#7A6C60] font-jakarta mt-0.5">
+                    Stamps are synchronized with your cafe bills. Read-only member pass.
                   </p>
                 </div>
 
                 {/* Info Pill */}
-                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-slate-300">
-                  <Lock className="w-3.5 h-3.5 text-[#ebd73f]" />
-                  <span>Marked on checkout</span>
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[#FAF5EE] border border-[#DDD4C7] text-xs font-space text-[#1A1310]">
+                  <Lock className="w-3.5 h-3.5 text-[#2044E2]" />
+                  <span>Marked on Checkout</span>
                 </div>
               </div>
 
               {/* DYNAMIC STAMP GRID (Matches totalSlots: 6 to 12) */}
-              <div className={`grid gap-3 sm:gap-4 pt-2 ${
+              <div className={`grid gap-3 sm:gap-4 pt-1 ${
                 totalSlots <= 6
                   ? 'grid-cols-3 sm:grid-cols-6'
                   : totalSlots <= 8
@@ -736,16 +729,16 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                       key={slotNumber}
                       whileHover={{ scale: 1.04 }}
                       onClick={() => handleCustomerSlotClick(slotNumber)}
-                      className={`relative rounded-2xl p-3 sm:p-4 aspect-square flex flex-col items-center justify-between text-center transition-all select-none overflow-hidden border cursor-pointer ${
+                      className={`relative rounded-2xl p-3 sm:p-4 aspect-square flex flex-col items-center justify-between text-center transition-all select-none overflow-hidden cursor-pointer ${
                         isStamped
-                          ? 'bg-gradient-to-br from-amber-500/20 to-amber-950/40 border-amber-400/60 shadow-lg shadow-amber-500/10'
+                          ? 'bg-[#FAF7F2] border border-[#E0D7CB] shadow-sm'
                           : isMilestoneSlot
-                          ? 'bg-gradient-to-br from-amber-400/15 via-black to-slate-950 border-amber-400/70 ring-2 ring-amber-400/30'
-                          : 'bg-black/50 border-white/10 hover:border-white/20'
+                          ? 'bg-[#FFF8F5] border-2 border-dashed border-[#C25E3E] ring-1 ring-[#C25E3E]/20'
+                          : 'bg-[#FFFFFF] border-2 border-dashed border-[#DDD4C7] hover:border-[#1A1310]/40'
                       }`}
                     >
                       {/* Slot Header */}
-                      <span className="text-[10px] font-mono font-bold text-slate-400 self-start">
+                      <span className="text-[10px] font-space font-bold text-[#A89C90] self-start">
                         #{slotNumber}
                       </span>
 
@@ -761,18 +754,18 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                         ) : isMilestoneSlot ? (
                           <div className="flex flex-col items-center animate-pulse">
                             {currentGift.id === 'discount50' ? (
-                              <Percent className="w-7 h-7 text-amber-400" />
+                              <Percent className="w-7 h-7 text-[#C25E3E]" />
                             ) : currentGift.type === 'beverage' ? (
-                              <Coffee className="w-7 h-7 text-amber-400" />
+                              <Coffee className="w-7 h-7 text-[#C25E3E]" />
                             ) : (
-                              <Gift className="w-7 h-7 text-amber-400" />
+                              <Gift className="w-7 h-7 text-[#C25E3E]" />
                             )}
-                            <span className="text-[8px] font-syne font-bold text-amber-300 mt-1 uppercase text-center line-clamp-1">
+                            <span className="text-[8px] font-space font-bold text-[#C25E3E] mt-1 uppercase text-center line-clamp-1">
                               {currentGift.badge}
                             </span>
                           </div>
                         ) : (
-                          <div className="w-8 h-8 rounded-full border border-dashed border-white/20 flex items-center justify-center text-slate-500">
+                          <div className="w-9 h-9 rounded-full border border-dashed border-[#DDD4C7] flex items-center justify-center text-[#B8ADA0]">
                             {themeMode === 'coffee' ? (
                               <Coffee className="w-4 h-4 opacity-40" />
                             ) : (
@@ -783,12 +776,12 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                       </div>
 
                       {/* Bottom Status */}
-                      <span className={`text-[9px] font-mono font-bold tracking-tight truncate max-w-full ${
+                      <span className={`text-[8px] font-space font-bold tracking-tight truncate max-w-full ${
                         isStamped
-                          ? 'text-amber-400'
+                          ? 'text-[#2044E2]'
                           : isMilestoneSlot
-                          ? 'text-amber-300 font-bold'
-                          : 'text-slate-500'
+                          ? 'text-[#C25E3E] font-bold'
+                          : 'text-[#A89C90]'
                       }`}>
                         {isStamped ? 'STAMPED' : isMilestoneSlot ? currentGift.badge : 'Awaiting Bill'}
                       </span>
@@ -798,32 +791,281 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
               </div>
 
               {/* Card Footer Progress Bar */}
-              <div className="p-3.5 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-between text-xs font-mono">
-                <span className="text-slate-400">Card Progress:</span>
-                <span className="text-[#ebd73f] font-bold">
+              <div className="p-3.5 rounded-2xl bg-[#F6F1EA] border border-[#E8DDD0] flex items-center justify-between text-xs font-space">
+                <span className="text-[#7A6C60]">Card Progress:</span>
+                <span className="text-[#1A1310] font-bold">
                   {isMilestoneReached
-                    ? `🎉 ALL ${totalSlots} STAMPS COLLECTED! FREE GIFT UNLOCKED!`
+                    ? `ALL ${totalSlots} STAMPS COLLECTED! FREE GIFT UNLOCKED!`
                     : `${stampsRemaining} more ${stampsRemaining === 1 ? 'stamp' : 'stamps'} to unlock ${currentGift.title}`}
                 </span>
               </div>
 
             </div>
 
+            {/* ============================================================= */}
+            {/* TWO-COLUMN GRID: WEEKLY CAFFEINE STREAK & DAILY MYSTERY TREAT  */}
+            {/* ============================================================= */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+              {/* DAILY CAFFEINE STREAK WEEKLY CHECKLIST */}
+              <div className="p-6 rounded-3xl bg-[#FFFFFF] border border-[#E8DDD0] shadow-sm flex flex-col justify-between space-y-4">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1.5 text-xs font-space text-[#C25E3E] font-bold uppercase tracking-wider">
+                      <Flame className="w-4 h-4 fill-[#C25E3E]" />
+                      <span>DAILY CAFFEINE STREAK</span>
+                    </div>
+                    <h4 className="font-fraunces font-bold text-2xl text-[#1A1310] flex items-center gap-2">
+                      <span>{currentCustomer.streakDays || 1}-Day Hot Streak</span>
+                      <Flame className="w-5 h-5 fill-[#C25E3E] text-[#C25E3E]" />
+                    </h4>
+                    <p className="text-xs text-[#7A6C60] font-jakarta leading-relaxed">
+                      Order daily at the counter. <strong>5-Day Streak</strong> skips a day by awarding <strong>+2 STAMPS AT ONCE</strong>!
+                    </p>
+                  </div>
+                  <LottieStreakFlame days={currentCustomer.streakDays || 1} size={52} />
+                </div>
+
+                {/* 7-Day Weekly Coffee Cup Sticker Strip */}
+                <div className="grid grid-cols-7 gap-1.5 pt-2">
+                  {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, dIdx) => {
+                    const isCompleted = dIdx < (currentCustomer.streakDays || 1);
+                    const isSpeedUpDay = dIdx === 4; // Day 5
+                    const isToday = dIdx === ((currentCustomer.streakDays || 1) - 1);
+
+                    return (
+                      <div
+                        key={dIdx}
+                        className={`p-2 rounded-2xl text-center border transition-all ${
+                          isCompleted
+                            ? 'bg-[#C25E3E] text-white border-[#C25E3E] shadow-sm font-bold'
+                            : isSpeedUpDay
+                            ? 'bg-[#FFF8F0] border-2 border-dashed border-[#C25E3E] text-[#C25E3E]'
+                            : 'bg-[#F9F6F0] border border-[#E8DDD0] text-[#A89C90]'
+                        } ${isToday ? 'ring-2 ring-[#1A1310]' : ''}`}
+                      >
+                        <span className="text-[10px] font-space block">{day}</span>
+                        <span className="text-xs mt-0.5 block font-bold flex items-center justify-center">
+                          {isCompleted ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : isSpeedUpDay ? <Zap className="w-3 h-3 fill-[#C25E3E]" /> : '•'}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Streak Power Status Banner */}
+                <div className={`p-3 rounded-2xl border flex items-center justify-between text-xs ${
+                  hasStreakBonus
+                    ? 'bg-[#FFF6F0] border-[#F0D5C7] text-[#C25E3E]'
+                    : 'bg-[#F6F1EA] border-[#E8DDD0] text-[#7A6C60]'
+                }`}>
+                  <span className="font-space text-[11px] font-bold flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 fill-current" />
+                    <span>{hasStreakBonus ? 'SPEED-UP ACTIVE: Next bill yields +2 STAMPS!' : 'Reach Day 5 for Double Stamps'}</span>
+                  </span>
+                  <span className="font-space text-[10px] font-bold px-2 py-0.5 rounded bg-white border border-current">
+                    {hasStreakBonus ? '+2 STAMPS' : '+1 STAMP'}
+                  </span>
+                </div>
+              </div>
+
+              {/* DAILY MYSTERY TREAT REVEAL (WAX-SEALED KRAFT PARCEL) */}
+              <div className="p-6 rounded-3xl bg-[#FFFFFF] border-2 border-dashed border-[#D4A373] shadow-sm flex flex-col justify-between space-y-4">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1.5 text-xs font-space text-[#C25E3E] font-bold uppercase tracking-wider">
+                      <Gift className="w-4 h-4 text-[#C25E3E]" />
+                      <span>DAILY MYSTERY TREAT</span>
+                    </div>
+                    <h4 className="font-fraunces font-bold text-2xl text-[#1A1310]">
+                      {mysteryRevealed ? 'Secret Perk Unveiled!' : 'Tap To Shake & Open'}
+                    </h4>
+                    <p className="text-xs text-[#7A6C60] font-jakarta leading-relaxed">
+                      {mysteryRevealed
+                        ? 'Surprise voucher unlocked! Present the code to your barista at checkout.'
+                        : 'Every day holds a surprise barista gift: oat milk upgrades, pastry perks, or XP boosts.'}
+                    </p>
+                  </div>
+                  <LottieMysteryBox size={52} isShaking={mysteryShaking} />
+                </div>
+
+                {/* Mystery Reveal Action Area */}
+                <div className="pt-2">
+                  {mysteryRevealed && mysteryReward ? (
+                    <motion.div
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="p-4 rounded-2xl bg-[#FFFBF5] border-2 border-[#D4A373] flex items-center justify-between gap-3 shadow-inner"
+                    >
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] font-space text-[#C25E3E] font-bold uppercase tracking-wider block">
+                          VOUCHER CODE: {mysteryReward.code}
+                        </span>
+                        <h5 className="font-fraunces font-bold text-sm text-[#1A1310]">{mysteryReward.title}</h5>
+                        <p className="text-[11px] text-[#7A6C60] font-jakarta">{mysteryReward.desc}</p>
+                      </div>
+                      <button
+                        onClick={() => handleOpenRedeem(mysteryReward)}
+                        className="px-4 py-2 rounded-xl bg-[#2044E2] hover:bg-[#1635B8] text-white font-jakarta font-bold text-xs shrink-0 cursor-pointer shadow-md transition"
+                      >
+                        Redeem
+                      </button>
+                    </motion.div>
+                  ) : (
+                    <button
+                      onClick={handleRevealMystery}
+                      disabled={mysteryShaking}
+                      className="w-full py-3.5 rounded-2xl bg-[#1A1310] hover:bg-[#2C211B] text-[#FFFDF9] font-jakarta font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer shadow-md"
+                    >
+                      <Sparkles className="w-4 h-4 text-[#D4A373]" />
+                      <span>{mysteryShaking ? 'Shaking Mystery Box...' : 'Shake & Open Daily Surprise'}</span>
+                    </button>
+                  )}
+                </div>
+
+                <div className="text-[10px] font-space text-[#A89C90]">
+                  Resets daily at 06:00 AM • 1 surprise per 24 hours
+                </div>
+              </div>
+
+            </div>
+
+            {/* ============================================================= */}
+            {/* PERKS & REWARDS VAULT (PERFORATED CAFE COUPON STUBS)          */}
+            {/* ============================================================= */}
+            <div className="p-6 sm:p-7 rounded-3xl bg-[#FFFFFF] border border-[#E8DDD0] shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#E8DDD0]">
+                <div>
+                  <h3 className="font-fraunces font-bold text-2xl text-[#1A1310]">
+                    Perks &amp; Rewards Vault
+                  </h3>
+                  <p className="text-xs text-[#7A6C60] font-jakarta mt-0.5">
+                    Redeemable voucher tickets for your member account. Present code at counter.
+                  </p>
+                </div>
+
+                <span className="font-space text-xs px-3 py-1 rounded-full bg-[#FAF5EE] border border-[#DDD4C7] text-[#1A1310] font-bold">
+                  {isMilestoneReached ? '2 Ready to Claim' : '1 Ready'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
+                {/* Perk 1: Oat Milk Upgrade */}
+                <div className="p-4 rounded-2xl bg-[#FFFDF9] border border-[#E8DDD0] flex items-center justify-between gap-3 shadow-sm hover:border-[#1A1310]/30 transition">
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded-xl bg-[#F6F1EA] border border-[#DDD4C7] flex items-center justify-center text-[#1A1310] shrink-0 font-bold">
+                      <Coffee className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className="text-[9px] font-space text-[#2D6A4F] font-bold uppercase tracking-wider block">READY TO CLAIM</span>
+                      <h5 className="font-fraunces font-bold text-sm text-[#1A1310]">Free Oat Milk Upgrade</h5>
+                      <p className="text-[11px] text-[#7A6C60] font-jakarta">Plant-based milk swap on any brew</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handleOpenRedeem({ title: 'Free Oat Milk Upgrade', desc: 'Barista plant-based swap on the house.', code: 'PERK-OATMILK' })}
+                    className="px-3.5 py-1.5 rounded-xl bg-[#2044E2] hover:bg-[#1635B8] text-white font-jakarta font-bold text-xs shrink-0 cursor-pointer shadow-sm transition"
+                  >
+                    Redeem
+                  </button>
+                </div>
+
+                {/* Perk 2: Flaky Croissant (Active if stamps >= 4) */}
+                <div className={`p-4 rounded-2xl border flex items-center justify-between gap-3 transition ${
+                  (currentCustomer.stamps || 0) >= 4
+                    ? 'bg-[#FFFDF9] border-[#E8DDD0] shadow-sm hover:border-[#1A1310]/30'
+                    : 'bg-[#F9F6F0] border-[#EAE2D7] opacity-65'
+                }`}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded-xl bg-[#F6F1EA] border border-[#DDD4C7] flex items-center justify-center text-[#1A1310] shrink-0 font-bold">
+                      <Gift className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className={`text-[9px] font-space font-bold uppercase tracking-wider block ${
+                        (currentCustomer.stamps || 0) >= 4 ? 'text-[#2D6A4F]' : 'text-[#A89C90]'
+                      }`}>
+                        {(currentCustomer.stamps || 0) >= 4 ? 'READY TO CLAIM' : 'UNLOCKS AT 4 STAMPS'}
+                      </span>
+                      <h5 className="font-fraunces font-bold text-sm text-[#1A1310]">Artisan Butter Croissant</h5>
+                      <p className="text-[11px] text-[#7A6C60] font-jakarta">Fresh morning flaky pastry on us</p>
+                    </div>
+                  </div>
+                  {(currentCustomer.stamps || 0) >= 4 ? (
+                    <button
+                      onClick={() => handleOpenRedeem({ title: 'Artisan Butter Croissant', desc: 'Fresh French butter pastry on the house.', code: 'PERK-CROISSANT' })}
+                      className="px-3.5 py-1.5 rounded-xl bg-[#2044E2] hover:bg-[#1635B8] text-white font-jakarta font-bold text-xs shrink-0 cursor-pointer shadow-sm transition"
+                    >
+                      Redeem
+                    </button>
+                  ) : (
+                    <span className="text-[10px] font-space text-[#A89C90]">Locked</span>
+                  )}
+                </div>
+
+                {/* Perk 3: VIP Grand Milestone Treat (Span 2 cols, Letterpress frame) */}
+                <div className={`sm:col-span-2 p-5 rounded-3xl border-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition ${
+                  isMilestoneReached
+                    ? 'bg-gradient-to-r from-[#FFFBF5] via-[#FFFDF9] to-[#FFF6F0] border-[#1A1310] shadow-md'
+                    : 'bg-[#F9F6F0] border-dashed border-[#DDD4C7] opacity-75'
+                }`}>
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-13 h-13 rounded-2xl bg-[#1A1310] text-[#D4A373] flex items-center justify-center shrink-0 shadow-md">
+                      {currentGift.id === 'discount50' ? (
+                        <Percent className="w-6 h-6 stroke-[3]" />
+                      ) : (
+                        <Gift className="w-6 h-6 stroke-[2.5]" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[9px] font-space font-bold px-2 py-0.5 rounded-full bg-[#1A1310] text-[#FFFDF9] uppercase tracking-wider">
+                          VIP GRAND MILESTONE
+                        </span>
+                        <span className="text-xs font-space text-[#C25E3E] font-bold">
+                          Slot #{totalSlots} Perk
+                        </span>
+                      </div>
+                      <h4 className="font-fraunces font-bold text-lg text-[#1A1310] mt-0.5">
+                        {currentGift.title}
+                      </h4>
+                      <p className="text-xs text-[#7A6C60] font-jakarta">
+                        {currentGift.desc}
+                      </p>
+                    </div>
+                  </div>
+
+                  {isMilestoneReached ? (
+                    <button
+                      onClick={() => handleOpenRedeem({ title: currentGift.title, desc: currentGift.desc, code: `CLAIM-${currentGift.id.toUpperCase()}` })}
+                      className="px-6 py-3 rounded-2xl bg-[#2044E2] hover:bg-[#1635B8] text-white font-jakarta font-bold text-xs shrink-0 cursor-pointer shadow-md transition flex items-center gap-2"
+                    >
+                      <Gift className="w-4 h-4" />
+                      <span>Claim Grand Perk</span>
+                    </button>
+                  ) : (
+                    <span className="font-space text-xs font-bold text-[#C25E3E] bg-[#FFF0E8] px-3 py-1.5 rounded-xl border border-[#F0D5C7]">
+                      {stampsRemaining} stamps left to unlock
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
             {/* Customer Digital Pass Code & Barcode to present at Counter */}
-            <div className="p-5 rounded-3xl bg-black/60 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="p-6 rounded-3xl bg-[#FFFFFF] border border-[#E8DDD0] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="space-y-1 text-center sm:text-left">
-                <span className="text-[10px] font-mono text-[#ebd73f] font-bold uppercase">CHECKOUT IDENTIFIER</span>
-                <h4 className="font-panchang font-bold text-base text-white">Present to Barista at Checkout</h4>
-                <p className="text-xs text-slate-400 font-clash">
-                  Provide mobile number <strong>{currentCustomer.phone}</strong> or scan below to auto-record your visit stamp.
+                <span className="text-[10px] font-space text-[#C25E3E] font-bold uppercase tracking-wider">CHECKOUT IDENTIFIER</span>
+                <h4 className="font-fraunces font-bold text-xl text-[#1A1310]">Present to Barista at Counter</h4>
+                <p className="text-xs text-[#7A6C60] font-jakarta">
+                  Provide mobile number <strong className="text-[#1A1310]">#{currentCustomer.phone}</strong> or scan barcode to auto-record your visit stamp.
                 </p>
               </div>
 
-              <div className="p-3 rounded-2xl bg-white text-black flex items-center gap-3 shrink-0 shadow-lg">
+              <div className="p-3.5 rounded-2xl bg-[#F6F1EA] border border-[#DDD4C7] text-[#1A1310] flex items-center gap-3 shrink-0 shadow-inner">
                 <QrCode className="w-10 h-10" />
-                <div className="font-mono text-left">
-                  <span className="text-[9px] block text-slate-600 font-bold">DIGITAL PASS ID</span>
-                  <span className="text-xs font-bold tracking-wider">#{currentCustomer.phone}</span>
+                <div className="font-space text-left">
+                  <span className="text-[9px] block text-[#7A6C60] font-bold">DIGITAL PASS ID</span>
+                  <span className="text-xs font-bold tracking-wider text-[#1A1310]">#{currentCustomer.phone}</span>
                 </div>
               </div>
             </div>
@@ -842,22 +1084,22 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
           >
             
             {/* Terminal Header Banner with Subtab Navigation */}
-            <div className="p-5 rounded-3xl bg-[#111111] border-2 border-amber-400/40 shadow-2xl space-y-4">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-white/10">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#ebd73f] text-black flex items-center justify-center font-black shadow-lg shrink-0">
-                    <Store className="w-6 h-6" />
+            <div className="p-6 rounded-3xl bg-white border border-[#DDD4C7] shadow-sm space-y-4">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-[#E8E1D5]">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-12 rounded-2xl bg-[#1A1310] text-[#F6F1EA] flex items-center justify-center font-black shadow-md shrink-0">
+                    <Store className="w-6 h-6 text-[#C25E3E]" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-mono uppercase text-[#ebd73f] font-bold">
+                      <span className="text-[10px] font-space uppercase text-[#2044E2] font-bold tracking-wider">
                         CAFE ADMIN &amp; BILLING TERMINAL
                       </span>
-                      <span className="px-2 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-[9px] font-bold">
+                      <span className="px-2 py-0.5 rounded-full bg-[#EFE9DF] text-[#7A6B63] font-space text-[9px] font-bold">
                         INTERNAL REGISTER • NO GATEWAY
                       </span>
                     </div>
-                    <h3 className="font-panchang font-bold text-lg sm:text-xl text-white">
+                    <h3 className="font-fraunces font-bold text-xl sm:text-2xl text-[#1A1310]">
                       Counter POS Register &amp; Loyalty Workstation
                     </h3>
                   </div>
@@ -865,37 +1107,37 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
 
                 {/* Subtab Selectors & Add Customer */}
                 <div className="flex flex-wrap items-center gap-2">
-                  <div className="p-1 rounded-2xl bg-black border border-white/15 flex items-center gap-1">
+                  <div className="p-1 rounded-2xl bg-[#F6F1EA] border border-[#DDD4C7] flex items-center gap-1 shadow-xs">
                     <button
                       type="button"
                       onClick={() => { sounds.playClick(); setAdminSubTab('billing'); }}
-                      className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                      className={`px-3.5 py-2 rounded-xl text-xs font-space font-bold transition flex items-center gap-1.5 cursor-pointer ${
                         adminSubTab === 'billing'
-                          ? 'bg-[#ebd73f] text-black shadow-md'
-                          : 'text-slate-400 hover:text-white'
+                          ? 'bg-[#1A1310] text-[#F6F1EA] shadow-sm'
+                          : 'text-[#7A6B63] hover:text-[#1A1310]'
                       }`}
                     >
-                      <Printer className="w-3.5 h-3.5" />
+                      <Printer className="w-3.5 h-3.5 text-[#2044E2]" />
                       <span>1. Order Billing &amp; Print</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => { sounds.playClick(); setAdminSubTab('settings'); }}
-                      className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                      className={`px-3.5 py-2 rounded-xl text-xs font-space font-bold transition flex items-center gap-1.5 cursor-pointer ${
                         adminSubTab === 'settings'
-                          ? 'bg-[#ebd73f] text-black shadow-md'
-                          : 'text-slate-400 hover:text-white'
+                          ? 'bg-[#1A1310] text-[#F6F1EA] shadow-sm'
+                          : 'text-[#7A6B63] hover:text-[#1A1310]'
                       }`}
                     >
-                      <Sliders className="w-3.5 h-3.5" />
+                      <Sliders className="w-3.5 h-3.5 text-[#C25E3E]" />
                       <span>2. Card Capacity &amp; Registry</span>
                     </button>
                   </div>
 
                   <button
                     onClick={() => setIsAddCustomerOpen(true)}
-                    className="btn-dripp-primary px-3.5 py-2 text-xs font-bold flex items-center gap-1.5 cursor-pointer shrink-0"
+                    className="bg-[#2044E2] hover:bg-[#1836B2] text-white px-4 py-2 text-xs font-jakarta font-bold flex items-center gap-1.5 rounded-xl shadow-md shadow-[#2044E2]/20 cursor-pointer shrink-0 transition-all"
                     title="Enroll new customer at counter"
                   >
                     <Plus className="w-3.5 h-3.5" />
@@ -905,23 +1147,24 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
               </div>
 
               {/* Sub-Header Quick Feature Highlights */}
-              <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-slate-400 pt-1">
+              <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-space text-[#7A6B63] pt-1">
                 <div className="flex items-center gap-4">
-                  <span className="flex items-center gap-1.5 text-slate-300">
-                    <Printer className="w-3.5 h-3.5 text-[#ebd73f]" />
+                  <span className="flex items-center gap-1.5 text-[#1A1310] font-medium">
+                    <Printer className="w-3.5 h-3.5 text-[#2044E2]" />
                     <span>80mm Thermal Receipt Direct Print</span>
                   </span>
-                  <span className="hidden sm:inline text-white/20">•</span>
-                  <span className="flex items-center gap-1.5 text-slate-300">
-                    <Percent className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="hidden sm:inline text-[#DDD4C7]">•</span>
+                  <span className="flex items-center gap-1.5 text-[#1A1310] font-medium">
+                    <Percent className="w-3.5 h-3.5 text-[#2E7D32]" />
                     <span>5% Cafe GST Split (2.5% CGST + 2.5% SGST)</span>
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-white">Active Card: <strong className="text-[#ebd73f]">{totalSlots} Stamps</strong></span>
-                  <span className="text-orange-400 font-bold bg-orange-500/10 px-2 py-0.5 rounded border border-orange-500/30">
-                    🔥 5d Streak = +2 Stamps (Skips a Day)
+                  <span className="text-[#1A1310]">Active Card: <strong className="text-[#2044E2]">{totalSlots} Stamps</strong></span>
+                  <span className="text-[#C25E3E] font-bold bg-[#C25E3E]/10 px-2.5 py-0.5 rounded-full border border-[#C25E3E]/30 inline-flex items-center gap-1">
+                    <Zap className="w-3 h-3 fill-[#C25E3E]" />
+                    <span>5d Streak = +2 Stamps (Skips a Day)</span>
                   </span>
                 </div>
               </div>
@@ -942,15 +1185,15 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                   setCustomers(getLoyaltyCustomers());
                   sounds.playStampSquish();
                   if (invoice.loyaltyResult?.hasStreakBonus) {
-                    showToast(`⚡ 5-Day Streak Active! +2 STAMPS awarded to ${invoice.customer?.name}!`);
+                    showToast(`5-Day Streak Active! +2 STAMPS awarded to ${invoice.customer?.name}!`);
                   } else {
-                    showToast(`✨ Receipt printed! +1 Stamp awarded to ${invoice.customer?.name}! Total: ${invoice.customer?.stamps}/${totalSlots}`);
+                    showToast(`Receipt printed! +1 Stamp awarded to ${invoice.customer?.name}! Total: ${invoice.customer?.stamps}/${totalSlots}`);
                   }
                   if (invoice.loyaltyResult?.isRewardUnlocked) {
                     setTimeout(() => {
                       sounds.playRewardFanfare();
                       triggerConfetti();
-                      showToast(`🎉 MILESTONE REACHED! ${invoice.customer?.name} unlocked Free Gift!`);
+                      showToast(`MILESTONE REACHED! ${invoice.customer?.name} unlocked Free Gift!`);
                     }, 500);
                   }
                 }}
@@ -966,21 +1209,21 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
               <div className="space-y-6">
                 
                 {/* SECTION B: ADMIN CONFIGURATION (6 TO 12 STAMPS) */}
-                <div className="p-6 rounded-3xl bg-[#111111] border border-white/10 space-y-4">
-                  <div className="flex items-center justify-between">
+                <div className="p-6 rounded-3xl bg-white border border-[#DDD4C7] shadow-sm space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="space-y-0.5">
                       <div className="flex items-center gap-2">
-                        <Sliders className="w-4 h-4 text-[#ebd73f]" />
-                        <h4 className="font-panchang font-bold text-base text-white">
+                        <Sliders className="w-4 h-4 text-[#2044E2]" />
+                        <h4 className="font-fraunces font-bold text-lg text-[#1A1310]">
                           Loyalty Card Capacity Setting
                         </h4>
                       </div>
-                      <p className="text-xs text-slate-400 font-clash">
+                      <p className="text-xs text-[#7A6B63] font-jakarta">
                         Configure how many stamps are required to unlock the Free Gift (default: 6 stamps, up to 12).
                       </p>
                     </div>
 
-                    <span className="px-3 py-1 rounded-full bg-amber-400 text-black font-mono font-bold text-xs">
+                    <span className="px-3.5 py-1 rounded-full bg-[#2044E2] text-white font-space font-bold text-xs shadow-sm self-start sm:self-auto">
                       Active: {totalSlots} Stamps
                     </span>
                   </div>
@@ -992,13 +1235,13 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                         key={num}
                         type="button"
                         onClick={() => handleTotalStampsChange(num)}
-                        className={`py-3 rounded-xl border text-xs font-mono font-bold transition cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
+                        className={`py-3 rounded-xl border text-xs font-space font-bold transition cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
                           totalSlots === num
-                            ? 'bg-[#ebd73f] text-black border-[#ebd73f] shadow-glow-yellow'
-                            : 'bg-black/60 border-white/10 text-slate-300 hover:text-white hover:border-white/30'
+                            ? 'bg-[#2044E2] text-white border-[#2044E2] shadow-md shadow-[#2044E2]/25'
+                            : 'bg-[#F6F1EA] border-[#DDD4C7] text-[#1A1310] hover:bg-white hover:border-[#2044E2]'
                         }`}
                       >
-                        <span>{num}</span>
+                        <span className="text-sm">{num}</span>
                         <span className="text-[9px] opacity-75">{num === 6 ? 'Default' : 'Stamps'}</span>
                       </button>
                     ))}
@@ -1006,22 +1249,22 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                 </div>
 
                 {/* SECTION C: CUSTOMER DATABASE & FREE GIFT ASSIGNMENT */}
-                <div className="p-6 rounded-3xl bg-[#111111] border border-white/10 space-y-5">
+                <div className="p-6 rounded-3xl bg-white border border-[#DDD4C7] shadow-sm space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
                       <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4 text-[#ebd73f]" />
-                        <h4 className="font-panchang font-bold text-base text-white">
+                        <Users className="w-4 h-4 text-[#2044E2]" />
+                        <h4 className="font-fraunces font-bold text-lg text-[#1A1310]">
                           Customer Database &amp; Free Gift Assignment
                         </h4>
                       </div>
-                      <p className="text-xs text-slate-400 font-clash">
+                      <p className="text-xs text-[#7A6B63] font-jakarta">
                         Choose the exact free gift for any customer, or keep as random. Data persists in browser storage.
                       </p>
                     </div>
 
-                    <span className="text-xs font-mono text-slate-400">
-                      {customers.length} Stored Accounts
+                    <span className="text-xs font-space text-[#7A6B63] bg-[#F6F1EA] px-3 py-1 rounded-full border border-[#DDD4C7]">
+                      {customers.length} Registered Members
                     </span>
                   </div>
 
@@ -1034,33 +1277,34 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                       return (
                         <div
                           key={c.id}
-                          className="p-4 rounded-2xl bg-black/60 border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4"
+                          className="p-4 rounded-2xl bg-[#FFFDF9] border border-[#E8E1D5] hover:border-[#DDD4C7] flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs transition-all"
                         >
                           {/* Left: Customer Info */}
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
-                              <h5 className="font-syne font-bold text-sm text-white">{c.name}</h5>
-                              <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-white/10 text-slate-300">
+                              <h5 className="font-fraunces font-bold text-base text-[#1A1310]">{c.name}</h5>
+                              <span className="text-[10px] font-space px-2 py-0.5 rounded-full bg-[#EFE9DF] text-[#7A6B63]">
                                 #{c.phone}
                               </span>
                               {(c.streakDays || 0) >= 5 && (
-                                <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-orange-500/20 text-orange-300 border border-orange-500/30">
-                                  🔥 5d Streak
+                                <span className="text-[10px] font-space px-2 py-0.5 rounded-full bg-[#C25E3E]/10 text-[#C25E3E] border border-[#C25E3E]/30 font-bold inline-flex items-center gap-1">
+                                  <Flame className="w-2.5 h-2.5 fill-[#C25E3E]" />
+                                  <span>5d Streak</span>
                                 </span>
                               )}
                             </div>
-                            <p className="text-xs font-mono text-slate-400">
-                              Progress: <strong className="text-[#ebd73f]">{c.stamps || 0} / {totalSlots} Stamps</strong> • Streak: {c.streakDays || 1} days • {c.xp || 420} XP
+                            <p className="text-xs font-space text-[#7A6B63]">
+                              Progress: <strong className="text-[#2044E2] font-bold">{c.stamps || 0} / {totalSlots} Stamps</strong> • Streak: {c.streakDays || 1} days • {c.xp || 420} XP
                             </p>
                           </div>
 
                           {/* Middle: Free Gift Dropdown (Admin Customizer) */}
                           <div className="space-y-1">
-                            <span className="text-[10px] font-mono text-slate-400 block">Assigned Free Gift</span>
+                            <span className="text-[10px] font-space text-[#7A6B63] block">Assigned Milestone Gift</span>
                             <select
                               value={c.assignedGiftId || 'discount50'}
                               onChange={(e) => handleCustomerGiftChange(c.id, e.target.value)}
-                              className="px-3 py-1.5 rounded-xl bg-slate-900 border border-white/20 text-white font-mono text-xs focus:outline-none focus:border-[#ebd73f] cursor-pointer"
+                              className="px-3 py-1.5 rounded-xl bg-white border border-[#DDD4C7] text-[#1A1310] font-space text-xs focus:outline-none focus:border-[#2044E2] focus:ring-1 focus:ring-[#2044E2] cursor-pointer shadow-xs"
                             >
                               {LOYALTY_GIFTS_POOL.map((g) => (
                                 <option key={g.id} value={g.id}>
@@ -1075,7 +1319,7 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                             <button
                               onClick={() => handleAdjustStamps(c.id, 1)}
                               disabled={(c.stamps || 0) >= totalSlots}
-                              className="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-mono text-white transition cursor-pointer disabled:opacity-30"
+                              className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-[#2044E2] hover:text-white border border-[#DDD4C7] text-xs font-space font-bold text-[#1A1310] shadow-xs transition cursor-pointer disabled:opacity-30"
                               title="Add 1 Stamp"
                             >
                               +1
@@ -1083,7 +1327,7 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                             <button
                               onClick={() => handleAdjustStamps(c.id, -1)}
                               disabled={(c.stamps || 0) <= 0}
-                              className="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-mono text-white transition cursor-pointer disabled:opacity-30"
+                              className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-[#C25E3E] hover:text-white border border-[#DDD4C7] text-xs font-space font-bold text-[#1A1310] shadow-xs transition cursor-pointer disabled:opacity-30"
                               title="Subtract 1 Stamp"
                             >
                               -1
@@ -1094,14 +1338,14 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                                 setCustomers(getLoyaltyCustomers());
                                 showToast(`Reset ${c.name}'s card to 1 stamp.`);
                               }}
-                              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition cursor-pointer"
+                              className="p-1.5 rounded-lg bg-[#F6F1EA] hover:bg-[#E8E1D5] text-[#7A6B63] hover:text-[#1A1310] border border-[#DDD4C7] transition cursor-pointer"
                               title="Reset to 1 stamp"
                             >
                               <RotateCcw className="w-3.5 h-3.5" />
                             </button>
                             <button
                               onClick={() => setHistoryCustomer(c)}
-                              className="px-3 py-1.5 rounded-lg bg-[#ebd73f]/15 hover:bg-[#ebd73f]/30 text-[#ebd73f] font-mono text-xs font-bold transition cursor-pointer flex items-center gap-1"
+                              className="px-3 py-1.5 rounded-lg bg-[#2044E2]/10 hover:bg-[#2044E2]/20 text-[#2044E2] font-space text-xs font-bold border border-[#2044E2]/25 transition cursor-pointer flex items-center gap-1.5"
                             >
                               <Receipt className="w-3.5 h-3.5" />
                               <span>Bills ({c.billingHistory?.length || 0})</span>
@@ -1128,24 +1372,24 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
       {/* ================================================================= */}
       <AnimatePresence>
         {historyCustomer && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1A1310]/80 backdrop-blur-md">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="relative w-full max-w-lg rounded-3xl bg-[#111111] border border-white/15 p-6 shadow-2xl space-y-4 text-white max-h-[85vh] flex flex-col"
+              className="relative w-full max-w-lg rounded-3xl bg-[#FAF6F0] border border-[#DDD4C7] p-6 shadow-2xl space-y-4 text-[#1A1310] max-h-[85vh] flex flex-col"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                <div className="flex items-center gap-2">
-                  <Receipt className="w-5 h-5 text-[#ebd73f]" />
+              <div className="flex items-center justify-between pb-3 border-b border-[#DDD4C7]">
+                <div className="flex items-center gap-2.5">
+                  <Receipt className="w-5 h-5 text-[#2044E2]" />
                   <div>
-                    <h4 className="font-panchang font-bold text-base text-white">Billing History</h4>
-                    <p className="text-xs font-mono text-slate-400">{historyCustomer.name} (#{historyCustomer.phone})</p>
+                    <h4 className="font-fraunces font-bold text-lg text-[#1A1310]">Billing History</h4>
+                    <p className="text-xs font-space text-[#7A6B63]">{historyCustomer.name} (#{historyCustomer.phone})</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setHistoryCustomer(null)}
-                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white"
+                  className="p-2 rounded-xl bg-white border border-[#DDD4C7] text-[#7A6B63] hover:text-[#1A1310] transition cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -1153,21 +1397,21 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
 
               <div className="overflow-y-auto space-y-2 flex-1 pr-1">
                 {(!historyCustomer.billingHistory || historyCustomer.billingHistory.length === 0) ? (
-                  <p className="text-xs text-slate-400 font-mono py-4 text-center">No bills recorded yet.</p>
+                  <p className="text-xs text-[#7A6B63] font-space py-6 text-center">No bills recorded yet.</p>
                 ) : (
                   historyCustomer.billingHistory.map((bill, idx) => (
-                    <div key={idx} className="p-3 rounded-xl bg-black/60 border border-white/5 flex items-center justify-between text-xs font-mono">
+                    <div key={idx} className="p-3.5 rounded-xl bg-white border border-[#E8E1D5] flex items-center justify-between text-xs font-space shadow-xs">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-white font-bold">{bill.id}</span>
-                          <span className="text-slate-400">{bill.date} {bill.time}</span>
+                          <span className="text-[#1A1310] font-bold">{bill.id}</span>
+                          <span className="text-[#A0938A]">{bill.date} {bill.time}</span>
                         </div>
-                        <p className="text-[11px] text-slate-400 font-clash mt-0.5">{bill.items}</p>
+                        <p className="text-[11px] text-[#7A6B63] font-jakarta mt-0.5">{bill.items}</p>
                       </div>
                       <div className="text-right">
-                        <span className="text-[#ebd73f] font-bold block">₹{bill.amount}</span>
-                        <span className={`text-[10px] ${bill.streakApplied ? 'text-orange-400 font-bold' : 'text-emerald-400'}`}>
-                          +{bill.stampsAwarded} Stamp(s) {bill.streakApplied ? '(Streak ⚡)' : ''}
+                        <span className="text-[#1A1310] font-bold block text-sm">₹{bill.amount}</span>
+                        <span className={`text-[10px] font-bold ${bill.streakApplied ? 'text-[#C25E3E]' : 'text-[#2044E2]'}`}>
+                          +{bill.stampsAwarded} Stamp(s) {bill.streakApplied ? '(Streak Boost)' : ''}
                         </span>
                       </div>
                     </div>
@@ -1177,7 +1421,7 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
 
               <button
                 onClick={() => setHistoryCustomer(null)}
-                className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-bold text-white transition"
+                className="w-full py-3 rounded-xl bg-[#1A1310] hover:bg-[#2B1F19] text-xs font-jakarta font-bold text-[#F6F1EA] transition cursor-pointer"
               >
                 Close History
               </button>
@@ -1191,57 +1435,57 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
       {/* ================================================================= */}
       <AnimatePresence>
         {isAddCustomerOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1A1310]/80 backdrop-blur-md">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="relative w-full max-w-md rounded-3xl bg-[#111111] border border-white/15 p-6 shadow-2xl space-y-4 text-white"
+              className="relative w-full max-w-md rounded-3xl bg-[#FAF6F0] border border-[#DDD4C7] p-6 shadow-2xl space-y-4 text-[#1A1310]"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                <div className="flex items-center gap-2">
-                  <UserCheck className="w-5 h-5 text-[#ebd73f]" />
-                  <h4 className="font-panchang font-bold text-base text-white">Enroll New Customer</h4>
+              <div className="flex items-center justify-between pb-3 border-b border-[#DDD4C7]">
+                <div className="flex items-center gap-2.5">
+                  <UserCheck className="w-5 h-5 text-[#2044E2]" />
+                  <h4 className="font-fraunces font-bold text-lg text-[#1A1310]">Enroll New Customer</h4>
                 </div>
                 <button
                   onClick={() => setIsAddCustomerOpen(false)}
-                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white"
+                  className="p-2 rounded-xl bg-white border border-[#DDD4C7] text-[#7A6B63] hover:text-[#1A1310] transition cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <form onSubmit={handleCreateCustomer} className="space-y-3">
+              <form onSubmit={handleCreateCustomer} className="space-y-3.5">
                 <div className="space-y-1">
-                  <label className="text-xs font-mono text-slate-400">Full Name</label>
+                  <label className="text-xs font-space text-[#7A6B63] font-medium">Full Name</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Alex Morgan"
                     value={newCustomerName}
                     onChange={(e) => setNewCustomerName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/15 text-white text-xs font-clash focus:outline-none focus:border-[#ebd73f]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DDD4C7] text-[#1A1310] placeholder-[#A0938A] text-xs font-jakarta focus:outline-none focus:border-[#2044E2] shadow-xs"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-mono text-slate-400">Mobile Phone</label>
+                  <label className="text-xs font-space text-[#7A6B63] font-medium">Mobile Phone</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. 9811223344"
                     value={newCustomerPhone}
                     onChange={(e) => setNewCustomerPhone(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/15 text-white text-xs font-mono focus:outline-none focus:border-[#ebd73f]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DDD4C7] text-[#1A1310] placeholder-[#A0938A] text-xs font-space focus:outline-none focus:border-[#2044E2] shadow-xs"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-mono text-slate-400">Assigned Free Gift</label>
+                  <label className="text-xs font-space text-[#7A6B63] font-medium">Assigned Milestone Gift</label>
                   <select
                     value={newCustomerGift}
                     onChange={(e) => setNewCustomerGift(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-white/15 text-white text-xs font-mono focus:outline-none focus:border-[#ebd73f]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DDD4C7] text-[#1A1310] text-xs font-space focus:outline-none focus:border-[#2044E2] shadow-xs cursor-pointer"
                   >
                     {LOYALTY_GIFTS_POOL.map((g) => (
                       <option key={g.id} value={g.id}>
@@ -1254,7 +1498,7 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                 <div className="pt-3">
                   <button
                     type="submit"
-                    className="w-full btn-dripp-primary py-3 text-xs font-bold cursor-pointer"
+                    className="w-full bg-[#2044E2] hover:bg-[#1836B2] text-white py-3.5 text-xs font-jakarta font-bold rounded-xl shadow-lg shadow-[#2044E2]/25 cursor-pointer transition-all"
                   >
                     Create Member Account
                   </button>
@@ -1270,54 +1514,54 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
       {/* ================================================================= */}
       <AnimatePresence>
         {activeRedemptionVoucher && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1A1310]/85 backdrop-blur-md">
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="relative w-full max-w-sm rounded-3xl bg-[#0f0f0f] border border-amber-400/40 p-6 text-center shadow-2xl space-y-5 text-white"
+              className="relative w-full max-w-sm rounded-3xl bg-[#FFFDF9] border-2 border-[#DDD4C7] p-7 text-center shadow-2xl space-y-5 text-[#1A1310] overflow-hidden"
             >
               <button
                 onClick={() => setActiveRedemptionVoucher(null)}
-                className="absolute top-4 right-4 p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition cursor-pointer"
+                className="absolute top-4 right-4 p-2 rounded-xl bg-white border border-[#DDD4C7] text-[#7A6B63] hover:text-[#1A1310] transition cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
 
-              <div className="w-14 h-14 rounded-full mx-auto bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-300">
+              <div className="w-14 h-14 rounded-full mx-auto bg-[#2044E2]/10 border border-[#2044E2]/30 flex items-center justify-center text-[#2044E2] shadow-xs">
                 <Gift className="w-7 h-7" />
               </div>
 
               <div className="space-y-1">
-                <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-400/15 text-amber-300 font-bold border border-amber-400/30">
+                <span className="text-[10px] font-space px-3 py-1 rounded-full bg-[#2044E2]/10 text-[#2044E2] font-bold border border-[#2044E2]/25 uppercase tracking-wider">
                   REDEEM AT COUNTER
                 </span>
-                <h4 className="font-panchang font-bold text-lg text-white pt-2">
+                <h4 className="font-fraunces font-bold text-2xl text-[#1A1310] pt-2">
                   {activeRedemptionVoucher.title}
                 </h4>
-                <p className="text-xs text-slate-400 font-clash">
+                <p className="text-xs text-[#7A6B63] font-jakarta leading-relaxed">
                   {activeRedemptionVoucher.desc}
                 </p>
               </div>
 
               {/* Dynamic QR & Barcode Simulation */}
-              <div className="p-4 rounded-2xl bg-white text-black flex flex-col items-center space-y-2 shadow-inner">
-                <QrCode className="w-32 h-32" />
-                <span className="font-mono text-xs font-bold tracking-widest">
+              <div className="stamp-card-stitch p-4 rounded-2xl bg-white text-black flex flex-col items-center space-y-2 shadow-inner border-2 border-dashed border-[#DDD4C7]">
+                <QrCode className="w-32 h-32 text-[#1A1310]" />
+                <span className="font-space text-xs font-bold tracking-widest text-[#2044E2]">
                   PASS-{activeRedemptionVoucher.code || 'REWARD50'}
                 </span>
               </div>
 
               {/* 5-Minute Countdown Timer */}
-              <div className="flex items-center justify-center gap-2 text-xs font-mono text-amber-400">
+              <div className="flex items-center justify-center gap-2 text-xs font-space font-bold text-[#C25E3E] bg-[#C25E3E]/10 py-1.5 px-3.5 rounded-full border border-[#C25E3E]/20 mx-auto w-fit">
                 <Clock className="w-4 h-4" />
                 <span>
                   Valid for: {Math.floor(redemptionTimer / 60)}:{(redemptionTimer % 60).toString().padStart(2, '0')}
                 </span>
               </div>
 
-              <p className="text-[11px] text-slate-400">
-                Show this digital pass to the barista at the counter to redeem your free gift!
+              <p className="text-[11px] text-[#7A6B63] font-jakarta">
+                Show this digital pass to the barista at the counter to claim your specialty reward!
               </p>
 
               <button
@@ -1327,7 +1571,7 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                   triggerConfetti();
                   showToast('Reward claimed successfully! Enjoy your treat!');
                 }}
-                className="w-full btn-dripp-primary py-3 text-xs font-bold cursor-pointer"
+                className="w-full bg-[#2044E2] hover:bg-[#1836B2] text-white py-3.5 text-xs font-jakarta font-bold rounded-2xl shadow-lg shadow-[#2044E2]/25 cursor-pointer transition-all"
               >
                 Confirm Reward Handed Out
               </button>

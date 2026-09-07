@@ -40,7 +40,9 @@ import {
   Trash2,
   Image,
   Tag,
-  Leaf
+  Leaf,
+  Truck,
+  MapPin
 } from 'lucide-react';
 import { useOrder } from '../../context/OrderContext';
 import { useAuth } from '../../context/AuthContext';
@@ -748,8 +750,9 @@ export function AdminDashboard({ onBackToClient }) {
                                 TABLE #{order.tableNumber || '04'}
                               </span>
                             ) : order.diningMode === 'delivery' ? (
-                              <span className="px-3 py-1 rounded-xl bg-emerald-400 text-slate-950 font-black text-xs font-mono tracking-wider shadow-sm">
-                                🛵 DELIVERY
+                              <span className="px-3 py-1 rounded-xl bg-emerald-400 text-slate-950 font-black text-xs font-mono tracking-wider shadow-sm inline-flex items-center gap-1.5">
+                                <Truck className="w-3.5 h-3.5" />
+                                <span>DELIVERY</span>
                               </span>
                             ) : (
                               <span className="px-3 py-1 rounded-xl bg-cyan-400 text-slate-950 font-black text-xs font-mono tracking-wider shadow-sm">
@@ -777,8 +780,9 @@ export function AdminDashboard({ onBackToClient }) {
                         </div>
 
                         {order.deliveryAddress && (
-                          <div className="p-2 rounded-lg bg-slate-950 border border-emerald-500/20 text-[11px] text-emerald-300 font-mono">
-                            📍 {order.deliveryAddress}
+                          <div className="p-2 rounded-lg bg-slate-950 border border-emerald-500/20 text-[11px] text-emerald-300 font-mono inline-flex items-center gap-1.5">
+                            <MapPin className="w-3 h-3 text-emerald-400 shrink-0" />
+                            <span className="truncate">{order.deliveryAddress}</span>
                           </div>
                         )}
 

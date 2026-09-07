@@ -112,7 +112,7 @@ export const BRAND_CONFIG = {
     CAFE10: { discountPercent: 10, minOrder: 299, desc: "10% off for all cafe guests" },
     ITALIA15: { discountPercent: 15, minOrder: 499, desc: "15% off on artisan pizzas & pastas" },
     BISTRO100: { discountAmount: 100, minOrder: 699, desc: "₹100 Flat off for gourmet meals" },
-    LOYALTY50: { discountPercent: 50, minOrder: 99, desc: "🎉 7th Visit Milestone: 50% OFF entire bill!" }
+    LOYALTY50: { discountPercent: 50, minOrder: 99, desc: "7th Visit Milestone: 50% OFF entire bill!" }
   },
 
   // Key Experience Highlights
@@ -202,7 +202,7 @@ export const MODEL_SYSTEM_CONFIG = {
       { title: 'Fresh All-Day', subtitle: 'Wood-Fired Kitchen', type: 'kitchen' },
     ],
     cartTitle: 'Table Order Bag',
-    fulfillmentLabel: '🍽️ Dine-In Table Service',
+    fulfillmentLabel: 'Dine-In Table Service',
     allowOrdering: true,
   },
   'self-serve': {
@@ -220,7 +220,7 @@ export const MODEL_SYSTEM_CONFIG = {
       { title: 'Chime Alert', subtitle: 'Acoustic Bell Chime', type: 'kitchen' },
     ],
     cartTitle: 'Counter Pickup Bag',
-    fulfillmentLabel: '🏬 Express Counter Pickup',
+    fulfillmentLabel: 'Express Counter Pickup',
     allowOrdering: true,
   },
   'showcase': {
@@ -238,7 +238,7 @@ export const MODEL_SYSTEM_CONFIG = {
       { title: 'Luxury Ambiance', subtitle: 'Romantic Dining', type: 'kitchen' },
     ],
     cartTitle: 'Curated Showcase',
-    fulfillmentLabel: '✨ In-Cafe Dining (Reservation)',
+    fulfillmentLabel: 'In-Cafe Dining (Reservation)',
     allowOrdering: false,
   },
   'delivery': {
@@ -256,7 +256,7 @@ export const MODEL_SYSTEM_CONFIG = {
       { title: 'Live GPS Courier', subtitle: 'Real-Time Dispatch', type: 'kitchen' },
     ],
     cartTitle: 'Doorstep Delivery Bag',
-    fulfillmentLabel: '🛵 Doorstep Courier Delivery',
+    fulfillmentLabel: 'Doorstep Courier Delivery',
     allowOrdering: true,
   },
   'hybrid': {
@@ -292,7 +292,7 @@ export const MODEL_SYSTEM_CONFIG = {
       { title: 'Billing Auto-Sync', subtitle: '+1 Stamp Every Bill', type: 'kitchen' },
     ],
     cartTitle: 'Loyalty Rewards Bag',
-    fulfillmentLabel: '🍽️ Table Service & Loyalty Billing',
+    fulfillmentLabel: 'Table Service & Loyalty Billing',
     allowOrdering: true,
   },
   'gamified-loyalty': {
@@ -310,7 +310,7 @@ export const MODEL_SYSTEM_CONFIG = {
       { title: 'Mystery Treats', subtitle: 'Scratch & Win Box', type: 'kitchen' },
     ],
     cartTitle: 'Perk Vault',
-    fulfillmentLabel: '☕ Coffee & Bakery Loyalty Pass',
+    fulfillmentLabel: 'Coffee & Bakery Loyalty Pass',
     allowOrdering: false,
   }
 };

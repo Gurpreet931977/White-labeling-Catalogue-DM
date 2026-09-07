@@ -170,7 +170,7 @@ export function LiveOrderTracker({ onOrderMore, onBackHome }) {
             </div>
             <p className="text-xs text-slate-300 font-clash">
               {activeCustomerOrder.status === 'ready' 
-                ? '🔔 Token Called! Please collect your tray at Counter Window #1.'
+                ? 'Token Called! Please collect your tray at Counter Window #1.'
                 : 'Keep this screen open. Your token number will be called at the counter when food is ready.'}
             </p>
           </div>

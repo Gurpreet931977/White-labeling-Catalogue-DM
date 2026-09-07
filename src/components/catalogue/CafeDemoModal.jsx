@@ -16,7 +16,8 @@ import {
   Award,
   Compass,
   QrCode,
-  Gift
+  Gift,
+  Zap
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
 
@@ -345,7 +346,7 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
                     <div className="p-4 rounded-2xl bg-slate-900 border border-amber-400/40 space-y-3">
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-white font-syne font-bold flex items-center gap-1.5">
-                          <span>☕</span>
+                          <Coffee className="w-3.5 h-3.5 text-amber-400" />
                           <span>Artisan Coffee &amp; Bakery Passport</span>
                         </span>
                         <span className="text-[#ebd73f] font-mono font-bold">Stamps: 4 of 6 (Next Bill = +2 Stamps!)</span>
@@ -354,11 +355,12 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
                       <div className="grid grid-cols-6 gap-2 pt-1">
                         {[1, 2, 3, 4].map(n => (
                           <div key={n} className="h-8 rounded-xl bg-[#ebd73f] flex items-center justify-center font-bold text-[10px] text-black shadow-sm">
-                            ✓
+                            <Check className="w-3.5 h-3.5 stroke-[3]" />
                           </div>
                         ))}
-                        <div className="h-8 rounded-xl bg-orange-500/20 border border-orange-400 flex items-center justify-center text-[10px] text-orange-300 font-bold animate-pulse">
-                          +2⚡
+                        <div className="h-8 rounded-xl bg-orange-500/20 border border-orange-400 flex items-center justify-center text-[10px] text-orange-300 font-bold animate-pulse gap-0.5">
+                          <span>+2</span>
+                          <Zap className="w-2.5 h-2.5 fill-orange-400" />
                         </div>
                         <div className="h-8 rounded-xl bg-purple-500/30 border border-purple-400 flex items-center justify-center text-[10px] text-purple-200 font-bold">
                           50% OFF
@@ -366,7 +368,7 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
                       </div>
 
                       <div className="flex items-center justify-between text-[11px] text-slate-400 font-clash pt-1">
-                        <span>Streak: <strong className="text-orange-400">5-Day Hot Streak 🔥 (Next bill awards 2 stamps)</strong></span>
+                        <span className="flex items-center gap-1">Streak: <strong className="text-orange-400 inline-flex items-center gap-1">5-Day Hot Streak <Flame className="w-3 h-3 fill-orange-400 inline" /> (Next bill awards 2 stamps)</strong></span>
                         <span className="text-amber-300 font-bold">Target: 50% OFF Entire Order</span>
                       </div>
                     </div>

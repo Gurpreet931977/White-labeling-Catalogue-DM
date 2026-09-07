@@ -105,7 +105,7 @@ export function LoyaltyCardModal({ isOpen, onClose, onOpenCart }) {
                   ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 animate-pulse'
                   : 'bg-amber-400/15 text-amber-300 border border-amber-400/30'
               }`}>
-                {is7thVisitUnlocked ? '🎉 REWARD UNLOCKED!' : `Visit ${loyaltyVisits} of 7`}
+                {is7thVisitUnlocked ? 'REWARD UNLOCKED!' : `Visit ${loyaltyVisits} of 7`}
               </span>
             </div>
           </div>
@@ -172,7 +172,7 @@ export function LoyaltyCardModal({ isOpen, onClose, onOpenCart }) {
                       isStamped ? 'text-amber-300' : isMilestone ? 'text-purple-300 font-syne' : 'text-slate-400'
                     }`}>
                       {isMilestone
-                        ? (isStamped ? '🎉 50% UNLOCKED' : '7TH: 50% OFF')
+                        ? (isStamped ? '50% UNLOCKED' : '7TH: 50% OFF')
                         : `Visit ${stampNum}`}
                     </span>
 

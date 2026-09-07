@@ -417,24 +417,24 @@ export function JigglyStampMark({ stampNumber, label = "STAMPED", isMilestone = 
         opacity: 1
       }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className={`relative w-full h-full flex flex-col items-center justify-center p-2 rounded-2xl ${
+      className={`relative w-full h-full flex flex-col items-center justify-center p-2 rounded-2xl rubber-stamp ${
         isMilestone
-          ? 'bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 text-slate-950 ring-4 ring-amber-300/80 shadow-glow-yellow'
-          : 'bg-gradient-to-br from-[#ebd73f] to-[#ca8a04] text-slate-950 ring-2 ring-yellow-200/60 shadow-lg shadow-amber-500/30'
+          ? 'bg-gradient-to-br from-[#C25E3E] to-[#A84A2C] text-white ring-2 ring-[#C25E3E]/50 shadow-md'
+          : 'bg-gradient-to-br from-[#2044E2] to-[#1534B8] text-white ring-2 ring-[#2044E2]/40 shadow-md'
       }`}
     >
-      {/* Ink Texture Ring */}
-      <div className="absolute inset-1 rounded-xl border border-dashed border-slate-950/40 pointer-events-none" />
+      {/* Ink Stamp Perforated Impression Border */}
+      <div className="absolute inset-1 rounded-xl border border-dashed border-white/40 pointer-events-none" />
 
       {/* Stamp Icon */}
       {Icon ? (
         <Icon className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
       ) : (
-        <span className="font-panchang font-black text-base sm:text-lg">#{stampNumber}</span>
+        <span className="font-fraunces font-black text-base sm:text-lg">#{stampNumber}</span>
       )}
 
       {/* Rubber Ink Text */}
-      <span className="font-mono text-[9px] font-black uppercase tracking-wider mt-0.5 opacity-90">
+      <span className="font-space text-[8px] font-bold uppercase tracking-wider mt-0.5 opacity-95">
         {label}
       </span>
     </motion.div>

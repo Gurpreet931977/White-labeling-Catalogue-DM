@@ -212,7 +212,7 @@ export function CartDrawer({
                       <span className="font-syne font-bold text-white text-xs">Loyalty Club Stamps</span>
                     </div>
                     <span className="text-[10px] font-mono text-amber-300 font-bold">
-                      {is7thVisitUnlocked ? '🎉 7 of 7 COMPLETE' : `${loyaltyVisits} of 7 Stamps`}
+                      {is7thVisitUnlocked ? '7 of 7 COMPLETE' : `${loyaltyVisits} of 7 Stamps`}
                     </span>
                   </div>
 
