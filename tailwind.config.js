@@ -18,6 +18,19 @@ export default {
           border: 'rgba(255, 255, 255, 0.09)',
           muted: '#8e8e8e',
         },
+        milan: {
+          cream: '#FAF7F2',
+          sand: '#F0EAE1',
+          bone: '#F4EFE6',
+          espresso: '#12100E',
+          charcoal: '#211D1A',
+          vermilion: '#D04834',
+          wine: '#581422',
+          olive: '#526046',
+          pistachio: '#849474',
+          limoncello: '#E8E439',
+          border: 'rgba(255, 255, 255, 0.08)',
+        },
         thc: {
           dark: '#090C12',
           surface: '#111724',
@@ -54,13 +67,14 @@ export default {
         }
       },
       fontFamily: {
+        serif: ['"Fraunces"', 'Georgia', 'serif'],
+        fraunces: ['"Fraunces"', 'Georgia', 'serif'],
         groovy: ['"Lilita One"', '"Bagel Fat One"', '"Boogaloo"', 'cursive', 'sans-serif'],
         sans: ['"Plus Jakarta Sans"', '"Inter"', 'system-ui', 'sans-serif'],
-        display: ['"Syne"', '"Lilita One"', '"Panchang"', '"Clash Display"', 'sans-serif'],
+        display: ['"Syne"', '"Clash Display"', '"Panchang"', 'sans-serif'],
         syne: ['"Syne"', 'sans-serif'],
         clash: ['"Clash Display"', 'sans-serif'],
         panchang: ['"Panchang"', 'sans-serif'],
-        fraunces: ['"Fraunces"', 'serif'],
         mono: ['"Space Mono"', '"JetBrains Mono"', 'monospace'],
       },
       boxShadow: {

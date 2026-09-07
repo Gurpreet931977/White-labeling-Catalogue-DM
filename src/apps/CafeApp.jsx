@@ -78,11 +78,11 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-amber-400 selection:text-slate-950 font-sans relative">
+    <div className="min-h-screen bg-[#12100E] text-[#FAF7F2] flex flex-col justify-between selection:bg-[#D04834] selection:text-white font-sans relative">
       
       {/* Top Dripp Media White-Label Header / Return Bar */}
       {(onBackToVariants || onBackToCatalogue) && (
-        <div className="bg-[#080808] border-b border-white/10 px-4 py-2 text-xs flex items-center justify-between z-50 sticky top-0 backdrop-blur-md font-mono">
+        <div className="bg-[#0A0807] border-b border-white/10 px-4 py-2 text-xs flex items-center justify-between z-50 sticky top-0 backdrop-blur-md font-mono">
           <div className="flex items-center gap-2">
             <button
               onClick={() => {
@@ -326,18 +326,18 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
           >
             <button
               onClick={() => { sounds.playClick(); setIsCartOpen(true); }}
-              className="w-full p-3.5 rounded-2xl bg-amber-400 text-slate-950 font-bold shadow-2xl flex items-center justify-between active:scale-95 transition shadow-amber-400/25 border border-amber-300"
+              className="w-full p-3.5 rounded-2xl bg-[#FAF7F2] text-[#12100E] font-bold shadow-2xl flex items-center justify-between active:scale-95 transition border border-white/20"
             >
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-slate-950 text-amber-400 flex items-center justify-center font-bold text-xs">
+                <div className="w-8 h-8 rounded-xl bg-[#12100E] text-[#FAF7F2] flex items-center justify-center font-bold text-xs font-mono">
                   {itemCount}
                 </div>
                 <div className="text-left">
-                  <p className="text-xs font-black font-syne leading-tight">View Cart Order</p>
-                  <p className="text-[11px] font-mono font-bold text-slate-900">₹{grandTotal}</p>
+                  <p className="text-xs font-black font-syne leading-tight">Vedi Ordine</p>
+                  <p className="text-[11px] font-mono font-bold text-stone-700">₹{grandTotal}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-1 text-xs font-black font-syne uppercase tracking-wider bg-slate-950 text-amber-300 px-3 py-1.5 rounded-xl">
+              <div className="flex items-center gap-1.5 text-xs font-black font-syne uppercase tracking-wider bg-[#12100E] text-[#FAF7F2] px-3.5 py-1.5 rounded-xl">
                 <span>Checkout</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>

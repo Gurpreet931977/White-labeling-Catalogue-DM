@@ -588,4 +588,43 @@ body.debug-wireframe * {
   text-shadow: 0.5px 0.5px 1px rgba(122, 31, 31, 0.4);
 }
 
+/* ========================================================================= */
+/* MILAN FASHION-EDITORIAL & CONTEMPORARY CAFE UTILITIES                     */
+/* ========================================================================= */
+
+.font-editorial {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+.font-editorial-italic {
+  font-family: 'Fraunces', Georgia, serif;
+  font-style: italic;
+  font-variation-settings: 'opsz' 144, 'wght' 700;
+}
+
+.milan-grain {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.milan-grain-light {
+  background-image: radial-gradient(rgba(18, 16, 14, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.editorial-divider {
+  background: linear-gradient(90deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.03) 100%);
+}
+
+.editorial-tag {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+}
+
+.editorial-shadow {
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.6);
+}
+
 
