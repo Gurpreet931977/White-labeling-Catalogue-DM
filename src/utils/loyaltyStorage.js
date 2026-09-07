@@ -1,10 +1,10 @@
-// Centralized LocalStorage Database & State Engine for Gamified Loyalty System
+// Centralized LocalStorage Database & State Engine for Universal Gamified Loyalty System
 
 export const LOYALTY_GIFTS_POOL = [
   {
     id: 'discount50',
     title: '50% OFF Entire Order',
-    subtitle: 'Max discount ₹500 / $25',
+    subtitle: 'Universal 50% Milestone Discount',
     type: 'discount',
     badge: '50% OFF',
     desc: 'Applies 50% discount automatically to your entire bill upon milestone completion.',
@@ -13,41 +13,41 @@ export const LOYALTY_GIFTS_POOL = [
   },
   {
     id: 'free_coffee',
-    title: 'Free Signature Specialty Coffee',
-    subtitle: 'Any Pour-Over, Flat White, or Cold Brew',
-    type: 'beverage',
-    badge: 'FREE BREW',
-    desc: 'Redeem any handcrafted hot or iced specialty beverage on the house.',
-    iconName: 'Coffee',
+    title: 'Free Signature Item',
+    subtitle: 'Any bestselling signature item of your choice',
+    type: 'item',
+    badge: 'FREE ITEM',
+    desc: 'Redeem any complimentary signature product or bestseller on the house.',
+    iconName: 'Gift',
     color: 'from-amber-500 to-amber-700'
   },
   {
     id: 'free_pastry',
-    title: 'Free Flaky Butter Croissant',
-    subtitle: 'Fresh stone-baked morning artisan pastry',
-    type: 'pastry',
-    badge: 'FREE BAKE',
-    desc: 'Redeem a warm butter croissant, pain au chocolat, or cinnamon roll.',
-    iconName: 'Croissant',
+    title: '₹500 Store Shopping Voucher',
+    subtitle: 'Instant store credit at checkout',
+    type: 'voucher',
+    badge: 'STORE CREDIT',
+    desc: 'Enjoy an instant store voucher credit towards any purchases or specials.',
+    iconName: 'Sparkles',
     color: 'from-orange-400 to-amber-600'
   },
   {
     id: 'combo_gift',
-    title: 'Free Specialty Beverage + Artisan Treat',
-    subtitle: 'Handcrafted Latte + Warm Pastry Combo',
+    title: 'Complimentary VIP Gift Bundle',
+    subtitle: 'Curated premium merchandise & treat combo',
     type: 'combo',
-    badge: 'FREE COMBO',
-    desc: 'The ultimate VIP milestone treat: your favorite beverage paired with a fresh bake.',
-    iconName: 'Gift',
+    badge: 'FREE BUNDLE',
+    desc: 'The ultimate VIP milestone treat: exclusive curated bundle on your completed card.',
+    iconName: 'Award',
     color: 'from-purple-500 to-purple-700'
   },
   {
     id: 'free_sourdough',
-    title: 'Free Stone-Baked Sourdough Loaf',
-    subtitle: 'Artisanal country loaf baked fresh daily',
-    type: 'bakery',
-    badge: 'FREE LOAF',
-    desc: 'Take home a full whole-wheat sourdough loaf on your milestone visit.',
+    title: 'Exclusive Member Deluxe Box',
+    subtitle: 'Handpicked member selection package',
+    type: 'deluxe',
+    badge: 'DELUXE BOX',
+    desc: 'Take home an exclusive curated member gift box on your milestone visit.',
     iconName: 'Store',
     color: 'from-yellow-500 to-amber-700'
   }
@@ -71,10 +71,10 @@ const INITIAL_CUSTOMERS = [
     xp: 420,
     assignedGiftId: 'discount50', // 50% discount gift
     billingHistory: [
-      { id: 'BILL-1092', date: '2026-09-02', time: '09:15 AM', amount: 380, items: 'Flat White + Butter Croissant', stampsAwarded: 1, streakApplied: false },
-      { id: 'BILL-1145', date: '2026-09-03', time: '08:40 AM', amount: 240, items: 'Iced Americano', stampsAwarded: 1, streakApplied: false },
-      { id: 'BILL-1188', date: '2026-09-04', time: '10:20 AM', amount: 490, items: 'Cold Brew + Cinnamon Roll', stampsAwarded: 1, streakApplied: false },
-      { id: 'BILL-1234', date: '2026-09-05', time: '09:05 AM', amount: 320, items: 'Cortado + Pain au Chocolat', stampsAwarded: 1, streakApplied: false }
+      { id: 'BILL-1092', date: '2026-09-02', time: '09:15 AM', amount: 380, items: 'Signature Selection + Gift Pack', stampsAwarded: 1, streakApplied: false },
+      { id: 'BILL-1145', date: '2026-09-03', time: '08:40 AM', amount: 240, items: 'Bestseller Daily Pack', stampsAwarded: 1, streakApplied: false },
+      { id: 'BILL-1188', date: '2026-09-04', time: '10:20 AM', amount: 490, items: 'Deluxe Special + Sampler', stampsAwarded: 1, streakApplied: false },
+      { id: 'BILL-1234', date: '2026-09-05', time: '09:05 AM', amount: 320, items: 'Artisan Selection Box', stampsAwarded: 1, streakApplied: false }
     ],
     redeemedVouchers: []
   },
@@ -87,9 +87,9 @@ const INITIAL_CUSTOMERS = [
     xp: 510,
     assignedGiftId: 'free_coffee',
     billingHistory: [
-      { id: 'BILL-1050', date: '2026-09-01', time: '08:30 AM', amount: 220, items: 'Espresso Double', stampsAwarded: 1, streakApplied: false },
-      { id: 'BILL-1120', date: '2026-09-02', time: '09:10 AM', amount: 310, items: 'Flat White + Oat Milk', stampsAwarded: 1, streakApplied: false },
-      { id: 'BILL-1199', date: '2026-09-04', time: '04:15 PM', amount: 260, items: 'Cold Brew', stampsAwarded: 1, streakApplied: false }
+      { id: 'BILL-1050', date: '2026-09-01', time: '08:30 AM', amount: 220, items: 'Classic Reserve Selection', stampsAwarded: 1, streakApplied: false },
+      { id: 'BILL-1120', date: '2026-09-02', time: '09:10 AM', amount: 310, items: 'Member Special Pack', stampsAwarded: 1, streakApplied: false },
+      { id: 'BILL-1199', date: '2026-09-04', time: '04:15 PM', amount: 260, items: 'Bestseller Item', stampsAwarded: 1, streakApplied: false }
     ],
     redeemedVouchers: []
   },
@@ -102,7 +102,7 @@ const INITIAL_CUSTOMERS = [
     xp: 150,
     assignedGiftId: 'free_pastry',
     billingHistory: [
-      { id: 'BILL-1240', date: '2026-09-06', time: '11:05 AM', amount: 350, items: 'Matcha Latte + Butter Croissant', stampsAwarded: 1, streakApplied: false }
+      { id: 'BILL-1240', date: '2026-09-06', time: '11:05 AM', amount: 350, items: 'Gourmet Sampler Box', stampsAwarded: 1, streakApplied: false }
     ],
     redeemedVouchers: []
   }
@@ -196,7 +196,7 @@ export function getLoyaltyCustomer(phoneOrId) {
 // ============================================================================
 // CORE BILLING ENGINE: Process Bill Settlement & Automatic Stamp Markup
 // ============================================================================
-export function processBillingTransaction({ customerId, phone, billAmount = 350, billItems = 'Handcrafted Coffee & Bakery Treat' }) {
+export function processBillingTransaction({ customerId, phone, billAmount = 350, billItems = 'Signature Member Order' }) {
   const config = getLoyaltyAdminConfig();
   const customer = getLoyaltyCustomer(customerId || phone);
   if (!customer) return null;
@@ -213,7 +213,7 @@ export function processBillingTransaction({ customerId, phone, billAmount = 350,
     date: new Date().toISOString().split('T')[0],
     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     amount: Number(billAmount) || 350,
-    items: billItems || 'Artisan Cafe Order',
+    items: billItems || 'Member Store Order',
     stampsAwarded: stampsToAward,
     streakApplied: hasStreakBonus
   };

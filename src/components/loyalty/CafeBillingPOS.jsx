@@ -3,27 +3,27 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Receipt, 
   Printer, 
+  Search, 
   Plus, 
-  Minus, 
   Trash2, 
   Percent, 
-  Coffee, 
-  Store, 
-  Sparkles, 
+  UserCheck, 
   Check, 
-  Flame, 
-  CreditCard, 
-  Banknote, 
-  QrCode, 
-  Search, 
-  X, 
-  CheckCircle2, 
-  RotateCcw,
-  Tag,
-  Clock,
-  ShieldCheck,
+  Clock, 
+  ShieldCheck, 
+  Tag, 
+  X,
+  CreditCard,
+  Banknote,
+  QrCode,
+  Flame,
+  Gift,
+  Sparkles,
+  Award,
   Zap,
-  Utensils,
+  Star,
+  ShoppingBag,
+  Package,
   Cookie
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
@@ -35,42 +35,43 @@ import {
 
 // Helper to render category icon
 const renderItemCategoryIcon = (category) => {
-  if (category === 'coffee') return <Coffee className="w-3.5 h-3.5 text-[#2044E2]" />;
-  if (category === 'bakery') return <Cookie className="w-3.5 h-3.5 text-[#C25E3E]" />;
-  if (category === 'savory') return <Utensils className="w-3.5 h-3.5 text-[#7A6B63]" />;
-  return <Sparkles className="w-3.5 h-3.5 text-[#2E7D32]" />;
+  if (category === 'bestsellers') return <Star className="w-3.5 h-3.5 text-[#2044E2]" />;
+  if (category === 'treats') return <Cookie className="w-3.5 h-3.5 text-[#C25E3E]" />;
+  if (category === 'beverages') return <Sparkles className="w-3.5 h-3.5 text-[#2E7D32]" />;
+  if (category === 'merch') return <ShoppingBag className="w-3.5 h-3.5 text-[#7A6B63]" />;
+  return <Package className="w-3.5 h-3.5 text-[#2044E2]" />;
 };
 
-// Curated Coffee Shop & Bakery Menu for POS Billing (Emoji-Free)
+// Curated Universal Catalog for POS Billing (Emoji-Free)
 const POS_MENU_ITEMS = [
-  // Espresso & Handcrafted Brews
-  { id: 'pos-1', name: 'Espresso Double Shot', category: 'coffee', price: 130 },
-  { id: 'pos-2', name: 'Americano (Hot / Iced)', category: 'coffee', price: 150 },
-  { id: 'pos-3', name: 'Artisan Flat White', category: 'coffee', price: 180 },
-  { id: 'pos-4', name: 'Creamy Cappuccino', category: 'coffee', price: 170 },
-  { id: 'pos-5', name: 'Caramel Macchiato', category: 'coffee', price: 220 },
-  { id: 'pos-6', name: 'Cold Brew on Ice', category: 'coffee', price: 190 },
-  { id: 'pos-7', name: 'Iced Hazelnut Latte', category: 'coffee', price: 230 },
-  { id: 'pos-8', name: 'Manual Pour-Over V60', category: 'coffee', price: 240 },
+  // Bestsellers & Signatures
+  { id: 'pos-1', name: 'Signature Blend Pack (250g)', category: 'bestsellers', price: 340 },
+  { id: 'pos-2', name: 'Classic Reserve Selection', category: 'bestsellers', price: 280 },
+  { id: 'pos-3', name: 'Artisan Sampler Box', category: 'bestsellers', price: 380 },
+  { id: 'pos-4', name: 'Deluxe Special Selection', category: 'bestsellers', price: 290 },
+  { id: 'pos-5', name: 'Member Favorite Combo', category: 'bestsellers', price: 320 },
+  { id: 'pos-6', name: 'Reserve Gift Pack', category: 'bestsellers', price: 450 },
 
-  // Artisan Bakery & Pastries
-  { id: 'pos-9', name: 'French Butter Croissant', category: 'bakery', price: 140 },
-  { id: 'pos-10', name: 'Almond Frangipane Croissant', category: 'bakery', price: 180 },
-  { id: 'pos-11', name: 'Pain au Chocolat', category: 'bakery', price: 170 },
-  { id: 'pos-12', name: 'Warm Cinnamon Swirl Roll', category: 'bakery', price: 150 },
-  { id: 'pos-13', name: 'Blueberry Cream Scone', category: 'bakery', price: 130 },
-  { id: 'pos-14', name: 'Artisan Glazed Donut', category: 'bakery', price: 110 },
+  // Treats & Gourmet Snacks
+  { id: 'pos-7', name: 'Dark Chocolate Almond Clusters', category: 'treats', price: 160 },
+  { id: 'pos-8', name: 'Honey Glazed Crisp Wafers', category: 'treats', price: 140 },
+  { id: 'pos-9', name: 'Vanilla Bean Shortbread', category: 'treats', price: 130 },
+  { id: 'pos-10', name: 'Salted Caramel Crunch Bar', category: 'treats', price: 150 },
+  { id: 'pos-11', name: 'Berry Granola Fruit Clusters', category: 'treats', price: 180 },
+  { id: 'pos-12', name: 'Artisan Hazelnut Praline', category: 'treats', price: 210 },
 
-  // Savory & Sourdough
-  { id: 'pos-15', name: 'Country Sourdough Loaf', category: 'savory', price: 220 },
-  { id: 'pos-16', name: 'Pesto Mozzarella Panini', category: 'savory', price: 280 },
-  { id: 'pos-17', name: 'Avocado Sourdough Toast', category: 'savory', price: 260 },
-  { id: 'pos-18', name: 'Smoked Cream Cheese Bagel', category: 'savory', price: 240 },
+  // Beverages & Refreshers
+  { id: 'pos-13', name: 'Sparkling Citrus Refresher', category: 'beverages', price: 180 },
+  { id: 'pos-14', name: 'Chilled Cold-Pressed Elixir', category: 'beverages', price: 210 },
+  { id: 'pos-15', name: 'Organic Green Infusion (Iced)', category: 'beverages', price: 160 },
+  { id: 'pos-16', name: 'Ceremonial Matcha Cooler', category: 'beverages', price: 240 },
+  { id: 'pos-17', name: 'Artisan Handcrafted Brew', category: 'beverages', price: 190 },
+  { id: 'pos-18', name: 'Velvet Hot Cocoa / Chocolate', category: 'beverages', price: 220 },
 
-  // Coolers & Specials
-  { id: 'pos-19', name: 'Ceremonial Matcha Latte', category: 'coolers', price: 240 },
-  { id: 'pos-20', name: 'Belgian Hot Chocolate', category: 'coolers', price: 220 },
-  { id: 'pos-21', name: 'Mango Passion Fruit Cooler', category: 'coolers', price: 190 },
+  // Goods & Merchandise
+  { id: 'pos-19', name: 'Insulated Travel Tumbler (500ml)', category: 'merch', price: 490 },
+  { id: 'pos-20', name: 'Organic Cotton Canvas Tote', category: 'merch', price: 280 },
+  { id: 'pos-21', name: 'VIP Member Enamel Crest Pin', category: 'merch', price: 190 },
 ];
 
 export function CafeBillingPOS({ 
@@ -83,8 +84,8 @@ export function CafeBillingPOS({
 }) {
   // POS Order Items State
   const [billItems, setBillItems] = useState([
-    { id: 'pos-3', name: 'Artisan Flat White', price: 180, qty: 1 },
-    { id: 'pos-9', name: 'French Butter Croissant', price: 140, qty: 1 },
+    { id: 'pos-1', name: 'Signature Blend Pack (250g)', price: 340, qty: 1 },
+    { id: 'pos-7', name: 'Dark Chocolate Almond Clusters', price: 160, qty: 1 },
   ]);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -95,7 +96,7 @@ export function CafeBillingPOS({
   const [customItemPrice, setCustomItemPrice] = useState('');
 
   // Tax & Discount Settings
-  const [taxRatePercent, setTaxRatePercent] = useState(5); // 5% standard restaurant GST (2.5% CGST + 2.5% SGST)
+  const [taxRatePercent, setTaxRatePercent] = useState(5); // 5% standard GST (2.5% CGST + 2.5% SGST)
   const [discountPercent, setDiscountPercent] = useState(0);
   const [appliedRewardNote, setAppliedRewardNote] = useState('');
 
@@ -218,11 +219,11 @@ export function CafeBillingPOS({
       invoiceNo: `INV-${new Date().getFullYear()}${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${Math.floor(1000 + Math.random() * 9000)}`,
       date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      cashier: 'Terminal #01 (Barista Alex)',
+      cashier: 'Terminal #01 (Register)',
       gstin: '05AAACH1234F1Z8',
-      fssai: '10822005000123',
-      cafeName: 'BREW & CRUMB ROASTERY & BAKERY',
-      address: 'Shop 12, Rajpur Road, Dehradun • Tel: +91 98765 43210',
+      storeReg: 'REG-10822005000123',
+      storeName: 'THE REWARDS CLUB & STORE',
+      address: 'Shop 12, High Street Galleria • Tel: +91 98765 43210',
       customer: currentCustomer,
       items: [...billItems],
       subtotal,
@@ -269,7 +270,7 @@ export function CafeBillingPOS({
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-space text-[#2044E2] font-bold uppercase tracking-wider">
-                CAFE BILLING &amp; RECEIPT PRINTER
+                STORE BILLING &amp; RECEIPT PRINTER
               </span>
               <span className="text-[9px] font-space px-2 py-0.5 rounded-full bg-[#EFE9DF] text-[#7A6B63] font-semibold">
                 GST ENABLED (CGST + SGST)
@@ -361,7 +362,7 @@ export function CafeBillingPOS({
                 <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#A0938A]" />
                 <input
                   type="text"
-                  placeholder="Search coffee or bakery items..."
+                  placeholder="Search products or catalog items..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-9 pr-3 py-2 rounded-xl bg-white border border-[#DDD4C7] text-[#1A1310] placeholder-[#A0938A] text-xs font-jakarta focus:outline-none focus:border-[#2044E2] focus:ring-1 focus:ring-[#2044E2] shadow-xs"
@@ -383,10 +384,10 @@ export function CafeBillingPOS({
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs no-scrollbar">
               {[
                 { id: 'all', label: 'All Items' },
-                { id: 'coffee', label: 'Espresso & Brews' },
-                { id: 'bakery', label: 'Pastries & Bakes' },
-                { id: 'savory', label: 'Sourdough & Savory' },
-                { id: 'coolers', label: 'Coolers & Specials' },
+                { id: 'bestsellers', label: 'Bestsellers' },
+                { id: 'treats', label: 'Treats & Snacks' },
+                { id: 'beverages', label: 'Beverages & Drinks' },
+                { id: 'merch', label: 'Merchandise & Goods' },
               ].map((cat) => (
                 <button
                   key={cat.id}
@@ -541,7 +542,7 @@ export function CafeBillingPOS({
               <span className="text-[#7A6B63]">GST Rate:</span>
               <div className="flex items-center gap-1">
                 {[
-                  { label: '5% (Cafe/Restaurant)', val: 5 },
+                  { label: '5% Standard GST', val: 5 },
                   { label: '18% Special', val: 18 },
                   { label: '0% Nil', val: 0 }
                 ].map((g) => (
@@ -722,9 +723,9 @@ export function CafeBillingPOS({
               >
                 {/* Store Header */}
                 <div className="text-center space-y-1 pb-2 border-b border-dashed border-neutral-400">
-                  <h3 className="font-black text-sm tracking-wider uppercase">{printedReceipt.cafeName}</h3>
+                  <h3 className="font-black text-sm tracking-wider uppercase">{printedReceipt.storeName || 'THE REWARDS CLUB & STORE'}</h3>
                   <p className="text-[10px] text-neutral-600">{printedReceipt.address}</p>
-                  <p className="text-[10px] text-neutral-600">GSTIN: {printedReceipt.gstin} | FSSAI: {printedReceipt.fssai}</p>
+                  <p className="text-[10px] text-neutral-600">GSTIN: {printedReceipt.gstin} | Reg: {printedReceipt.storeReg || 'REG-10822005000123'}</p>
                   <p className="font-bold text-[11px] pt-1">*** TAX INVOICE / CASH MEMO ***</p>
                 </div>
 
@@ -829,7 +830,7 @@ export function CafeBillingPOS({
 
                 {/* Footer Greetings */}
                 <div className="text-center space-y-0.5 text-[10px] text-neutral-500 pt-1">
-                  <p>Thank you for visiting {printedReceipt.cafeName}!</p>
+                  <p>Thank you for visiting {printedReceipt.storeName || 'The Rewards Club'}!</p>
                   <p>Scan your phone pass to view streaks &amp; rewards.</p>
                   <p className="text-[9px] font-mono pt-1 text-neutral-400">*** End of Receipt ***</p>
                 </div>

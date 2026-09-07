@@ -225,30 +225,30 @@ export const CAFE_VARIANTS = [
   },
 
   // -------------------------------------------------------------------------
-  // ARCHETYPE 07: Gamified Loyalty Pass & Kiosk (Coffee & Bakery)
+  // ARCHETYPE 07: Universal Gamified Member Loyalty Pass & POS
   // -------------------------------------------------------------------------
   {
     id: "gamified-loyalty",
-    type: "Gamified Loyalty (Coffee & Bakery)",
+    type: "Gamified Member Loyalty Pass",
     code: "ARCHETYPE // 07",
-    title: "Gamified Coffee & Bakery Loyalty Pass & Kiosk",
-    modelName: "Gamified Loyalty Pass & Kiosk",
+    title: "Gamified Member Loyalty Pass & POS Terminal",
+    modelName: "Universal Loyalty Pass & POS",
     badge: "JUST LOYALTY • 100% GAMIFIED",
     isLiveTHC: true,
     tagline: "Billing Auto-Sync • Configurable 6-12 Stamps • 5-Day Streak Double Stamps • 50% OFF or Free Gift",
-    description: "Designed for customers to track rewards with zero clutter. Stamps mark automatically on every settled bill (customers cannot self-stamp). 5-day active streaks skip a day ahead by awarding 2 stamps at once. Customers clearly see their upcoming milestone reward (such as 50% OFF Entire Bill or a Free Specialty Beverage), while the Cafe Admin POS allows adjusting card capacity (6 to 12 stamps) and custom gift assignment with persistent customer storage.",
+    description: "Designed for customers to track rewards with zero clutter. Stamps mark automatically on every settled bill (customers cannot self-stamp). 5-day active streaks skip a day ahead by awarding 2 stamps at once. Customers clearly see their upcoming milestone reward (such as 50% OFF Entire Bill or a Free Signature Item), while the Store Admin POS allows adjusting card capacity (6 to 12 stamps) and custom gift assignment with persistent customer storage.",
     metrics: {
       turnover: "6.2x Repeat Visits",
       accuracy: "94% Member Retention",
-      speed: "+78% Coffee LTV"
+      speed: "+78% Customer LTV"
     },
-    idealFor: "Espresso bars, artisan bakeries, specialty roasteries, sourdough clubs, patisseries, donut shops",
+    idealFor: "Retail stores, boutiques, specialty outlets, dining clubs, salons, member lounges",
     features: [
       "Configurable 6 to 12-stamp digital punch card with automatic billing sync",
       "Customer-facing read-only view: customers cannot self-mark, stamps mark upon payment",
       "5-Day Streak Speed-Up: Maintaining a 5-day streak awards 2 stamps at once on next bill",
       "Transparent Free Gift: Customer clearly sees their assigned milestone reward (e.g. 50% OFF Entire Order)",
-      "Cafe Admin & POS Terminal: Register bills, auto-mark stamps, adjust stamp capacity (6-12), and customize gifts",
+      "Store Admin & POS Terminal: Register bills, auto-mark stamps, adjust stamp capacity (6-12), and customize gifts",
       "Persistent Customer Database: Stores visits, streaks, custom gifts, and billing history"
     ],
     techStack: "React 18, Framer Motion Spring Physics, Web Audio API, Canvas Confetti",
@@ -256,10 +256,10 @@ export const CAFE_VARIANTS = [
     demoData: {
       totalStamps: 6,
       currentDemoStamp: 4,
-      milestoneReward: "50% OFF Entire Order (or Free Signature Coffee/Pastry)",
+      milestoneReward: "50% OFF Entire Order (or Free Signature Gift)",
       streakDays: 5,
       streakPower: "Active (Next bill awards 2 stamps at once)",
-      memberLevel: "Espresso Scout (Level 2)"
+      memberLevel: "Silver Member (Level 2)"
     }
   }
 ];

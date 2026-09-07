@@ -37,7 +37,7 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo, onLaunchL
     { id: 'Direct Online Doorstep Delivery', label: 'Doorstep Delivery', icon: Truck },
     { id: 'Hybrid Dine-In & Delivery', label: 'Hybrid Dual-Mode', icon: RefreshCw },
     { id: 'Loyalty Club & Visit Tracker', label: 'Loyalty POS', icon: Award },
-    { id: 'Gamified Loyalty (Coffee & Bakery)', label: 'Gamified Loyalty', icon: Sparkles },
+    { id: 'Gamified Member Loyalty Pass', label: 'Gamified Loyalty', icon: Sparkles },
   ];
 
   const filteredVariants = selectedFilter === 'all'

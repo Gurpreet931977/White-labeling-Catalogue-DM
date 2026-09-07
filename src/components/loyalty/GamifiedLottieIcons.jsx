@@ -2,6 +2,74 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 // ============================================================================
+// 0. BOUNCY KAWAII STAR (Universal Gamified Rewards Mascot)
+// ============================================================================
+export function LottieBouncyStar({ size = 56, className = '', isHappy = true }) {
+  return (
+    <motion.div
+      className={`relative inline-flex items-center justify-center cursor-pointer select-none ${className}`}
+      whileHover={{ 
+        scale: 1.18, 
+        rotate: [-4, 4, -2, 2, 0], 
+        transition: { type: 'spring', stiffness: 450, damping: 12 } 
+      }}
+      whileTap={{ scale: 0.88, rotate: -6 }}
+      style={{ width: size, height: size }}
+    >
+      <svg viewBox="0 0 64 64" className="w-full h-full drop-shadow-[0_6px_16px_rgba(202,138,4,0.35)]">
+        <defs>
+          <linearGradient id="starGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#FDE68A" />
+            <stop offset="50%" stopColor="#F59E0B" />
+            <stop offset="100%" stopColor="#D97706" />
+          </linearGradient>
+        </defs>
+
+        {/* Golden Star Body */}
+        <polygon
+          points="32,6 39,22 56,23 43,35 48,52 32,42 16,52 21,35 8,23 25,22"
+          fill="url(#starGoldGrad)"
+          stroke="#B45309"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+
+        {/* Subtle Specular Highlights */}
+        <path
+          d="M 32 10 L 37 22 L 50 23"
+          fill="none"
+          stroke="#FFF"
+          strokeWidth="2"
+          strokeLinecap="round"
+          opacity="0.65"
+        />
+
+        {/* Happy Kawaii Eyes & Cheeks */}
+        {isHappy && (
+          <g>
+            <circle cx="27" cy="28" r="2.2" fill="#1A1310" />
+            <circle cx="37" cy="28" r="2.2" fill="#1A1310" />
+            <circle cx="27.8" cy="27.2" r="0.8" fill="#FFF" />
+            <circle cx="37.8" cy="27.2" r="0.8" fill="#FFF" />
+            {/* Sweet Smile */}
+            <path
+              d="M 29 33 Q 32 36 35 33"
+              fill="none"
+              stroke="#1A1310"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            {/* Rosy Cheeks */}
+            <circle cx="23" cy="32" r="2.2" fill="#F43F5E" opacity="0.6" />
+            <circle cx="41" cy="32" r="2.2" fill="#F43F5E" opacity="0.6" />
+          </g>
+        )}
+      </svg>
+    </motion.div>
+  );
+}
+
+// ============================================================================
 // 1. STEAMING COFFEE CUP (Lottie-Style Micro-Animation)
 // ============================================================================
 export function LottieSteamingCup({ size = 56, className = '', isHappy = true }) {
