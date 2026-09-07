@@ -1,23 +1,17 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import {
   Sliders,
-  ShieldCheck,
   UserPlus,
   Flame,
-  Award,
-  RotateCcw,
   Check,
   Save,
   CheckCircle2,
-  Sparkles,
   Info
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
 import {
   saveLoyaltyAdminConfig,
   saveLoyaltyCustomer,
-  getLoyaltyCustomers,
   LOYALTY_GIFTS_POOL
 } from '../../utils/loyaltyStorage';
 
@@ -76,15 +70,10 @@ export function ValenceAdminSettings({ config, onUpdateConfig, onNewCustomerCrea
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-1">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono tracking-widest text-[#3B82F6] uppercase font-bold">
-              PLATFORM CONTROLS
-            </span>
-            <span className="px-2 py-0.5 rounded-full bg-[#1A1C24] text-[#8E91A0] border border-[#2B2E3D] font-mono text-[9px] font-bold">
-              GLOBAL CONFIGURATION
-            </span>
-          </div>
-          <h3 className="font-clash font-bold text-xl sm:text-2xl text-[#F4F4F6] mt-0.5">
+          <span className="text-xs font-mono font-bold tracking-widest text-[#7A1F1F] uppercase">
+            GLOBAL ENGINE CONFIGURATION
+          </span>
+          <h3 className="font-groovy font-black text-3xl sm:text-4xl text-[#7A1F1F] tracking-wide mt-0.5 leading-none">
             Loyalty Engine Settings
           </h3>
         </div>
@@ -92,9 +81,9 @@ export function ValenceAdminSettings({ config, onUpdateConfig, onNewCustomerCrea
         <button
           type="button"
           onClick={handleSaveConfig}
-          className="px-5 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-sans font-semibold text-xs tracking-wide shadow-md shadow-[#2563EB]/25 cursor-pointer transition-all flex items-center gap-2"
+          className="px-6 py-3 rounded-2xl bg-[#7A1F1F] hover:bg-[#5C1414] text-[#F2ECD8] font-groovy font-black text-xs tracking-wider shadow-[4px_4px_0px_#470D0D] cursor-pointer transition-all flex items-center gap-2 uppercase"
         >
-          {isSaved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
+          {isSaved ? <Check className="w-4 h-4 stroke-[3]" /> : <Save className="w-4 h-4 stroke-[2.5]" />}
           <span>{isSaved ? 'Settings Applied!' : 'Save System Rules'}</span>
         </button>
       </div>
@@ -105,25 +94,25 @@ export function ValenceAdminSettings({ config, onUpdateConfig, onNewCustomerCrea
         <div className="lg:col-span-7 space-y-6">
           
           {/* 1. Dynamic Stamp Capacity Slider (4 to 12) */}
-          <div className="p-6 rounded-3xl bg-[#121318] border border-[#222533] shadow-xl space-y-5">
+          <div className="p-6 sm:p-8 rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] shadow-[8px_8px_0px_#7A1F1F] space-y-5">
             <div className="flex items-start justify-between">
               <div>
-                <span className="text-[10px] font-mono uppercase font-bold text-[#3B82F6] tracking-wider">
+                <span className="text-xs font-mono uppercase font-black text-[#7A1F1F] tracking-wider">
                   CARD PARAMETERS
                 </span>
-                <h4 className="font-clash font-bold text-lg text-[#F4F4F6]">
+                <h4 className="font-groovy font-black text-2xl text-[#7A1F1F]">
                   Cycle Stamp Capacity
                 </h4>
-                <p className="text-xs text-[#8E91A0]">
-                  Configure how many stamps a member must collect to complete a card and trigger the milestone reward.
+                <p className="text-xs text-[#7A1F1F]/80 font-sans">
+                  Configure how many stamps a member must collect to complete a card and unlock the milestone reward.
                 </p>
               </div>
 
-              <div className="w-14 h-14 rounded-2xl bg-[#1A1C24] border border-[#2B2E3D] flex flex-col items-center justify-center text-center">
-                <span className="font-clash font-bold text-2xl text-[#3B82F6] leading-none">
+              <div className="w-16 h-16 rounded-2xl bg-[#7A1F1F] text-[#E5A93C] border-2 border-[#5C1414] flex flex-col items-center justify-center text-center shadow-sm shrink-0">
+                <span className="font-groovy font-black text-3xl leading-none">
                   {totalStamps}
                 </span>
-                <span className="text-[8px] font-mono text-[#8E91A0] uppercase">
+                <span className="text-[8px] font-mono uppercase font-bold text-[#F2ECD8]">
                   SLOTS
                 </span>
               </div>
@@ -141,29 +130,29 @@ export function ValenceAdminSettings({ config, onUpdateConfig, onNewCustomerCrea
                   sounds.playClick();
                   setTotalStamps(Number(e.target.value));
                 }}
-                className="w-full accent-[#2563EB] cursor-pointer"
+                className="w-full accent-[#7A1F1F] cursor-pointer"
               />
 
-              <div className="flex justify-between text-[11px] font-mono text-[#8E91A0]">
-                <span>4 Stamps (Fast Cycle)</span>
-                <span className="text-[#3B82F6] font-bold">6 Stamps (Default)</span>
-                <span>12 Stamps (Long Haul)</span>
+              <div className="flex justify-between text-xs font-mono font-bold text-[#7A1F1F]">
+                <span>4 Stamps (Fast)</span>
+                <span className="font-groovy text-sm text-[#7A1F1F]">6 Stamps (Default)</span>
+                <span>12 Stamps (Long)</span>
               </div>
             </div>
 
             {/* Live slot layout preview */}
-            <div className="p-4 rounded-2xl bg-[#0B0C0F] border border-[#222533] space-y-2">
-              <span className="text-[10px] font-mono text-[#8E91A0] block uppercase">
-                Dynamic Grid Preview ({totalStamps} slots):
+            <div className="p-4 rounded-2xl bg-[#F2ECD8] border-2 border-[#7A1F1F] space-y-2">
+              <span className="text-[10px] font-mono text-[#7A1F1F] block uppercase font-bold">
+                Dynamic Slot Preview ({totalStamps} slots):
               </span>
               <div className="grid grid-cols-6 gap-2">
                 {Array.from({ length: totalStamps }, (_, i) => i + 1).map((slot) => (
                   <div
                     key={slot}
-                    className={`h-8 rounded-lg border text-[10px] font-mono flex items-center justify-center font-bold ${
+                    className={`h-9 rounded-xl border-2 text-xs font-groovy flex items-center justify-center font-bold ${
                       slot === totalStamps
-                        ? 'border-[#F59E0B] bg-[#F59E0B]/10 text-[#F59E0B]'
-                        : 'border-[#2563EB]/40 bg-[#2563EB]/5 text-[#3B82F6]'
+                        ? 'border-[#7A1F1F] bg-[#E5A93C] text-[#7A1F1F]'
+                        : 'border-[#7A1F1F] bg-[#FAF6EA] text-[#7A1F1F]'
                     }`}
                   >
                     #{slot}
@@ -174,15 +163,15 @@ export function ValenceAdminSettings({ config, onUpdateConfig, onNewCustomerCrea
           </div>
 
           {/* 2. Streak Speed-Up Rule Configuration */}
-          <div className="p-6 rounded-3xl bg-[#121318] border border-[#222533] shadow-xl space-y-4">
+          <div className="p-6 sm:p-8 rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] shadow-[8px_8px_0px_#7A1F1F] space-y-4">
             <div>
-              <span className="text-[10px] font-mono uppercase font-bold text-[#F97316] tracking-wider">
-                GAMIFIED RETENTION
+              <span className="text-xs font-mono uppercase font-black text-[#7A1F1F] tracking-wider">
+                RETENTION RULES
               </span>
-              <h4 className="font-clash font-bold text-lg text-[#F4F4F6]">
+              <h4 className="font-groovy font-black text-2xl text-[#7A1F1F]">
                 Streak Acceleration Threshold
               </h4>
-              <p className="text-xs text-[#8E91A0]">
+              <p className="text-xs text-[#7A1F1F]/80 font-sans">
                 When consecutive daily visits equal or exceed this threshold, each billing automatically marks +2 stamps instead of 1.
               </p>
             </div>
@@ -199,20 +188,20 @@ export function ValenceAdminSettings({ config, onUpdateConfig, onNewCustomerCrea
                     sounds.playClick();
                     setStreakThreshold(Number(e.target.value));
                   }}
-                  className="w-full accent-[#F97316] cursor-pointer"
+                  className="w-full accent-[#7A1F1F] cursor-pointer"
                 />
-                <div className="flex justify-between text-[11px] font-mono text-[#8E91A0]">
+                <div className="flex justify-between text-xs font-mono font-bold text-[#7A1F1F]">
                   <span>3 Days</span>
-                  <span className="text-[#F97316] font-bold">5 Days (Standard)</span>
+                  <span className="font-groovy text-sm">5 Days (Standard)</span>
                   <span>10 Days</span>
                 </div>
               </div>
 
-              <div className="px-4 py-2 rounded-2xl bg-[#F97316]/10 border border-[#F97316]/30 text-center shrink-0">
-                <span className="font-clash font-bold text-lg text-[#F97316] block leading-tight">
+              <div className="px-5 py-2.5 rounded-2xl bg-[#7A1F1F] text-[#F2ECD8] border-2 border-[#5C1414] text-center shrink-0 shadow-sm">
+                <span className="font-groovy font-black text-2xl text-[#E5A93C] block leading-none">
                   {streakThreshold}d
                 </span>
-                <span className="text-[8px] font-mono text-[#F97316] uppercase font-bold">
+                <span className="text-[8px] font-mono text-[#F2ECD8] uppercase font-bold">
                   2X BONUS
                 </span>
               </div>
@@ -226,22 +215,22 @@ export function ValenceAdminSettings({ config, onUpdateConfig, onNewCustomerCrea
           
           <form
             onSubmit={handleEnrollCustomer}
-            className="p-6 rounded-3xl bg-[#121318] border border-[#222533] shadow-xl space-y-4"
+            className="p-6 sm:p-8 rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] shadow-[8px_8px_0px_#7A1F1F] space-y-4"
           >
             <div className="flex items-center gap-2">
-              <UserPlus className="w-5 h-5 text-[#3B82F6]" />
-              <h4 className="font-clash font-bold text-lg text-[#F4F4F6]">
+              <UserPlus className="w-6 h-6 text-[#7A1F1F]" />
+              <h4 className="font-groovy font-black text-2xl text-[#7A1F1F]">
                 Enroll New Member
               </h4>
             </div>
 
-            <p className="text-xs text-[#8E91A0]">
-              Create a new digital pass directly at the terminal without requiring manual customer app setup.
+            <p className="text-xs text-[#7A1F1F]/80 font-sans">
+              Issue a new digital member pass directly at the terminal register.
             </p>
 
             <div className="space-y-3 pt-1">
               <div>
-                <label className="text-[10px] font-mono uppercase text-[#8E91A0] block pb-1">
+                <label className="text-[10px] font-mono uppercase text-[#7A1F1F] block pb-1 font-bold">
                   Full Name
                 </label>
                 <input
@@ -250,13 +239,13 @@ export function ValenceAdminSettings({ config, onUpdateConfig, onNewCustomerCrea
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   placeholder="e.g. Alex Rivera"
-                  className="w-full px-3.5 py-2 rounded-xl bg-[#0E0F14] border border-[#222533] text-xs text-[#F4F4F6] focus:outline-none focus:border-[#3B82F6]"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#F2ECD8] border-2 border-[#7A1F1F] text-xs font-mono text-[#7A1F1F] focus:outline-none focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-mono uppercase text-[#8E91A0] block pb-1">
-                  Phone Number (Primary ID)
+                <label className="text-[10px] font-mono uppercase text-[#7A1F1F] block pb-1 font-bold">
+                  Phone Number (Primary Member ID)
                 </label>
                 <input
                   type="tel"
@@ -264,13 +253,13 @@ export function ValenceAdminSettings({ config, onUpdateConfig, onNewCustomerCrea
                   value={newPhone}
                   onChange={(e) => setNewPhone(e.target.value)}
                   placeholder="e.g. 9812345678"
-                  className="w-full px-3.5 py-2 rounded-xl bg-[#0E0F14] border border-[#222533] text-xs text-[#F4F4F6] focus:outline-none focus:border-[#3B82F6]"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#F2ECD8] border-2 border-[#7A1F1F] text-xs font-mono text-[#7A1F1F] focus:outline-none focus:bg-white"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] font-mono uppercase text-[#8E91A0] block pb-1">
+                  <label className="text-[10px] font-mono uppercase text-[#7A1F1F] block pb-1 font-bold">
                     Initial Stamps
                   </label>
                   <input
@@ -279,21 +268,21 @@ export function ValenceAdminSettings({ config, onUpdateConfig, onNewCustomerCrea
                     max={totalStamps}
                     value={newStamps}
                     onChange={(e) => setNewStamps(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-[#0E0F14] border border-[#222533] text-xs text-[#F4F4F6] focus:outline-none focus:border-[#3B82F6]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#F2ECD8] border-2 border-[#7A1F1F] text-xs font-mono text-[#7A1F1F] focus:outline-none focus:bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-mono uppercase text-[#8E91A0] block pb-1">
+                  <label className="text-[10px] font-mono uppercase text-[#7A1F1F] block pb-1 font-bold">
                     Milestone Gift
                   </label>
                   <select
                     value={newGiftId}
                     onChange={(e) => setNewGiftId(e.target.value)}
-                    className="w-full px-2.5 py-2 rounded-xl bg-[#0E0F14] border border-[#222533] text-xs font-mono text-[#F59E0B] focus:outline-none"
+                    className="w-full px-2.5 py-2.5 rounded-xl bg-[#F2ECD8] border-2 border-[#7A1F1F] text-xs font-groovy text-[#7A1F1F] focus:outline-none"
                   >
                     {LOYALTY_GIFTS_POOL.map((g) => (
-                      <option key={g.id} value={g.id} className="bg-[#121318] text-[#F4F4F6]">
+                      <option key={g.id} value={g.id}>
                         {g.title}
                       </option>
                     ))}
@@ -303,28 +292,28 @@ export function ValenceAdminSettings({ config, onUpdateConfig, onNewCustomerCrea
             </div>
 
             {enrollSuccess && (
-              <div className="p-3 rounded-xl bg-[#10B981]/15 border border-[#10B981]/30 text-[#10B981] text-xs font-mono flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 shrink-0" />
+              <div className="p-3 rounded-xl bg-[#E5A93C] border-2 border-[#7A1F1F] text-[#7A1F1F] text-xs font-mono font-bold flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 shrink-0 stroke-[3]" />
                 <span>New member pass activated successfully!</span>
               </div>
             )}
 
             <button
               type="submit"
-              className="w-full py-3 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-sans font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg shadow-[#2563EB]/25 cursor-pointer transition-all"
+              className="w-full py-3.5 rounded-2xl bg-[#7A1F1F] hover:bg-[#5C1414] text-[#F2ECD8] font-groovy font-black text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-[4px_4px_0px_#470D0D] cursor-pointer transition-all"
             >
-              <UserPlus className="w-4 h-4" />
+              <UserPlus className="w-4 h-4 stroke-[2.5]" />
               <span>Issue New Membership</span>
             </button>
           </form>
 
           {/* Quick Notice */}
-          <div className="p-4 rounded-3xl bg-[#121318] border border-[#222533] text-xs text-[#8E91A0] space-y-1">
-            <div className="flex items-center gap-1.5 font-bold text-[#F4F4F6]">
-              <Info className="w-4 h-4 text-[#3B82F6]" />
-              <span>Real-Time Local Synchronization</span>
+          <div className="p-5 rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] text-xs text-[#7A1F1F] space-y-1 shadow-[5px_5px_0px_#7A1F1F]">
+            <div className="flex items-center gap-1.5 font-groovy font-black text-sm">
+              <Info className="w-4 h-4 text-[#7A1F1F]" />
+              <span>Real-Time Local Storage Sync</span>
             </div>
-            <p>
+            <p className="font-sans font-medium text-[#7A1F1F]/80">
               Rule changes and customer enrollments persist directly in local storage and broadcast to open client tabs.
             </p>
           </div>

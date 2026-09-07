@@ -28,16 +28,33 @@ export default {
           goldLight: '#FDE68A',
           red: '#EF4444',
           cyan: '#06B6D4',
-          muted: '#94A3B8'
+        },
+        oxblood: {
+          DEFAULT: '#7A1F1F',
+          dark: '#5C1414',
+          deep: '#470D0D',
+          hover: '#8F2828',
+        },
+        cream: {
+          DEFAULT: '#F2ECD8',
+          light: '#FAF6EA',
+          dark: '#E2D8BE',
+          border: '#D8CEB0',
+        },
+        mustard: {
+          DEFAULT: '#E5A93C',
+          dark: '#C98D25',
+          light: '#F8CF75',
         }
       },
       fontFamily: {
-        sans: ['"Inter"', 'system-ui', 'sans-serif'],
-        display: ['"Panchang"', '"Syne"', 'sans-serif'],
+        groovy: ['"Lilita One"', '"Bagel Fat One"', '"Boogaloo"', 'cursive', 'sans-serif'],
+        sans: ['"Inter"', '"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        display: ['"Lilita One"', '"Panchang"', '"Syne"', 'sans-serif'],
         panchang: ['"Panchang"', 'sans-serif'],
         clash: ['"Clash Display"', 'sans-serif'],
         syne: ['"Syne"', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'monospace'],
+        mono: ['"Space Mono"', '"JetBrains Mono"', 'monospace'],
       },
       boxShadow: {
         'glow-yellow': '0 0 25px -5px rgba(235, 215, 63, 0.45)',

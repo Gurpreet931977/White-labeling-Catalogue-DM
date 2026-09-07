@@ -5,17 +5,9 @@ import {
   Plus,
   Minus,
   RotateCcw,
-  Gift,
-  Flame,
   Receipt,
-  User,
-  CheckCircle2,
-  Calendar,
-  X,
-  ShieldCheck,
-  ChevronDown,
-  Sparkles,
-  Percent
+  Flame,
+  X
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
 import {
@@ -28,7 +20,6 @@ export function ValenceAdminCustomers({ customers = [], onUpdateCustomer, totalS
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCustHistory, setSelectedCustHistory] = useState(null);
 
-  // Search Filter
   const filteredCustomers = customers.filter((c) => {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
@@ -39,7 +30,6 @@ export function ValenceAdminCustomers({ customers = [], onUpdateCustomer, totalS
     );
   });
 
-  // Adjust Stamps (+1 / -1)
   const handleAdjustStamps = (customer, delta) => {
     sounds.playStampSquish();
     const current = customer.stamps || 0;
@@ -53,7 +43,6 @@ export function ValenceAdminCustomers({ customers = [], onUpdateCustomer, totalS
     if (onUpdateCustomer) onUpdateCustomer(updated);
   };
 
-  // Reset Card to 1 Stamp
   const handleResetCard = (customer) => {
     sounds.playClick();
     if (window.confirm(`Reset ${customer.name}'s card to 1 stamp?`)) {
@@ -62,7 +51,6 @@ export function ValenceAdminCustomers({ customers = [], onUpdateCustomer, totalS
     }
   };
 
-  // Assign Custom Milestone Gift
   const handleAssignGift = (customer, giftId) => {
     sounds.playClick();
     const updated = {
@@ -79,39 +67,33 @@ export function ValenceAdminCustomers({ customers = [], onUpdateCustomer, totalS
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-1">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono tracking-widest text-[#3B82F6] uppercase font-bold">
-              MEMBERSHIP DIRECTORY
-            </span>
-            <span className="px-2 py-0.5 rounded-full bg-[#1A1C24] text-[#8E91A0] border border-[#2B2E3D] font-mono text-[9px] font-bold">
-              CUSTOMER AUDIT
-            </span>
-          </div>
-          <h3 className="font-clash font-bold text-xl sm:text-2xl text-[#F4F4F6] mt-0.5">
-            Customer Directory & Controls
+          <span className="text-xs font-mono font-bold tracking-widest text-[#7A1F1F] uppercase">
+            DIRECTORY AUDIT • INLINE CONTROLS
+          </span>
+          <h3 className="font-groovy font-black text-3xl sm:text-4xl text-[#7A1F1F] tracking-wide mt-0.5 leading-none">
+            Customer Directory &amp; Controls
           </h3>
         </div>
 
         {/* Search Input */}
         <div className="relative w-full sm:w-72">
-          <Search className="w-4 h-4 text-[#8E91A0] absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#7A1F1F] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search members by name or phone..."
-            className="w-full pl-10 pr-4 py-2 rounded-xl bg-[#121318] border border-[#222533] text-xs text-[#F4F4F6] placeholder-[#545768] focus:outline-none focus:border-[#3B82F6] transition-colors"
+            placeholder="Search by name or phone..."
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#FAF6EA] border-2 border-[#7A1F1F] text-xs font-mono text-[#7A1F1F] placeholder-[#7A1F1F]/60 focus:outline-none focus:bg-white shadow-[3px_3px_0px_#7A1F1F]"
           />
         </div>
       </div>
 
-      {/* CUSTOMERS LIST / TABLE */}
-      <div className="rounded-3xl bg-[#121318] border border-[#222533] p-5 sm:p-6 shadow-xl space-y-4">
-        <div className="divide-y divide-[#1D1F2B]">
+      {/* CUSTOMERS LIST CONTAINER */}
+      <div className="rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] p-6 shadow-[8px_8px_0px_#7A1F1F] space-y-4">
+        <div className="divide-y-2 divide-dashed divide-[#7A1F1F]/20">
           {filteredCustomers.map((c) => {
             const currentStamps = c.stamps || 0;
             const hasStreak = (c.streakDays || 0) >= 5;
-            const activeGift = LOYALTY_GIFTS_POOL.find((g) => g.id === c.assignedGiftId) || LOYALTY_GIFTS_POOL[0];
 
             return (
               <div
@@ -120,22 +102,22 @@ export function ValenceAdminCustomers({ customers = [], onUpdateCustomer, totalS
               >
                 {/* Left: Member Identity */}
                 <div className="flex items-start gap-3.5 min-w-[220px]">
-                  <div className="w-10 h-10 rounded-2xl bg-[#1A1C24] border border-[#2B2E3D] flex items-center justify-center font-clash font-bold text-sm text-[#F4F4F6] shrink-0">
+                  <div className="w-11 h-11 rounded-2xl bg-[#7A1F1F] text-[#E5A93C] border-2 border-[#5C1414] flex items-center justify-center font-groovy font-black text-base shadow-sm shrink-0">
                     {c.name.slice(0, 2).toUpperCase()}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-clash font-bold text-base text-[#F4F4F6]">
+                      <span className="font-groovy font-black text-lg text-[#7A1F1F]">
                         {c.name}
                       </span>
                       {hasStreak && (
-                        <span className="px-1.5 py-0.2 rounded-full bg-[#F97316]/15 text-[#F97316] font-mono text-[9px] font-bold flex items-center gap-1">
-                          <Flame className="w-2.5 h-2.5 fill-[#F97316]" />
+                        <span className="px-2 py-0.5 rounded-full bg-[#E5A93C] text-[#7A1F1F] font-groovy text-[9px] font-black flex items-center gap-1 uppercase">
+                          <Flame className="w-2.5 h-2.5 fill-[#7A1F1F]" />
                           5D STREAK (2X)
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] font-mono text-[#8E91A0] mt-0.5">
+                    <div className="flex items-center gap-2 text-xs font-mono text-[#7A1F1F]/80 mt-0.5 font-bold">
                       <span>{c.phone}</span>
                       <span>•</span>
                       <span>{c.xp || 420} XP</span>
@@ -147,46 +129,46 @@ export function ValenceAdminCustomers({ customers = [], onUpdateCustomer, totalS
 
                 {/* Middle: Stamp Visual Track & In-line Adjuster */}
                 <div className="flex items-center gap-4">
-                  <div className="space-y-1 w-32 sm:w-40">
-                    <div className="flex justify-between text-[10px] font-mono">
-                      <span className="text-[#8E91A0]">Card Progress</span>
-                      <span className="text-[#3B82F6] font-bold">
+                  <div className="space-y-1 w-32 sm:w-44">
+                    <div className="flex justify-between text-xs font-mono font-bold text-[#7A1F1F]">
+                      <span>Card Progress</span>
+                      <span className="font-groovy text-sm">
                         {currentStamps} / {totalSlots}
                       </span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-[#0E0F14] overflow-hidden p-0.5 border border-[#222533]">
+                    <div className="h-3 w-full rounded-full bg-[#E2D8BE] border border-[#7A1F1F] overflow-hidden p-0.5">
                       <div
-                        className="h-full rounded-full bg-gradient-to-r from-[#2563EB] to-[#3B82F6]"
+                        className="h-full rounded-full bg-[#E5A93C]"
                         style={{ width: `${Math.min(100, (currentStamps / totalSlots) * 100)}%` }}
                       />
                     </div>
                   </div>
 
                   {/* +/- buttons */}
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1.5">
                     <button
                       type="button"
                       title="Deduct 1 stamp"
                       onClick={() => handleAdjustStamps(c, -1)}
-                      className="w-7 h-7 rounded-lg bg-[#1A1C24] hover:bg-[#252836] border border-[#2B2E3D] text-[#8E91A0] hover:text-[#F4F4F6] flex items-center justify-center cursor-pointer transition-colors"
+                      className="w-8 h-8 rounded-xl bg-[#F2ECD8] hover:bg-white border-2 border-[#7A1F1F] text-[#7A1F1F] flex items-center justify-center cursor-pointer transition-colors shadow-xs font-bold"
                     >
-                      <Minus className="w-3 h-3" />
+                      <Minus className="w-3.5 h-3.5 stroke-[3]" />
                     </button>
                     <button
                       type="button"
                       title="Add 1 stamp"
                       onClick={() => handleAdjustStamps(c, 1)}
-                      className="w-7 h-7 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white flex items-center justify-center cursor-pointer transition-colors"
+                      className="w-8 h-8 rounded-xl bg-[#7A1F1F] hover:bg-[#5C1414] text-[#E5A93C] flex items-center justify-center cursor-pointer transition-colors shadow-xs font-bold"
                     >
-                      <Plus className="w-3 h-3" />
+                      <Plus className="w-3.5 h-3.5 stroke-[3]" />
                     </button>
                     <button
                       type="button"
                       title="Reset Card"
                       onClick={() => handleResetCard(c)}
-                      className="w-7 h-7 rounded-lg bg-[#1A1C24] hover:bg-[#252836] border border-[#2B2E3D] text-[#8E91A0] hover:text-[#EF4444] flex items-center justify-center cursor-pointer transition-colors"
+                      className="w-8 h-8 rounded-xl bg-[#F2ECD8] hover:bg-white border-2 border-[#7A1F1F] text-[#7A1F1F] flex items-center justify-center cursor-pointer transition-colors shadow-xs"
                     >
-                      <RotateCcw className="w-3 h-3" />
+                      <RotateCcw className="w-3.5 h-3.5 stroke-[2.5]" />
                     </button>
                   </div>
                 </div>
@@ -194,16 +176,16 @@ export function ValenceAdminCustomers({ customers = [], onUpdateCustomer, totalS
                 {/* Right: Milestone Reward Selector & History Button */}
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="space-y-0.5">
-                    <span className="text-[9px] font-mono text-[#8E91A0] block uppercase">
-                      Assigned Milestone Gift:
+                    <span className="text-[10px] font-mono text-[#7A1F1F] block uppercase font-bold">
+                      Milestone Reward:
                     </span>
                     <select
                       value={c.assignedGiftId || 'discount50'}
                       onChange={(e) => handleAssignGift(c, e.target.value)}
-                      className="px-2.5 py-1.5 rounded-xl bg-[#0E0F14] border border-[#222533] text-xs font-mono text-[#F59E0B] focus:outline-none focus:border-[#F59E0B] cursor-pointer"
+                      className="px-3 py-1.5 rounded-xl bg-[#F2ECD8] border-2 border-[#7A1F1F] text-xs font-groovy text-[#7A1F1F] focus:outline-none cursor-pointer"
                     >
                       {LOYALTY_GIFTS_POOL.map((g) => (
-                        <option key={g.id} value={g.id} className="bg-[#121318] text-[#F4F4F6]">
+                        <option key={g.id} value={g.id}>
                           {g.title}
                         </option>
                       ))}
@@ -216,7 +198,7 @@ export function ValenceAdminCustomers({ customers = [], onUpdateCustomer, totalS
                       sounds.playClick();
                       setSelectedCustHistory(c);
                     }}
-                    className="px-3 py-1.5 rounded-xl bg-[#1A1C24] hover:bg-[#252836] border border-[#2B2E3D] text-xs font-mono text-[#8E91A0] hover:text-[#F4F4F6] flex items-center gap-1.5 cursor-pointer transition-colors self-end"
+                    className="px-3.5 py-2 rounded-xl bg-[#7A1F1F] hover:bg-[#5C1414] text-[#F2ECD8] text-xs font-groovy font-bold flex items-center gap-1.5 cursor-pointer transition-colors self-end shadow-[3px_3px_0px_#470D0D] uppercase"
                   >
                     <Receipt className="w-3.5 h-3.5" />
                     <span>Audit Bills ({c.billingHistory?.length || 0})</span>
@@ -231,49 +213,49 @@ export function ValenceAdminCustomers({ customers = [], onUpdateCustomer, totalS
       {/* CUSTOMER BILLING AUDIT MODAL */}
       <AnimatePresence>
         {selectedCustHistory && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="relative w-full max-w-lg rounded-3xl bg-[#121318] border border-[#2B2E3D] shadow-2xl p-6 sm:p-7 space-y-5 overflow-hidden"
+              className="relative w-full max-w-lg rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] shadow-[12px_12px_0px_#7A1F1F] p-6 sm:p-8 space-y-5 overflow-hidden font-mono"
             >
               <button
                 type="button"
                 onClick={() => setSelectedCustHistory(null)}
-                className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#1A1C24] border border-[#2B2E3D] flex items-center justify-center text-[#8E91A0] hover:text-[#F4F4F6] cursor-pointer"
+                className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#7A1F1F] text-[#F2ECD8] flex items-center justify-center hover:bg-[#5C1414] cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4 stroke-[3]" />
               </button>
 
               <div>
-                <span className="text-[10px] font-mono tracking-widest text-[#3B82F6] uppercase font-bold">
+                <span className="text-xs font-mono tracking-widest text-[#7A1F1F] uppercase font-bold">
                   MEMBER AUDIT TRAIL
                 </span>
-                <h4 className="font-clash font-bold text-2xl text-[#F4F4F6]">
+                <h4 className="font-groovy font-black text-3xl text-[#7A1F1F]">
                   {selectedCustHistory.name}
                 </h4>
-                <p className="text-xs font-mono text-[#8E91A0]">
-                  Phone: {selectedCustHistory.phone} • Total Bills: {selectedCustHistory.billingHistory?.length || 0}
+                <p className="text-xs text-[#7A1F1F]/80">
+                  Phone: {selectedCustHistory.phone} • Bills: {selectedCustHistory.billingHistory?.length || 0}
                 </p>
               </div>
 
-              <div className="space-y-2 max-h-80 overflow-y-auto pr-1 divide-y divide-[#1D1F2B]">
+              <div className="space-y-2 max-h-80 overflow-y-auto pr-1 divide-y-2 divide-dashed divide-[#7A1F1F]/20">
                 {(selectedCustHistory.billingHistory || []).length === 0 ? (
-                  <p className="text-xs font-mono text-[#545768] py-8 text-center">
+                  <p className="text-xs text-[#7A1F1F]/70 py-8 text-center font-bold">
                     No billing history on record for this customer.
                   </p>
                 ) : (
                   selectedCustHistory.billingHistory.map((b) => (
-                    <div key={b.id} className="py-3 first:pt-0 last:pb-0 flex items-center justify-between text-xs font-mono">
+                    <div key={b.id} className="py-3 first:pt-0 last:pb-0 flex items-center justify-between text-xs">
                       <div>
-                        <span className="font-bold text-[#F4F4F6]">{b.id}</span>
-                        <p className="text-[11px] text-[#8E91A0] font-sans">{b.items}</p>
-                        <span className="text-[10px] text-[#545768]">{b.date} • {b.time}</span>
+                        <span className="font-bold text-[#7A1F1F]">{b.id}</span>
+                        <p className="text-[11px] text-[#7A1F1F]/80 font-sans">{b.items}</p>
+                        <span className="text-[10px] text-[#7A1F1F]/60">{b.date} • {b.time}</span>
                       </div>
                       <div className="text-right">
-                        <span className="font-bold text-[#F4F4F6] block">₹{b.amount}</span>
-                        <span className="text-[10px] text-[#3B82F6]">+{b.stampsAwarded} stamp</span>
+                        <span className="font-groovy text-base text-[#7A1F1F] block leading-none">₹{b.amount}</span>
+                        <span className="text-[10px] text-[#7A1F1F] font-bold">+{b.stampsAwarded} stamp</span>
                       </div>
                     </div>
                   ))
@@ -283,7 +265,7 @@ export function ValenceAdminCustomers({ customers = [], onUpdateCustomer, totalS
               <button
                 type="button"
                 onClick={() => setSelectedCustHistory(null)}
-                className="w-full py-2.5 rounded-xl bg-[#1A1C24] hover:bg-[#252836] text-xs font-mono text-[#F4F4F6] cursor-pointer"
+                className="w-full py-3 rounded-xl bg-[#7A1F1F] hover:bg-[#5C1414] text-xs font-groovy font-bold text-[#F2ECD8] cursor-pointer uppercase shadow-[3px_3px_0px_#470D0D]"
               >
                 Close Audit
               </button>

@@ -6,18 +6,12 @@ import {
   Minus,
   Trash2,
   Receipt,
-  User,
-  CheckCircle2,
   Printer,
   X,
-  CreditCard,
-  QrCode,
   Flame,
-  ArrowRight,
+  CheckCircle2,
   ShieldCheck,
-  Percent,
-  Check,
-  Banknote
+  Check
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
 import { processBillingTransaction } from '../../utils/loyaltyStorage';
@@ -45,34 +39,27 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
   ]);
   const [tenderMethod, setTenderMethod] = useState('UPI');
   const [cashTendered, setCashTendered] = useState('1000');
-  const [discountPercent, setDiscountPercent] = useState(0);
-
-  // Printed Receipt Modal State
   const [thermalReceipt, setThermalReceipt] = useState(null);
 
-  // Customer Target
   const activeCust = selectedCustomer || customers[0];
   const hasStreakBonus = (activeCust?.streakDays || 0) >= 5;
 
-  // Filter Catalog
   const filteredItems = UNIVERSAL_CATALOG.filter((item) => {
     const matchesCat = selectedCategory === 'All' || item.category === selectedCategory;
-    const matchesSearch = !searchQuery || item.name.toLowerCase().includes(searchQuery.toLowerCase()) || item.sku.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch =
+      !searchQuery ||
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.sku.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCat && matchesSearch;
   });
 
-  // Cart Calculations
   const rawSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const discountAmount = Math.round((rawSubtotal * (discountPercent / 100)) * 100) / 100;
-  const taxableAmount = Math.max(0, rawSubtotal - discountAmount);
-  
-  // 5% GST computation (2.5% CGST + 2.5% SGST)
+  const taxableAmount = rawSubtotal;
   const cgst = Math.round((taxableAmount * 0.025) * 100) / 100;
   const sgst = Math.round((taxableAmount * 0.025) * 100) / 100;
   const totalAmount = Math.round(taxableAmount + cgst + sgst);
   const cashChange = Math.max(0, (Number(cashTendered) || 0) - totalAmount);
 
-  // Add Item to Docket
   const handleAddItem = (item) => {
     sounds.playAddToCart();
     setCart((prev) => {
@@ -84,7 +71,6 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
     });
   };
 
-  // Adjust Qty
   const handleUpdateQty = (itemId, delta) => {
     sounds.playClick();
     setCart((prev) =>
@@ -100,19 +86,15 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
     );
   };
 
-  // Remove Item
   const handleRemoveItem = (itemId) => {
     sounds.playClick();
     setCart((prev) => prev.filter((i) => i.id !== itemId));
   };
 
-  // Settle Bill & Markup Stamps Automatically
   const handleSettleBill = () => {
-    if (cart.length === 0) return;
-    if (!activeCust) return;
+    if (cart.length === 0 || !activeCust) return;
 
     sounds.playOrderPlaced();
-
     const itemsSummary = cart.map((i) => `${i.qty}x ${i.name}`).join(', ');
 
     const result = processBillingTransaction({
@@ -123,7 +105,6 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
     });
 
     if (result) {
-      // Build thermal receipt data
       const receiptData = {
         billId: result.billRecord.id,
         date: result.billRecord.date,
@@ -159,22 +140,17 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-1">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono tracking-widest text-[#3B82F6] uppercase font-bold">
-              TERMINAL POS
-            </span>
-            <span className="px-2 py-0.5 rounded-full bg-[#1A1C24] text-[#8E91A0] border border-[#2B2E3D] font-mono text-[9px] font-bold">
-              AUTO-STAMP ENGINE
-            </span>
-          </div>
-          <h3 className="font-clash font-bold text-xl sm:text-2xl text-[#F4F4F6] mt-0.5">
-            Billing & Receipt Settlement
+          <span className="text-xs font-mono font-bold tracking-widest text-[#7A1F1F] uppercase">
+            TERMINAL REGISTER • 5% GST DOCKET
+          </span>
+          <h3 className="font-groovy font-black text-3xl sm:text-4xl text-[#7A1F1F] tracking-wide mt-0.5 leading-none">
+            Billing &amp; Receipt Settlement
           </h3>
         </div>
 
         {/* Member Selector Bar */}
         <div className="flex items-center gap-3">
-          <span className="text-xs font-mono text-[#8E91A0] hidden sm:inline">Active Customer:</span>
+          <span className="text-xs font-mono text-[#7A1F1F] font-bold hidden sm:inline">Target Pass:</span>
           <select
             value={activeCust?.id}
             onChange={(e) => {
@@ -182,10 +158,10 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
               const found = customers.find((c) => c.id === e.target.value);
               if (found && onSelectCustomer) onSelectCustomer(found);
             }}
-            className="px-3.5 py-2 rounded-xl bg-[#121318] border border-[#222533] text-xs font-mono text-[#F4F4F6] focus:outline-none focus:border-[#3B82F6] cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[#FAF6EA] border-2 border-[#7A1F1F] text-xs font-mono font-bold text-[#7A1F1F] focus:outline-none cursor-pointer shadow-[3px_3px_0px_#7A1F1F]"
           >
             {customers.map((c) => (
-              <option key={c.id} value={c.id} className="bg-[#121318]">
+              <option key={c.id} value={c.id}>
                 {c.name} ({c.phone}) • {c.stamps}/6 stamps
               </option>
             ))}
@@ -199,16 +175,15 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
         {/* LEFT COLUMN (7 Cols): CATALOG SELECTOR */}
         <div className="lg:col-span-7 space-y-4">
           
-          {/* Category Tabs & Search */}
-          <div className="p-4 rounded-3xl bg-[#121318] border border-[#222533] shadow-lg space-y-3">
+          <div className="p-5 rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] shadow-[6px_6px_0px_#7A1F1F] space-y-3">
             <div className="relative">
-              <Search className="w-4 h-4 text-[#8E91A0] absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-[#7A1F1F] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search catalog by product name or SKU..."
-                className="w-full pl-10 pr-4 py-2 rounded-xl bg-[#0B0C0F] border border-[#242735] text-xs text-[#F4F4F6] placeholder-[#545768] focus:outline-none focus:border-[#3B82F6]"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#F2ECD8] border-2 border-[#7A1F1F] text-xs font-mono text-[#7A1F1F] placeholder-[#7A1F1F]/60 focus:outline-none focus:bg-white"
               />
             </div>
 
@@ -221,10 +196,10 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
                     sounds.playClick();
                     setSelectedCategory(cat);
                   }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-mono whitespace-nowrap cursor-pointer transition-colors ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-groovy uppercase tracking-wider whitespace-nowrap cursor-pointer transition-colors ${
                     selectedCategory === cat
-                      ? 'bg-[#2563EB] text-white font-bold'
-                      : 'bg-[#1A1C24] text-[#8E91A0] hover:text-[#F4F4F6] border border-[#2B2E3D]'
+                      ? 'bg-[#7A1F1F] text-[#F2ECD8] font-bold shadow-sm'
+                      : 'bg-[#F2ECD8] text-[#7A1F1F] hover:bg-white border border-[#7A1F1F]'
                   }`}
                 >
                   {cat}
@@ -233,7 +208,7 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
             </div>
           </div>
 
-          {/* Product Items Grid */}
+          {/* Product Items Grid (Warm Cream Cards with Solid Oxblood Borders) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[520px] overflow-y-auto pr-1">
             {filteredItems.map((item) => (
               <motion.div
@@ -241,27 +216,27 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleAddItem(item)}
-                className="p-4 rounded-2xl bg-[#121318] border border-[#222533] hover:border-[#3B82F6]/50 shadow-md flex flex-col justify-between space-y-3 cursor-pointer group transition-all"
+                className="p-4 rounded-2xl bg-[#FAF6EA] border-2 border-[#7A1F1F] shadow-[4px_4px_0px_#7A1F1F] hover:bg-white flex flex-col justify-between space-y-3 cursor-pointer group transition-all"
               >
                 <div>
-                  <div className="flex items-center justify-between text-[10px] font-mono text-[#8E91A0]">
+                  <div className="flex items-center justify-between text-[10px] font-mono font-bold text-[#7A1F1F]/80">
                     <span>{item.sku}</span>
-                    <span className="text-[#3B82F6]">{item.category}</span>
+                    <span className="text-[#7A1F1F] uppercase">{item.category}</span>
                   </div>
-                  <h4 className="font-clash font-bold text-base text-[#F4F4F6] mt-1 group-hover:text-white">
+                  <h4 className="font-groovy font-black text-lg text-[#7A1F1F] mt-1 leading-tight">
                     {item.name}
                   </h4>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-[#1D1F2B]">
-                  <span className="font-mono font-bold text-base text-[#F4F4F6]">
+                <div className="flex items-center justify-between pt-2 border-t-2 border-dashed border-[#7A1F1F]/20">
+                  <span className="font-groovy font-black text-xl text-[#7A1F1F]">
                     ₹{item.price}
                   </span>
                   <button
                     type="button"
-                    className="p-1.5 rounded-lg bg-[#1A1C24] group-hover:bg-[#2563EB] text-white transition-colors"
+                    className="p-1.5 rounded-lg bg-[#7A1F1F] text-[#F2ECD8] group-hover:bg-[#5C1414] transition-colors"
                   >
-                    <Plus className="w-3.5 h-3.5" />
+                    <Plus className="w-4 h-4 stroke-[3]" />
                   </button>
                 </div>
               </motion.div>
@@ -273,41 +248,41 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
         {/* RIGHT COLUMN (5 Cols): ORDER DOCKET & SETTLEMENT */}
         <div className="lg:col-span-5 space-y-4">
           
-          <div className="rounded-3xl bg-[#121318] border border-[#222533] p-5 sm:p-6 shadow-xl space-y-5 flex flex-col justify-between">
+          <div className="rounded-3xl bg-[#7A1F1F] text-[#F2ECD8] border-3 border-[#5C1414] p-6 shadow-[8px_8px_0px_#470D0D] space-y-5 flex flex-col justify-between">
             
             {/* Top Docket Header */}
             <div>
-              <div className="flex items-center justify-between pb-3 border-b border-[#222533]">
+              <div className="flex items-center justify-between pb-3 border-b-2 border-[#5C1414]">
                 <div className="flex items-center gap-2">
-                  <Receipt className="w-4 h-4 text-[#3B82F6]" />
-                  <h4 className="font-clash font-bold text-base text-[#F4F4F6]">
+                  <Receipt className="w-5 h-5 text-[#E5A93C]" />
+                  <h4 className="font-groovy font-black text-xl text-[#F2ECD8] uppercase tracking-wide">
                     Current Docket
                   </h4>
                 </div>
-                <span className="text-xs font-mono text-[#8E91A0]">
+                <span className="text-xs font-mono font-bold text-[#E5A93C]">
                   {cart.reduce((sum, i) => sum + i.qty, 0)} items
                 </span>
               </div>
 
               {/* Active Customer Sync Callout */}
-              <div className="mt-3 p-3 rounded-2xl bg-[#1A1C25] border border-[#2A2D3C] space-y-1">
+              <div className="mt-3 p-3.5 rounded-2xl bg-[#5C1414] border border-[#470D0D] space-y-1">
                 <div className="flex items-center justify-between text-xs font-mono">
-                  <span className="text-[#8E91A0]">TARGET PASS:</span>
-                  <span className="font-bold text-[#F4F4F6]">{activeCust?.name}</span>
+                  <span className="text-[#F2ECD8]/80 font-bold">MEMBER:</span>
+                  <span className="font-groovy font-bold text-sm text-[#F2ECD8]">{activeCust?.name}</span>
                 </div>
-                <div className="flex items-center justify-between text-[11px] font-mono">
-                  <span className="text-[#8E91A0]">CURRENT STAMPS:</span>
-                  <span className="text-[#3B82F6] font-bold">{activeCust?.stamps || 0} / 6</span>
+                <div className="flex items-center justify-between text-xs font-mono">
+                  <span className="text-[#F2ECD8]/80 font-bold">CURRENT STAMPS:</span>
+                  <span className="text-[#E5A93C] font-groovy font-bold text-sm">{activeCust?.stamps || 0} / 6</span>
                 </div>
 
                 {hasStreakBonus ? (
-                  <div className="pt-1 text-[10px] font-mono text-[#F97316] font-bold flex items-center gap-1">
-                    <Flame className="w-3.5 h-3.5 fill-[#F97316]" />
+                  <div className="pt-1 text-[11px] font-mono text-[#E5A93C] font-bold flex items-center gap-1">
+                    <Flame className="w-3.5 h-3.5 fill-[#E5A93C]" />
                     <span>5-Day Streak Active: +2 STAMPS WILL BE CREDITED!</span>
                   </div>
                 ) : (
-                  <div className="pt-1 text-[10px] font-mono text-[#10B981] flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" />
+                  <div className="pt-1 text-[11px] font-mono text-[#F2ECD8]/90 flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-[#E5A93C]" />
                     <span>+1 Stamp will be automatically credited on settlement</span>
                   </div>
                 )}
@@ -317,51 +292,50 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
             {/* Cart Line Items */}
             <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
               {cart.length === 0 ? (
-                <div className="text-center py-8 text-xs font-mono text-[#545768]">
+                <div className="text-center py-8 text-xs font-mono text-[#F2ECD8]/70">
                   Docket is empty. Select products from catalog.
                 </div>
               ) : (
                 cart.map((item) => (
                   <div
                     key={item.id}
-                    className="p-2.5 rounded-xl bg-[#0E0F14] border border-[#222533] flex items-center justify-between gap-3 text-xs"
+                    className="p-2.5 rounded-xl bg-[#5C1414] border border-[#470D0D] flex items-center justify-between gap-3 text-xs font-mono"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-[#F4F4F6] truncate">{item.name}</p>
-                      <span className="font-mono text-[11px] text-[#8E91A0]">
+                      <p className="font-bold text-[#F2ECD8] truncate">{item.name}</p>
+                      <span className="text-[11px] text-[#F2ECD8]/80">
                         ₹{item.price} each
                       </span>
                     </div>
 
-                    {/* Qty Controls */}
                     <div className="flex items-center gap-1.5">
                       <button
                         type="button"
                         onClick={() => handleUpdateQty(item.id, -1)}
-                        className="w-6 h-6 rounded-lg bg-[#1A1C24] text-[#8E91A0] hover:text-white flex items-center justify-center cursor-pointer"
+                        className="w-6 h-6 rounded-lg bg-[#7A1F1F] text-[#F2ECD8] hover:bg-[#470D0D] flex items-center justify-center cursor-pointer font-bold"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="font-mono font-bold text-xs text-[#F4F4F6] w-5 text-center">
+                      <span className="font-groovy text-sm text-[#E5A93C] w-5 text-center">
                         {item.qty}
                       </span>
                       <button
                         type="button"
                         onClick={() => handleUpdateQty(item.id, 1)}
-                        className="w-6 h-6 rounded-lg bg-[#1A1C24] text-[#8E91A0] hover:text-white flex items-center justify-center cursor-pointer"
+                        className="w-6 h-6 rounded-lg bg-[#7A1F1F] text-[#F2ECD8] hover:bg-[#470D0D] flex items-center justify-center cursor-pointer font-bold"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
                     </div>
 
-                    <div className="font-mono font-bold text-xs text-[#F4F4F6] w-14 text-right">
+                    <div className="font-groovy text-sm text-[#F2ECD8] w-14 text-right">
                       ₹{item.price * item.qty}
                     </div>
 
                     <button
                       type="button"
                       onClick={() => handleRemoveItem(item.id)}
-                      className="text-[#545768] hover:text-[#EF4444] cursor-pointer"
+                      className="text-[#F2ECD8]/60 hover:text-white cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -370,11 +344,11 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
               )}
             </div>
 
-            {/* Calculations & GST Breakup */}
-            <div className="space-y-2 pt-2 border-t border-[#222533] text-xs font-mono text-[#8E91A0]">
+            {/* Calculations & GST */}
+            <div className="space-y-1.5 pt-2 border-t-2 border-[#5C1414] text-xs font-mono text-[#F2ECD8]/90">
               <div className="flex justify-between">
                 <span>Subtotal:</span>
-                <span className="text-[#F4F4F6]">₹{taxableAmount}</span>
+                <span>₹{taxableAmount}</span>
               </div>
               <div className="flex justify-between text-[11px]">
                 <span>CGST (2.5%):</span>
@@ -384,15 +358,15 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
                 <span>SGST (2.5%):</span>
                 <span>₹{sgst}</span>
               </div>
-              <div className="flex justify-between text-base font-bold text-[#F4F4F6] pt-2 border-t border-[#222533]">
+              <div className="flex justify-between text-lg font-groovy text-[#E5A93C] pt-2 border-t border-[#5C1414]">
                 <span>TOTAL DUE:</span>
-                <span className="text-[#3B82F6]">₹{totalAmount}</span>
+                <span>₹{totalAmount}</span>
               </div>
             </div>
 
             {/* Tender Mode */}
             <div className="space-y-2">
-              <span className="text-[10px] font-mono uppercase text-[#8E91A0] block font-bold">
+              <span className="text-[10px] font-mono uppercase text-[#F2ECD8]/80 block font-bold">
                 Payment Tender
               </span>
               <div className="grid grid-cols-3 gap-2">
@@ -404,10 +378,10 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
                       sounds.playClick();
                       setTenderMethod(method);
                     }}
-                    className={`py-2 rounded-xl text-xs font-mono font-bold cursor-pointer transition-colors ${
+                    className={`py-2 rounded-xl text-xs font-groovy font-black cursor-pointer transition-colors uppercase ${
                       tenderMethod === method
-                        ? 'bg-[#2563EB] text-white'
-                        : 'bg-[#1A1C24] text-[#8E91A0] hover:text-[#F4F4F6] border border-[#2B2E3D]'
+                        ? 'bg-[#E5A93C] text-[#7A1F1F]'
+                        : 'bg-[#5C1414] text-[#F2ECD8] hover:bg-[#470D0D]'
                     }`}
                   >
                     {method}
@@ -416,19 +390,19 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
               </div>
 
               {tenderMethod === 'Cash' && (
-                <div className="p-3 rounded-xl bg-[#0E0F14] border border-[#222533] flex items-center justify-between text-xs font-mono mt-2">
+                <div className="p-3 rounded-xl bg-[#5C1414] border border-[#470D0D] flex items-center justify-between text-xs font-mono mt-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-[#8E91A0]">Tendered: ₹</span>
+                    <span className="text-[#F2ECD8]/80">Tendered: ₹</span>
                     <input
                       type="number"
                       value={cashTendered}
                       onChange={(e) => setCashTendered(e.target.value)}
-                      className="w-20 bg-transparent text-[#F4F4F6] font-bold focus:outline-none border-b border-[#3B82F6]"
+                      className="w-20 bg-transparent text-[#E5A93C] font-bold focus:outline-none border-b border-[#E5A93C]"
                     />
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] text-[#8E91A0] block">Change:</span>
-                    <span className="text-sm font-bold text-[#10B981]">₹{cashChange}</span>
+                    <span className="text-[10px] text-[#F2ECD8]/80 block">Change:</span>
+                    <span className="text-sm font-groovy text-[#E5A93C]">₹{cashChange}</span>
                   </div>
                 </div>
               )}
@@ -439,14 +413,14 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
               type="button"
               disabled={cart.length === 0}
               onClick={handleSettleBill}
-              className={`w-full py-3.5 rounded-2xl font-sans font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer ${
+              className={`w-full py-4 rounded-2xl font-groovy font-black text-sm tracking-wider uppercase flex items-center justify-center gap-2 shadow-[4px_4px_0px_#470D0D] transition-all cursor-pointer ${
                 cart.length > 0
-                  ? 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-[#2563EB]/30'
-                  : 'bg-[#1A1C24] text-[#545768] cursor-not-allowed'
+                  ? 'bg-[#E5A93C] hover:bg-[#C98D25] text-[#7A1F1F]'
+                  : 'bg-[#5C1414] text-[#F2ECD8]/50 cursor-not-allowed'
               }`}
             >
-              <Printer className="w-4 h-4" />
-              <span>Settle Bill & Print Thermal Receipt</span>
+              <Printer className="w-4 h-4 stroke-[2.5]" />
+              <span>Settle Bill &amp; Print Receipt</span>
             </button>
 
           </div>
@@ -458,33 +432,31 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
       {/* 80MM THERMAL RECEIPT MODAL */}
       <AnimatePresence>
         {thermalReceipt && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="relative w-full max-w-sm rounded-3xl bg-white text-gray-900 shadow-2xl p-6 sm:p-7 space-y-4 overflow-hidden font-mono border border-gray-200"
+              className="relative w-full max-w-sm rounded-3xl bg-[#FAF6EA] text-[#7A1F1F] shadow-[12px_12px_0px_#7A1F1F] p-6 sm:p-7 space-y-4 overflow-hidden font-mono border-3 border-[#7A1F1F]"
             >
               <button
                 type="button"
                 onClick={() => setThermalReceipt(null)}
-                className="absolute top-4 right-4 w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-black cursor-pointer"
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#7A1F1F] text-[#F2ECD8] flex items-center justify-center hover:bg-[#5C1414] cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4 stroke-[3]" />
               </button>
 
-              {/* Receipt Header */}
-              <div className="text-center space-y-1 pb-3 border-b-2 border-dashed border-gray-300">
-                <h4 className="font-black text-xl tracking-wider">VALENCE STORE</h4>
-                <p className="text-[10px] text-gray-500">DIGITAL MEMBERSHIP PLATFORM</p>
-                <p className="text-[9px] text-gray-400">GSTIN: 07AAAAA0000A1Z5</p>
+              <div className="text-center space-y-1 pb-3 border-b-2 border-dashed border-[#7A1F1F]">
+                <h4 className="font-groovy font-black text-2xl tracking-wide">VALENCE STORE</h4>
+                <p className="text-[10px] font-bold uppercase tracking-wider">TAX INVOICE / CASH RECEIPT</p>
+                <p className="text-[9px] text-[#7A1F1F]/70">GSTIN: 07AAAAA0000A1Z5</p>
               </div>
 
-              {/* Meta */}
-              <div className="text-xs space-y-1 py-1 text-gray-600">
+              <div className="text-xs space-y-1 py-1 text-[#7A1F1F]">
                 <div className="flex justify-between">
                   <span>INVOICE NO:</span>
-                  <span className="font-bold text-gray-900">{thermalReceipt.billId}</span>
+                  <span className="font-bold">{thermalReceipt.billId}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>DATE / TIME:</span>
@@ -492,19 +464,18 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
                 </div>
                 <div className="flex justify-between">
                   <span>MEMBER:</span>
-                  <span className="font-bold text-gray-900">{thermalReceipt.customerName}</span>
+                  <span className="font-bold">{thermalReceipt.customerName}</span>
                 </div>
               </div>
 
-              {/* Items */}
-              <div className="py-2 border-y-2 border-dashed border-gray-300 space-y-1.5 text-xs">
-                <div className="flex justify-between font-bold text-gray-800 pb-1">
+              <div className="py-2 border-y-2 border-dashed border-[#7A1F1F] space-y-1.5 text-xs">
+                <div className="flex justify-between font-bold">
                   <span>ITEM</span>
                   <span>QTY</span>
                   <span>AMT</span>
                 </div>
                 {thermalReceipt.items.map((item) => (
-                  <div key={item.id} className="flex justify-between text-gray-700">
+                  <div key={item.id} className="flex justify-between">
                     <span className="truncate max-w-[150px]">{item.name}</span>
                     <span>{item.qty}</span>
                     <span>₹{item.price * item.qty}</span>
@@ -512,52 +483,40 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
                 ))}
               </div>
 
-              {/* Totals */}
-              <div className="space-y-1 text-xs text-gray-600">
+              <div className="space-y-1 text-xs text-[#7A1F1F]/80">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
                   <span>₹{thermalReceipt.subtotal}</span>
                 </div>
-                <div className="flex justify-between text-[11px] text-gray-500">
+                <div className="flex justify-between text-[11px]">
                   <span>CGST (2.5%):</span>
                   <span>₹{thermalReceipt.cgst}</span>
                 </div>
-                <div className="flex justify-between text-[11px] text-gray-500">
+                <div className="flex justify-between text-[11px]">
                   <span>SGST (2.5%):</span>
                   <span>₹{thermalReceipt.sgst}</span>
                 </div>
-                <div className="flex justify-between font-bold text-sm text-gray-900 pt-2 border-t border-gray-200">
+                <div className="flex justify-between font-bold text-sm text-[#7A1F1F] pt-1.5 border-t border-[#7A1F1F]/30">
                   <span>TOTAL:</span>
                   <span>₹{thermalReceipt.total}</span>
                 </div>
-                <div className="flex justify-between text-[11px] text-gray-500 pt-1">
-                  <span>Tender ({thermalReceipt.tenderMethod}):</span>
-                  <span>₹{thermalReceipt.cashTendered}</span>
-                </div>
-                {thermalReceipt.tenderMethod === 'Cash' && (
-                  <div className="flex justify-between text-[11px] font-bold text-gray-800">
-                    <span>Change:</span>
-                    <span>₹{thermalReceipt.change}</span>
-                  </div>
-                )}
               </div>
 
-              {/* Stamp sync confirmation badge */}
-              <div className="p-3 bg-blue-50 rounded-xl border border-blue-200 text-center space-y-0.5">
-                <span className="text-[10px] text-blue-700 font-bold uppercase tracking-wider block">
+              {/* Stamp Sync confirmation */}
+              <div className="p-3 bg-[#E5A93C] rounded-xl border-2 border-[#7A1F1F] text-center space-y-0.5 text-[#7A1F1F]">
+                <span className="text-[10px] font-groovy font-black uppercase tracking-wider block">
                   PASS STAMP SYNCHRONIZED
                 </span>
-                <span className="text-xs font-bold text-gray-900">
+                <span className="text-xs font-bold">
                   +{thermalReceipt.stampsAwarded} Stamp Awarded ({thermalReceipt.newStampTotal}/6 Total)
                 </span>
                 {thermalReceipt.hasStreakBonus && (
-                  <span className="text-[9px] text-orange-600 font-bold block">
+                  <span className="text-[9px] font-bold block">
                     (5-Day Active Streak Multiplier Applied)
                   </span>
                 )}
               </div>
 
-              {/* Actions */}
               <div className="flex gap-2 pt-2">
                 <button
                   type="button"
@@ -565,15 +524,15 @@ export function ValenceAdminPOS({ customers = [], selectedCustomer, onSelectCust
                     sounds.playClick();
                     window.print();
                   }}
-                  className="flex-1 py-2.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="flex-1 py-2.5 rounded-xl bg-[#7A1F1F] hover:bg-[#5C1414] text-[#F2ECD8] text-xs font-groovy font-bold flex items-center justify-center gap-1.5 cursor-pointer uppercase shadow-[3px_3px_0px_#470D0D]"
                 >
-                  <Printer className="w-3.5 h-3.5" />
+                  <Printer className="w-4 h-4" />
                   <span>Print Receipt</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setThermalReceipt(null)}
-                  className="px-4 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-[#F2ECD8] hover:bg-[#E2D8BE] text-[#7A1F1F] border-2 border-[#7A1F1F] text-xs font-groovy font-bold cursor-pointer uppercase"
                 >
                   Done
                 </button>

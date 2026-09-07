@@ -4,16 +4,13 @@ import {
   Check, 
   Gift, 
   Percent, 
-  Zap, 
-  Sparkles, 
-  ShieldCheck, 
-  Lock, 
+  Flame, 
   ArrowRight,
-  Flame,
-  Award,
+  ShieldCheck,
   Star
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
+import { CircularStampBadge } from './CircularStampBadge';
 
 export function ValenceStampJourney({ 
   customer, 
@@ -31,56 +28,54 @@ export function ValenceStampJourney({
   return (
     <section className="space-y-4">
       
-      {/* SECTION HEADER: Progress & Target Reward Spotlight */}
+      {/* SECTION HEADER: Poster Scale */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-1">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono tracking-widest text-[#3B82F6] uppercase font-bold">
-              PROGRESSION TRACK
-            </span>
-            <span className="px-2 py-0.5 rounded-full bg-[#1A1C24] text-[#8E91A0] border border-[#2B2E3D] font-mono text-[9px] font-bold">
-              {totalSlots}-STAMP CYCLE
-            </span>
-          </div>
-          <h3 className="font-clash font-bold text-xl sm:text-2xl text-[#F4F4F6] mt-0.5">
+          <span className="text-xs font-mono font-bold tracking-widest text-[#7A1F1F] uppercase">
+            COLLECT STAMPS • UNLOCK REWARDS
+          </span>
+          <h3 className="font-groovy font-black text-3xl sm:text-4xl text-[#7A1F1F] tracking-wide mt-0.5 leading-none">
             Member Stamp Journey
           </h3>
         </div>
 
-        {/* Status Pill */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-[#121318] border border-[#222533] text-xs font-mono">
-          <span className="text-[#8E91A0]">COLLECTED:</span>
-          <span className="font-bold text-[#3B82F6] text-sm">
+        {/* Big Poster Number Badge */}
+        <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-[#7A1F1F] text-[#F2ECD8] border-2 border-[#5C1414] shadow-[4px_4px_0px_#5C1414] self-start sm:self-auto">
+          <span className="text-[11px] font-mono uppercase font-bold text-[#F2ECD8]/80">PUNCHED:</span>
+          <span className="font-groovy text-xl sm:text-2xl text-[#E5A93C] leading-none">
             {currentStamps} / {totalSlots}
           </span>
-          <span className="text-[#545768]">({Math.round(progressPercent)}%)</span>
+          <span className="text-xs font-mono text-[#F2ECD8]/80">({Math.round(progressPercent)}%)</span>
         </div>
       </div>
 
-      {/* MAIN JOURNEY CONTAINER */}
-      <div className="p-6 sm:p-7 rounded-3xl bg-[#121318] border border-[#222533] shadow-xl space-y-6 relative overflow-hidden">
+      {/* MAIN RETRO COTTON PUNCH CARD CONTAINER */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] shadow-[8px_8px_0px_#7A1F1F] space-y-6 relative overflow-hidden">
         
-        {/* Subtle Background Accent Gradient */}
-        <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-[#2563EB]/5 blur-[90px] pointer-events-none" />
+        {/* Inner Stitched / Dashed Margin */}
+        <div className="absolute inset-3 rounded-2xl border-2 border-dashed border-[#7A1F1F]/20 pointer-events-none" />
 
-        {/* 1. SCULPTED HORIZONTAL PROGRESS TRACK */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs font-mono text-[#8E91A0]">
-            <span>Card Journey</span>
-            <span>{isMilestoneReached ? 'Milestone Unlocked!' : `${stampsRemaining} more to reward`}</span>
+        {/* 1. HORIZONTAL PROGRESS TRACK */}
+        <div className="space-y-2 relative z-10">
+          <div className="flex items-center justify-between text-xs font-mono font-bold text-[#7A1F1F]">
+            <span className="uppercase tracking-wider">Card Progression</span>
+            <span className="font-groovy text-sm text-[#7A1F1F]">
+              {isMilestoneReached ? 'Milestone Complete!' : `${stampsRemaining} more stamps to reward`}
+            </span>
           </div>
-          <div className="h-2.5 w-full rounded-full bg-[#0B0C0E] overflow-hidden p-0.5 border border-[#242735]">
+
+          <div className="h-4 w-full rounded-full bg-[#E2D8BE] border-2 border-[#7A1F1F] overflow-hidden p-0.5">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progressPercent}%` }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="h-full rounded-full bg-gradient-to-r from-[#2563EB] via-[#3B82F6] to-[#F59E0B]"
+              className="h-full rounded-full bg-[#E5A93C]"
             />
           </div>
         </div>
 
-        {/* 2. DYNAMIC STAMP SLOT NODES */}
-        <div className={`grid gap-3 pt-1 ${
+        {/* 2. DYNAMIC STAMP SLOT NODES (Flat Bold Color Blocking) */}
+        <div className={`grid gap-3 sm:gap-4 pt-1 relative z-10 ${
           totalSlots <= 6
             ? 'grid-cols-3 sm:grid-cols-6'
             : totalSlots <= 8
@@ -95,32 +90,34 @@ export function ValenceStampJourney({
             return (
               <motion.div
                 key={slotIndex}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => {
                   sounds.playClick();
                   if (onSlotClick) onSlotClick(slotIndex);
                 }}
-                className={`relative rounded-2xl p-3 aspect-square flex flex-col items-center justify-between text-center transition-all select-none overflow-hidden cursor-pointer ${
+                className={`relative rounded-2xl p-3 aspect-square flex flex-col items-center justify-between text-center select-none overflow-hidden cursor-pointer transition-all ${
                   isStamped
-                    ? 'bg-[#191B24] border border-[#2563EB]/50 shadow-md ring-1 ring-[#2563EB]/30'
+                    ? 'bg-[#E5A93C] text-[#7A1F1F] border-3 border-[#7A1F1F] shadow-[3px_3px_0px_#7A1F1F]'
                     : isMilestoneSlot
-                    ? 'bg-[#1E1B16] border-2 border-dashed border-[#F59E0B]/70 ring-1 ring-[#F59E0B]/20'
+                    ? 'bg-[#7A1F1F] text-[#F2ECD8] border-3 border-[#5C1414] shadow-[3px_3px_0px_#470D0D]'
                     : isNextSlot
-                    ? 'bg-[#14161F] border-2 border-[#3B82F6]/60 shadow-inner ring-1 ring-[#3B82F6]/40 animate-pulse'
-                    : 'bg-[#0E0F14] border border-dashed border-[#242735] hover:border-[#3B82F6]/40'
+                    ? 'bg-[#FAF6EA] text-[#7A1F1F] border-3 border-dashed border-[#7A1F1F] animate-pulse'
+                    : 'bg-[#F2ECD8] text-[#7A1F1F]/50 border-2 border-dashed border-[#D8CEB0]'
                 }`}
               >
-                {/* Slot Index Tag */}
+                {/* Slot Number at Top */}
                 <div className="w-full flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-[#8E91A0] font-semibold">
+                  <span className={`font-groovy text-sm ${isStamped ? 'text-[#7A1F1F]' : isMilestoneSlot ? 'text-[#E5A93C]' : 'text-[#7A1F1F]'}`}>
                     #{slotIndex}
                   </span>
                   {isStamped && (
-                    <Check className="w-3 h-3 text-[#10B981] stroke-[3]" />
+                    <span className="w-4 h-4 rounded-full bg-[#7A1F1F] text-[#E5A93C] flex items-center justify-center">
+                      <Check className="w-2.5 h-2.5 stroke-[4]" />
+                    </span>
                   )}
                   {isMilestoneSlot && !isStamped && (
-                    <Award className="w-3 h-3 text-[#F59E0B]" />
+                    <span className="text-[10px] font-groovy text-[#E5A93C]">VIP</span>
                   )}
                 </div>
 
@@ -128,99 +125,111 @@ export function ValenceStampJourney({
                 <div className="flex-1 flex items-center justify-center my-1 w-full">
                   {isStamped ? (
                     <motion.div
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      className="w-10 h-10 rounded-xl bg-[#2563EB] text-white flex flex-col items-center justify-center shadow-lg shadow-[#2563EB]/30 border border-[#3B82F6]"
+                      initial={{ scale: 0.8, rotate: -15 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      className="w-11 h-11 rounded-full bg-[#7A1F1F] text-[#E5A93C] border-2 border-[#5C1414] flex flex-col items-center justify-center shadow-sm"
                     >
-                      <Check className="w-5 h-5 stroke-[3]" />
-                      <span className="text-[7px] font-mono font-bold tracking-tight uppercase leading-none mt-0.5">
-                        EARNED
+                      <Check className="w-5 h-5 stroke-[4]" />
+                      <span className="text-[7px] font-groovy font-bold uppercase leading-none mt-0.5 tracking-tight">
+                        STAMPED
                       </span>
                     </motion.div>
                   ) : isMilestoneSlot ? (
                     <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 rounded-xl bg-[#F59E0B]/15 border border-[#F59E0B]/40 flex items-center justify-center text-[#F59E0B]">
+                      <div className="w-11 h-11 rounded-full bg-[#E5A93C] text-[#7A1F1F] border-2 border-[#7A1F1F] flex items-center justify-center">
                         {currentGift?.id === 'discount50' ? (
-                          <Percent className="w-5 h-5 stroke-[2.5]" />
+                          <Percent className="w-6 h-6 stroke-[3]" />
                         ) : (
-                          <Gift className="w-5 h-5" />
+                          <Gift className="w-6 h-6 stroke-[2.5]" />
                         )}
                       </div>
-                      <span className="text-[8px] font-mono font-bold text-[#F59E0B] mt-1 tracking-tight uppercase">
+                      <span className="text-[8px] font-groovy font-bold text-[#E5A93C] mt-1 uppercase">
                         REWARD
                       </span>
                     </div>
                   ) : isNextSlot ? (
-                    <div className="flex flex-col items-center text-[#3B82F6]">
-                      <div className="w-9 h-9 rounded-full border border-[#3B82F6] flex items-center justify-center">
-                        <Zap className="w-4 h-4 fill-[#3B82F6]" />
+                    <div className="flex flex-col items-center text-[#7A1F1F]">
+                      <div className="w-9 h-9 rounded-full border-2 border-[#7A1F1F] flex items-center justify-center">
+                        <Flame className="w-4 h-4 text-[#7A1F1F] fill-[#7A1F1F]" />
                       </div>
-                      <span className="text-[8px] font-mono text-[#3B82F6] mt-0.5 font-bold">
+                      <span className="text-[8px] font-groovy text-[#7A1F1F] mt-0.5 font-bold">
                         NEXT
                       </span>
                     </div>
                   ) : (
-                    <div className="w-8 h-8 rounded-full border border-dashed border-[#242735] flex items-center justify-center text-[#363A4D]">
-                      <Star className="w-3.5 h-3.5 opacity-30" />
+                    <div className="w-8 h-8 rounded-full border border-dashed border-[#D8CEB0] flex items-center justify-center text-[#D8CEB0]">
+                      <Star className="w-3.5 h-3.5" />
                     </div>
                   )}
                 </div>
 
-                {/* Slot Status Label */}
-                <span className={`text-[8px] font-mono font-semibold tracking-tight truncate max-w-full ${
+                {/* Bottom Label */}
+                <span className={`text-[9px] font-groovy tracking-wide truncate max-w-full uppercase ${
                   isStamped
-                    ? 'text-[#3B82F6]'
+                    ? 'text-[#7A1F1F] font-bold'
                     : isMilestoneSlot
-                    ? 'text-[#F59E0B]'
+                    ? 'text-[#E5A93C] font-bold'
                     : isNextSlot
-                    ? 'text-[#F4F4F6]'
-                    : 'text-[#545768]'
+                    ? 'text-[#7A1F1F] font-bold'
+                    : 'text-[#8F8876]'
                 }`}>
-                  {isStamped ? 'VERIFIED' : isMilestoneSlot ? currentGift?.badge || 'MILESTONE' : isNextSlot ? 'NEXT BILL' : 'LOCKED'}
+                  {isStamped ? 'VERIFIED' : isMilestoneSlot ? currentGift?.badge || 'GIFT' : isNextSlot ? 'NEXT BILL' : 'LOCKED'}
                 </span>
               </motion.div>
             );
           })}
         </div>
 
-        {/* 3. STREAK SPEED-UP MULTIPLIER CALLOUT */}
+        {/* 3. STREAK SPEED-UP BANNER (Deep Oxblood Full-Bleed Block) */}
         {hasStreakBonus && (
-          <div className="p-3.5 rounded-2xl bg-[#F97316]/10 border border-[#F97316]/30 flex items-center justify-between text-xs font-mono">
-            <div className="flex items-center gap-2 text-[#F97316]">
-              <Flame className="w-4 h-4 fill-[#F97316]" />
-              <span className="font-bold">5-Day Active Streak Boost:</span>
-              <span className="text-[#F4F4F6] hidden sm:inline">Next bill awards +2 STAMPS simultaneously!</span>
+          <div className="p-4 rounded-2xl bg-[#7A1F1F] text-[#F2ECD8] border-2 border-[#5C1414] shadow-[4px_4px_0px_#5C1414] flex items-center justify-between text-xs font-mono relative z-10">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded-lg bg-[#E5A93C] text-[#7A1F1F]">
+                <Flame className="w-4 h-4 fill-[#7A1F1F]" />
+              </span>
+              <div>
+                <span className="font-groovy text-sm sm:text-base text-[#E5A93C] tracking-wide block leading-tight">
+                  5-DAY ACTIVE STREAK MULTIPLIER
+                </span>
+                <span className="text-[11px] text-[#F2ECD8]/90 font-sans hidden sm:inline">
+                  Maintaining your streak marks +2 stamps at once on your next bill!
+                </span>
+              </div>
             </div>
-            <span className="px-2.5 py-0.5 rounded-full bg-[#F97316] text-white font-bold text-[10px]">
-              +2X STAMPS
+
+            <span className="px-3 py-1 rounded-xl bg-[#E5A93C] text-[#7A1F1F] font-groovy font-black text-xs uppercase shadow-sm">
+              +2X SPEED-UP
             </span>
           </div>
         )}
 
-        {/* 4. TARGET REWARD MILESTONE BANNER */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-[#171922] border border-[#2B2E3D] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-[#2563EB]/15 border border-[#2563EB]/30 flex items-center justify-center text-[#3B82F6] shrink-0">
+        {/* 4. TARGET MILESTONE REWARD POSTER BLOCK */}
+        <div className="p-5 sm:p-6 rounded-2xl bg-[#7A1F1F] text-[#F2ECD8] border-3 border-[#5C1414] shadow-[6px_6px_0px_#5C1414] flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-[#E5A93C] text-[#7A1F1F] border-2 border-[#7A1F1F] flex items-center justify-center shrink-0 shadow-sm">
               {currentGift?.id === 'discount50' ? (
-                <Percent className="w-6 h-6 stroke-[2.5]" />
+                <Percent className="w-7 h-7 stroke-[3]" />
               ) : (
-                <Gift className="w-6 h-6 stroke-[2]" />
+                <Gift className="w-7 h-7 stroke-[2.5]" />
               )}
             </div>
-            <div className="space-y-0.5">
+
+            <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#3B82F6]/15 text-[#3B82F6] border border-[#3B82F6]/30 uppercase tracking-wider">
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#E5A93C] text-[#7A1F1F] uppercase tracking-wider">
                   TARGET REWARD
                 </span>
-                <span className="text-xs font-mono text-[#8E91A0]">
+                <span className="text-xs font-mono text-[#F2ECD8]/80">
                   Slot #{totalSlots} Milestone
                 </span>
               </div>
-              <h4 className="font-clash font-bold text-base sm:text-lg text-[#F4F4F6]">
+
+              {/* Reward Headline in Lilita One */}
+              <h4 className="font-groovy font-black text-xl sm:text-2xl text-[#F2ECD8] tracking-wide">
                 {currentGift?.title || '50% OFF Entire Order'}
               </h4>
-              <p className="text-xs text-[#8E91A0] font-sans">
-                {currentGift?.desc || 'Applies automatically to your entire bill upon completing your card.'}
+              <p className="text-xs text-[#F2ECD8]/90 font-sans max-w-lg">
+                {currentGift?.desc || 'Applies 50% discount automatically upon completing all card stamps.'}
               </p>
             </div>
           </div>
@@ -230,16 +239,16 @@ export function ValenceStampJourney({
               <button
                 type="button"
                 onClick={onClaimMilestone}
-                className="px-5 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-sans font-bold text-xs flex items-center gap-2 shadow-lg shadow-[#2563EB]/30 cursor-pointer transition-all"
+                className="px-6 py-3 rounded-2xl bg-[#E5A93C] hover:bg-[#C98D25] text-[#7A1F1F] font-groovy font-bold text-sm tracking-wider flex items-center gap-2 shadow-[4px_4px_0px_#5C1414] cursor-pointer transition-all uppercase"
               >
-                <Gift className="w-4 h-4" />
-                <span>Claim Milestone Pass</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <Gift className="w-4 h-4 stroke-[2.5]" />
+                <span>Claim Milestone</span>
+                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
               </button>
             ) : (
-              <div className="px-3.5 py-2 rounded-xl bg-[#0E0F14] border border-[#242735] text-right">
-                <span className="text-[9px] font-mono text-[#8E91A0] block uppercase">Remaining</span>
-                <span className="font-mono text-sm font-bold text-[#F4F4F6]">
+              <div className="px-4 py-2.5 rounded-2xl bg-[#5C1414] border-2 border-[#470D0D] text-right">
+                <span className="text-[10px] font-mono text-[#F2ECD8]/70 block uppercase font-bold">Remaining</span>
+                <span className="font-groovy text-base sm:text-lg text-[#E5A93C]">
                   {stampsRemaining} {stampsRemaining === 1 ? 'stamp' : 'stamps'}
                 </span>
               </div>
@@ -248,12 +257,12 @@ export function ValenceStampJourney({
         </div>
 
         {/* 5. READ-ONLY NOTICE / AUTO-SYNC GUIDANCE */}
-        <div className="flex items-center justify-between text-[11px] font-mono text-[#8E91A0] pt-1">
-          <span className="flex items-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5 text-[#3B82F6]" />
-            <span>Read-only member card • Stamps sync automatically on checkout</span>
+        <div className="flex items-center justify-between text-xs font-mono text-[#7A1F1F] pt-1 relative z-10 border-t-2 border-dashed border-[#7A1F1F]/20">
+          <span className="flex items-center gap-1.5 font-bold">
+            <ShieldCheck className="w-4 h-4 text-[#7A1F1F]" />
+            <span>Read-only pass • Stamps mark automatically on counter billing</span>
           </span>
-          <span className="text-[#545768] hidden sm:inline">1 Bill = +1 Stamp (+2 on 5d streak)</span>
+          <span className="hidden sm:inline font-bold">1 Bill = +1 Stamp (+2 on 5d Streak)</span>
         </div>
 
       </div>

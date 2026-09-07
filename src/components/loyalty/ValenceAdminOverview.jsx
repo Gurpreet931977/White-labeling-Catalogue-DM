@@ -1,26 +1,19 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import {
   Users,
   TrendingUp,
-  Award,
+  Receipt,
   Zap,
   Flame,
   ArrowUpRight,
-  ShieldCheck,
-  Receipt,
-  CreditCard,
-  CheckCircle2,
-  Clock,
-  Sparkles
+  ShieldCheck
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
+import { CircularStampBadge } from './CircularStampBadge';
 
 export function ValenceAdminOverview({ customers = [], config, onNavigateTab }) {
-  // Aggregate Metrics
   const totalCustomers = customers.length;
   const totalStampsIssued = customers.reduce((sum, c) => sum + (c.stamps || 0), 0);
-  const totalStreakDays = customers.reduce((sum, c) => sum + (c.streakDays || 0), 0);
   
   let totalRevenue = 0;
   let totalTransactions = 0;
@@ -31,42 +24,34 @@ export function ValenceAdminOverview({ customers = [], config, onNavigateTab }) 
     });
   });
 
-  const milestoneReadyCount = customers.filter(
-    (c) => (c.stamps || 0) >= (config?.totalStamps || 6)
-  ).length;
-
   const kpis = [
     {
       title: 'Active Members',
       value: totalCustomers,
       unit: 'enrolled',
       change: '+14% this month',
-      icon: Users,
-      color: 'text-[#3B82F6]'
+      icon: Users
     },
     {
       title: 'Gross Billed Volume',
       value: `₹${totalRevenue.toLocaleString()}`,
       unit: `${totalTransactions} receipts`,
       change: '+22.4% vs last cycle',
-      icon: Receipt,
-      color: 'text-[#10B981]'
+      icon: Receipt
     },
     {
       title: 'Stamps In Circulation',
       value: totalStampsIssued,
       unit: `avg ${(totalStampsIssued / (totalCustomers || 1)).toFixed(1)} / member`,
       change: 'Active velocity',
-      icon: Zap,
-      color: 'text-[#F59E0B]'
+      icon: Zap
     },
     {
       title: 'Streak Multipliers Active',
       value: customers.filter((c) => (c.streakDays || 0) >= (config?.streakBonusThreshold || 5)).length,
       unit: 'members earning 2X',
       change: '5-day streak threshold',
-      icon: Flame,
-      color: 'text-[#F97316]'
+      icon: Flame
     }
   ];
 
@@ -76,63 +61,57 @@ export function ValenceAdminOverview({ customers = [], config, onNavigateTab }) 
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-1">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono tracking-widest text-[#3B82F6] uppercase font-bold">
-              EXECUTIVE CONSOLE
-            </span>
-            <span className="px-2 py-0.5 rounded-full bg-[#1A1C24] text-[#8E91A0] border border-[#2B2E3D] font-mono text-[9px] font-bold">
-              REAL-TIME ANALYTICS
-            </span>
-          </div>
-          <h3 className="font-clash font-bold text-xl sm:text-2xl text-[#F4F4F6] mt-0.5">
-            Platform Overview & Velocity
+          <span className="text-xs font-mono font-bold tracking-widest text-[#7A1F1F] uppercase">
+            EXECUTIVE CONSOLE • REAL-TIME AUDIT
+          </span>
+          <h3 className="font-groovy font-black text-3xl sm:text-4xl text-[#7A1F1F] tracking-wide mt-0.5 leading-none">
+            Platform Overview &amp; Velocity
           </h3>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              sounds.playClick();
-              if (onNavigateTab) onNavigateTab('pos');
-            }}
-            className="px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-sans font-semibold text-xs tracking-wide shadow-md shadow-[#2563EB]/25 cursor-pointer transition-all flex items-center gap-2"
-          >
-            <Receipt className="w-3.5 h-3.5" />
-            <span>Launch POS Register</span>
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => {
+            sounds.playClick();
+            if (onNavigateTab) onNavigateTab('pos');
+          }}
+          className="px-5 py-2.5 rounded-xl bg-[#7A1F1F] hover:bg-[#5C1414] text-[#F2ECD8] font-groovy font-black text-xs tracking-wider shadow-[4px_4px_0px_#470D0D] cursor-pointer transition-all flex items-center gap-2 uppercase"
+        >
+          <Receipt className="w-4 h-4" />
+          <span>Launch POS Register</span>
+        </button>
       </div>
 
-      {/* 1. TOP KPI GRID */}
+      {/* 1. TOP KPI GRID (Deep Oxblood Cards with Massive Chunky Numbers) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map((kpi, idx) => {
           const Icon = kpi.icon;
           return (
             <div
               key={idx}
-              className="p-5 rounded-3xl bg-[#121318] border border-[#222533] shadow-lg space-y-3"
+              className="p-5 rounded-3xl bg-[#7A1F1F] text-[#F2ECD8] border-3 border-[#5C1414] shadow-[6px_6px_0px_#5C1414] space-y-3"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono text-[#8E91A0] uppercase font-medium">
+                <span className="text-xs font-mono text-[#F2ECD8]/80 uppercase font-bold tracking-wider">
                   {kpi.title}
                 </span>
-                <div className={`w-8 h-8 rounded-xl bg-[#1A1C24] border border-[#2B2E3D] flex items-center justify-center ${kpi.color}`}>
+                <div className="w-8 h-8 rounded-xl bg-[#5C1414] flex items-center justify-center text-[#E5A93C]">
                   <Icon className="w-4 h-4" />
                 </div>
               </div>
 
               <div>
-                <div className="font-clash font-bold text-2xl sm:text-3xl text-[#F4F4F6] tracking-tight">
+                {/* Massive Chunky Number at Poster Scale */}
+                <div className="font-groovy font-black text-3xl sm:text-4xl text-[#E5A93C] tracking-wide leading-none">
                   {kpi.value}
                 </div>
-                <div className="text-[11px] font-mono text-[#8E91A0] mt-0.5">
+                <div className="text-[11px] font-mono text-[#F2ECD8]/80 mt-1 font-bold">
                   {kpi.unit}
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-[#1D1F2B] text-[10px] font-mono text-[#10B981] flex items-center gap-1">
-                <TrendingUp className="w-3 h-3" />
+              <div className="pt-2 border-t-2 border-[#5C1414] text-[11px] font-mono text-[#E5A93C] flex items-center gap-1 font-bold">
+                <TrendingUp className="w-3.5 h-3.5" />
                 <span>{kpi.change}</span>
               </div>
             </div>
@@ -140,32 +119,32 @@ export function ValenceAdminOverview({ customers = [], config, onNavigateTab }) 
         })}
       </div>
 
-      {/* 2. MEMBER ENGAGEMENT & MILESTONE READINESS */}
+      {/* 2. MEMBER CYCLE READINESS & ENGINE PARAMETERS */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Left 2 Cols: Member Readiness Table */}
-        <div className="lg:col-span-2 p-6 rounded-3xl bg-[#121318] border border-[#222533] shadow-xl space-y-4">
+        {/* Left 2 Cols: Member Cycle Readiness */}
+        <div className="lg:col-span-2 p-6 sm:p-7 rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] shadow-[8px_8px_0px_#7A1F1F] space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h4 className="font-clash font-bold text-lg text-[#F4F4F6]">
+              <h4 className="font-groovy font-black text-2xl text-[#7A1F1F]">
                 Member Cycle Readiness
               </h4>
-              <p className="text-xs text-[#8E91A0] font-mono">
-                Current progress toward Slot #{config?.totalStamps || 6} milestone reward
+              <p className="text-xs text-[#7A1F1F]/80 font-sans">
+                Progress toward completing Slot #{config?.totalStamps || 6} milestone reward
               </p>
             </div>
 
             <button
               type="button"
               onClick={() => onNavigateTab && onNavigateTab('customers')}
-              className="text-xs font-mono text-[#3B82F6] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-xs font-groovy font-bold text-[#7A1F1F] hover:underline flex items-center gap-1 cursor-pointer uppercase"
             >
               <span>View All Members</span>
-              <ArrowUpRight className="w-3 h-3" />
+              <ArrowUpRight className="w-3.5 h-3.5 stroke-[3]" />
             </button>
           </div>
 
-          <div className="divide-y divide-[#1D1F2B]">
+          <div className="divide-y-2 divide-dashed divide-[#7A1F1F]/20">
             {customers.map((c) => {
               const currentStamps = c.stamps || 0;
               const totalStamps = config?.totalStamps || 6;
@@ -174,51 +153,49 @@ export function ValenceAdminOverview({ customers = [], config, onNavigateTab }) 
               const hasStreak = (c.streakDays || 0) >= (config?.streakBonusThreshold || 5);
 
               return (
-                <div key={c.id} className="py-3.5 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-[#1A1C24] border border-[#2A2D3C] flex items-center justify-center font-clash font-bold text-sm text-[#F4F4F6]">
+                <div key={c.id} className="py-4 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-10 h-10 rounded-2xl bg-[#7A1F1F] text-[#E5A93C] flex items-center justify-center font-groovy font-black text-sm border-2 border-[#5C1414] shadow-sm">
                       {c.name.slice(0, 2).toUpperCase()}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-bold text-[#F4F4F6]">
+                        <span className="font-groovy font-black text-base text-[#7A1F1F]">
                           {c.name}
                         </span>
                         {hasStreak && (
-                          <span className="px-1.5 py-0.2 rounded bg-[#F97316]/15 text-[#F97316] text-[9px] font-mono font-bold flex items-center gap-0.5">
-                            <Flame className="w-2.5 h-2.5 fill-[#F97316]" />
+                          <span className="px-2 py-0.5 rounded-full bg-[#E5A93C] text-[#7A1F1F] text-[9px] font-groovy font-black flex items-center gap-0.5 uppercase">
+                            <Flame className="w-2.5 h-2.5 fill-[#7A1F1F]" />
                             2X BOOST
                           </span>
                         )}
                       </div>
-                      <span className="text-[10px] font-mono text-[#8E91A0]">
+                      <span className="text-xs font-mono text-[#7A1F1F]/80 font-bold">
                         {c.phone} • {c.streakDays || 0}d streak
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 w-44">
+                  <div className="flex items-center gap-3 w-48">
                     <div className="flex-1 space-y-1">
-                      <div className="flex justify-between text-[10px] font-mono">
-                        <span className="text-[#8E91A0]">{currentStamps} / {totalStamps}</span>
-                        <span className={isMilestone ? 'text-[#10B981] font-bold' : 'text-[#3B82F6]'}>
+                      <div className="flex justify-between text-xs font-mono font-bold">
+                        <span className="text-[#7A1F1F]">{currentStamps} / {totalStamps}</span>
+                        <span className={isMilestone ? 'text-[#7A1F1F] font-black' : 'text-[#7A1F1F]'}>
                           {Math.round(percent)}%
                         </span>
                       </div>
-                      <div className="h-1.5 w-full rounded-full bg-[#0D0E13] overflow-hidden">
+                      <div className="h-2.5 w-full rounded-full bg-[#E2D8BE] border border-[#7A1F1F] overflow-hidden">
                         <div
                           className={`h-full rounded-full ${
-                            isMilestone
-                              ? 'bg-[#10B981]'
-                              : 'bg-gradient-to-r from-[#2563EB] to-[#3B82F6]'
+                            isMilestone ? 'bg-[#7A1F1F]' : 'bg-[#E5A93C]'
                           }`}
                           style={{ width: `${percent}%` }}
                         />
                       </div>
                     </div>
 
-                    <span className={`text-[10px] font-mono font-bold shrink-0 ${
-                      isMilestone ? 'text-[#10B981]' : 'text-[#8E91A0]'
+                    <span className={`text-[10px] font-groovy font-black shrink-0 uppercase ${
+                      isMilestone ? 'text-[#7A1F1F]' : 'text-[#7A1F1F]/80'
                     }`}>
                       {isMilestone ? 'REWARD READY' : `${totalStamps - currentStamps} left`}
                     </span>
@@ -229,38 +206,48 @@ export function ValenceAdminOverview({ customers = [], config, onNavigateTab }) 
           </div>
         </div>
 
-        {/* Right 1 Col: Quick Rules & Speed-Up Summary */}
-        <div className="p-6 rounded-3xl bg-[#121318] border border-[#222533] shadow-xl space-y-5 flex flex-col justify-between">
+        {/* Right 1 Col: Engine Rules */}
+        <div className="p-6 sm:p-7 rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] shadow-[8px_8px_0px_#7A1F1F] space-y-5 flex flex-col justify-between">
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-[#3B82F6]" />
-              <h4 className="font-clash font-bold text-base text-[#F4F4F6]">
-                Loyalty Engine Parameters
-              </h4>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-6 h-6 text-[#7A1F1F]" />
+                <h4 className="font-groovy font-black text-xl text-[#7A1F1F]">
+                  Engine Rules
+                </h4>
+              </div>
+
+              <CircularStampBadge
+                text="• VALENCE ENGINE • ACTIVE •"
+                centerText="RULE"
+                subText="V2"
+                size={58}
+                variant="oxblood"
+              />
             </div>
 
             <div className="space-y-3 text-xs font-mono">
-              <div className="p-3 rounded-2xl bg-[#0E0F14] border border-[#222533] space-y-1">
-                <span className="text-[#8E91A0] block">CARD CYCLE CAPACITY:</span>
-                <div className="text-sm font-bold text-[#F4F4F6] flex items-center justify-between">
+              <div className="p-3.5 rounded-2xl bg-[#F2ECD8] border-2 border-[#7A1F1F] space-y-1">
+                <span className="text-[#7A1F1F]/80 block font-bold uppercase">CARD CAPACITY:</span>
+                <div className="text-base font-groovy text-[#7A1F1F] font-black flex items-center justify-between">
                   <span>{config?.totalStamps || 6} Stamps Required</span>
-                  <span className="text-[10px] text-[#3B82F6]">Adjustable 4-12</span>
+                  <span className="text-xs text-[#7A1F1F]/70 font-mono">4-12 Slider</span>
                 </div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-[#0E0F14] border border-[#222533] space-y-1">
-                <span className="text-[#8E91A0] block">STREAK MULTIPLIER RULE:</span>
-                <div className="text-sm font-bold text-[#F97316] flex items-center justify-between">
-                  <span>{config?.streakBonusThreshold || 5} Consecutive Days</span>
-                  <span className="text-[10px] text-[#F97316]">+2 Stamps / Bill</span>
+              <div className="p-3.5 rounded-2xl bg-[#F2ECD8] border-2 border-[#7A1F1F] space-y-1">
+                <span className="text-[#7A1F1F]/80 block font-bold uppercase">STREAK MULTIPLIER:</span>
+                <div className="text-base font-groovy text-[#7A1F1F] font-black flex items-center justify-between">
+                  <span>{config?.streakBonusThreshold || 5} Consecutive Visits</span>
+                  <span className="text-xs text-[#7A1F1F] font-bold">+2 Stamps</span>
                 </div>
               </div>
 
-              <div className="p-3 rounded-2xl bg-[#0E0F14] border border-[#222533] space-y-1">
-                <span className="text-[#8E91A0] block">STANDARD GST RATE:</span>
-                <div className="text-sm font-bold text-[#10B981] flex items-center justify-between">
+              <div className="p-3.5 rounded-2xl bg-[#F2ECD8] border-2 border-[#7A1F1F] space-y-1">
+                <span className="text-[#7A1F1F]/80 block font-bold uppercase">STANDARD GST RATE:</span>
+                <div className="text-base font-groovy text-[#7A1F1F] font-black flex items-center justify-between">
                   <span>5% (2.5% CGST + 2.5% SGST)</span>
-                  <span className="text-[10px] text-[#10B981]">Thermal Docket</span>
+                  <span className="text-xs text-[#7A1F1F] font-mono font-bold">Thermal</span>
                 </div>
               </div>
             </div>
@@ -269,9 +256,9 @@ export function ValenceAdminOverview({ customers = [], config, onNavigateTab }) 
           <button
             type="button"
             onClick={() => onNavigateTab && onNavigateTab('settings')}
-            className="w-full py-2.5 rounded-xl bg-[#1A1C24] hover:bg-[#252836] border border-[#2B2E3D] text-xs font-mono text-[#F4F4F6] cursor-pointer transition-colors text-center"
+            className="w-full py-3 rounded-2xl bg-[#7A1F1F] hover:bg-[#5C1414] text-[#F2ECD8] font-groovy font-bold text-xs cursor-pointer transition-colors text-center uppercase shadow-[3px_3px_0px_#470D0D]"
           >
-            Configure Rules & Settings
+            Configure Rules &amp; Capacity
           </button>
         </div>
 

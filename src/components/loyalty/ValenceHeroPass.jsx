@@ -1,182 +1,128 @@
-import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { 
   QrCode, 
-  Sparkles, 
-  ShieldCheck, 
-  Award, 
   Flame, 
-  Zap, 
-  Star, 
   Copy, 
   Check, 
-  X,
-  CreditCard,
-  ChevronRight
+  ShieldCheck,
+  Star
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
+import { CircularStampBadge } from './CircularStampBadge';
 
 export function ValenceHeroPass({ customer, tier, totalSlots = 6, onShowQrModal }) {
-  const cardRef = useRef(null);
-  const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(0);
-  const [glarePosition, setGlarePosition] = useState({ x: 50, y: 50 });
   const [isCopied, setIsCopied] = useState(false);
-
-  const handleMouseMove = (e) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotX = ((y - centerY) / centerY) * -7;
-    const rotY = ((x - centerX) / centerX) * 7;
-    setRotateX(rotX);
-    setRotateY(rotY);
-    setGlarePosition({
-      x: (x / rect.width) * 100,
-      y: (y / rect.height) * 100
-    });
-  };
-
-  const handleMouseLeave = () => {
-    setRotateX(0);
-    setRotateY(0);
-  };
 
   const handleCopyId = (e) => {
     e.stopPropagation();
     sounds.playClick();
-    navigator.clipboard?.writeText(customer.phone || customer.id);
+    navigator.clipboard?.writeText(customer?.phone || customer?.id || '9876543210');
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   };
 
-  const xpPercent = Math.min(100, ((customer.xp || 420) / 650) * 100);
+  const xpPercent = Math.min(100, ((customer?.xp || 420) / 650) * 100);
 
   return (
-    <div className="relative perspective-1000 select-none">
+    <div className="relative select-none">
       <motion.div
-        ref={cardRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
         onClick={() => {
           sounds.playStampSquish();
           if (onShowQrModal) onShowQrModal();
         }}
-        style={{
-          transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-          transformStyle: 'preserve-3d',
-          transition: 'transform 0.15s ease-out'
-        }}
-        whileHover={{ scale: 1.015 }}
+        whileHover={{ y: -3 }}
         whileTap={{ scale: 0.985 }}
-        className="relative w-full rounded-3xl overflow-hidden p-6 sm:p-8 bg-gradient-to-br from-[#161821] via-[#101117] to-[#0A0B0E] border border-[#2B2E3D] shadow-2xl cursor-pointer group"
+        className="relative w-full rounded-3xl p-6 sm:p-8 bg-[#7A1F1F] text-[#F2ECD8] border-3 border-[#5C1414] shadow-[8px_8px_0px_#470D0D] cursor-pointer group overflow-hidden transition-all"
       >
-        {/* Holographic Dynamic Glare Surface */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-40 group-hover:opacity-60 transition-opacity duration-300"
-          style={{
-            background: `radial-gradient(circle at ${glarePosition.x}% ${glarePosition.y}%, rgba(255,255,255,0.12) 0%, rgba(37,99,235,0.08) 35%, transparent 70%)`
-          }}
-        />
+        {/* Flat Dotted Inner Inset Border */}
+        <div className="absolute inset-3 rounded-2xl border-2 border-dashed border-[#F2ECD8]/25 pointer-events-none" />
 
-        {/* Subtle Luxury Security Mesh Background */}
-        <div 
-          className="absolute inset-0 pointer-events-none opacity-10"
-          style={{
-            backgroundImage: `radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px)`,
-            backgroundSize: '20px 20px'
-          }}
-        />
-
-        {/* Ambient Top Glow Line */}
-        <div className="absolute top-0 inset-x-12 h-px bg-gradient-to-r from-transparent via-[#3B82F6]/60 to-transparent" />
-
-        {/* Card Content (Elevated with 3D Depth) */}
-        <div className="relative z-10 flex flex-col justify-between min-h-[200px] sm:min-h-[220px]">
+        {/* Content Container */}
+        <div className="relative z-10 flex flex-col justify-between min-h-[230px] sm:min-h-[250px] space-y-6">
           
-          {/* Top Header Row */}
+          {/* Top Row: Title + Circular Stamp Badge */}
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono tracking-[0.25em] text-[#8E91A0] uppercase font-bold">
-                  VALENCE MEMBERSHIP
+                <span className="text-[11px] font-mono tracking-[0.22em] text-[#F2ECD8]/80 uppercase font-bold">
+                  OFFICIAL MEMBERSHIP PASS
                 </span>
-                <span className="px-2 py-0.5 rounded-full bg-[#F59E0B]/15 text-[#F59E0B] border border-[#F59E0B]/30 font-mono text-[9px] font-bold tracking-wider">
+                <span className="px-2 py-0.5 rounded-full bg-[#E5A93C] text-[#7A1F1F] font-groovy text-xs font-bold uppercase tracking-wider">
                   {tier?.badge || 'GOLD MEMBER'}
                 </span>
               </div>
-              <h3 className="font-clash font-bold text-2xl sm:text-3xl text-[#F4F4F6] tracking-tight group-hover:text-white transition-colors">
+              
+              {/* Member Name at Poster Scale */}
+              <h2 className="font-groovy font-black text-3xl sm:text-5xl text-[#F2ECD8] tracking-wide leading-none pt-1">
                 {customer?.name || 'Valued Member'}
-              </h3>
+              </h2>
             </div>
 
-            {/* Smart NFC / Pass Crest Badge */}
-            <div className="flex flex-col items-end gap-1">
-              <div className="w-10 h-10 rounded-2xl bg-[#1F222E] border border-[#363A4D] flex items-center justify-center text-[#F4F4F6] shadow-inner group-hover:border-[#3B82F6] transition-colors">
-                <QrCode className="w-5 h-5 text-[#3B82F6]" />
-              </div>
-              <span className="text-[9px] font-mono text-[#8E91A0] tracking-wide">
-                TAP FOR QR
-              </span>
-            </div>
-          </div>
-
-          {/* Middle Meta: ID & Streak Power */}
-          <div className="flex flex-wrap items-center justify-between gap-2 py-3 border-y border-[#222533]/80">
-            <button
-              type="button"
-              onClick={handleCopyId}
-              className="flex items-center gap-1.5 text-xs font-mono text-[#8E91A0] hover:text-[#F4F4F6] transition-colors cursor-pointer"
-              title="Click to copy member ID"
-            >
-              <span>ID: VAL-{customer?.phone || '9876543210'}</span>
-              {isCopied ? (
-                <Check className="w-3.5 h-3.5 text-[#10B981]" />
-              ) : (
-                <Copy className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
-              )}
-            </button>
-
-            <div className="flex items-center gap-2 text-xs font-mono">
-              <span className="text-[#8E91A0]">STATUS:</span>
-              <span className="text-[#F4F4F6] font-bold flex items-center gap-1">
-                <span>{customer?.streakDays || 1}d Streak</span>
-                <Flame className="w-3.5 h-3.5 text-[#F97316] fill-[#F97316]" />
-              </span>
-            </div>
-          </div>
-
-          {/* Bottom Row: XP Track & Level Progression */}
-          <div className="space-y-2 pt-1">
-            <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-1.5 font-medium text-[#F4F4F6]">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#3B82F6]" />
-                <span className="font-sans text-xs">{tier?.name || 'Artisan Member'} (Tier {tier?.level || 3})</span>
-              </div>
-              <span className="font-mono text-[11px] text-[#F59E0B] font-bold">
-                {customer?.xp || 420} / 650 XP
-              </span>
-            </div>
-
-            {/* Custom Glowing XP Track */}
-            <div className="h-2 w-full rounded-full bg-[#0D0E12] overflow-hidden p-0.5 border border-[#252836]">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${xpPercent}%` }}
-                transition={{ duration: 1, ease: 'easeOut' }}
-                className="h-full rounded-full bg-gradient-to-r from-[#2563EB] via-[#3B82F6] to-[#F59E0B]"
+            {/* Circular Stamp Badge Motif with Curved Text */}
+            <div className="shrink-0 group-hover:rotate-12 transition-transform duration-300">
+              <CircularStampBadge
+                text="• VALENCE LOYALTY CLUB • VERIFIED •"
+                centerText="GOLD"
+                subText="TIER 3"
+                size={84}
+                variant="mustard"
               />
             </div>
           </div>
 
-        </div>
+          {/* Middle Row: Receipt-Style Details (Space Mono) */}
+          <div className="flex flex-wrap items-center justify-between gap-3 py-3 border-y-2 border-[#5C1414]">
+            <button
+              type="button"
+              onClick={handleCopyId}
+              className="flex items-center gap-2 text-xs font-mono text-[#F2ECD8]/90 hover:text-white cursor-pointer transition-colors"
+              title="Click to copy member ID"
+            >
+              <span className="font-bold">ID: VAL-{customer?.phone || '9876543210'}</span>
+              {isCopied ? (
+                <Check className="w-3.5 h-3.5 text-[#E5A93C]" />
+              ) : (
+                <Copy className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100" />
+              )}
+            </button>
 
-        {/* Bottom Micro-Badge: Digital NFC Simulation */}
-        <div className="absolute bottom-2 right-4 text-[8px] font-mono text-[#545768] tracking-widest uppercase">
-          NFC // VERIFIED DIGITAL PASS
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5 text-xs font-groovy text-[#E5A93C] bg-[#5C1414] px-2.5 py-1 rounded-xl">
+                <span>{customer?.streakDays || 1}d Streak</span>
+                <Flame className="w-3.5 h-3.5 fill-[#E5A93C] text-[#E5A93C]" />
+              </div>
+
+              <div className="flex items-center gap-1 text-[11px] font-mono text-[#F2ECD8]/80">
+                <QrCode className="w-3.5 h-3.5 text-[#E5A93C]" />
+                <span className="underline uppercase tracking-wider font-bold">Show QR</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Row: XP Track with Bold Poster Numbers */}
+          <div className="space-y-2 pt-1">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-[#F2ECD8]">
+                <ShieldCheck className="w-4 h-4 text-[#E5A93C]" />
+                <span>Tier Progression: {tier?.name || 'Gold Member'}</span>
+              </div>
+              <span className="font-groovy text-sm sm:text-base text-[#E5A93C] tracking-wide">
+                {customer?.xp || 420} / 650 XP
+              </span>
+            </div>
+
+            {/* Flat Color Blocked Progress Bar */}
+            <div className="h-3.5 w-full rounded-full bg-[#5C1414] border-2 border-[#470D0D] overflow-hidden p-0.5">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${xpPercent}%` }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+                className="h-full rounded-full bg-[#E5A93C]"
+              />
+            </div>
+          </div>
+
         </div>
       </motion.div>
     </div>
