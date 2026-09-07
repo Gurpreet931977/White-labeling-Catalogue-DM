@@ -33,16 +33,63 @@ export function CartProvider({ children }) {
     return localStorage.getItem('thc_operational_model') || 'table-qr';
   });
 
-  const [activeTable, setActiveTable] = useState(() => {
-    // Check URL parameters first (e.g. ?table=4)
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const urlTable = params.get('table');
-      if (urlTable) return parseInt(urlTable, 10);
+  const parseTableFromLocation = () => {
+    if (typeof window === 'undefined') return null;
+    try {
+      // 1. Check window.location.search (?table=4)
+      const searchParams = new URLSearchParams(window.location.search);
+      const sTable = searchParams.get('table');
+      if (sTable) {
+        const num = parseInt(sTable, 10);
+        if (!isNaN(num) && num > 0 && num <= 99) return num;
+      }
+
+      // 2. Check window.location.hash (#cafe-demo?table=4 or #cafe-demo&table=4)
+      const hash = window.location.hash || '';
+      const qIdx = hash.indexOf('?');
+      if (qIdx !== -1) {
+        const hashParams = new URLSearchParams(hash.substring(qIdx));
+        const hTable = hashParams.get('table');
+        if (hTable) {
+          const num = parseInt(hTable, 10);
+          if (!isNaN(num) && num > 0 && num <= 99) return num;
+        }
+      }
+      const ampIdx = hash.indexOf('&table=');
+      if (ampIdx !== -1) {
+        const val = hash.substring(ampIdx + 7).split('&')[0];
+        const num = parseInt(val, 10);
+        if (!isNaN(num) && num > 0 && num <= 99) return num;
+      }
+    } catch {
+      // fallback
     }
+    return null;
+  };
+
+  const [activeTable, setActiveTable] = useState(() => {
+    const fromUrl = parseTableFromLocation();
+    if (fromUrl) return fromUrl;
     const saved = localStorage.getItem('thc_active_table');
     return saved ? parseInt(saved, 10) : 4; // Default to Table 4 demo
   });
+
+  // Keep table binding synced if customer scans different table QR code
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const tableFromUrl = parseTableFromLocation();
+      if (tableFromUrl) {
+        setActiveTable(tableFromUrl);
+        setDiningMode('table');
+      }
+    };
+    window.addEventListener('hashchange', handleUrlChange);
+    window.addEventListener('popstate', handleUrlChange);
+    return () => {
+      window.removeEventListener('hashchange', handleUrlChange);
+      window.removeEventListener('popstate', handleUrlChange);
+    };
+  }, []);
 
   // diningMode: 'table' | 'counter' | 'delivery'
   const [diningMode, setDiningMode] = useState(() => {

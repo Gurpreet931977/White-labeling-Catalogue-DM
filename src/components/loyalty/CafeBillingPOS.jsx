@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Receipt, 
@@ -32,6 +32,7 @@ import {
   processBillingTransaction, 
   getGiftById 
 } from '../../utils/loyaltyStorage';
+import { generateQRCodeDataUrl, getUpiPaymentUrl } from '../../utils/qrCode';
 
 // Helper to render category icon
 const renderItemCategoryIcon = (category) => {
@@ -103,6 +104,7 @@ export function CafeBillingPOS({
   // Payment Tender Option (Cash, UPI, Card - NO payment gateway)
   const [paymentMethod, setPaymentMethod] = useState('UPI'); // 'UPI', 'CASH', 'CARD'
   const [cashTendered, setCashTendered] = useState('');
+  const [upiPosQrDataUrl, setUpiPosQrDataUrl] = useState('');
 
   // Thermal Receipt Modal
   const [printedReceipt, setPrintedReceipt] = useState(null);
@@ -192,6 +194,31 @@ export function CafeBillingPOS({
   const changeDue = paymentMethod === 'CASH' && Number(cashTendered) > grandTotal
     ? Number(cashTendered) - grandTotal
     : 0;
+
+  // Dynamic Real UPI Payment QR for Counter POS
+  useEffect(() => {
+    if (paymentMethod !== 'UPI' || grandTotal <= 0) {
+      setUpiPosQrDataUrl('');
+      return;
+    }
+    let active = true;
+    const upiUrl = getUpiPaymentUrl('thccafe@icici', 'THC Cafe & Bistro', grandTotal, 'Counter POS Bill');
+    generateQRCodeDataUrl(upiUrl, {
+      width: 200,
+      margin: 1,
+      color: { dark: '#1A1310', light: '#FFFFFF' }
+    })
+      .then((url) => {
+        if (active) setUpiPosQrDataUrl(url);
+      })
+      .catch((err) => {
+        console.error('POS UPI QR error:', err);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [paymentMethod, grandTotal]);
 
   // Filtered Menu Items
   const filteredMenuItems = POS_MENU_ITEMS.filter((item) => {
@@ -664,6 +691,25 @@ export function CafeBillingPOS({
                   <div className="text-right font-space text-xs text-[#7A6B63]">
                     <span>Change: </span>
                     <strong className="text-[#2E7D32]">₹{changeDue}</strong>
+                  </div>
+                </div>
+              )}
+
+              {/* Dynamic Real POS UPI QR Display */}
+              {paymentMethod === 'UPI' && upiPosQrDataUrl && (
+                <div className="mt-2 p-2.5 bg-white border border-[#DDD4C7] rounded-xl flex items-center gap-3 shadow-xs">
+                  <img src={upiPosQrDataUrl} alt="UPI QR" className="w-16 h-16 rounded-lg border border-stone-200 object-contain p-0.5" />
+                  <div className="flex-1 text-left">
+                    <p className="text-[10px] font-space font-bold text-[#1A1310] flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      Dynamic POS UPI QR (₹{grandTotal})
+                    </p>
+                    <p className="text-[9px] font-space text-[#7A6B63] mt-0.5">
+                      Show screen to customer: scan with GPay, PhonePe, or Paytm
+                    </p>
+                    <p className="text-[9px] font-mono text-[#2044E2] font-semibold mt-0.5">
+                      thccafe@icici
+                    </p>
                   </div>
                 </div>
               )}

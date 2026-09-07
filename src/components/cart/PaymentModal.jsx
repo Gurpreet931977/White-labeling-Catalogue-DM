@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, 
@@ -10,7 +10,10 @@ import {
   Receipt, 
   Loader2,
   Award,
-  ArrowRight
+  ArrowRight,
+  Copy,
+  Check,
+  ExternalLink
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useCart } from '../../context/CartContext';
@@ -19,6 +22,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { CAFE_CONFIG, BRAND_CONFIG } from '../../data/cafeConfig';
 import { sounds } from '../../utils/audio';
 import { processBillingTransaction } from '../../utils/loyaltyStorage';
+import { generateQRCodeDataUrl, getUpiPaymentUrl } from '../../utils/qrCode';
 
 export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
   const { 
@@ -46,6 +50,52 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
 
   const [paymentType, setPaymentType] = useState('online'); // 'online' | 'counter'
   const [isProcessing, setIsProcessing] = useState(false);
+  const [upiQrDataUrl, setUpiQrDataUrl] = useState('');
+  const [isUpiLoading, setIsUpiLoading] = useState(false);
+  const [copiedUpi, setCopiedUpi] = useState(false);
+
+  // Generate authentic NPCI UPI payment deep link and scannable QR
+  const upiId = CAFE_CONFIG.mockUpiId || 'thccafe@icici';
+  const upiPayee = BRAND_CONFIG.brandName || 'THC Cafe and Bistro';
+  const orderNote = diningMode === 'table' ? `Table ${activeTable || '01'} Bill` : 'THC Cafe Order';
+  const upiPaymentUrl = getUpiPaymentUrl(upiId, upiPayee, grandTotal, orderNote);
+
+  useEffect(() => {
+    if (!isOpen || paymentType !== 'online') return;
+    let active = true;
+    setIsUpiLoading(true);
+
+    generateQRCodeDataUrl(upiPaymentUrl, {
+      width: 260,
+      margin: 1,
+      color: {
+        dark: '#12100E',
+        light: '#FFFFFF'
+      }
+    })
+      .then((dataUrl) => {
+        if (active) setUpiQrDataUrl(dataUrl);
+      })
+      .catch((err) => {
+        console.error('Failed to generate UPI QR:', err);
+      })
+      .finally(() => {
+        if (active) setIsUpiLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [isOpen, paymentType, upiPaymentUrl]);
+
+  const handleCopyUpiId = () => {
+    sounds.playClick();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(upiId);
+    }
+    setCopiedUpi(true);
+    setTimeout(() => setCopiedUpi(false), 2000);
+  };
 
   if (!isOpen) return null;
 
@@ -251,33 +301,101 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
           {/* Step 2 Content */}
           {paymentType === 'online' ? (
             <div className="space-y-4">
-              <div className={`p-4 rounded-2xl border text-center space-y-2 ${
+              <div className={`p-5 rounded-2xl border text-center space-y-3 ${
                 isLight 
-                  ? 'bg-white border-[#E8E2D5]' 
+                  ? 'bg-white border-[#E8E2D5] shadow-sm' 
                   : 'bg-[#1C1917] border-white/10'
               }`}>
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center mx-auto ${
-                  isLight ? 'bg-stone-100 text-[#12100E]' : 'bg-white/10 text-white'
-                }`}>
-                  <QrCode className="w-5 h-5" />
+                {/* Real Scannable UPI QR Card */}
+                <div className="flex flex-col items-center justify-center">
+                  <div className="relative p-3 bg-white rounded-2xl border-2 border-stone-900 shadow-md flex items-center justify-center min-h-[190px] min-w-[190px]">
+                    {isUpiLoading || !upiQrDataUrl ? (
+                      <div className="flex flex-col items-center justify-center text-stone-500 py-8 gap-2">
+                        <Loader2 className="w-8 h-8 animate-spin text-[#D04834]" />
+                        <span className="text-[11px] font-mono">Generating UPI QR...</span>
+                      </div>
+                    ) : (
+                      <div className="relative flex flex-col items-center">
+                        <img 
+                          src={upiQrDataUrl} 
+                          alt="Real UPI Payment QR Code" 
+                          className="w-44 h-44 object-contain rounded-lg"
+                        />
+                        <div className="absolute bottom-1 bg-white/95 px-2 py-0.5 rounded-full border border-stone-300 text-[10px] font-mono font-bold text-stone-800 shadow-xs flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                          <span>₹{grandTotal}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <h4 className="font-editorial text-base">Instant UPI QR Settlement</h4>
-                <p className={`text-xs font-mono ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
-                  UPI ID: <span className="font-bold text-[#D04834]">{CAFE_CONFIG.mockUpiId}</span>
-                </p>
-                <div className="py-1 flex items-center justify-center gap-2">
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase ${
-                    isLight ? 'bg-stone-100 text-stone-700' : 'bg-white/5 text-stone-300'
-                  }`}>GPay</span>
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase ${
-                    isLight ? 'bg-stone-100 text-stone-700' : 'bg-white/5 text-stone-300'
-                  }`}>PhonePe</span>
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase ${
-                    isLight ? 'bg-stone-100 text-stone-700' : 'bg-white/5 text-stone-300'
-                  }`}>Paytm</span>
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase ${
-                    isLight ? 'bg-stone-100 text-stone-700' : 'bg-white/5 text-stone-300'
-                  }`}>Any App</span>
+
+                <div>
+                  <h4 className="font-editorial text-base font-medium">Scan to Pay with Any UPI App</h4>
+                  <p className={`text-xs mt-0.5 ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                    Open Google Pay, PhonePe, Paytm, or your bank app to scan
+                  </p>
+                </div>
+
+                {/* UPI ID with Quick Copy */}
+                <div className="flex items-center justify-center gap-2">
+                  <span className={`text-xs font-mono px-3 py-1.5 rounded-xl border flex items-center gap-1.5 ${
+                    isLight ? 'bg-stone-50 border-stone-200 text-stone-700' : 'bg-white/5 border-white/10 text-stone-300'
+                  }`}>
+                    <span>UPI ID:</span>
+                    <strong className="text-[#D04834]">{upiId}</strong>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleCopyUpiId}
+                    className={`p-1.5 rounded-xl border transition cursor-pointer flex items-center gap-1 text-xs ${
+                      copiedUpi 
+                        ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400' 
+                        : isLight 
+                        ? 'bg-stone-100 hover:bg-stone-200 border-stone-200 text-stone-700' 
+                        : 'bg-white/10 hover:bg-white/15 border-white/10 text-white'
+                    }`}
+                    title="Copy UPI ID"
+                  >
+                    {copiedUpi ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-500" />
+                        <span className="text-[10px] font-mono font-bold">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span className="text-[10px] font-mono">Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Mobile Intent Trigger for Users on Phones */}
+                <div className="pt-1">
+                  <a
+                    href={upiPaymentUrl}
+                    className={`inline-flex items-center justify-center gap-1.5 text-xs font-syne font-semibold underline decoration-dotted underline-offset-4 ${
+                      isLight ? 'text-stone-600 hover:text-stone-900' : 'text-stone-400 hover:text-white'
+                    }`}
+                  >
+                    <span>On mobile? Tap here to open UPI App</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+
+                {/* Accepted Wallets Badges */}
+                <div className="pt-2 border-t border-stone-200/40 dark:border-white/5 flex items-center justify-center gap-2">
+                  {['GPay', 'PhonePe', 'Paytm', 'BHIM', 'Cred'].map((app) => (
+                    <span 
+                      key={app}
+                      className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider ${
+                        isLight ? 'bg-stone-100 text-stone-600 font-medium' : 'bg-white/5 text-stone-400'
+                      }`}
+                    >
+                      {app}
+                    </span>
+                  ))}
                 </div>
               </div>
 

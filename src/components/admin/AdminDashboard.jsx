@@ -33,7 +33,9 @@ import {
   MapPin,
   User,
   Award,
-  Upload
+  Upload,
+  Copy,
+  ExternalLink
 } from 'lucide-react';
 import { useOrder } from '../../context/OrderContext';
 import { useAuth } from '../../context/AuthContext';
@@ -41,6 +43,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { CATEGORIES } from '../../data/menuData';
 import { BRAND_CONFIG } from '../../data/cafeConfig';
 import { sounds } from '../../utils/audio';
+import { generateQRCodeDataUrl, getTableOrderUrl } from '../../utils/qrCode';
 
 // Station Category Mappings
 const KITCHEN_CATEGORIES = ['woodfired-pizza', 'pastas-mains', 'paninis-burgers', 'appetizers-sides', 'desserts', 'italian-specials', 'burgers', 'sides'];
@@ -128,6 +131,9 @@ export function AdminDashboard({ onBackToClient }) {
   const [stockSearch, setStockSearch] = useState('');
   const [stockCategory, setStockCategory] = useState('all');
   const [selectedTableForQR, setSelectedTableForQR] = useState(1);
+  const [tableQrDataUrl, setTableQrDataUrl] = useState('');
+  const [isGeneratingTableQR, setIsGeneratingTableQR] = useState(false);
+  const [copiedTableUrl, setCopiedTableUrl] = useState(false);
   const [viewingSlip, setViewingSlip] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -350,6 +356,236 @@ export function AdminDashboard({ onBackToClient }) {
     sounds.playClick();
     deleteMenuItem(deleteConfirmItem.id);
     setDeleteConfirmItem(null);
+  };
+
+  // Live QR Code Generation for Admin Stand Preview
+  const currentTableOrderUrl = getTableOrderUrl(selectedTableForQR);
+
+  useEffect(() => {
+    let active = true;
+    setIsGeneratingTableQR(true);
+    generateQRCodeDataUrl(currentTableOrderUrl, {
+      width: 320,
+      margin: 1,
+      color: {
+        dark: '#12100E',
+        light: '#FFFFFF'
+      }
+    })
+      .then((url) => {
+        if (active) setTableQrDataUrl(url);
+      })
+      .catch((err) => {
+        console.error('Failed to generate table QR:', err);
+      })
+      .finally(() => {
+        if (active) setIsGeneratingTableQR(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [selectedTableForQR, currentTableOrderUrl]);
+
+  const handleDownloadTableQR = () => {
+    sounds.playClick();
+    if (!tableQrDataUrl) return;
+    const a = document.createElement('a');
+    a.href = tableQrDataUrl;
+    a.download = `THC-Cafe-Table-${selectedTableForQR < 10 ? `0${selectedTableForQR}` : selectedTableForQR}-QR.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  const handleCopyTableUrl = () => {
+    sounds.playClick();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(currentTableOrderUrl);
+    }
+    setCopiedTableUrl(true);
+    setTimeout(() => setCopiedTableUrl(false), 2000);
+  };
+
+  const handlePrintSinglePlaque = () => {
+    sounds.playClick();
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      window.print();
+      return;
+    }
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Table ${selectedTableForQR} Standee - ${BRAND_CONFIG.brandName}</title>
+          <style>
+            @page { size: A5 portrait; margin: 10mm; }
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              min-height: 90vh;
+              background: #fff;
+              color: #12100E;
+              margin: 0;
+              padding: 20px;
+            }
+            .standee {
+              width: 320px;
+              padding: 32px 24px;
+              border: 3px solid #12100E;
+              border-radius: 28px;
+              text-align: center;
+              box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            }
+            .tag {
+              font-size: 11px;
+              font-weight: 800;
+              letter-spacing: 2px;
+              text-transform: uppercase;
+              color: #D04834;
+              margin-bottom: 8px;
+            }
+            .title {
+              font-size: 26px;
+              font-weight: 800;
+              margin: 0 0 4px 0;
+              color: #12100E;
+            }
+            .subtitle {
+              font-size: 12px;
+              color: #666;
+              margin-bottom: 20px;
+            }
+            .table-badge {
+              display: inline-block;
+              background: #12100E;
+              color: #fff;
+              padding: 7px 22px;
+              border-radius: 999px;
+              font-size: 15px;
+              font-weight: 800;
+              letter-spacing: 1.5px;
+              margin-bottom: 16px;
+            }
+            .qr-box {
+              background: #fff;
+              padding: 12px;
+              border-radius: 20px;
+              border: 2px solid #12100E;
+              display: inline-block;
+              margin-bottom: 16px;
+            }
+            .qr-box img {
+              width: 200px;
+              height: 200px;
+              display: block;
+            }
+            .instruct {
+              font-size: 13px;
+              font-weight: 700;
+              color: #12100E;
+              margin-bottom: 4px;
+            }
+            .url {
+              font-size: 10px;
+              color: #777;
+              word-break: break-all;
+              font-family: monospace;
+            }
+            .wifi-box {
+              margin-top: 20px;
+              padding-top: 14px;
+              border-top: 1px dashed #ccc;
+              font-size: 11px;
+              color: #444;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="standee">
+            <div class="tag">ORDER FROM TABLE</div>
+            <h1 class="title">${BRAND_CONFIG.brandName}</h1>
+            <div class="subtitle">Artisanal Highway Cafe & Kitchen</div>
+            <div class="table-badge">TABLE ${selectedTableForQR < 10 ? `0${selectedTableForQR}` : selectedTableForQR}</div>
+            <div class="qr-box">
+              <img src="${tableQrDataUrl}" alt="Table ${selectedTableForQR} QR" />
+            </div>
+            <div class="instruct">Scan QR to View Menu &amp; Order</div>
+            <div class="url">${currentTableOrderUrl}</div>
+            <div class="wifi-box">
+              📶 <strong>Cafe WiFi:</strong> THC-HighSpeed &bull; <strong>Pass:</strong> highwaycafe
+            </div>
+          </div>
+          <script>
+            window.onload = function() {
+              setTimeout(function() {
+                window.print();
+              }, 300);
+            };
+          <\/script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
+  const handleBatchPrintAllTables = async () => {
+    sounds.playClick();
+    const tables = BRAND_CONFIG.tables || [];
+    const qrPromises = tables.map(async (t) => {
+      const url = getTableOrderUrl(t.number);
+      const dataUrl = await generateQRCodeDataUrl(url, { width: 220, margin: 1 });
+      return { ...t, qr: dataUrl, url };
+    });
+
+    const allQrs = await Promise.all(qrPromises);
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      window.print();
+      return;
+    }
+
+    const itemsHtml = allQrs.map((t) => `
+      <div class="card">
+        <div class="tag">THC CAFE &bull; STAND</div>
+        <div class="table-label">TABLE #${t.number < 10 ? `0${t.number}` : t.number}</div>
+        <div class="qr-wrap"><img src="${t.qr}" /></div>
+        <div class="help">Point camera to order directly</div>
+        <div class="subhelp">${t.capacity} Guests &bull; THC-HighSpeed WiFi</div>
+      </div>
+    `).join('');
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>All 12 Table Standees - ${BRAND_CONFIG.brandName}</title>
+          <style>
+            @page { size: A4 portrait; margin: 8mm; }
+            body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding: 10px; color: #12100E; }
+            h2 { text-align: center; margin: 0 0 12px 0; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; }
+            .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+            .card { border: 2px solid #12100E; border-radius: 14px; padding: 12px 8px; text-align: center; page-break-inside: avoid; }
+            .tag { font-size: 8px; font-weight: 800; letter-spacing: 1.5px; color: #D04834; }
+            .table-label { font-size: 14px; font-weight: 900; margin: 4px 0 6px 0; letter-spacing: 1px; }
+            .qr-wrap img { width: 140px; height: 140px; display: block; margin: 0 auto; border-radius: 6px; }
+            .help { font-size: 10px; font-weight: 700; color: #12100E; margin-top: 6px; }
+            .subhelp { font-size: 8px; color: #666; margin-top: 2px; }
+          </style>
+        </head>
+        <body>
+          <h2>${BRAND_CONFIG.brandName} &mdash; Official Table Standees (Cut & Place on Tables)</h2>
+          <div class="grid">${itemsHtml}</div>
+          <script>
+            window.onload = function() { setTimeout(function() { window.print(); }, 400); };
+          <\/script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   };
 
   // Financial & Order Metrics
@@ -1386,35 +1622,55 @@ export function AdminDashboard({ onBackToClient }) {
                 </p>
               </div>
 
-              <button
-                onClick={() => window.print()}
-                className={`px-5 py-2.5 rounded-2xl font-syne font-bold text-xs transition flex items-center gap-1.5 shadow-sm cursor-pointer ${
-                  isLight 
-                    ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800' 
-                    : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200'
-                }`}
-              >
-                <Printer className="w-4 h-4" />
-                <span>Print Table QR Stands</span>
-              </button>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={handleBatchPrintAllTables}
+                  className={`px-4 py-2.5 rounded-2xl font-syne font-bold text-xs transition flex items-center gap-1.5 border cursor-pointer ${
+                    isLight 
+                      ? 'bg-white border-stone-300 text-stone-700 hover:border-stone-900' 
+                      : 'bg-white/10 border-white/10 text-stone-200 hover:bg-white/20'
+                  }`}
+                  title="Print all 12 table stands in a ready-to-cut A4 sheet"
+                >
+                  <Printer className="w-3.5 h-3.5 text-[#D04834]" />
+                  <span>Batch Print 12 Tables</span>
+                </button>
+
+                <button
+                  onClick={handlePrintSinglePlaque}
+                  className={`px-5 py-2.5 rounded-2xl font-syne font-bold text-xs transition flex items-center gap-1.5 shadow-sm cursor-pointer ${
+                    isLight 
+                      ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800' 
+                      : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200'
+                  }`}
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>Print Table #{selectedTableForQR < 10 ? `0${selectedTableForQR}` : selectedTableForQR} Stand</span>
+                </button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               <div className="lg:col-span-7 space-y-3">
-                <p className={`text-xs font-mono font-bold uppercase tracking-wider ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
-                  Select Table:
-                </p>
+                <div className="flex items-center justify-between">
+                  <p className={`text-xs font-mono font-bold uppercase tracking-wider ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                    Select Table to Generate QR:
+                  </p>
+                  <span className="text-[11px] font-mono text-[#D04834] font-semibold">
+                    12 Active Tables Configured
+                  </span>
+                </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {BRAND_CONFIG.tables.map(t => (
                     <button
                       key={t.id}
                       onClick={() => { sounds.playClick(); setSelectedTableForQR(t.number); }}
-                      className={`p-4 rounded-2xl border text-left transition cursor-pointer ${
+                      className={`p-4 rounded-2xl border text-left transition cursor-pointer relative overflow-hidden ${
                         selectedTableForQR === t.number
                           ? isLight
-                            ? 'bg-[#12100E] text-white border-[#12100E] shadow-sm'
-                            : 'bg-white text-black border-white shadow-sm'
+                            ? 'bg-[#12100E] text-white border-[#12100E] shadow-sm ring-2 ring-[#D04834]'
+                            : 'bg-white text-black border-white shadow-sm ring-2 ring-[#D04834]'
                           : isLight
                           ? 'bg-white border-stone-200 text-stone-700 hover:border-stone-400'
                           : 'bg-[#1C1917] border-white/10 text-stone-300 hover:border-white/20'
@@ -1424,7 +1680,7 @@ export function AdminDashboard({ onBackToClient }) {
                         <span className="font-mono text-sm font-bold">
                           T-{t.number < 10 ? `0${t.number}` : t.number}
                         </span>
-                        <QrCode className="w-4 h-4 text-[#D04834]" />
+                        <span className={`w-2 h-2 rounded-full ${selectedTableForQR === t.number ? 'bg-[#D04834]' : 'bg-emerald-500'}`}></span>
                       </div>
                       <p className="text-sm font-editorial mt-2">Table #{t.number < 10 ? `0${t.number}` : t.number}</p>
                       <p className="text-[10px] opacity-75 font-mono">Seats: {t.capacity} Guests</p>
@@ -1437,29 +1693,113 @@ export function AdminDashboard({ onBackToClient }) {
                 <div className={`p-6 rounded-3xl border shadow-lg space-y-5 text-center flex flex-col items-center transition-colors ${
                   isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
                 }`}>
-                  <div className={`w-full pb-3 border-b ${isLight ? 'border-stone-200' : 'border-white/10'}`}>
+                  <div className={`w-full pb-3 border-b flex items-center justify-between ${isLight ? 'border-stone-200' : 'border-white/10'}`}>
                     <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold border border-stone-300">
-                      STAND PREVIEW
+                      ACRYLIC STAND PREVIEW
                     </span>
-                    <h3 className="text-xl font-editorial font-normal mt-2">
-                      {BRAND_CONFIG.brandName}
-                    </h3>
-                  </div>
-
-                  <div className="p-5 bg-white rounded-3xl shadow-inner w-56 h-56 flex flex-col items-center justify-center border-4 border-stone-900">
-                    <QrCode className="w-36 h-36 text-stone-950" />
-                    <span className="font-mono text-stone-950 font-bold text-xs tracking-widest mt-1">
-                      TABLE #{selectedTableForQR < 10 ? `0${selectedTableForQR}` : selectedTableForQR}
+                    <span className="text-[10px] font-mono text-emerald-500 font-bold flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span>100% REAL QR</span>
                     </span>
                   </div>
 
-                  <div className="space-y-1">
+                  <div className="p-4 bg-white rounded-3xl shadow-inner w-64 min-h-64 flex flex-col items-center justify-center border-4 border-stone-900 relative">
+                    {isGeneratingTableQR || !tableQrDataUrl ? (
+                      <div className="flex flex-col items-center justify-center py-12 gap-2 text-stone-500">
+                        <RefreshCw className="w-6 h-6 animate-spin text-[#D04834]" />
+                        <span className="text-[10px] font-mono">Generating Live QR...</span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <img 
+                          src={tableQrDataUrl} 
+                          alt={`Table ${selectedTableForQR} QR`} 
+                          className="w-48 h-48 object-contain rounded-lg"
+                        />
+                        <span className="font-mono text-stone-950 font-black text-xs tracking-widest mt-2 bg-stone-100 px-3 py-1 rounded-full border border-stone-300 shadow-xs">
+                          TABLE #{selectedTableForQR < 10 ? `0${selectedTableForQR}` : selectedTableForQR}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-1 w-full">
                     <p className="font-syne font-bold text-xs">
-                      Scan QR code with phone camera to place order
+                      Scan with any smartphone camera to place order
                     </p>
-                    <p className={`text-[10px] font-mono ${isLight ? 'text-stone-400' : 'text-stone-500'}`}>
-                      https://thccafe.in/table/{selectedTableForQR}
+                    <p className={`text-[10px] font-mono break-all px-2.5 py-1.5 rounded-xl border ${
+                      isLight ? 'bg-stone-50 border-stone-200 text-stone-600' : 'bg-white/5 border-white/10 text-stone-400'
+                    }`}>
+                      {currentTableOrderUrl}
                     </p>
+                  </div>
+
+                  {/* Actions for Table QR */}
+                  <div className="w-full grid grid-cols-2 gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={handleDownloadTableQR}
+                      disabled={!tableQrDataUrl}
+                      className={`py-2 px-3 rounded-xl font-syne font-bold text-xs border flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                        isLight 
+                          ? 'bg-stone-100 hover:bg-stone-200 border-stone-200 text-stone-800' 
+                          : 'bg-white/10 hover:bg-white/15 border-white/10 text-white'
+                      }`}
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download PNG</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleCopyTableUrl}
+                      className={`py-2 px-3 rounded-xl font-syne font-bold text-xs border flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                        copiedTableUrl
+                          ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400'
+                          : isLight 
+                          ? 'bg-stone-100 hover:bg-stone-200 border-stone-200 text-stone-800' 
+                          : 'bg-white/10 hover:bg-white/15 border-white/10 text-white'
+                      }`}
+                    >
+                      {copiedTableUrl ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-500" />
+                          <span className="text-emerald-500">Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5" />
+                          <span>Copy Link</span>
+                        </>
+                      )}
+                    </button>
+
+                    <a
+                      href={currentTableOrderUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`py-2 px-3 rounded-xl font-syne font-bold text-xs border flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                        isLight 
+                          ? 'bg-stone-100 hover:bg-stone-200 border-stone-200 text-stone-800' 
+                          : 'bg-white/10 hover:bg-white/15 border-white/10 text-white'
+                      }`}
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>Test in Tab</span>
+                    </a>
+
+                    <button
+                      type="button"
+                      onClick={handlePrintSinglePlaque}
+                      className={`py-2 px-3 rounded-xl font-syne font-bold text-xs shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                        isLight 
+                          ? 'bg-[#12100E] text-white hover:bg-stone-800' 
+                          : 'bg-white text-black hover:bg-stone-200'
+                      }`}
+                    >
+                      <Printer className="w-3.5 h-3.5" />
+                      <span>Print Stand</span>
+                    </button>
                   </div>
                 </div>
               </div>
