@@ -340,7 +340,7 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
                 {variant.id === 'gamified-loyalty' && (
                   <div className="space-y-3">
                     <label className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block">
-                      1. Interactive 8-Slot Gamified Stamp Progression
+                      1. Interactive 6-Slot Stamp Progression &amp; 5-Day Streak Speed-Up
                     </label>
                     <div className="p-4 rounded-2xl bg-slate-900 border border-amber-400/40 space-y-3">
                       <div className="flex items-center justify-between text-xs">
@@ -348,23 +348,26 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
                           <span>☕</span>
                           <span>Artisan Coffee &amp; Bakery Passport</span>
                         </span>
-                        <span className="text-[#ebd73f] font-mono font-bold">Stamps: 7 of 8 (Next = FREE DRINK)</span>
+                        <span className="text-[#ebd73f] font-mono font-bold">Stamps: 4 of 6 (Next Bill = +2 Stamps!)</span>
                       </div>
                       
-                      <div className="grid grid-cols-8 gap-1.5 pt-1">
-                        {[1, 2, 3, 4, 5, 6, 7].map(n => (
-                          <div key={n} className="h-6 rounded-lg bg-[#ebd73f] flex items-center justify-center font-bold text-[9px] text-black shadow-sm">
+                      <div className="grid grid-cols-6 gap-2 pt-1">
+                        {[1, 2, 3, 4].map(n => (
+                          <div key={n} className="h-8 rounded-xl bg-[#ebd73f] flex items-center justify-center font-bold text-[10px] text-black shadow-sm">
                             ✓
                           </div>
                         ))}
-                        <div className="h-6 rounded-lg bg-purple-500/40 border border-purple-400 flex items-center justify-center text-[10px] text-purple-200 font-bold animate-pulse">
-                          🎁
+                        <div className="h-8 rounded-xl bg-orange-500/20 border border-orange-400 flex items-center justify-center text-[10px] text-orange-300 font-bold animate-pulse">
+                          +2⚡
+                        </div>
+                        <div className="h-8 rounded-xl bg-purple-500/30 border border-purple-400 flex items-center justify-center text-[10px] text-purple-200 font-bold">
+                          50% OFF
                         </div>
                       </div>
 
                       <div className="flex items-center justify-between text-[11px] text-slate-400 font-clash pt-1">
-                        <span>Daily Streak: <strong className="text-orange-400">5-Day Hot Streak 🔥</strong></span>
-                        <span className="text-emerald-400 font-bold">Lottie Micro-Animations Active</span>
+                        <span>Streak: <strong className="text-orange-400">5-Day Hot Streak 🔥 (Next bill awards 2 stamps)</strong></span>
+                        <span className="text-amber-300 font-bold">Target: 50% OFF Entire Order</span>
                       </div>
                     </div>
                   </div>

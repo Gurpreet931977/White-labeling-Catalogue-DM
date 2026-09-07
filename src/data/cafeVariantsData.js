@@ -235,8 +235,8 @@ export const CAFE_VARIANTS = [
     modelName: "Gamified Loyalty Pass & Kiosk",
     badge: "JUST LOYALTY • 100% GAMIFIED",
     isLiveTHC: true,
-    tagline: "Dedicated Loyalty Pass for Coffee & Bakery • Jiggly Micro-Animations, Streaks & Gamified Stamps",
-    description: "Zero POS or food menu clutter. A pure gamified customer loyalty club and in-store counter kiosk designed specifically for coffee shops, espresso bars, and artisan bakeries. Features bouncy Lottie-style micro-animations, jiggly tactile stamps, daily caffeine streaks, mystery scratch cards, and digital Apple/Google wallet passes.",
+    tagline: "Billing Auto-Sync • Configurable 6-12 Stamps • 5-Day Streak Double Stamps • 50% OFF or Free Gift",
+    description: "Designed for customers to track rewards with zero clutter. Stamps mark automatically on every settled bill (customers cannot self-stamp). 5-day active streaks skip a day ahead by awarding 2 stamps at once. Customers clearly see their upcoming milestone reward (such as 50% OFF Entire Bill or a Free Specialty Beverage), while the Cafe Admin POS allows adjusting card capacity (6 to 12 stamps) and custom gift assignment with persistent customer storage.",
     metrics: {
       turnover: "6.2x Repeat Visits",
       accuracy: "94% Member Retention",
@@ -244,20 +244,21 @@ export const CAFE_VARIANTS = [
     },
     idealFor: "Espresso bars, artisan bakeries, specialty roasteries, sourdough clubs, patisseries, donut shops",
     features: [
-      "Tactile 8-stamp digital punch card with bouncy jiggly squash-and-stretch micro-animations",
-      "Lottie-style animated steaming coffee cup & squishy croissant mascots with spring physics",
-      "Daily Caffeine & Pastry Streak tracker with flickering flame & daily multipliers",
-      "Interactive Mystery Scratch Card & Daily Surprise Box with celebratory confetti blast",
-      "Dual View Modes: Customer Mobile Wallet Pass and In-Store Staff Counter Kiosk",
-      "Coffee Roastery Mode (Latte, Cold Brew, Beans) vs Artisan Bakery Mode (Croissant, Sourdough, Donuts)"
+      "Configurable 6 to 12-stamp digital punch card with automatic billing sync",
+      "Customer-facing read-only view: customers cannot self-mark, stamps mark upon payment",
+      "5-Day Streak Speed-Up: Maintaining a 5-day streak awards 2 stamps at once on next bill",
+      "Transparent Free Gift: Customer clearly sees their assigned milestone reward (e.g. 50% OFF Entire Order)",
+      "Cafe Admin & POS Terminal: Register bills, auto-mark stamps, adjust stamp capacity (6-12), and customize gifts",
+      "Persistent Customer Database: Stores visits, streaks, custom gifts, and billing history"
     ],
     techStack: "React 18, Framer Motion Spring Physics, Web Audio API, Canvas Confetti",
     previewImage: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
     demoData: {
-      totalStamps: 8,
+      totalStamps: 6,
       currentDemoStamp: 4,
-      milestoneReward: "Free Signature Specialty Coffee + Flaky Butter Pastry",
+      milestoneReward: "50% OFF Entire Order (or Free Signature Coffee/Pastry)",
       streakDays: 5,
+      streakPower: "Active (Next bill awards 2 stamps at once)",
       memberLevel: "Espresso Scout (Level 2)"
     }
   }

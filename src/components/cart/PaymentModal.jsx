@@ -21,6 +21,7 @@ import { useCart } from '../../context/CartContext';
 import { useOrder } from '../../context/OrderContext';
 import { CAFE_CONFIG } from '../../data/cafeConfig';
 import { sounds } from '../../utils/audio';
+import { processBillingTransaction } from '../../utils/loyaltyStorage';
 
 export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
   const { 
@@ -101,10 +102,19 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
         estimatedMins: diningMode === 'delivery' ? 35 : (12 + Math.floor(Math.random() * 6)),
       });
 
-      // AUTO-INCREMENT LOYALTY VISIT STAMP ON BILL PAYMENT (Only in dedicated Loyalty Model)
+      // AUTO-INCREMENT LOYALTY VISIT STAMP ON BILL PAYMENT
       if (operationalModel === 'loyalty') {
         incrementLoyaltyVisit('billing');
       }
+
+      // Automatically sync with Gamified Loyalty Database & process streak
+      try {
+        processBillingTransaction({
+          phone: customerPhone || '9876543210',
+          billAmount: grandTotal,
+          billItems: orderItems.map(i => `${i.qty}x ${i.name}`).join(', ')
+        });
+      } catch (err) {}
 
       triggerCelebration();
       clearCart();
