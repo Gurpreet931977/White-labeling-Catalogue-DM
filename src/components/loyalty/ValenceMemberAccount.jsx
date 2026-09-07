@@ -6,249 +6,182 @@ import {
   Volume2,
   VolumeX,
   QrCode,
-  Star,
-  Award
+  Award,
+  Zap,
+  ArrowRight
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
 import { CircularStampBadge } from './CircularStampBadge';
 
 export function ValenceMemberAccount({ customer, isSoundOn, onToggleSound }) {
+  const currentXP = customer?.xp || 420;
+
   const tiers = [
     {
       name: 'Bronze Member',
       xpReq: '0 - 200 XP',
       level: 1,
-      perks: ['Standard 1x stamp accrual', 'Digital membership wallet pass', 'Member newsletter updates'],
-      isActive: (customer?.xp || 0) <= 200
+      perks: ['Standard 1x stamp accrual', 'Digital membership wallet pass', 'Archival status record'],
+      isActive: currentXP <= 200,
+      isCurrent: currentXP <= 200
     },
     {
       name: 'Silver Member',
       xpReq: '201 - 400 XP',
       level: 2,
-      perks: ['10% bonus XP on purchases', 'Secret daily treats reveal', 'Early access to seasonal product drops'],
-      isActive: (customer?.xp || 0) > 200 && (customer?.xp || 0) <= 400
+      perks: ['10% bonus XP on purchases', 'Secret daily treats reveal', 'Early access to seasonal drops'],
+      isActive: currentXP > 200 && currentXP <= 400,
+      isCurrent: currentXP > 200 && currentXP <= 400
     },
     {
       name: 'Gold Member',
       xpReq: '401 - 700 XP',
       level: 3,
       perks: ['5-day streak double stamp acceleration', '50% milestone reward unlock access', 'Priority counter service'],
-      isActive: (customer?.xp || 0) > 400 && (customer?.xp || 0) <= 700,
-      isCurrent: true
+      isActive: currentXP > 400 && currentXP <= 700,
+      isCurrent: currentXP > 400 && currentXP <= 700
     },
     {
       name: 'Diamond Member',
       xpReq: '701+ XP',
       level: 4,
       perks: ['Permanent 2x XP booster', 'Custom concierge assistance', 'Exclusive limited VIP gift box every cycle'],
-      isActive: (customer?.xp || 0) > 700
+      isActive: currentXP > 700,
+      isCurrent: currentXP > 700
     }
   ];
 
   return (
-    <section className="space-y-6">
+    <section className="relative space-y-6 pt-4">
       
-      {/* HEADER */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-1">
-        <div>
-          <span className="text-xs font-mono font-bold tracking-widest text-[#7A1F1F] uppercase">
-            MEMBER PROFILE
-          </span>
-          <h3 className="font-groovy font-black text-3xl sm:text-4xl text-[#7A1F1F] tracking-wide mt-0.5 leading-none">
-            Account &amp; Progression
+      {/* SECTION HEADER */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b-3 border-[#1F1614] pb-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 rounded bg-[#1F1614] text-[#E5A93C] font-mono text-[9px] font-black uppercase tracking-widest">
+              SECTION 05 // DOSSIER
+            </span>
+            <span className="font-mono text-xs font-bold text-[#7A1F1F]/70 uppercase tracking-wider">
+              MEMBER CREDENTIALS &amp; PROGRESSION
+            </span>
+          </div>
+
+          <h3 className="font-groovy font-black text-4xl sm:text-6xl text-[#7A1F1F] tracking-tight leading-[0.9]">
+            MEMBER DOSSIER
           </h3>
         </div>
 
+        {/* Audio Toggle */}
         <button
           type="button"
           onClick={onToggleSound}
-          className="px-4 py-2 rounded-xl bg-[#FAF6EA] border-2 border-[#7A1F1F] text-xs font-groovy font-bold text-[#7A1F1F] hover:bg-white flex items-center gap-2 cursor-pointer transition-colors shadow-[3px_3px_0px_#7A1F1F] uppercase"
+          className="px-4 py-2.5 rounded-2xl bg-[#FAF6EA] border-3 border-[#1F1614] text-xs font-mono font-black text-[#1F1614] hover:bg-white flex items-center gap-2 cursor-pointer transition-all shadow-[3px_3px_0px_#1F1614] uppercase self-start md:self-auto"
         >
-          {isSoundOn ? <Volume2 className="w-4 h-4 text-[#7A1F1F]" /> : <VolumeX className="w-4 h-4 text-[#7A1F1F]" />}
-          <span>Audio Haptics: {isSoundOn ? 'ON' : 'OFF'}</span>
+          {isSoundOn ? <Volume2 className="w-4 h-4 text-[#7A1F1F]" /> : <VolumeX className="w-4 h-4 text-[#1F1614]/40" />}
+          <span>AUDIO FEEDBACK: {isSoundOn ? 'ENABLED' : 'MUTED'}</span>
         </button>
       </div>
 
-      {/* 1. MEMBER IDENTITY CARD & OPTICAL SCANNER PASS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* 1. EDITORIAL IDENTITY BANNER */}
+      <div className="relative rounded-3xl bg-[#FAF6EA] border-3 border-[#1F1614] p-6 sm:p-8 shadow-[8px_8px_0px_#1F1614] overflow-hidden">
         
-        {/* Left 2 Cols: Member Profile Details */}
-        <div className="md:col-span-2 p-6 sm:p-8 rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] shadow-[8px_8px_0px_#7A1F1F] space-y-6">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-[#7A1F1F] text-[#F2ECD8] flex items-center justify-center font-groovy font-black text-2xl border-2 border-[#5C1414] shadow-[4px_4px_0px_#470D0D]">
-                {customer?.name ? customer.name.slice(0, 2).toUpperCase() : 'ME'}
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h4 className="font-groovy font-black text-2xl sm:text-3xl text-[#7A1F1F]">
-                    {customer?.name || 'Member'}
-                  </h4>
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#E5A93C] text-[#7A1F1F] font-groovy text-xs font-black uppercase">
-                    GOLD TIER
-                  </span>
-                </div>
-                <p className="text-xs font-mono text-[#7A1F1F] font-bold mt-0.5">
-                  ID: VAL-{customer?.phone || '9876543210'}
-                </p>
-              </div>
+        {/* Halftone texture */}
+        <div className="absolute inset-0 bg-halftone-dots opacity-10 pointer-events-none" />
+
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+          
+          <div className="flex items-center gap-5">
+            <div className="w-20 h-20 rounded-3xl bg-[#7A1F1F] text-[#E5A93C] flex items-center justify-center font-groovy font-black text-3xl border-3 border-[#1F1614] shadow-[4px_4px_0px_#1F1614] shrink-0">
+              {customer?.name ? customer.name.slice(0, 2).toUpperCase() : 'MC'}
             </div>
 
-            {/* Circular Stamp Badge */}
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h4 className="font-groovy font-black text-3xl sm:text-4xl text-[#7A1F1F] leading-none">
+                  {customer?.name || 'Maya Chen'}
+                </h4>
+                <span className="px-2.5 py-0.5 rounded-md bg-[#E5A93C] text-[#1F1614] font-groovy text-xs font-black uppercase tracking-wider">
+                  GOLD TIER
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3 text-xs font-mono font-bold text-[#1F1614]/80 flex-wrap">
+                <span>ID: VAL-{customer?.phone || '9876543210'}</span>
+                <span>•</span>
+                <span>TOTAL XP: {customer?.xp || 420}</span>
+                <span>•</span>
+                <span>STREAK: {customer?.streakDays || 5} DAYS</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="shrink-0 -rotate-3 hover:rotate-0 transition-transform">
             <CircularStampBadge
-              text="• VALENCE STATUS • LEVEL 3 •"
+              text="• VALENCE DOSSIER • LEVEL 3 •"
               centerText="GOLD"
-              subText="MEMBER"
-              size={76}
+              subText="CADRE"
+              size={88}
               variant="oxblood"
             />
           </div>
 
-          {/* Quick Metrics at Poster Scale */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-            <div className="p-4 rounded-2xl bg-[#F2ECD8] border-2 border-[#7A1F1F]">
-              <span className="text-[10px] font-mono text-[#7A1F1F] uppercase font-bold block">Lifetime Visits</span>
-              <span className="font-groovy font-black text-2xl sm:text-3xl text-[#7A1F1F]">
-                {customer?.billingHistory?.length || 4}
-              </span>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-[#F2ECD8] border-2 border-[#7A1F1F]">
-              <span className="text-[10px] font-mono text-[#7A1F1F] uppercase font-bold block">Current Streak</span>
-              <span className="font-groovy font-black text-2xl sm:text-3xl text-[#7A1F1F] flex items-center gap-1">
-                <span>{customer?.streakDays || 5}d</span>
-                <Flame className="w-5 h-5 fill-[#7A1F1F]" />
-              </span>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-[#F2ECD8] border-2 border-[#7A1F1F]">
-              <span className="text-[10px] font-mono text-[#7A1F1F] uppercase font-bold block">XP Progression</span>
-              <span className="font-groovy font-black text-2xl sm:text-3xl text-[#7A1F1F]">
-                {customer?.xp || 420}
-              </span>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-[#F2ECD8] border-2 border-[#7A1F1F]">
-              <span className="text-[10px] font-mono text-[#7A1F1F] uppercase font-bold block">Pass Cycle</span>
-              <span className="font-groovy font-black text-2xl sm:text-3xl text-[#7A1F1F]">
-                {customer?.stamps || 4}/6
-              </span>
-            </div>
-          </div>
-
-          {/* Security & Verification Guarantee */}
-          <div className="p-4 rounded-2xl bg-[#7A1F1F] text-[#F2ECD8] border-2 border-[#5C1414] flex items-center gap-3 text-xs">
-            <ShieldCheck className="w-6 h-6 text-[#E5A93C] shrink-0" />
-            <p className="font-sans font-medium">
-              Verified digital membership. Stamps and bills synchronize automatically via the in-store POS terminal.
-            </p>
-          </div>
         </div>
-
-        {/* Right 1 Col: Optical Barcode / QR Scanner Target */}
-        <div className="p-6 sm:p-7 rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] shadow-[8px_8px_0px_#7A1F1F] flex flex-col items-center justify-between text-center space-y-4">
-          <div className="space-y-1">
-            <span className="text-xs font-mono uppercase font-black text-[#7A1F1F] tracking-wider">
-              SCANNER PASS
-            </span>
-            <h4 className="font-groovy font-black text-xl text-[#7A1F1F]">
-              Counter QR Code
-            </h4>
-            <p className="text-[11px] text-[#7A1F1F]/80 font-sans">
-              Present to counter scanner during checkout to record stamps.
-            </p>
-          </div>
-
-          {/* High-Contrast Crisp QR Visual with Bold Oxblood Border */}
-          <div className="p-4 rounded-2xl bg-white shadow-md border-3 border-[#7A1F1F] inline-block">
-            <svg viewBox="0 0 100 100" className="w-36 h-36">
-              <rect x="5" y="5" width="28" height="28" rx="4" fill="#7A1F1F" />
-              <rect x="9" y="9" width="20" height="20" rx="2" fill="#fff" />
-              <rect x="13" y="13" width="12" height="12" fill="#7A1F1F" />
-
-              <rect x="67" y="5" width="28" height="28" rx="4" fill="#7A1F1F" />
-              <rect x="71" y="9" width="20" height="20" rx="2" fill="#fff" />
-              <rect x="75" y="13" width="12" height="12" fill="#7A1F1F" />
-
-              <rect x="5" y="67" width="28" height="28" rx="4" fill="#7A1F1F" />
-              <rect x="9" y="71" width="20" height="20" rx="2" fill="#fff" />
-              <rect x="13" y="75" width="12" height="12" fill="#7A1F1F" />
-
-              <rect x="42" y="10" width="8" height="8" fill="#7A1F1F" />
-              <rect x="42" y="25" width="8" height="15" fill="#7A1F1F" />
-              <rect x="15" y="42" width="12" height="8" fill="#7A1F1F" />
-              <rect x="40" y="45" width="16" height="16" rx="2" fill="#E5A93C" />
-              <rect x="65" y="42" width="10" height="10" fill="#7A1F1F" />
-              <rect x="78" y="55" width="14" height="6" fill="#7A1F1F" />
-              <rect x="45" y="68" width="8" height="18" fill="#7A1F1F" />
-              <rect x="60" y="72" width="15" height="10" fill="#7A1F1F" />
-              <rect x="80" y="80" width="12" height="12" fill="#7A1F1F" />
-            </svg>
-          </div>
-
-          <div className="font-mono text-xs font-bold text-[#7A1F1F]">
-            VAL-{customer?.phone || '9876543210'}
-          </div>
-        </div>
-
       </div>
 
-      {/* 2. TIER ROADMAP */}
+      {/* 2. BRUTALIST PROGRESSION MATRIX (Step Ladder) */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h4 className="font-groovy font-black text-2xl text-[#7A1F1F]">
-            Tier Progression &amp; Privilege Matrix
-          </h4>
-          <span className="text-xs font-mono font-bold text-[#7A1F1F]">
-            Tier 3: Gold Active
-          </span>
+        <div className="flex items-center justify-between font-mono text-xs font-bold text-[#7A1F1F]">
+          <span className="uppercase tracking-widest">TIER ARCHITECTURE // 4 PROGRESSION CADRES</span>
+          <span>CURRENT CADRE: GOLD</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {tiers.map((tier, idx) => (
-            <div
-              key={idx}
-              className={`p-5 rounded-3xl border-3 flex flex-col justify-between space-y-4 transition-all ${
-                tier.isCurrent
-                  ? 'bg-[#FAF6EA] border-[#7A1F1F] shadow-[6px_6px_0px_#7A1F1F] ring-3 ring-[#E5A93C]'
-                  : 'bg-[#F2ECD8] border-[#7A1F1F] shadow-[4px_4px_0px_#7A1F1F]'
-              }`}
-            >
-              <div>
-                <div className="flex items-center justify-between pb-2 border-b-2 border-dashed border-[#7A1F1F]/30">
-                  <span className="text-xs font-mono font-black text-[#7A1F1F] uppercase">
-                    {tier.xpReq}
-                  </span>
-                  {tier.isCurrent && (
-                    <span className="px-2 py-0.5 rounded-full bg-[#E5A93C] text-[#7A1F1F] text-[9px] font-groovy font-black uppercase">
-                      CURRENT
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {tiers.map((t, idx) => {
+            return (
+              <div
+                key={t.name}
+                className={`relative rounded-3xl p-5 border-3 border-[#1F1614] transition-all flex flex-col justify-between space-y-4 ${
+                  t.isCurrent
+                    ? 'bg-[#7A1F1F] text-[#F2ECD8] shadow-[6px_6px_0px_#1F1614]'
+                    : 'bg-[#FAF6EA] text-[#1F1614] shadow-[4px_4px_0px_#1F1614]'
+                }`}
+              >
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs font-black opacity-60">
+                      CADRE 0{t.level}
                     </span>
-                  )}
-                </div>
+                    {t.isCurrent ? (
+                      <span className="px-2 py-0.5 rounded bg-[#E5A93C] text-[#1F1614] font-mono text-[9px] font-black uppercase tracking-wider">
+                        ACTIVE NOW
+                      </span>
+                    ) : (
+                      <span className="font-mono text-[9px] uppercase opacity-50">
+                        {t.xpReq}
+                      </span>
+                    )}
+                  </div>
 
-                <div className="pt-3 space-y-2">
-                  <h5 className="font-groovy font-black text-xl text-[#7A1F1F]">
-                    {tier.name}
+                  <h5 className="font-groovy font-black text-xl tracking-wide">
+                    {t.name}
                   </h5>
 
-                  <ul className="space-y-1.5 pt-1">
-                    {tier.perks.map((perk, pIdx) => (
-                      <li key={pIdx} className="text-xs text-[#7A1F1F]/80 flex items-start gap-1.5 font-medium">
-                        <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${
-                          tier.isCurrent ? 'text-[#7A1F1F] stroke-[3]' : 'text-[#7A1F1F]/50'
-                        }`} />
-                        <span>{perk}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="font-mono text-xs font-bold opacity-80">
+                    {t.xpReq}
+                  </div>
+                </div>
+
+                <div className="border-t-2 border-dashed border-current/20 pt-3 space-y-1.5 font-mono text-[11px]">
+                  {t.perks.map((p, pIdx) => (
+                    <div key={pIdx} className="flex items-start gap-1.5 opacity-90">
+                      <span className="text-[#E5A93C] font-black">+</span>
+                      <span>{p}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-
-              <div className="pt-3 border-t-2 border-dashed border-[#7A1F1F]/30 text-[10px] font-mono font-bold text-[#7A1F1F]">
-                Level {tier.level} Status
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

@@ -6,7 +6,7 @@ import {
   Copy, 
   Check, 
   ShieldCheck,
-  Star
+  Maximize2
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
 import { CircularStampBadge } from './CircularStampBadge';
@@ -23,97 +23,174 @@ export function ValenceHeroPass({ customer, tier, totalSlots = 6, onShowQrModal 
   };
 
   const xpPercent = Math.min(100, ((customer?.xp || 420) / 650) * 100);
+  const memberId = customer?.phone || '9876543210';
 
   return (
-    <div className="relative select-none">
+    <div className="relative select-none group">
+      
+      {/* BACKGROUND HARD GRAPHIC SHADOW BLOCK (Asymmetrical Offset) */}
+      <div className="absolute inset-0 translate-x-2.5 translate-y-2.5 bg-[#1F1614] rounded-3xl -z-10 transition-transform duration-300 group-hover:translate-x-3.5 group-hover:translate-y-3.5" />
+
+      {/* COLLECTIBLE PHYSICAL TICKET ARTIFACT */}
       <motion.div
+        whileHover={{ y: -3, rotate: 0.5 }}
+        whileTap={{ scale: 0.99 }}
         onClick={() => {
           sounds.playStampSquish();
           if (onShowQrModal) onShowQrModal();
         }}
-        whileHover={{ y: -3 }}
-        whileTap={{ scale: 0.985 }}
-        className="relative w-full rounded-3xl p-6 sm:p-8 bg-[#7A1F1F] text-[#F2ECD8] border-3 border-[#5C1414] shadow-[8px_8px_0px_#470D0D] cursor-pointer group overflow-hidden transition-all"
+        className="relative w-full rounded-3xl bg-[#7A1F1F] text-[#F2ECD8] border-3 border-[#1F1614] cursor-pointer overflow-hidden transition-all duration-300"
       >
-        {/* Flat Dotted Inner Inset Border */}
-        <div className="absolute inset-3 rounded-2xl border-2 border-dashed border-[#F2ECD8]/25 pointer-events-none" />
+        {/* Physical Left Ticket Notch on Perforation Line */}
+        <div className="absolute -left-3.5 top-[64%] -translate-y-1/2 w-7 h-7 rounded-full bg-[#F2ECD8] border-r-3 border-[#1F1614] z-20" />
+        
+        {/* Physical Right Ticket Notch on Perforation Line */}
+        <div className="absolute -right-3.5 top-[64%] -translate-y-1/2 w-7 h-7 rounded-full bg-[#F2ECD8] border-l-3 border-[#1F1614] z-20" />
 
-        {/* Content Container */}
-        <div className="relative z-10 flex flex-col justify-between min-h-[230px] sm:min-h-[250px] space-y-6">
+        {/* Paper Grain Subtle Texture */}
+        <div className="absolute inset-0 bg-halftone-dots pointer-events-none opacity-20" />
+
+        {/* Technical Corner Crosshairs (Brutalist Print Marks) */}
+        <span className="absolute top-2.5 left-4 text-[10px] font-mono font-bold text-[#F2ECD8]/30 pointer-events-none">+</span>
+        <span className="absolute top-2.5 right-4 text-[10px] font-mono font-bold text-[#F2ECD8]/30 pointer-events-none">+</span>
+        <span className="absolute bottom-2.5 left-4 text-[10px] font-mono font-bold text-[#F2ECD8]/30 pointer-events-none">+</span>
+        <span className="absolute bottom-2.5 right-4 text-[10px] font-mono font-bold text-[#F2ECD8]/30 pointer-events-none">+</span>
+
+        {/* ============================================================= */}
+        {/* MAIN CREDENTIAL BODY (TOP HALF)                               */}
+        {/* ============================================================= */}
+        <div className="p-6 sm:p-7 relative z-10 space-y-5">
           
-          {/* Top Row: Title + Circular Stamp Badge */}
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-mono tracking-[0.22em] text-[#F2ECD8]/80 uppercase font-bold">
-                  OFFICIAL MEMBERSHIP PASS
-                </span>
-                <span className="px-2 py-0.5 rounded-full bg-[#E5A93C] text-[#7A1F1F] font-groovy text-xs font-bold uppercase tracking-wider">
-                  {tier?.badge || 'GOLD MEMBER'}
-                </span>
-              </div>
-              
-              {/* Member Name at Poster Scale */}
-              <h2 className="font-groovy font-black text-3xl sm:text-5xl text-[#F2ECD8] tracking-wide leading-none pt-1">
-                {customer?.name || 'Valued Member'}
-              </h2>
+          {/* Header Metadata Ribbon */}
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-md bg-[#1F1614] text-[#E5A93C] font-mono text-[9px] font-black uppercase tracking-widest border border-[#E5A93C]/40">
+                CREDENTIAL // ARCHIVAL PASS
+              </span>
+              <span className="font-mono text-[10px] font-bold text-[#F2ECD8]/60 tracking-wider">
+                ISSUE NO. 084-26
+              </span>
             </div>
 
-            {/* Circular Stamp Badge Motif with Curved Text */}
-            <div className="shrink-0 group-hover:rotate-12 transition-transform duration-300">
+            <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-[#E5A93C] bg-[#5C1414] px-2.5 py-1 rounded-lg border border-[#1F1614]">
+              <Flame className="w-3.5 h-3.5 fill-[#E5A93C] text-[#E5A93C]" />
+              <span>{customer?.streakDays || 5}D VELOCITY</span>
+            </div>
+          </div>
+
+          {/* Member Name Hero + Integrated Stamp Badge */}
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-1">
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#E5A93C] font-black block">
+                AUTHORIZED HOLDER
+              </span>
+              <h2 className="font-groovy font-black text-3xl sm:text-4xl lg:text-5xl text-[#F2ECD8] tracking-wide leading-[0.95] drop-shadow-sm">
+                {customer?.name || 'Maya Chen'}
+              </h2>
+              <div className="pt-1 flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded-md bg-[#E5A93C] text-[#1F1614] font-groovy text-xs font-black uppercase tracking-wider">
+                  {tier?.badge || 'GOLD MEMBER'}
+                </span>
+                <span className="font-mono text-xs text-[#F2ECD8]/70 font-bold">
+                  LEVEL {tier?.level || 3}
+                </span>
+              </div>
+            </div>
+
+            {/* Rubber Stamp Impression Seal (Rotated Organically) */}
+            <div className="shrink-0 -rotate-6 group-hover:rotate-0 transition-transform duration-300">
               <CircularStampBadge
-                text="• VALENCE LOYALTY CLUB • VERIFIED •"
-                centerText="GOLD"
-                subText="TIER 3"
-                size={84}
+                text="• VALENCE PHYSICAL ARCHIVE • 2026 •"
+                centerText="VERIFIED"
+                subText="PASSED"
+                size={82}
                 variant="mustard"
               />
             </div>
           </div>
 
-          {/* Middle Row: Receipt-Style Details (Space Mono) */}
-          <div className="flex flex-wrap items-center justify-between gap-3 py-3 border-y-2 border-[#5C1414]">
+          {/* Integrated Optical QR Pass Feature & ID */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+            
+            {/* Click-to-copy Member Code */}
             <button
               type="button"
               onClick={handleCopyId}
-              className="flex items-center gap-2 text-xs font-mono text-[#F2ECD8]/90 hover:text-white cursor-pointer transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#5C1414] hover:bg-[#470D0D] border-2 border-[#1F1614] text-xs font-mono text-[#F2ECD8] cursor-pointer transition-colors w-fit"
               title="Click to copy member ID"
             >
-              <span className="font-bold">ID: VAL-{customer?.phone || '9876543210'}</span>
+              <span className="font-bold text-[#E5A93C]">ID:</span>
+              <span className="tracking-wider">{memberId}</span>
               {isCopied ? (
                 <Check className="w-3.5 h-3.5 text-[#E5A93C]" />
               ) : (
-                <Copy className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100" />
+                <Copy className="w-3.5 h-3.5 text-[#F2ECD8]/60" />
               )}
             </button>
 
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5 text-xs font-groovy text-[#E5A93C] bg-[#5C1414] px-2.5 py-1 rounded-xl">
-                <span>{customer?.streakDays || 1}d Streak</span>
-                <Flame className="w-3.5 h-3.5 fill-[#E5A93C] text-[#E5A93C]" />
+            {/* Embedded Optical QR Block */}
+            <div className="flex items-center gap-3 bg-[#FAF6EA] text-[#1F1614] p-2.5 rounded-2xl border-2 border-[#1F1614] shadow-[3px_3px_0px_#1F1614] w-fit">
+              <div className="w-10 h-10 bg-white p-1 rounded-lg border border-[#1F1614] flex items-center justify-center shrink-0">
+                {/* SVG Mini QR Code */}
+                <svg viewBox="0 0 24 24" className="w-full h-full text-[#7A1F1F]">
+                  <rect x="2" y="2" width="7" height="7" fill="currentColor" />
+                  <rect x="3" y="3" width="5" height="5" fill="#FAF6EA" />
+                  <rect x="4" y="4" width="3" height="3" fill="currentColor" />
+                  <rect x="15" y="2" width="7" height="7" fill="currentColor" />
+                  <rect x="16" y="3" width="5" height="5" fill="#FAF6EA" />
+                  <rect x="17" y="4" width="3" height="3" fill="currentColor" />
+                  <rect x="2" y="15" width="7" height="7" fill="currentColor" />
+                  <rect x="3" y="16" width="5" height="5" fill="#FAF6EA" />
+                  <rect x="4" y="17" width="3" height="3" fill="currentColor" />
+                  <rect x="11" y="4" width="2" height="5" fill="currentColor" />
+                  <rect x="14" y="11" width="5" height="2" fill="currentColor" />
+                  <rect x="11" y="15" width="2" height="6" fill="currentColor" />
+                  <rect x="15" y="15" width="3" height="3" fill="currentColor" />
+                  <rect x="19" y="19" width="3" height="3" fill="currentColor" />
+                </svg>
               </div>
 
-              <div className="flex items-center gap-1 text-[11px] font-mono text-[#F2ECD8]/80">
-                <QrCode className="w-3.5 h-3.5 text-[#E5A93C]" />
-                <span className="underline uppercase tracking-wider font-bold">Show QR</span>
+              <div className="text-left pr-1">
+                <div className="font-mono text-[9px] font-black uppercase tracking-wider text-[#7A1F1F]">
+                  OPTICAL KEY
+                </div>
+                <div className="font-groovy text-xs text-[#1F1614] flex items-center gap-1">
+                  <span>TAP TO EXPAND</span>
+                  <Maximize2 className="w-3 h-3 text-[#7A1F1F]" />
+                </div>
               </div>
             </div>
+
           </div>
 
-          {/* Bottom Row: XP Track with Bold Poster Numbers */}
-          <div className="space-y-2 pt-1">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#F2ECD8]">
-                <ShieldCheck className="w-4 h-4 text-[#E5A93C]" />
-                <span>Tier Progression: {tier?.name || 'Gold Member'}</span>
-              </div>
-              <span className="font-groovy text-sm sm:text-base text-[#E5A93C] tracking-wide">
-                {customer?.xp || 420} / 650 XP
+        </div>
+
+        {/* ============================================================= */}
+        {/* PERFORATED TEAR-OFF LINE                                      */}
+        {/* ============================================================= */}
+        <div className="relative w-full border-b-2 border-dashed border-[#F2ECD8]/30 px-6 my-1">
+          <span className="absolute -top-2 left-8 px-2 bg-[#7A1F1F] font-mono text-[8px] tracking-widest text-[#F2ECD8]/40 uppercase">
+            CUT OR TEAR ALONG DOTTED LINE
+          </span>
+        </div>
+
+        {/* ============================================================= */}
+        {/* LOWER ARTIFACT: XP PROGRESS + AUTHENTIC BARCODE STRIP        */}
+        {/* ============================================================= */}
+        <div className="p-6 sm:p-7 pt-4 bg-[#5C1414] relative z-10 space-y-4">
+          
+          {/* XP Meter with Chunky Numbers */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs font-mono font-bold">
+              <span className="text-[#F2ECD8]/80 uppercase tracking-wider">
+                XP VELOCITY
+              </span>
+              <span className="font-groovy text-sm sm:text-base text-[#E5A93C]">
+                {customer?.xp || 420} / 650 XP ({Math.round(xpPercent)}%)
               </span>
             </div>
 
-            {/* Flat Color Blocked Progress Bar */}
-            <div className="h-3.5 w-full rounded-full bg-[#5C1414] border-2 border-[#470D0D] overflow-hidden p-0.5">
+            <div className="h-3 w-full rounded-full bg-[#470D0D] border-2 border-[#1F1614] overflow-hidden p-0.5">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${xpPercent}%` }}
@@ -123,7 +200,24 @@ export function ValenceHeroPass({ customer, tier, totalSlots = 6, onShowQrModal 
             </div>
           </div>
 
+          {/* Authentic High-Density SVG Barcode Strip */}
+          <div className="pt-1 flex flex-col items-center justify-center space-y-1">
+            <div className="h-8 w-full max-w-sm flex items-stretch justify-between gap-[2px] opacity-85 overflow-hidden">
+              {[3, 1, 4, 1, 2, 5, 1, 3, 2, 1, 4, 2, 1, 3, 5, 2, 1, 4, 1, 3, 2, 4, 1, 5, 2, 1, 3, 4, 1, 2, 5, 3, 1, 4, 2, 1, 3, 5, 2, 1, 4, 1, 3, 2, 4, 1, 5, 2, 1, 3].map((w, i) => (
+                <div
+                  key={i}
+                  className="bg-[#F2ECD8] h-full"
+                  style={{ width: `${w}px` }}
+                />
+              ))}
+            </div>
+            <span className="font-mono text-[9px] tracking-[0.3em] text-[#F2ECD8]/60 uppercase font-bold">
+              * VAL-{memberId} *
+            </span>
+          </div>
+
         </div>
+
       </motion.div>
     </div>
   );

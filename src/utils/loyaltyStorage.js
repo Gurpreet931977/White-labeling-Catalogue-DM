@@ -70,6 +70,7 @@ const INITIAL_CUSTOMERS = [
     streakDays: 5, // Active 5-day streak! Next bill will grant 2 stamps!
     xp: 420,
     assignedGiftId: 'discount50', // 50% discount gift
+    isAdmin: true, // Demo account is admin
     billingHistory: [
       { id: 'BILL-1092', date: '2026-09-02', time: '09:15 AM', amount: 380, items: 'Signature Selection + Gift Pack', stampsAwarded: 1, streakApplied: false },
       { id: 'BILL-1145', date: '2026-09-03', time: '08:40 AM', amount: 240, items: 'Bestseller Daily Pack', stampsAwarded: 1, streakApplied: false },
@@ -86,6 +87,7 @@ const INITIAL_CUSTOMERS = [
     streakDays: 3,
     xp: 510,
     assignedGiftId: 'free_coffee',
+    isAdmin: true, // Demo account is admin
     billingHistory: [
       { id: 'BILL-1050', date: '2026-09-01', time: '08:30 AM', amount: 220, items: 'Classic Reserve Selection', stampsAwarded: 1, streakApplied: false },
       { id: 'BILL-1120', date: '2026-09-02', time: '09:10 AM', amount: 310, items: 'Member Special Pack', stampsAwarded: 1, streakApplied: false },
@@ -101,8 +103,23 @@ const INITIAL_CUSTOMERS = [
     streakDays: 1,
     xp: 150,
     assignedGiftId: 'free_pastry',
+    isAdmin: true, // Demo account is admin
     billingHistory: [
       { id: 'BILL-1240', date: '2026-09-06', time: '11:05 AM', amount: 350, items: 'Gourmet Sampler Box', stampsAwarded: 1, streakApplied: false }
+    ],
+    redeemedVouchers: []
+  },
+  {
+    id: 'cust-4',
+    name: 'Jordan Lee',
+    phone: '9845123456',
+    stamps: 2,
+    streakDays: 2,
+    xp: 260,
+    assignedGiftId: 'free_coffee',
+    isAdmin: false, // Standard Member (for testing non-admin view)
+    billingHistory: [
+      { id: 'BILL-1205', date: '2026-09-05', time: '02:30 PM', amount: 210, items: 'Signature Drink', stampsAwarded: 1, streakApplied: false }
     ],
     redeemedVouchers: []
   }
@@ -150,7 +167,28 @@ export function getLoyaltyCustomers() {
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+        // Ensure demo accounts (cust-1, cust-2, cust-3) are marked as admin
+        let hasChanges = false;
+        const normalized = parsed.map((c) => {
+          const isDemoAdmin = ['cust-1', 'cust-2', 'cust-3'].includes(c.id);
+          const shouldBeAdmin = isDemoAdmin ? true : Boolean(c.isAdmin);
+          if (c.isAdmin !== shouldBeAdmin) {
+            hasChanges = true;
+            return { ...c, isAdmin: shouldBeAdmin };
+          }
+          return c;
+        });
+
+        // Ensure Jordan Lee exists for non-admin testing if not present
+        if (!normalized.some((c) => c.id === 'cust-4')) {
+          normalized.push(INITIAL_CUSTOMERS[3]);
+          hasChanges = true;
+        }
+
+        if (hasChanges) {
+          localStorage.setItem('thc_loyalty_customers_db', JSON.stringify(normalized));
+        }
+        return normalized;
       }
     }
   } catch (e) {}

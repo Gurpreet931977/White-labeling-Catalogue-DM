@@ -14,10 +14,12 @@ import {
   Gift,
   Flame,
   User,
-  X
+  Zap,
+  X,
+  ShieldCheck,
+  Maximize2
 } from 'lucide-react';
 import { sounds } from '../utils/audio';
-import { ModelSwitcherModal } from '../components/common/ModelSwitcherModal';
 import {
   getLoyaltyAdminConfig,
   getLoyaltyCustomers,
@@ -42,11 +44,8 @@ import { ValenceAdminCustomers } from '../components/loyalty/ValenceAdminCustome
 import { ValenceAdminSettings } from '../components/loyalty/ValenceAdminSettings';
 
 export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
-  // Primary View Mode: 'customer' (Priority consumer pass) vs 'admin' (Console)
+  // Primary View Mode: 'customer' (Priority consumer pass) vs 'admin' (Terminal)
   const [viewMode, setViewMode] = useState('customer');
-
-  // Customer Navigation Tabs: 'home' | 'rewards' | 'activity' | 'account'
-  const [customerTab, setCustomerTab] = useState('home');
 
   // Admin Navigation Tabs: 'overview' | 'pos' | 'customers' | 'settings'
   const [adminTab, setAdminTab] = useState('overview');
@@ -61,7 +60,6 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
 
   // UI State
   const [isSoundOn, setIsSoundOn] = useState(true);
-  const [isModelSwitcherOpen, setIsModelSwitcherOpen] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
   const [feedbackToast, setFeedbackToast] = useState(null);
 
@@ -80,6 +78,25 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
     };
   }, []);
 
+  // Ensure mobile viewports strictly stay in customer mode (no admin on mobile)
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768 && viewMode === 'admin') {
+        setViewMode('customer');
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [viewMode]);
+
+  // Ensure non-admin accounts cannot stay in admin mode
+  useEffect(() => {
+    if (viewMode === 'admin' && !activeCustomer?.isAdmin) {
+      setViewMode('customer');
+    }
+  }, [selectedCustomerId, viewMode]);
+
   const activeCustomer =
     customers.find((c) => c.id === selectedCustomerId) ||
     customers[0] || {
@@ -90,6 +107,7 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
       streakDays: 5,
       xp: 420,
       assignedGiftId: 'discount50',
+      isAdmin: true,
       billingHistory: [],
       redeemedVouchers: []
     };
@@ -108,123 +126,126 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
 
   const showToast = (msg) => {
     setFeedbackToast(msg);
-    setTimeout(() => setFeedbackToast(null), 3500);
-  };
-
-  const triggerMilestoneConfetti = () => {
-    confetti({
-      particleCount: 90,
-      spread: 80,
-      origin: { y: 0.6 },
-      colors: ['#7A1F1F', '#E5A93C', '#FAF6EA', '#5C1414', '#D4AF37']
-    });
+    setTimeout(() => setFeedbackToast(null), 3200);
   };
 
   const handleToggleSound = () => {
-    const newState = sounds.toggleSound();
-    setIsSoundOn(newState);
+    const nextState = !isSoundOn;
+    setIsSoundOn(nextState);
+    sounds.toggleSound(nextState);
+    if (nextState) sounds.playClick();
+  };
+
+  const triggerMilestoneConfetti = () => {
+    sounds.playConfetti();
+    confetti({
+      particleCount: 80,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#7A1F1F', '#E5A93C', '#F2ECD8', '#B33939']
+    });
   };
 
   return (
-    <div className="min-h-screen bg-[#F2ECD8] text-[#7A1F1F] font-sans selection:bg-[#7A1F1F] selection:text-[#F2ECD8] relative transition-colors duration-300 pb-20 sm:pb-8">
+    <div className="min-h-screen bg-[#F2ECD8] text-[#1F1614] font-sans antialiased selection:bg-[#7A1F1F] selection:text-[#F2ECD8] pb-24 sm:pb-20 relative">
       
-      {/* TOP APPLICATION HEADER (Warm Cream with Solid Oxblood Border) */}
-      <header className="sticky top-0 inset-x-0 z-40 bg-[#F2ECD8]/95 backdrop-blur-md border-b-3 border-[#7A1F1F] px-4 sm:px-6 py-3">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
+      {/* =================================================================== */}
+      {/* 1. BRUTALIST EDITORIAL MASTHEAD                                     */}
+      {/* =================================================================== */}
+      <header className="sticky top-0 z-40 bg-[#FAF6EA] border-b-3 border-[#1F1614] shadow-[0_4px_0_#1F1614]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
           
-          {/* Left: Brand Identity & Return */}
+          {/* Brand Wordmark + Archival Tag */}
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => {
-                sounds.playClick();
-                if (onBackToVariants) onBackToVariants();
-                else if (onBackToCatalogue) onBackToCatalogue();
-              }}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FAF6EA] hover:bg-white text-[#7A1F1F] border-2 border-[#7A1F1F] text-xs font-mono font-bold transition cursor-pointer shadow-[2px_2px_0px_#7A1F1F]"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Back</span>
-            </button>
+            {onBackToCatalogue && (
+              <button
+                type="button"
+                onClick={() => {
+                  sounds.playClick();
+                  onBackToCatalogue();
+                }}
+                className="p-2 rounded-xl bg-[#FAF6EA] hover:bg-white text-[#1F1614] border-2 border-[#1F1614] transition cursor-pointer shadow-[2px_2px_0px_#1F1614]"
+                title="Back to Catalogue"
+              >
+                <ArrowLeft className="w-4 h-4 stroke-[3]" />
+              </button>
+            )}
 
-            <div className="flex items-center gap-2">
-              <span className="font-groovy font-black text-2xl sm:text-3xl tracking-wide text-[#7A1F1F] leading-none">
+            <div className="flex items-baseline gap-2">
+              <span className="font-syne font-black text-3xl sm:text-4xl tracking-tighter text-[#7A1F1F] leading-none select-none">
                 VALENCE
               </span>
-              <span className="hidden md:inline px-2.5 py-0.5 rounded-full bg-[#7A1F1F] text-[#F2ECD8] font-mono text-[9px] font-bold uppercase tracking-widest">
-                VERIFIED LOYALTY PLATFORM
+              <span className="hidden sm:inline px-2 py-0.5 rounded bg-[#1F1614] text-[#E5A93C] font-mono text-[9px] font-black uppercase tracking-widest">
+                VERIFIED ARCHIVE // 2026
               </span>
             </div>
           </div>
 
-          {/* Right Controls: Mode Toggle & Utilities */}
+          {/* Right Controls */}
           <div className="flex items-center gap-2 sm:gap-3">
             
-            {/* Customer Switcher (Demo Verification) */}
+            {/* Customer Switcher (Archival Edition Picker) */}
             <div className="hidden lg:flex items-center gap-2 text-xs font-mono">
-              <span className="text-[#7A1F1F]/80 font-bold">MEMBER:</span>
+              <span className="text-[#1F1614]/70 font-black uppercase text-[10px]">MEMBER:</span>
               <select
                 value={selectedCustomerId}
                 onChange={(e) => {
                   sounds.playClick();
                   setSelectedCustomerId(e.target.value);
                 }}
-                className="px-3 py-1.5 rounded-xl bg-[#FAF6EA] border-2 border-[#7A1F1F] text-[#7A1F1F] font-mono text-xs font-bold focus:outline-none cursor-pointer shadow-[2px_2px_0px_#7A1F1F]"
+                className="px-3 py-1.5 rounded-xl bg-[#FAF6EA] border-2 border-[#1F1614] text-[#1F1614] font-mono text-xs font-bold focus:outline-none cursor-pointer shadow-[2px_2px_0px_#1F1614]"
               >
                 {customers.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.name} ({c.stamps}/{totalSlots} stamps • {c.streakDays}d streak)
+                    {c.name} {c.isAdmin ? '[Admin]' : ''} ({c.stamps}/{totalSlots} stamps • {c.streakDays}d streak)
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* View Switcher: Member View vs Admin Console */}
-            <div className="flex items-center p-1 rounded-2xl bg-[#FAF6EA] border-2 border-[#7A1F1F] shadow-[3px_3px_0px_#7A1F1F] text-xs">
-              <button
-                type="button"
-                onClick={() => {
-                  sounds.playClick();
-                  setViewMode('customer');
-                }}
-                className={`px-3.5 py-1.5 rounded-xl font-groovy font-bold transition flex items-center gap-1.5 cursor-pointer uppercase ${
-                  viewMode === 'customer'
-                    ? 'bg-[#7A1F1F] text-[#F2ECD8] shadow-sm'
-                    : 'text-[#7A1F1F] hover:bg-[#E2D8BE]'
-                }`}
-              >
-                <Smartphone className="w-3.5 h-3.5" />
-                <span>Member View</span>
-              </button>
-
+            {/* Admin Terminal Button — Visible ONLY to Admin accounts on Desktop */}
+            {viewMode === 'customer' && activeCustomer?.isAdmin && (
               <button
                 type="button"
                 onClick={() => {
                   sounds.playClick();
                   setViewMode('admin');
                 }}
-                className={`px-3.5 py-1.5 rounded-xl font-groovy font-bold transition flex items-center gap-1.5 cursor-pointer uppercase ${
-                  viewMode === 'admin'
-                    ? 'bg-[#7A1F1F] text-[#F2ECD8] shadow-sm'
-                    : 'text-[#7A1F1F] hover:bg-[#E2D8BE]'
-                }`}
+                className="hidden md:inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-[#7A1F1F] hover:bg-[#5C1414] text-[#F2ECD8] border-2 border-[#1F1614] font-groovy font-bold text-xs uppercase shadow-[3px_3px_0px_#1F1614] transition cursor-pointer"
+                title="Enter Admin Management Console"
               >
-                <Sliders className="w-3.5 h-3.5" />
-                <span>Admin Console</span>
+                <Sliders className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span>Admin Panel</span>
               </button>
-            </div>
+            )}
 
-            {/* Sound Toggle */}
+            {/* Exit Admin Mode Button */}
+            {viewMode === 'admin' && (
+              <button
+                type="button"
+                onClick={() => {
+                  sounds.playClick();
+                  setViewMode('customer');
+                }}
+                className="hidden md:inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-[#FAF6EA] hover:bg-white text-[#1F1614] border-2 border-[#1F1614] font-groovy font-bold text-xs uppercase shadow-[3px_3px_0px_#1F1614] transition cursor-pointer"
+                title="Return to Member View"
+              >
+                <ArrowLeft className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span>Back to Pass</span>
+              </button>
+            )}
+
+            {/* Audio Toggle */}
             <button
               type="button"
               onClick={handleToggleSound}
-              className="p-2 rounded-xl bg-[#FAF6EA] hover:bg-white text-[#7A1F1F] border-2 border-[#7A1F1F] transition cursor-pointer shadow-[2px_2px_0px_#7A1F1F]"
+              className="p-2 rounded-xl bg-[#FAF6EA] hover:bg-white text-[#1F1614] border-2 border-[#1F1614] transition cursor-pointer shadow-[2px_2px_0px_#1F1614]"
               title={isSoundOn ? 'Sound is ON' : 'Sound is OFF'}
             >
               {isSoundOn ? (
                 <Volume2 className="w-4 h-4 text-[#7A1F1F]" />
               ) : (
-                <VolumeX className="w-4 h-4 text-[#7A1F1F]/50" />
+                <VolumeX className="w-4 h-4 text-[#1F1614]/40" />
               )}
             </button>
 
@@ -233,10 +254,10 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
         </div>
       </header>
 
-      {/* SCROLLING MARQUEE TICKER BANNER (Retro Brand Accent) */}
+      {/* CONTINUOUS BRUTALIST TICKER BANNER */}
       <RetroMarqueeBanner
-        text="COLLECT STAMPS • EARN PERKS • 5-DAY STREAK BOOST • UNLOCK 50% OFF • VERIFIED DIGITAL PASS • "
-        variant="oxblood"
+        text="COLLECT PUNCHES • ACCRUE VELOCITY • 5-DAY STREAK MULTIPLIER • UNLOCK 50% REWARD • PHYSICAL PASS VERIFIED • "
+        variant="ink"
       />
 
       {/* FLOATING INTERACTIVE TOAST */}
@@ -246,7 +267,7 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="fixed top-24 inset-x-0 mx-auto w-fit z-50 px-5 py-2.5 rounded-2xl bg-[#7A1F1F] text-[#F2ECD8] border-2 border-[#5C1414] font-groovy font-bold text-xs shadow-[6px_6px_0px_#470D0D] flex items-center gap-2 pointer-events-none"
+            className="fixed top-24 inset-x-0 mx-auto w-fit z-50 px-5 py-2.5 rounded-2xl bg-[#7A1F1F] text-[#F2ECD8] border-2 border-[#1F1614] font-groovy font-bold text-xs shadow-[5px_5px_0px_#1F1614] flex items-center gap-2 pointer-events-none"
           >
             <Sparkles className="w-4 h-4 text-[#E5A93C]" />
             <span>{feedbackToast}</span>
@@ -254,35 +275,217 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
         )}
       </AnimatePresence>
 
-      {/* MAIN CONTAINER */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+      {/* =================================================================== */}
+      {/* MAIN BODY CONTAINER                                                 */}
+      {/* =================================================================== */}
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-16">
 
-        {/* =============================================================== */}
-        {/* CUSTOMER EXPERIENCE (PRIORITY CONSUMER APP)                     */}
-        {/* =============================================================== */}
+        {/* --------------------------------------------------------------- */}
+        {/* CUSTOMER EDITORIAL SPREAD (THE FULL BRAND EXPERIENCE)           */}
+        {/* --------------------------------------------------------------- */}
         {viewMode === 'customer' && (
+          <div className="space-y-16">
+            
+            {/* ============================================================= */}
+            {/* SECTION 01: HERO GRAPHIC SPREAD & COLLECTIBLE PASS ARTIFACT   */}
+            {/* ============================================================= */}
+            <section id="section-pass" className="relative space-y-6">
+              
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                {/* LEFT HERO: Massive Poster Typography & Visual Statement */}
+                <div className="lg:col-span-7 space-y-4">
+                  
+                  {/* Technical Coordinates Annotation */}
+                  <div className="flex items-center gap-2 text-[10px] font-mono font-black text-[#7A1F1F]/70 uppercase tracking-[0.22em]">
+                    <span>ARCHIVE // 01</span>
+                    <span>•</span>
+                    <span>COORDINATES: 28.6139° N</span>
+                    <span>•</span>
+                    <span>REGISTERED CITIZEN</span>
+                  </div>
+
+                  {/* Giant Editorial Member Name */}
+                  <h1 className="font-syne font-black text-6xl sm:text-7xl lg:text-8xl text-[#7A1F1F] tracking-tighter leading-[0.85] uppercase select-none">
+                    {activeCustomer.name.split(' ')[0]}
+                    <br />
+                    <span className="text-[#1F1614] hover:text-[#7A1F1F] transition-colors">
+                      {activeCustomer.name.split(' ').slice(1).join(' ') || 'MEMBER'}
+                    </span>
+                  </h1>
+
+                  {/* Overlapping Mustard XP Badge */}
+                  <div className="pt-2 flex items-center gap-3 flex-wrap">
+                    <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-[#E5A93C] text-[#1F1614] border-3 border-[#1F1614] shadow-[4px_4px_0px_#1F1614] transform -rotate-1 hover:rotate-0 transition-transform">
+                      <span className="font-groovy font-black text-2xl tracking-wide uppercase">
+                        {activeCustomer.xp || 420} XP
+                      </span>
+                      <span className="h-5 w-[2px] bg-[#1F1614]" />
+                      <span className="font-mono text-xs font-black uppercase tracking-wider">
+                        {activeTier.badge} // LEVEL {activeTier.level}
+                      </span>
+                    </div>
+
+                    <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-[#FAF6EA] text-[#7A1F1F] border-2 border-[#1F1614] font-mono text-xs font-bold shadow-[2px_2px_0px_#1F1614]">
+                      <Flame className="w-4 h-4 fill-[#7A1F1F] text-[#7A1F1F]" />
+                      <span>{activeCustomer.streakDays || 5}D STREAK VELOCITY</span>
+                    </div>
+                  </div>
+
+                  {/* Editorial Anchor Navigation Jump Marks */}
+                  <div className="pt-4 space-y-2">
+                    <span className="font-mono text-[10px] uppercase font-black tracking-widest text-[#1F1614]/60 block">
+                      ARCHIVAL DIRECTORY // QUICK JUMP
+                    </span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {[
+                        { href: '#section-pass', label: '01 / PASS' },
+                        { href: '#section-matrix', label: '02 / MATRIX' },
+                        { href: '#section-vault', label: '03 / TOKENS' },
+                        { href: '#section-ledger', label: '04 / DOCKET' },
+                        { href: '#section-dossier', label: '05 / DOSSIER' }
+                      ].map((item) => (
+                        <a
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => sounds.playClick()}
+                          className="px-3.5 py-1.5 rounded-xl bg-[#FAF6EA] hover:bg-white text-[#1F1614] border-2 border-[#1F1614] text-[11px] font-mono font-black tracking-wider uppercase shadow-[2px_2px_0px_#1F1614] transition-all hover:-translate-y-0.5"
+                        >
+                          {item.label}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* RIGHT HERO: The Collectible Physical Archival Pass */}
+                <div className="lg:col-span-5">
+                  <div className="transform lg:rotate-1 hover:rotate-0 transition-transform duration-300">
+                    <ValenceHeroPass
+                      customer={activeCustomer}
+                      tier={activeTier}
+                      totalSlots={totalSlots}
+                      onShowQrModal={() => setShowQrModal(true)}
+                    />
+                  </div>
+                </div>
+
+              </div>
+
+            </section>
+
+            {/* EDITORIAL DIVIDER MARK */}
+            <div className="flex items-center justify-between text-xs font-mono font-black text-[#1F1614]/40 select-none py-2 border-y-2 border-dashed border-[#1F1614]/20">
+              <span>+ + REGISTRATION: 02 // PUNCH MATRIX + +</span>
+              <span className="hidden sm:inline">VALENCE CULTURAL SYSTEM</span>
+              <span>INDEX: 02/05</span>
+            </div>
+
+            {/* ============================================================= */}
+            {/* SECTION 02: THE STAMP PUNCH MATRIX (Physical Ink System)      */}
+            {/* ============================================================= */}
+            <div id="section-matrix">
+              <ValenceStampJourney
+                customer={activeCustomer}
+                totalSlots={totalSlots}
+                currentGift={activeGift}
+                hasStreakBonus={hasStreakBonus}
+                onSlotClick={(slotNum) => {
+                  if (slotNum <= (activeCustomer.stamps || 0)) {
+                    sounds.playStampSquish();
+                    showToast(`Punch #${slotNum} verified in archival ledger.`);
+                  } else {
+                    sounds.playClick();
+                    showToast(`Punch #${slotNum} unlocks on your next billing visit.`);
+                  }
+                }}
+                onClaimMilestone={() => {
+                  triggerMilestoneConfetti();
+                  showToast(`Milestone Reward Unlocked: ${activeGift.title}! Present at counter.`);
+                }}
+              />
+            </div>
+
+            {/* EDITORIAL DIVIDER MARK */}
+            <div className="flex items-center justify-between text-xs font-mono font-black text-[#1F1614]/40 select-none py-2 border-y-2 border-dashed border-[#1F1614]/20">
+              <span>+ + PRIVILEGES: 03 // ARCHIVAL TOKENS + +</span>
+              <span className="hidden sm:inline">NON-COMMERCIAL VOUCHERS</span>
+              <span>INDEX: 03/05</span>
+            </div>
+
+            {/* ============================================================= */}
+            {/* SECTION 03: PERKS & VOUCHER VAULT (Perforated Ticket Stubs)   */}
+            {/* ============================================================= */}
+            <div id="section-vault">
+              <ValenceRewardsVault
+                customer={activeCustomer}
+                totalSlots={totalSlots}
+                currentGift={activeGift}
+              />
+            </div>
+
+            {/* EDITORIAL DIVIDER MARK */}
+            <div className="flex items-center justify-between text-xs font-mono font-black text-[#1F1614]/40 select-none py-2 border-y-2 border-dashed border-[#1F1614]/20">
+              <span>+ + LEDGER: 04 // SETTLED DOCKET AUDIT + +</span>
+              <span className="hidden sm:inline">THERMAL PRINT REGISTRY</span>
+              <span>INDEX: 04/05</span>
+            </div>
+
+            {/* ============================================================= */}
+            {/* SECTION 04: SETTLED ACTIVITY DOCKET                           */}
+            {/* ============================================================= */}
+            <div id="section-ledger">
+              <ValenceActivityLedger customer={activeCustomer} />
+            </div>
+
+            {/* EDITORIAL DIVIDER MARK */}
+            <div className="flex items-center justify-between text-xs font-mono font-black text-[#1F1614]/40 select-none py-2 border-y-2 border-dashed border-[#1F1614]/20">
+              <span>+ + DOSSIER: 05 // CREDENTIALS & CADRES + +</span>
+              <span className="hidden sm:inline">AUTHENTICATED IDENTITY</span>
+              <span>INDEX: 05/05</span>
+            </div>
+
+            {/* ============================================================= */}
+            {/* SECTION 05: MEMBER DOSSIER & PROGRESSION LADDER               */}
+            {/* ============================================================= */}
+            <div id="section-dossier">
+              <ValenceMemberAccount
+                customer={activeCustomer}
+                isSoundOn={isSoundOn}
+                onToggleSound={handleToggleSound}
+              />
+            </div>
+
+          </div>
+        )}
+
+        {/* --------------------------------------------------------------- */}
+        {/* ADMIN CONSOLE EXPERIENCE (PRODUCTIVITY & BILLING TERMINAL)      */}
+        {/* --------------------------------------------------------------- */}
+        {viewMode === 'admin' && (
           <div className="space-y-6">
             
-            {/* Desktop Navigation Tabs (Chunky Retro Style) */}
-            <div className="hidden sm:flex items-center justify-between border-b-2 border-[#7A1F1F]/20 pb-3">
-              <div className="flex items-center gap-2">
+            {/* Admin Sub-Navigation */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b-3 border-[#1F1614] pb-4">
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
                 {[
-                  { id: 'home', label: 'Home Pass' },
-                  { id: 'rewards', label: 'Perks & Vault' },
-                  { id: 'activity', label: 'Activity Ledger' },
-                  { id: 'account', label: 'Account & QR' }
+                  { id: 'overview', label: 'Overview' },
+                  { id: 'pos', label: 'Billing / POS Register' },
+                  { id: 'customers', label: 'Member Directory' },
+                  { id: 'settings', label: 'Rules & Settings' }
                 ].map((tab) => (
                   <button
                     key={tab.id}
                     type="button"
                     onClick={() => {
                       sounds.playClick();
-                      setCustomerTab(tab.id);
+                      setAdminTab(tab.id);
                     }}
-                    className={`px-5 py-2.5 rounded-2xl text-xs font-groovy uppercase tracking-wider transition cursor-pointer ${
-                      customerTab === tab.id
-                        ? 'bg-[#7A1F1F] text-[#F2ECD8] border-2 border-[#5C1414] shadow-[3px_3px_0px_#5C1414]'
-                        : 'bg-[#FAF6EA] text-[#7A1F1F] hover:bg-white border-2 border-[#7A1F1F] shadow-[2px_2px_0px_#7A1F1F]'
+                    className={`px-5 py-2.5 rounded-2xl text-xs font-groovy uppercase tracking-wider whitespace-nowrap transition cursor-pointer border-2 border-[#1F1614] ${
+                      adminTab === tab.id
+                        ? 'bg-[#7A1F1F] text-[#F2ECD8] shadow-[3px_3px_0px_#1F1614]'
+                        : 'bg-[#FAF6EA] text-[#1F1614] hover:bg-white shadow-[2px_2px_0px_#1F1614]'
                     }`}
                   >
                     {tab.label}
@@ -290,193 +493,18 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                 ))}
               </div>
 
-              <div className="text-xs font-mono text-[#7A1F1F] font-bold">
-                MEMBER: <span className="font-groovy text-sm text-[#7A1F1F] uppercase">{activeCustomer.name}</span>
-              </div>
-            </div>
-
-            {/* TAB CONTENT */}
-            {customerTab === 'home' && (
-              <div className="space-y-8">
-                
-                {/* 1. HERO DIGITAL WALLET MEMBERSHIP PASS */}
-                <div className="max-w-lg mx-auto">
-                  <ValenceHeroPass
-                    customer={activeCustomer}
-                    tier={activeTier}
-                    totalSlots={totalSlots}
-                    onShowQrModal={() => setShowQrModal(true)}
-                  />
-                </div>
-
-                {/* 2. SATISFYING STAMP JOURNEY */}
-                <ValenceStampJourney
-                  customer={activeCustomer}
-                  totalSlots={totalSlots}
-                  currentGift={activeGift}
-                  hasStreakBonus={hasStreakBonus}
-                  onSlotClick={(slotNum) => {
-                    if (slotNum <= (activeCustomer.stamps || 0)) {
-                      showToast(`Stamp #${slotNum} verified from billing.`);
-                    } else {
-                      showToast(`Stamp #${slotNum} marks automatically upon checkout billing.`);
-                    }
-                  }}
-                  onClaimMilestone={() => {
-                    sounds.playRewardFanfare();
-                    triggerMilestoneConfetti();
-                    setCustomerTab('rewards');
-                    showToast('Milestone Unlocked! Head to Perks Vault to redeem.');
-                  }}
-                />
-
-                {/* 3. QUICK DISCOVERY TILES (Warm Cream Cards with Solid Oxblood Borders) */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-2">
-                  
-                  {/* Tile 1: Rewards Shortcut */}
-                  <div
-                    onClick={() => {
-                      sounds.playClick();
-                      setCustomerTab('rewards');
-                    }}
-                    className="p-6 rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] hover:bg-white shadow-[6px_6px_0px_#7A1F1F] cursor-pointer transition group"
-                  >
-                    <div className="w-12 h-12 rounded-2xl bg-[#7A1F1F] text-[#E5A93C] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform shadow-sm">
-                      <Gift className="w-6 h-6 stroke-[2.5]" />
-                    </div>
-                    <h4 className="font-groovy font-black text-xl text-[#7A1F1F]">
-                      Perks &amp; Rewards Vault
-                    </h4>
-                    <p className="text-xs text-[#7A1F1F]/80 mt-1 font-sans">
-                      Daily secret treat &amp; redeemable vouchers.
-                    </p>
-                  </div>
-
-                  {/* Tile 2: Activity Shortcut */}
-                  <div
-                    onClick={() => {
-                      sounds.playClick();
-                      setCustomerTab('activity');
-                    }}
-                    className="p-6 rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] hover:bg-white shadow-[6px_6px_0px_#7A1F1F] cursor-pointer transition group"
-                  >
-                    <div className="w-12 h-12 rounded-2xl bg-[#7A1F1F] text-[#E5A93C] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform shadow-sm">
-                      <Receipt className="w-6 h-6 stroke-[2.5]" />
-                    </div>
-                    <h4 className="font-groovy font-black text-xl text-[#7A1F1F]">
-                      Itemized Activity Ledger
-                    </h4>
-                    <p className="text-xs text-[#7A1F1F]/80 mt-1 font-sans">
-                      {activeCustomer.billingHistory?.length || 0} verified visits &amp; tax receipts.
-                    </p>
-                  </div>
-
-                  {/* Tile 3: QR Code Scanner Shortcut */}
-                  <div
-                    onClick={() => {
-                      sounds.playClick();
-                      setShowQrModal(true);
-                    }}
-                    className="p-6 rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] hover:bg-white shadow-[6px_6px_0px_#7A1F1F] cursor-pointer transition group"
-                  >
-                    <div className="w-12 h-12 rounded-2xl bg-[#7A1F1F] text-[#E5A93C] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform shadow-sm">
-                      <QrCode className="w-6 h-6 stroke-[2.5]" />
-                    </div>
-                    <h4 className="font-groovy font-black text-xl text-[#7A1F1F]">
-                      Optical Scanner Pass
-                    </h4>
-                    <p className="text-xs text-[#7A1F1F]/80 mt-1 font-sans">
-                      Display high-res QR for counter scanner.
-                    </p>
-                  </div>
-
-                </div>
-
-              </div>
-            )}
-
-            {customerTab === 'rewards' && (
-              <ValenceRewardsVault
-                customer={activeCustomer}
-                totalSlots={totalSlots}
-                currentGift={activeGift}
-              />
-            )}
-
-            {customerTab === 'activity' && (
-              <ValenceActivityLedger customer={activeCustomer} />
-            )}
-
-            {customerTab === 'account' && (
-              <ValenceMemberAccount
-                customer={activeCustomer}
-                isSoundOn={isSoundOn}
-                onToggleSound={handleToggleSound}
-              />
-            )}
-
-            {/* Mobile-First Sticky Bottom Tab Bar */}
-            <div className="sm:hidden fixed bottom-3 inset-x-4 z-40 bg-[#FAF6EA] border-3 border-[#7A1F1F] rounded-3xl p-1.5 flex items-center justify-around shadow-[6px_6px_0px_#7A1F1F]">
-              {[
-                { id: 'home', label: 'Pass', icon: Smartphone },
-                { id: 'rewards', label: 'Rewards', icon: Gift },
-                { id: 'activity', label: 'Activity', icon: Receipt },
-                { id: 'account', label: 'Account', icon: User }
-              ].map((item) => {
-                const Icon = item.icon;
-                const isActive = customerTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => {
-                      sounds.playClick();
-                      setCustomerTab(item.id);
-                    }}
-                    className={`flex-1 py-2 rounded-2xl flex flex-col items-center gap-1 cursor-pointer transition-colors ${
-                      isActive ? 'bg-[#7A1F1F] text-[#F2ECD8] font-bold' : 'text-[#7A1F1F]'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4 stroke-[2.5]" />
-                    <span className="text-[10px] font-groovy uppercase">{item.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-          </div>
-        )}
-
-        {/* =============================================================== */}
-        {/* ADMIN CONSOLE EXPERIENCE (PRODUCTIVITY TERMINAL)                */}
-        {/* =============================================================== */}
-        {viewMode === 'admin' && (
-          <div className="space-y-6">
-            
-            {/* Admin Sub-Navigation */}
-            <div className="flex items-center gap-2 border-b-2 border-[#7A1F1F]/20 pb-3 overflow-x-auto no-scrollbar">
-              {[
-                { id: 'overview', label: 'Overview' },
-                { id: 'pos', label: 'Billing / POS Register' },
-                { id: 'customers', label: 'Member Directory' },
-                { id: 'settings', label: 'Rules & Settings' }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => {
-                    sounds.playClick();
-                    setAdminTab(tab.id);
-                  }}
-                  className={`px-5 py-2.5 rounded-2xl text-xs font-groovy uppercase tracking-wider whitespace-nowrap transition cursor-pointer ${
-                    adminTab === tab.id
-                      ? 'bg-[#7A1F1F] text-[#F2ECD8] border-2 border-[#5C1414] shadow-[3px_3px_0px_#5C1414]'
-                      : 'bg-[#FAF6EA] text-[#7A1F1F] hover:bg-white border-2 border-[#7A1F1F] shadow-[2px_2px_0px_#7A1F1F]'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
+              <button
+                type="button"
+                onClick={() => {
+                  sounds.playClick();
+                  setViewMode('customer');
+                }}
+                className="hidden md:inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-[#FAF6EA] hover:bg-white text-[#1F1614] border-2 border-[#1F1614] font-groovy font-bold text-xs uppercase shadow-[2px_2px_0px_#1F1614] transition cursor-pointer"
+                title="Return to Member Pass"
+              >
+                <ArrowLeft className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span>Exit Admin</span>
+              </button>
             </div>
 
             {/* Admin Tab Views */}
@@ -495,7 +523,7 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
                 onSelectCustomer={(cust) => setSelectedCustomerId(cust.id)}
                 onTransactionComplete={(res) => {
                   setCustomers(getLoyaltyCustomers());
-                  showToast(`Transaction settled! +${res.stampsAwarded} stamps synchronized to ${res.customer.name}'s pass.`);
+                  showToast(`Transaction settled! +${res.stampsAwarded} punches synchronized to ${res.customer.name}.`);
                   if (res.isRewardUnlocked) {
                     setTimeout(() => triggerMilestoneConfetti(), 400);
                   }
@@ -534,86 +562,105 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
 
       </main>
 
-      {/* FULL-SCREEN QR CODE PASS MODAL */}
+      {/* =================================================================== */}
+      {/* FULL-SCREEN ARCHIVAL QR PASS MODAL                                  */}
+      {/* =================================================================== */}
       <AnimatePresence>
         {showQrModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="relative w-full max-w-sm rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] shadow-[12px_12px_0px_#7A1F1F] p-6 sm:p-8 space-y-6 text-center"
+              className="relative w-full max-w-sm rounded-3xl bg-[#FAF6EA] border-3 border-[#1F1614] shadow-[12px_12px_0px_#1F1614] p-6 sm:p-8 space-y-6 text-center"
             >
               <button
                 type="button"
                 onClick={() => setShowQrModal(false)}
-                className="absolute top-5 right-5 w-9 h-9 rounded-full bg-[#7A1F1F] text-[#F2ECD8] flex items-center justify-center hover:bg-[#5C1414] cursor-pointer"
+                className="absolute top-5 right-5 w-9 h-9 rounded-full bg-[#7A1F1F] text-[#F2ECD8] flex items-center justify-center hover:bg-[#5C1414] cursor-pointer border border-[#1F1614]"
               >
                 <X className="w-4 h-4 stroke-[3]" />
               </button>
 
               <div className="space-y-1">
-                <span className="text-xs font-mono tracking-widest text-[#7A1F1F] uppercase font-bold">
-                  VERIFIED PASS QR
+                <span className="text-[10px] font-mono tracking-widest text-[#7A1F1F] uppercase font-black">
+                  VERIFIED OPTICAL PASS
                 </span>
-                <h3 className="font-groovy font-black text-3xl text-[#7A1F1F]">
+                <h3 className="font-groovy font-black text-3xl text-[#1F1614]">
                   {activeCustomer.name}
                 </h3>
-                <p className="text-xs font-mono text-[#7A1F1F]/80">
-                  Scan at checkout to associate bill and record stamps
+                <p className="text-xs font-mono text-[#1F1614]/70">
+                  Scan at checkout to associate bill and record punches
                 </p>
               </div>
 
-              {/* High-Contrast SVG QR Code with Bold Oxblood Border */}
-              <div className="p-4 rounded-3xl bg-white shadow-md border-3 border-[#7A1F1F] inline-block">
+              {/* Optical QR Code with Brutalist Framing */}
+              <div className="p-4 rounded-3xl bg-white shadow-md border-3 border-[#1F1614] inline-block">
                 <svg viewBox="0 0 100 100" className="w-48 h-48">
-                  <rect x="5" y="5" width="28" height="28" rx="4" fill="#7A1F1F" />
-                  <rect x="9" y="9" width="20" height="20" rx="2" fill="#fff" />
-                  <rect x="13" y="13" width="12" height="12" fill="#7A1F1F" />
-
-                  <rect x="67" y="5" width="28" height="28" rx="4" fill="#7A1F1F" />
-                  <rect x="71" y="9" width="20" height="20" rx="2" fill="#fff" />
-                  <rect x="75" y="13" width="12" height="12" fill="#7A1F1F" />
-
-                  <rect x="5" y="67" width="28" height="28" rx="4" fill="#7A1F1F" />
-                  <rect x="9" y="71" width="20" height="20" rx="2" fill="#fff" />
-                  <rect x="13" y="75" width="12" height="12" fill="#7A1F1F" />
-
-                  <rect x="42" y="10" width="8" height="8" fill="#7A1F1F" />
-                  <rect x="42" y="25" width="8" height="15" fill="#7A1F1F" />
-                  <rect x="15" y="42" width="12" height="8" fill="#7A1F1F" />
-                  <rect x="40" y="45" width="16" height="16" rx="2" fill="#E5A93C" />
-                  <rect x="65" y="42" width="10" height="10" fill="#7A1F1F" />
-                  <rect x="78" y="55" width="14" height="6" fill="#7A1F1F" />
-                  <rect x="45" y="68" width="8" height="18" fill="#7A1F1F" />
-                  <rect x="60" y="72" width="15" height="10" fill="#7A1F1F" />
-                  <rect x="80" y="80" width="12" height="12" fill="#7A1F1F" />
+                  {/* Outer Frame */}
+                  <rect x="5" y="5" width="30" height="30" fill="none" stroke="#7A1F1F" strokeWidth="6" rx="4" />
+                  <rect x="14" y="14" width="12" height="12" fill="#7A1F1F" rx="2" />
+                  
+                  <rect x="65" y="5" width="30" height="30" fill="none" stroke="#7A1F1F" strokeWidth="6" rx="4" />
+                  <rect x="74" y="14" width="12" height="12" fill="#7A1F1F" rx="2" />
+                  
+                  <rect x="5" y="65" width="30" height="30" fill="none" stroke="#7A1F1F" strokeWidth="6" rx="4" />
+                  <rect x="14" y="74" width="12" height="12" fill="#7A1F1F" rx="2" />
+                  
+                  {/* Dynamic Pixel Modules */}
+                  <rect x="44" y="8" width="6" height="6" fill="#1F1614" />
+                  <rect x="52" y="16" width="6" height="6" fill="#1F1614" />
+                  <rect x="44" y="24" width="6" height="6" fill="#1F1614" />
+                  
+                  <rect x="10" y="44" width="6" height="6" fill="#1F1614" />
+                  <rect x="20" y="52" width="6" height="6" fill="#1F1614" />
+                  <rect x="28" y="44" width="6" height="6" fill="#1F1614" />
+                  
+                  <rect x="42" y="42" width="16" height="16" fill="#7A1F1F" rx="2" />
+                  <rect x="46" y="46" width="8" height="8" fill="#E5A93C" rx="1" />
+                  
+                  <rect x="68" y="44" width="6" height="6" fill="#1F1614" />
+                  <rect x="76" y="52" width="6" height="6" fill="#1F1614" />
+                  <rect x="84" y="44" width="6" height="6" fill="#1F1614" />
+                  
+                  <rect x="44" y="68" width="6" height="6" fill="#1F1614" />
+                  <rect x="52" y="76" width="6" height="6" fill="#1F1614" />
+                  <rect x="44" y="84" width="6" height="6" fill="#1F1614" />
+                  
+                  <rect x="68" y="68" width="8" height="8" fill="#1F1614" />
+                  <rect x="80" y="72" width="8" height="8" fill="#1F1614" />
+                  <rect x="72" y="84" width="8" height="8" fill="#1F1614" />
+                  <rect x="84" y="84" width="8" height="8" fill="#1F1614" />
                 </svg>
               </div>
 
-              <div className="space-y-1 font-mono text-xs font-bold text-[#7A1F1F]">
-                <div>VAL-{activeCustomer.phone}</div>
-                <div className="font-groovy text-sm text-[#7A1F1F]">{activeCustomer.stamps} / {totalSlots} Stamps Recorded</div>
+              {/* Technical Identifier */}
+              <div className="space-y-1">
+                <span className="font-mono text-sm font-black text-[#1F1614] tracking-widest block">
+                  VAL-{activeCustomer.phone}
+                </span>
+                <span className="text-[10px] font-mono text-[#1F1614]/60 uppercase">
+                  SECURITY KEY: {activeCustomer.id}
+                </span>
               </div>
 
+              {/* Simulation Test Button */}
               <button
                 type="button"
-                onClick={() => setShowQrModal(false)}
-                className="w-full py-3.5 rounded-2xl bg-[#7A1F1F] hover:bg-[#5C1414] text-xs font-groovy font-bold text-[#F2ECD8] cursor-pointer uppercase shadow-[4px_4px_0px_#470D0D]"
+                onClick={() => {
+                  sounds.playScanSuccess();
+                  showToast('Optical scan verified! Beep triggered.');
+                }}
+                className="w-full py-3 rounded-2xl bg-[#E5A93C] hover:bg-[#F8CF75] text-[#1F1614] font-groovy font-bold text-xs uppercase border-2 border-[#1F1614] shadow-[3px_3px_0px_#1F1614] cursor-pointer transition-all flex items-center justify-center gap-2"
               >
-                Close Pass
+                <Zap className="w-4 h-4 fill-current" />
+                <span>SIMULATE COUNTER SCAN SOUND</span>
               </button>
+
             </motion.div>
           </div>
         )}
       </AnimatePresence>
-
-      {/* Model Switcher Modal */}
-      <ModelSwitcherModal
-        isOpen={isModelSwitcherOpen}
-        onClose={() => setIsModelSwitcherOpen(false)}
-        currentModelId="gamified-loyalty"
-      />
 
     </div>
   );

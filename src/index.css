@@ -499,3 +499,66 @@ body.debug-wireframe * {
   filter: drop-shadow(0 1px 2px rgba(32, 68, 226, 0.15));
 }
 
+/* ========================================================================= */
+/* GEN-Z EDITORIAL ART DIRECTION & BRUTALIST PRINT UTILITIES                */
+/* ========================================================================= */
+
+.bg-warm-paper {
+  background-color: #F2ECD8;
+  background-image: radial-gradient(rgba(122, 31, 31, 0.06) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+.bg-halftone-dots {
+  background-image: radial-gradient(#7A1F1F 1.5px, transparent 1.5px);
+  background-size: 10px 10px;
+  opacity: 0.12;
+}
+
+.shadow-brutal {
+  box-shadow: 4px 4px 0px #1F1614;
+}
+
+.shadow-brutal-lg {
+  box-shadow: 8px 8px 0px #1F1614;
+}
+
+.shadow-brutal-oxblood {
+  box-shadow: 5px 5px 0px #5C1414;
+}
+
+.shadow-brutal-mustard {
+  box-shadow: 4px 4px 0px #C98D25;
+}
+
+/* Authentic serrated receipt tear edge */
+.serrated-edge-top {
+  mask-image: radial-gradient(circle at 10px 0, transparent 0, transparent 6px, black 7px);
+  mask-size: 20px 100%;
+}
+
+.serrated-edge-bottom {
+  clip-path: polygon(
+    0% 0%, 100% 0%, 100% calc(100% - 8px),
+    98% 100%, 96% calc(100% - 8px), 94% 100%, 92% calc(100% - 8px),
+    90% 100%, 88% calc(100% - 8px), 86% 100%, 84% calc(100% - 8px),
+    82% 100%, 80% calc(100% - 8px), 78% 100%, 76% calc(100% - 8px),
+    74% 100%, 72% calc(100% - 8px), 70% 100%, 68% calc(100% - 8px),
+    66% 100%, 64% calc(100% - 8px), 62% 100%, 60% calc(100% - 8px),
+    58% 100%, 56% calc(100% - 8px), 54% 100%, 52% calc(100% - 8px),
+    50% 100%, 48% calc(100% - 8px), 46% 100%, 44% calc(100% - 8px),
+    42% 100%, 40% calc(100% - 8px), 38% 100%, 36% calc(100% - 8px),
+    34% 100%, 32% calc(100% - 8px), 30% 100%, 28% calc(100% - 8px),
+    26% 100%, 24% calc(100% - 8px), 22% 100%, 20% calc(100% - 8px),
+    18% 100%, 16% calc(100% - 8px), 14% 100%, 12% calc(100% - 8px),
+    10% 100%, 8% calc(100% - 8px), 6% 100%, 4% calc(100% - 8px),
+    2% 100%, 0% calc(100% - 8px)
+  );
+}
+
+/* Rubber ink bleed for stamp impressions */
+.ink-bleed {
+  text-shadow: 0.5px 0.5px 1px rgba(122, 31, 31, 0.4);
+}
+
+

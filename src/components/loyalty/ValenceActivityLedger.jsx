@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Receipt,
-  Calendar,
   Search,
-  ChevronRight,
   Printer,
   X,
   Flame,
-  CheckCircle2
+  CheckCircle2,
+  ArrowRight
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
 
@@ -47,102 +46,115 @@ export function ValenceActivityLedger({ customer }) {
   };
 
   return (
-    <section className="space-y-6">
+    <section className="relative space-y-6 pt-4">
       
       {/* SECTION HEADER */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-1">
-        <div>
-          <span className="text-xs font-mono font-bold tracking-widest text-[#7A1F1F] uppercase">
-            TRANSACTION AUDIT
-          </span>
-          <h3 className="font-groovy font-black text-3xl sm:text-4xl text-[#7A1F1F] tracking-wide mt-0.5 leading-none">
-            Activity &amp; Billing History
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b-3 border-[#1F1614] pb-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 rounded bg-[#1F1614] text-[#E5A93C] font-mono text-[9px] font-black uppercase tracking-widest">
+              SECTION 04 // LEDGER
+            </span>
+            <span className="font-mono text-xs font-bold text-[#7A1F1F]/70 uppercase tracking-wider">
+              SETTLED RECEIPTS &amp; PUNCH AUDIT
+            </span>
+          </div>
+
+          <h3 className="font-groovy font-black text-4xl sm:text-6xl text-[#7A1F1F] tracking-tight leading-[0.9]">
+            ACTIVITY DOCKET
           </h3>
         </div>
 
-        {/* Search Bar */}
+        {/* Search Input (Brutalist Pill) */}
         <div className="relative w-full sm:w-72">
-          <Search className="w-4 h-4 text-[#7A1F1F] absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#1F1614] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search bills or items..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#FAF6EA] border-2 border-[#7A1F1F] text-xs font-mono text-[#7A1F1F] placeholder-[#7A1F1F]/60 focus:outline-none focus:bg-white transition-colors"
+            placeholder="Search docket or items..."
+            className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-[#FAF6EA] border-3 border-[#1F1614] text-xs font-mono font-bold text-[#1F1614] placeholder-[#1F1614]/50 focus:outline-none focus:bg-white shadow-[3px_3px_0px_#1F1614] transition-all"
           />
         </div>
       </div>
 
-      {/* LEDGER LIST (Warm Cream Container with Bold 3px Oxblood Border) */}
-      <div className="rounded-3xl bg-[#FAF6EA] border-3 border-[#7A1F1F] p-6 shadow-[8px_8px_0px_#7A1F1F] space-y-4">
+      {/* CONTINUOUS THERMAL RECEIPT STRIP CONTAINER */}
+      <div className="relative rounded-3xl bg-[#FAF6EA] border-3 border-[#1F1614] p-6 sm:p-8 shadow-[8px_8px_0px_#1F1614] space-y-4 overflow-hidden">
+        
+        {/* Paper Grain */}
+        <div className="absolute inset-0 bg-halftone-dots opacity-10 pointer-events-none" />
+
         {filteredHistory.length === 0 ? (
           <div className="text-center py-12 space-y-2 font-mono">
             <Receipt className="w-10 h-10 text-[#7A1F1F]/40 mx-auto" />
-            <p className="text-sm font-bold text-[#7A1F1F]">No matching transactions found</p>
-            <p className="text-xs text-[#7A1F1F]/70">Settled receipts appear automatically in this ledger.</p>
+            <p className="text-sm font-bold text-[#1F1614]">No matching docket records found</p>
+            <p className="text-xs text-[#1F1614]/60">Settled counter transactions will record automatically here.</p>
           </div>
         ) : (
-          <div className="divide-y-2 divide-dashed divide-[#7A1F1F]/20">
+          <div className="divide-y-2 divide-dashed divide-[#1F1614]/20 relative z-10">
             {filteredHistory.map((entry, index) => (
               <div
                 key={entry.id || index}
                 className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
               >
-                {/* Left Info */}
-                <div className="flex items-start gap-3.5">
-                  <div className="w-11 h-11 rounded-2xl bg-[#7A1F1F] text-[#E5A93C] flex items-center justify-center shrink-0 border-2 border-[#5C1414] shadow-sm">
+                {/* Left Docket Entry */}
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#7A1F1F] text-[#E5A93C] flex items-center justify-center shrink-0 border-2 border-[#1F1614] shadow-[2px_2px_0px_#1F1614]">
                     <Receipt className="w-5 h-5 stroke-[2.5]" />
                   </div>
 
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-mono text-sm font-black text-[#7A1F1F]">
+                      <span className="font-mono text-sm font-black text-[#1F1614]">
                         {entry.id}
                       </span>
-                      <span className="text-xs font-mono text-[#7A1F1F]/80 flex items-center gap-1 font-bold">
-                        <Calendar className="w-3.5 h-3.5" />
+                      <span className="font-mono text-xs text-[#1F1614]/60">
                         {entry.date} • {entry.time}
                       </span>
                       {entry.streakApplied && (
-                        <span className="px-2 py-0.5 rounded-full bg-[#E5A93C] text-[#7A1F1F] font-groovy text-[10px] font-black flex items-center gap-1 uppercase">
-                          <Flame className="w-3 h-3 fill-[#7A1F1F]" />
-                          2X STREAK APPLIED
+                        <span className="px-2 py-0.5 rounded-full bg-[#E5A93C] text-[#1F1614] font-mono text-[9px] font-black flex items-center gap-1 uppercase">
+                          <Flame className="w-2.5 h-2.5 fill-current" />
+                          2X STREAK BONUS
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-[#7A1F1F]/80 font-sans font-medium">
-                      {entry.items || 'Standard Store Member Order'}
+
+                    <p className="font-mono text-xs text-[#1F1614]/80 font-bold">
+                      {entry.items}
                     </p>
                   </div>
                 </div>
 
-                {/* Right: Amount & Receipt Button */}
-                <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pl-14 sm:pl-0">
-                  <div className="text-left sm:text-right">
-                    <div className="font-groovy font-black text-xl text-[#7A1F1F] leading-none">
+                {/* Right Amount + Punch Awarded + Action */}
+                <div className="flex items-center gap-4 self-end sm:self-auto">
+                  <div className="text-right font-mono">
+                    <div className="font-groovy font-black text-xl text-[#7A1F1F]">
                       ₹{entry.amount}
                     </div>
-                    <span className="text-[11px] font-mono text-[#7A1F1F] font-bold">
-                      +{entry.stampsAwarded || 1} Stamp • +{entry.streakApplied ? 100 : 50} XP
-                    </span>
+                    <div className="text-[10px] text-[#E5A93C] bg-[#1F1614] px-2 py-0.5 rounded font-black tracking-wider uppercase inline-block">
+                      +{entry.stampsAwarded || 1} PUNCH
+                    </div>
                   </div>
 
                   <button
                     type="button"
                     onClick={() => handleOpenReceipt(entry)}
-                    className="px-3.5 py-2 rounded-xl bg-[#7A1F1F] hover:bg-[#5C1414] text-[#F2ECD8] text-xs font-groovy font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-[3px_3px_0px_#470D0D] uppercase"
+                    className="px-3.5 py-2 rounded-xl bg-[#FAF6EA] hover:bg-white text-[#1F1614] border-2 border-[#1F1614] text-xs font-mono font-black uppercase cursor-pointer transition-all shadow-[2px_2px_0px_#1F1614] flex items-center gap-1"
                   >
-                    <span>Receipt</span>
-                    <ChevronRight className="w-3.5 h-3.5 stroke-[3]" />
+                    <span>INSPECT</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
             ))}
           </div>
         )}
+
       </div>
 
-      {/* 80MM THERMAL RECEIPT MODAL */}
+      {/* =================================================================== */}
+      {/* AUTHENTIC THERMAL SLIP MODAL                                        */}
+      {/* =================================================================== */}
       <AnimatePresence>
         {selectedReceipt && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
@@ -150,108 +162,98 @@ export function ValenceActivityLedger({ customer }) {
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="relative w-full max-w-sm rounded-3xl bg-[#FAF6EA] text-[#7A1F1F] shadow-[12px_12px_0px_#7A1F1F] p-6 sm:p-7 space-y-4 overflow-hidden font-mono border-3 border-[#7A1F1F]"
+              className="relative w-full max-w-sm bg-white text-[#1F1614] border-3 border-[#1F1614] shadow-[12px_12px_0px_#1F1614] p-6 space-y-4 font-mono text-xs serrated-edge-bottom"
             >
               <button
                 type="button"
                 onClick={() => setSelectedReceipt(null)}
-                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#7A1F1F] text-[#F2ECD8] flex items-center justify-center hover:bg-[#5C1414] cursor-pointer"
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#1F1614] text-[#F2ECD8] flex items-center justify-center hover:bg-[#7A1F1F] cursor-pointer"
               >
                 <X className="w-4 h-4 stroke-[3]" />
               </button>
 
-              {/* Thermal Header */}
-              <div className="text-center space-y-1 pb-3 border-b-2 border-dashed border-[#7A1F1F]">
-                <h4 className="font-groovy font-black text-2xl tracking-wide">VALENCE STORE</h4>
-                <p className="text-[10px] font-bold uppercase tracking-wider">OFFICIAL TAX INVOICE</p>
-                <p className="text-[9px] text-[#7A1F1F]/70">GSTIN: 07AAAAA0000A1Z5</p>
-              </div>
-
-              {/* Meta */}
-              <div className="text-xs space-y-1 py-1 text-[#7A1F1F]">
-                <div className="flex justify-between">
-                  <span>INVOICE:</span>
-                  <span className="font-bold">{selectedReceipt.id}</span>
+              <div className="text-center space-y-1 pb-3 border-b-2 border-dashed border-[#1F1614]/40">
+                <div className="font-groovy font-black text-2xl text-[#7A1F1F]">
+                  VALENCE
                 </div>
-                <div className="flex justify-between">
-                  <span>DATE:</span>
-                  <span>{selectedReceipt.date} {selectedReceipt.time}</span>
+                <div className="text-[10px] tracking-widest uppercase font-bold text-[#1F1614]/70">
+                  OFFICIAL TAX INVOICE
                 </div>
-                <div className="flex justify-between">
-                  <span>MEMBER:</span>
-                  <span className="font-bold">{customer?.name} ({customer?.phone})</span>
+                <div className="text-[10px] text-[#1F1614]/60">
+                  DOCKET NO: {selectedReceipt.id}
+                </div>
+                <div className="text-[10px] text-[#1F1614]/60">
+                  DATE: {selectedReceipt.date} • {selectedReceipt.time}
                 </div>
               </div>
 
-              {/* Line Items */}
-              <div className="py-2 border-y-2 border-dashed border-[#7A1F1F] space-y-1.5 text-xs">
+              {/* Items Breakdown */}
+              <div className="py-2 border-b-2 border-dashed border-[#1F1614]/40 space-y-1.5">
                 <div className="flex justify-between font-bold">
-                  <span>DESCRIPTION</span>
-                  <span>AMOUNT</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="truncate max-w-[190px]">{selectedReceipt.items}</span>
-                  <span className="font-bold">₹{selectedReceipt.amount}</span>
+                  <span>{selectedReceipt.items}</span>
+                  <span>₹{selectedReceipt.amount}</span>
                 </div>
               </div>
 
-              {/* Taxes */}
+              {/* Taxes Breakdown */}
               {(() => {
-                const taxes = calculateTaxes(selectedReceipt.amount);
+                const tax = calculateTaxes(selectedReceipt.amount);
                 return (
-                  <div className="space-y-1 text-xs text-[#7A1F1F]/80">
+                  <div className="space-y-1 text-[11px] text-[#1F1614]/80 pb-2 border-b-2 border-dashed border-[#1F1614]/40">
                     <div className="flex justify-between">
-                      <span>Subtotal:</span>
-                      <span>₹{taxes.subtotal}</span>
+                      <span>Subtotal</span>
+                      <span>₹{tax.subtotal}</span>
                     </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span>CGST (2.5%):</span>
-                      <span>₹{taxes.cgst}</span>
+                    <div className="flex justify-between">
+                      <span>CGST (2.5%)</span>
+                      <span>₹{tax.cgst}</span>
                     </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span>SGST (2.5%):</span>
-                      <span>₹{taxes.sgst}</span>
+                    <div className="flex justify-between">
+                      <span>SGST (2.5%)</span>
+                      <span>₹{tax.sgst}</span>
                     </div>
-                    <div className="flex justify-between font-bold text-sm text-[#7A1F1F] pt-1.5 border-t border-[#7A1F1F]/30">
-                      <span>TOTAL BILLED:</span>
-                      <span>₹{taxes.total}</span>
+                    <div className="flex justify-between font-black text-sm text-[#1F1614] pt-1">
+                      <span>TOTAL BILLED</span>
+                      <span>₹{tax.total}</span>
                     </div>
                   </div>
                 );
               })()}
 
-              {/* Stamp sync confirmation */}
-              <div className="p-3 bg-[#E5A93C] rounded-xl border-2 border-[#7A1F1F] text-center space-y-0.5 text-[#7A1F1F]">
-                <span className="text-[10px] font-groovy font-black tracking-wider uppercase block">
-                  PASS STAMP RECORDED
-                </span>
-                <span className="text-xs font-bold">
-                  +{selectedReceipt.stampsAwarded || 1} Stamp Credited To Pass
-                </span>
-                {selectedReceipt.streakApplied && (
-                  <span className="text-[9px] font-bold block">
-                    (Includes 5-Day Streak Double Bonus)
-                  </span>
-                )}
+              {/* Punch Accrual Details */}
+              <div className="p-3 rounded-xl bg-[#FAF6EA] border border-[#1F1614] space-y-1">
+                <div className="flex justify-between font-bold text-[#7A1F1F]">
+                  <span>PUNCHES RECORDED</span>
+                  <span className="font-groovy text-sm">+{selectedReceipt.stampsAwarded || 1}</span>
+                </div>
+                <div className="flex justify-between text-[10px] text-[#1F1614]/70">
+                  <span>Customer</span>
+                  <span>{customer?.name} ({customer?.phone})</span>
+                </div>
               </div>
 
-              {/* Actions */}
-              <div className="flex gap-2 pt-2">
+              {/* Print Button */}
+              <div className="pt-2">
                 <button
                   type="button"
                   onClick={handlePrint}
-                  className="flex-1 py-2.5 rounded-xl bg-[#7A1F1F] hover:bg-[#5C1414] text-[#F2ECD8] text-xs font-groovy font-bold flex items-center justify-center gap-1.5 cursor-pointer uppercase shadow-[3px_3px_0px_#470D0D]"
+                  className="w-full py-2.5 rounded-xl bg-[#1F1614] hover:bg-[#7A1F1F] text-[#F2ECD8] font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
                 >
-                  <Printer className="w-4 h-4" />
-                  <span>Print Receipt</span>
+                  <Printer className="w-3.5 h-3.5" />
+                  <span>PRINT THERMAL DOCKET</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedReceipt(null)}
-                  className="px-4 py-2.5 rounded-xl bg-[#F2ECD8] hover:bg-[#E2D8BE] text-[#7A1F1F] border-2 border-[#7A1F1F] text-xs font-groovy font-bold cursor-pointer uppercase"
-                >
-                  Close
-                </button>
+              </div>
+
+              {/* Barcode on thermal slip */}
+              <div className="pt-2 flex flex-col items-center justify-center space-y-1">
+                <div className="h-6 w-48 flex items-stretch justify-between gap-[2px] opacity-80">
+                  {[2, 1, 3, 1, 2, 4, 1, 2, 3, 1, 4, 2, 1, 3, 2, 4, 1, 2, 3, 1, 4, 2, 1].map((w, i) => (
+                    <div key={i} className="bg-[#1F1614] h-full" style={{ width: `${w}px` }} />
+                  ))}
+                </div>
+                <span className="text-[8px] tracking-widest text-[#1F1614]/50">
+                  THANK YOU FOR YOUR PATRONAGE
+                </span>
               </div>
 
             </motion.div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { motion } from 'framer-motion';
 
 export function CircularStampBadge({
@@ -6,35 +6,45 @@ export function CircularStampBadge({
   centerText = 'GOLD',
   subText = 'TIER 3',
   size = 88,
-  variant = 'oxblood', // 'oxblood' | 'cream' | 'mustard'
+  variant = 'oxblood', // 'oxblood' | 'cream' | 'mustard' | 'ink'
   icon: Icon,
   className = ''
 }) {
+  const uniqueId = useId().replace(/:/g, '_');
+  const pathId = `badgePath_${uniqueId}`;
+
   const isOxblood = variant === 'oxblood';
   const isMustard = variant === 'mustard';
   const isCream = variant === 'cream';
+  const isInk = variant === 'ink';
 
   const strokeColor = isOxblood
     ? '#7A1F1F'
     : isMustard
     ? '#E5A93C'
+    : isInk
+    ? '#1F1614'
     : '#F2ECD8';
 
   const textColor = isOxblood
     ? '#7A1F1F'
     : isMustard
     ? '#7A1F1F'
+    : isInk
+    ? '#F2ECD8'
     : '#F2ECD8';
 
   const bgColor = isOxblood
     ? '#F2ECD8'
     : isMustard
     ? '#E5A93C'
+    : isInk
+    ? '#1F1614'
     : '#7A1F1F';
 
   return (
     <div
-      className={`relative inline-flex items-center justify-center select-none ${className}`}
+      className={`relative inline-flex items-center justify-center select-none shrink-0 ${className}`}
       style={{ width: size, height: size }}
     >
       <svg
@@ -44,7 +54,7 @@ export function CircularStampBadge({
       >
         <defs>
           <path
-            id="badgeCirclePath"
+            id={pathId}
             d="M 60,60 m -44,0 a 44,44 0 1,1 88,0 a 44,44 0 1,1 -88,0"
           />
         </defs>
@@ -88,7 +98,7 @@ export function CircularStampBadge({
           fontWeight="800"
           letterSpacing="0.16em"
         >
-          <textPath href="#badgeCirclePath" startOffset="50%" textAnchor="middle">
+          <textPath href={`#${pathId}`} startOffset="50%" textAnchor="middle">
             {text}
           </textPath>
         </text>

@@ -61,6 +61,16 @@ export function ValenceAdminCustomers({ customers = [], onUpdateCustomer, totalS
     if (onUpdateCustomer) onUpdateCustomer(updated);
   };
 
+  const handleToggleAdmin = (customer) => {
+    sounds.playClick();
+    const updated = {
+      ...customer,
+      isAdmin: !customer.isAdmin
+    };
+    saveLoyaltyCustomer(updated);
+    if (onUpdateCustomer) onUpdateCustomer(updated);
+  };
+
   return (
     <div className="space-y-6">
       
@@ -110,6 +120,15 @@ export function ValenceAdminCustomers({ customers = [], onUpdateCustomer, totalS
                       <span className="font-groovy font-black text-lg text-[#7A1F1F]">
                         {c.name}
                       </span>
+                      {c.isAdmin ? (
+                        <span className="px-2 py-0.5 rounded-full bg-[#7A1F1F] text-[#F2ECD8] font-mono text-[9px] font-bold uppercase tracking-wider border border-[#5C1414]">
+                          ADMIN
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded-full bg-[#E2D8BE] text-[#7A1F1F] font-mono text-[9px] font-bold uppercase tracking-wider">
+                          MEMBER
+                        </span>
+                      )}
                       {hasStreak && (
                         <span className="px-2 py-0.5 rounded-full bg-[#E5A93C] text-[#7A1F1F] font-groovy text-[9px] font-black flex items-center gap-1 uppercase">
                           <Flame className="w-2.5 h-2.5 fill-[#7A1F1F]" />
@@ -173,7 +192,7 @@ export function ValenceAdminCustomers({ customers = [], onUpdateCustomer, totalS
                   </div>
                 </div>
 
-                {/* Right: Milestone Reward Selector & History Button */}
+                {/* Right: Milestone Reward Selector, Role Toggle & History Button */}
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="space-y-0.5">
                     <span className="text-[10px] font-mono text-[#7A1F1F] block uppercase font-bold">
@@ -191,6 +210,20 @@ export function ValenceAdminCustomers({ customers = [], onUpdateCustomer, totalS
                       ))}
                     </select>
                   </div>
+
+                  {/* Toggle Admin Privilege */}
+                  <button
+                    type="button"
+                    title={c.isAdmin ? 'Revoke admin console access' : 'Grant admin console access'}
+                    onClick={() => handleToggleAdmin(c)}
+                    className={`px-3 py-2 rounded-xl text-xs font-mono font-bold uppercase cursor-pointer transition-all self-end border-2 ${
+                      c.isAdmin
+                        ? 'bg-[#FAF6EA] text-[#7A1F1F] border-[#7A1F1F] hover:bg-white shadow-[2px_2px_0px_#7A1F1F]'
+                        : 'bg-[#E2D8BE] text-[#7A1F1F]/70 border-[#7A1F1F]/30 hover:border-[#7A1F1F] hover:text-[#7A1F1F]'
+                    }`}
+                  >
+                    {c.isAdmin ? 'Role: Admin' : 'Role: Member'}
+                  </button>
 
                   <button
                     type="button"

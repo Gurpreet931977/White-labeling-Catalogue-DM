@@ -45,15 +45,22 @@ export default {
           DEFAULT: '#E5A93C',
           dark: '#C98D25',
           light: '#F8CF75',
+          gold: '#D48B1C',
+        },
+        ink: {
+          DEFAULT: '#1F1614',
+          dark: '#140D0C',
+          light: '#362926',
         }
       },
       fontFamily: {
         groovy: ['"Lilita One"', '"Bagel Fat One"', '"Boogaloo"', 'cursive', 'sans-serif'],
-        sans: ['"Inter"', '"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-        display: ['"Lilita One"', '"Panchang"', '"Syne"', 'sans-serif'],
-        panchang: ['"Panchang"', 'sans-serif'],
-        clash: ['"Clash Display"', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', '"Inter"', 'system-ui', 'sans-serif'],
+        display: ['"Syne"', '"Lilita One"', '"Panchang"', '"Clash Display"', 'sans-serif'],
         syne: ['"Syne"', 'sans-serif'],
+        clash: ['"Clash Display"', 'sans-serif'],
+        panchang: ['"Panchang"', 'sans-serif'],
+        fraunces: ['"Fraunces"', 'serif'],
         mono: ['"Space Mono"', '"JetBrains Mono"', 'monospace'],
       },
       boxShadow: {

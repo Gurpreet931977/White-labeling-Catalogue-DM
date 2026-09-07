@@ -4,6 +4,7 @@ class SoundController {
   constructor() {
     this.ctx = null;
     this.enabled = true;
+    this.volume = 0.85;
   }
 
   init() {
@@ -16,6 +17,14 @@ class SoundController {
     if (this.ctx && this.ctx.state === 'suspended') {
       this.ctx.resume();
     }
+  }
+
+  setVolume(val) {
+    this.volume = Math.max(0, Math.min(1, Number(val)));
+  }
+
+  getVolume() {
+    return this.volume;
   }
 
   toggleSound() {
@@ -254,6 +263,78 @@ class SoundController {
         osc.start(now + idx * 0.08);
         osc.stop(now + idx * 0.08 + 0.45);
       });
+    } catch (e) {}
+  }
+
+  // High-Pitch Electronic Scan Success Confirmation Beep / Digital Chime
+  playScanSuccess(customVol = null) {
+    if (!this.enabled) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+
+      const now = this.ctx.currentTime;
+      const targetVol = customVol !== null ? Math.max(0, Math.min(1, customVol)) : this.volume;
+      const masterGain = this.ctx.createGain();
+      masterGain.gain.setValueAtTime(targetVol * 0.75, now);
+      masterGain.connect(this.ctx.destination);
+
+      // 1. Tactile digital frequency blip (1950Hz -> 2650Hz in 45ms)
+      const blipOsc = this.ctx.createOscillator();
+      const blipGain = this.ctx.createGain();
+      blipOsc.type = 'triangle';
+      blipOsc.frequency.setValueAtTime(1950, now);
+      blipOsc.frequency.exponentialRampToValueAtTime(2650, now + 0.045);
+      blipGain.gain.setValueAtTime(0.001, now);
+      blipGain.gain.linearRampToValueAtTime(0.35, now + 0.008);
+      blipGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+      blipOsc.connect(blipGain);
+      blipGain.connect(masterGain);
+      blipOsc.start(now);
+      blipOsc.stop(now + 0.05);
+
+      // 2. High crystalline confirmation tone: E7 (2637Hz) + B7 (3951Hz)
+      const chimeStart = now + 0.035;
+
+      const tone1 = this.ctx.createOscillator();
+      const tone1Gain = this.ctx.createGain();
+      tone1.type = 'sine';
+      tone1.frequency.setValueAtTime(2637.0, chimeStart);
+      tone1Gain.gain.setValueAtTime(0.001, chimeStart);
+      tone1Gain.gain.linearRampToValueAtTime(0.48, chimeStart + 0.004);
+      tone1Gain.gain.exponentialRampToValueAtTime(0.0005, chimeStart + 0.24);
+
+      tone1.connect(tone1Gain);
+      tone1Gain.connect(masterGain);
+      tone1.start(chimeStart);
+      tone1.stop(chimeStart + 0.24);
+
+      const tone2 = this.ctx.createOscillator();
+      const tone2Gain = this.ctx.createGain();
+      tone2.type = 'sine';
+      tone2.frequency.setValueAtTime(3296.3, chimeStart);
+      tone2Gain.gain.setValueAtTime(0.001, chimeStart);
+      tone2Gain.gain.linearRampToValueAtTime(0.24, chimeStart + 0.004);
+      tone2Gain.gain.exponentialRampToValueAtTime(0.0005, chimeStart + 0.2);
+
+      tone2.connect(tone2Gain);
+      tone2Gain.connect(masterGain);
+      tone2.start(chimeStart);
+      tone2.stop(chimeStart + 0.2);
+
+      const tone3 = this.ctx.createOscillator();
+      const tone3Gain = this.ctx.createGain();
+      tone3.type = 'sine';
+      tone3.frequency.setValueAtTime(3951.0, chimeStart + 0.01);
+      tone3Gain.gain.setValueAtTime(0.001, chimeStart + 0.01);
+      tone3Gain.gain.linearRampToValueAtTime(0.16, chimeStart + 0.015);
+      tone3Gain.gain.exponentialRampToValueAtTime(0.0005, chimeStart + 0.16);
+
+      tone3.connect(tone3Gain);
+      tone3Gain.connect(masterGain);
+      tone3.start(chimeStart + 0.01);
+      tone3.stop(chimeStart + 0.16);
     } catch (e) {}
   }
 }

@@ -25,6 +25,7 @@ export function ValenceAdminSettings({ config, onUpdateConfig, onNewCustomerCrea
   const [newPhone, setNewPhone] = useState('');
   const [newStamps, setNewStamps] = useState(1);
   const [newGiftId, setNewGiftId] = useState('discount50');
+  const [newIsAdmin, setNewIsAdmin] = useState(false);
   const [enrollSuccess, setEnrollSuccess] = useState(false);
 
   const handleSaveConfig = () => {
@@ -51,6 +52,7 @@ export function ValenceAdminSettings({ config, onUpdateConfig, onNewCustomerCrea
       streakDays: 1,
       xp: 100,
       assignedGiftId: newGiftId,
+      isAdmin: newIsAdmin,
       billingHistory: [],
       redeemedVouchers: []
     };
@@ -60,6 +62,7 @@ export function ValenceAdminSettings({ config, onUpdateConfig, onNewCustomerCrea
 
     setNewName('');
     setNewPhone('');
+    setNewIsAdmin(false);
     setEnrollSuccess(true);
     setTimeout(() => setEnrollSuccess(false), 3000);
   };
@@ -289,6 +292,18 @@ export function ValenceAdminSettings({ config, onUpdateConfig, onNewCustomerCrea
                   </select>
                 </div>
               </div>
+
+              <label className="flex items-center gap-2 pt-1 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={newIsAdmin}
+                  onChange={(e) => setNewIsAdmin(e.target.checked)}
+                  className="w-4 h-4 accent-[#7A1F1F] rounded cursor-pointer"
+                />
+                <span className="text-xs font-mono font-bold text-[#7A1F1F]">
+                  Grant Admin Panel Access to this Member
+                </span>
+              </label>
             </div>
 
             {enrollSuccess && (
