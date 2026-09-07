@@ -33,6 +33,8 @@ import { TableReservationModal } from '../components/common/TableReservationModa
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { CartProvider, useCart } from '../context/CartContext';
 import { OrderProvider, useOrder } from '../context/OrderContext';
+import { ThemeProvider, useTheme } from '../context/ThemeContext';
+import { ThemeScreenTransition } from '../components/common/ThemeScreenTransition';
 import { sounds } from '../utils/audio';
 
 function CafeContent({ onBackToCatalogue, onBackToVariants }) {
@@ -47,6 +49,7 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
 
   const { itemCount, grandTotal, operationalModel } = useCart();
   const { activeCustomerOrder, liveOrderToast, setLiveOrderToast } = useOrder();
+  const { isLight, isDark } = useTheme();
   const { 
     isCustomerLoggedIn, 
     isAdminLoggedIn, 
@@ -78,11 +81,15 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#12100E] text-[#FAF7F2] flex flex-col justify-between selection:bg-[#D04834] selection:text-white font-sans relative">
+    <div className={`min-h-screen flex flex-col justify-between selection:bg-[#D04834] selection:text-white font-sans relative transition-colors duration-300 ${
+      isLight ? 'bg-[#FAF7F2] text-[#12100E]' : 'bg-[#12100E] text-[#FAF7F2]'
+    }`}>
       
       {/* Top Dripp Media White-Label Header / Return Bar */}
       {(onBackToVariants || onBackToCatalogue) && (
-        <div className="bg-[#0A0807] border-b border-white/10 px-4 py-2 text-xs flex items-center justify-between z-50 sticky top-0 backdrop-blur-md font-mono">
+        <div className={`border-b px-4 py-2 text-xs flex items-center justify-between z-50 sticky top-0 backdrop-blur-md font-mono transition-colors ${
+          isLight ? 'bg-[#F0EAE1]/95 border-black/10 text-stone-700' : 'bg-[#0A0807]/95 border-white/10 text-stone-300'
+        }`}>
           <div className="flex items-center gap-2">
             <button
               onClick={() => {
@@ -119,29 +126,6 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
                 SWITCH
               </span>
             </button>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => {
-                sounds.playClick();
-                handleNavigateAdmin();
-              }}
-              className="text-[11px] text-slate-400 hover:text-white transition flex items-center gap-1 font-mono cursor-pointer"
-            >
-              <span>Staff POS (PIN: 7788)</span>
-            </button>
-            {onBackToCatalogue && (
-              <button
-                onClick={() => {
-                  sounds.playClick();
-                  onBackToCatalogue();
-                }}
-                className="text-[11px] font-bold text-[#ebd73f] hover:underline cursor-pointer"
-              >
-                Master Catalogue
-              </button>
-            )}
           </div>
         </div>
       )}
@@ -329,12 +313,12 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
               className="w-full p-3.5 rounded-2xl bg-[#FAF7F2] text-[#12100E] font-bold shadow-2xl flex items-center justify-between active:scale-95 transition border border-white/20"
             >
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[#12100E] text-[#FAF7F2] flex items-center justify-center font-bold text-xs font-mono">
+                <div className="w-8 h-8 rounded-xl bg-[#12100E] text-[#FAF7F2] flex items-center justify-center font-bold text-xs font-number">
                   {itemCount}
                 </div>
                 <div className="text-left">
                   <p className="text-xs font-black font-syne leading-tight">Vedi Ordine</p>
-                  <p className="text-[11px] font-mono font-bold text-stone-700">₹{grandTotal}</p>
+                  <p className="text-[11px] font-number font-bold text-stone-700">₹{grandTotal}</p>
                 </div>
               </div>
               <div className="flex items-center gap-1.5 text-xs font-black font-syne uppercase tracking-wider bg-[#12100E] text-[#FAF7F2] px-3.5 py-1.5 rounded-xl">
@@ -429,21 +413,26 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
         onClose={() => setIsReservationOpen(false)}
       />
 
+      {/* Full-Screen Radial Iris Theme Screen Transition */}
+      <ThemeScreenTransition />
+
     </div>
   );
 }
 
 export default function CafeApp({ onBackToCatalogue, onBackToVariants }) {
   return (
-    <AuthProvider>
-      <OrderProvider>
-        <CartProvider>
-          <CafeContent 
-            onBackToCatalogue={onBackToCatalogue} 
-            onBackToVariants={onBackToVariants} 
-          />
-        </CartProvider>
-      </OrderProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <OrderProvider>
+          <CartProvider>
+            <CafeContent 
+              onBackToCatalogue={onBackToCatalogue} 
+              onBackToVariants={onBackToVariants} 
+            />
+          </CartProvider>
+        </OrderProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

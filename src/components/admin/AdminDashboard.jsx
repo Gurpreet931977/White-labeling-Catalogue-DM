@@ -12,40 +12,31 @@ import {
   BellRing, 
   Receipt, 
   Layers, 
-  Eye, 
-  LogOut,
-  Lock,
-  ArrowRight,
-  TrendingUp,
-  AlertTriangle,
-  RefreshCw,
-  Flame,
-  Check,
-  X,
-  CreditCard,
-  Banknote,
-  SlidersHorizontal,
-  Compass,
-  Award,
+  Lock, 
+  TrendingUp, 
+  RefreshCw, 
+  Flame, 
+  Check, 
+  X, 
+  CreditCard, 
+  Banknote, 
+  RotateCcw, 
+  Coffee, 
+  Download, 
+  LayoutGrid, 
+  Plus, 
+  Edit2, 
+  Trash2, 
+  Image as ImageIcon, 
+  Tag, 
+  Truck, 
+  MapPin,
   User,
-  RotateCcw,
-  Coffee,
-  Download,
-  Droplets,
-  Bell,
-  Sparkles,
-  LayoutGrid,
-  Plus,
-  Edit2,
-  Trash2,
-  Image,
-  Tag,
-  Leaf,
-  Truck,
-  MapPin
+  Award
 } from 'lucide-react';
 import { useOrder } from '../../context/OrderContext';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { CATEGORIES } from '../../data/menuData';
 import { BRAND_CONFIG } from '../../data/cafeConfig';
 import { sounds } from '../../utils/audio';
@@ -54,7 +45,7 @@ import { sounds } from '../../utils/audio';
 const KITCHEN_CATEGORIES = ['woodfired-pizza', 'pastas-mains', 'paninis-burgers', 'appetizers-sides', 'desserts', 'italian-specials', 'burgers', 'sides'];
 const BAR_CATEGORIES = ['coffee-brews', 'shakes-coolers', 'drinks', 'cold-beverages', 'chai-coffee'];
 
-// Preset Food Images for fast 1-tap addition
+// Preset Food Images for fast addition
 const PRESET_DISH_IMAGES = [
   { label: 'Sizzler / Platter', url: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80' },
   { label: 'Burger & Rolls', url: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80' },
@@ -89,12 +80,12 @@ function LiveElapsedTimer({ createdAt }) {
 
   return (
     <div
-      className={`px-2 py-0.5 rounded-lg border text-[11px] font-mono font-bold flex items-center gap-1 ${
+      className={`px-2.5 py-0.5 rounded-lg border text-[11px] font-number font-bold flex items-center gap-1 transition-colors ${
         isUrgent
-          ? 'bg-rose-500/20 border-rose-500/50 text-rose-300 animate-pulse'
+          ? 'bg-rose-500/15 border-rose-500/40 text-rose-600 dark:text-rose-400 animate-pulse'
           : isWarning
-          ? 'bg-amber-400/15 border-amber-400/30 text-amber-300'
-          : 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300'
+          ? 'bg-amber-500/15 border-amber-500/40 text-amber-700 dark:text-amber-300'
+          : 'bg-emerald-500/15 border-emerald-500/40 text-emerald-700 dark:text-emerald-300'
       }`}
       title={`Order placed ${mins}m ago`}
     >
@@ -121,6 +112,7 @@ export function AdminDashboard({ onBackToClient }) {
   } = useOrder();
 
   const { adminLogout } = useAuth();
+  const { isLight } = useTheme();
 
   // Active Main Tab: 'kds' | 'floor' | 'inventory' | 'tables' | 'analytics'
   const [activeTab, setActiveTab] = useState('kds');
@@ -138,7 +130,7 @@ export function AdminDashboard({ onBackToClient }) {
 
   // Menu Item Modal State (Add / Edit)
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState(null); // null for new, item object for edit
+  const [editingItem, setEditingItem] = useState(null);
   const [deleteConfirmItem, setDeleteConfirmItem] = useState(null);
 
   // Form State for Add / Edit Item
@@ -147,7 +139,7 @@ export function AdminDashboard({ onBackToClient }) {
     category: 'woodfired-pizza',
     price: 199,
     prepTime: '10-12 mins',
-    diet: 'veg', // 'veg' | 'nonveg' | 'egg'
+    diet: 'veg',
     description: '',
     image: PRESET_DISH_IMAGES[0].url,
     isBestseller: false,
@@ -155,12 +147,11 @@ export function AdminDashboard({ onBackToClient }) {
     spiceOptions: ['Mild', 'Medium', 'Spicy'],
     newSpiceInput: '',
     addons: [
-      { id: 'addon-1', name: 'Extra Mozzarella Blanket', price: 45 },
-      { id: 'addon-2', name: 'Garlic Butter Glaze', price: 25 }
+      { id: 'addon-1', name: 'Extra Mozzarella', price: 45 },
+      { id: 'addon-2', name: 'Garlic Herb Glaze', price: 25 }
     ]
   });
 
-  // Open Add Item Modal
   const handleOpenAddModal = () => {
     sounds.playClick();
     setEditingItem(null);
@@ -184,7 +175,6 @@ export function AdminDashboard({ onBackToClient }) {
     setIsItemModalOpen(true);
   };
 
-  // Open Edit Item Modal
   const handleOpenEditModal = (item) => {
     sounds.playClick();
     setEditingItem(item);
@@ -205,7 +195,6 @@ export function AdminDashboard({ onBackToClient }) {
     setIsItemModalOpen(true);
   };
 
-  // Add Addon Row
   const handleAddAddonRow = () => {
     sounds.playClick();
     setItemForm(prev => ({
@@ -217,7 +206,6 @@ export function AdminDashboard({ onBackToClient }) {
     }));
   };
 
-  // Update Addon Row
   const handleUpdateAddon = (index, field, value) => {
     setItemForm(prev => {
       const updated = [...prev.addons];
@@ -226,7 +214,6 @@ export function AdminDashboard({ onBackToClient }) {
     });
   };
 
-  // Delete Addon Row
   const handleDeleteAddon = (index) => {
     sounds.playClick();
     setItemForm(prev => ({
@@ -235,7 +222,6 @@ export function AdminDashboard({ onBackToClient }) {
     }));
   };
 
-  // Add Spice Option
   const handleAddSpiceOption = (e) => {
     e.preventDefault();
     if (!itemForm.newSpiceInput.trim()) return;
@@ -247,7 +233,6 @@ export function AdminDashboard({ onBackToClient }) {
     }));
   };
 
-  // Remove Spice Option
   const handleRemoveSpiceOption = (spiceToRemove) => {
     sounds.playClick();
     setItemForm(prev => ({
@@ -256,7 +241,6 @@ export function AdminDashboard({ onBackToClient }) {
     }));
   };
 
-  // Save Item (Create or Update)
   const handleSaveItem = (e) => {
     e.preventDefault();
     if (!itemForm.name.trim()) {
@@ -271,7 +255,7 @@ export function AdminDashboard({ onBackToClient }) {
       price: Number(itemForm.price) || 99,
       prepTime: itemForm.prepTime || '10-12 mins',
       diet: itemForm.diet,
-      description: itemForm.description.trim() || 'Delicious handcrafted special from THC kitchen.',
+      description: itemForm.description.trim() || 'Handcrafted specialty from our kitchen atelier.',
       image: itemForm.image || PRESET_DISH_IMAGES[0].url,
       isBestseller: itemForm.isBestseller,
       isSpicy: itemForm.isSpicy,
@@ -288,7 +272,6 @@ export function AdminDashboard({ onBackToClient }) {
     setIsItemModalOpen(false);
   };
 
-  // Execute Item Delete
   const handleConfirmDelete = () => {
     if (!deleteConfirmItem) return;
     sounds.playClick();
@@ -334,7 +317,7 @@ export function AdminDashboard({ onBackToClient }) {
     return true;
   });
 
-  // Filtered Menu Items for Stock & Menu Editor
+  // Filtered Menu Items
   const filteredMenuItems = menuItems.filter(item => {
     if (stockCategory !== 'all' && item.category !== stockCategory) return false;
     if (stockSearch.trim()) {
@@ -393,181 +376,155 @@ export function AdminDashboard({ onBackToClient }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 pb-24 font-sans selection:bg-amber-400 selection:text-slate-950">
+    <div className={`min-h-screen pb-24 font-sans transition-colors duration-300 ${
+      isLight 
+        ? 'bg-[#FAF7F2] text-[#12100E]' 
+        : 'bg-[#12100E] text-[#FAF7F2]'
+    }`}>
       
-      {/* 1. MINIMAL & SLEEK POS & KDS HEADER */}
-      <header className="bg-slate-900/90 backdrop-blur-xl border-b border-slate-800/80 sticky top-0 z-30 shadow-lg">
+      {/* 1. MILAN CULINARY ATELIER TERMINAL HEADER */}
+      <header className={`backdrop-blur-xl sticky top-0 z-30 shadow-sm border-b transition-colors ${
+        isLight 
+          ? 'bg-white/85 border-[#E8E2D5]' 
+          : 'bg-[#0E0C0B]/90 border-white/10'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-18">
             
-            {/* Left: Clean Minimal Brand Identity */}
+            {/* Left: Atelier Brand Identity */}
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-black text-sm font-syne shadow-sm">
+              <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs shadow-sm transition-colors ${
+                isLight ? 'bg-[#12100E] text-white' : 'bg-white text-black'
+              }`}>
                 {BRAND_CONFIG.logoInitials}
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-sm sm:text-base font-black text-white font-syne tracking-tight leading-none">
+                  <h1 className="text-base font-editorial tracking-tight font-normal leading-none">
                     {BRAND_CONFIG.brandName}
                   </h1>
-                  <span className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[9px] font-mono text-emerald-400">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="hidden sm:inline">POS Live</span>
+                  <span className={`flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-mono border ${
+                    isLight 
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
+                      : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                  }`}>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>Live Atelier Terminal</span>
                   </span>
                 </div>
-                <p className="text-[10px] text-slate-500 font-mono mt-0.5">
-                  Kitchen Display & Terminal
+                <p className={`text-[10px] font-mono tracking-wider uppercase mt-0.5 ${
+                  isLight ? 'text-stone-500' : 'text-stone-400'
+                }`}>
+                  Kitchen Display &amp; Order Matrix
                 </p>
               </div>
             </div>
 
-            {/* Center: Desktop Minimal Segmented Tabs */}
-            <div className="hidden lg:flex items-center gap-1 bg-slate-950/80 p-1 rounded-2xl border border-slate-800/80 shadow-inner">
-              <button
-                onClick={() => { sounds.playClick(); setActiveTab('kds'); }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
-                  activeTab === 'kds'
-                    ? 'bg-amber-400 text-slate-950 shadow-sm'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <ChefHat className="w-3.5 h-3.5" />
-                <span>KDS Feed</span>
-                {activeKDSCount > 0 && (
-                  <span className="px-1.5 py-0.2 rounded-full bg-rose-600 text-white text-[10px] font-mono font-black">
-                    {activeKDSCount}
-                  </span>
-                )}
-              </button>
-
-              <button
-                onClick={() => { sounds.playClick(); setActiveTab('floor'); }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
-                  activeTab === 'floor'
-                    ? 'bg-amber-400 text-slate-950 shadow-sm'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <LayoutGrid className="w-3.5 h-3.5" />
-                <span>Floor Plan</span>
-              </button>
-
-              <button
-                onClick={() => { sounds.playClick(); setActiveTab('inventory'); }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
-                  activeTab === 'inventory'
-                    ? 'bg-amber-400 text-slate-950 shadow-sm'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <UtensilsCrossed className="w-3.5 h-3.5" />
-                <span>Menu & Addons</span>
-              </button>
-
-              <button
-                onClick={() => { sounds.playClick(); setActiveTab('tables'); }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
-                  activeTab === 'tables'
-                    ? 'bg-amber-400 text-slate-950 shadow-sm'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <QrCode className="w-3.5 h-3.5" />
-                <span>Table QR</span>
-              </button>
-
-              <button
-                onClick={() => { sounds.playClick(); setActiveTab('analytics'); }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
-                  activeTab === 'analytics'
-                    ? 'bg-amber-400 text-slate-950 shadow-sm'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <DollarSign className="w-3.5 h-3.5" />
-                <span>Z-Report</span>
-              </button>
+            {/* Center: Segmented Navigation Pills */}
+            <div className={`hidden lg:flex items-center gap-1 p-1 rounded-2xl border shadow-inner ${
+              isLight 
+                ? 'bg-stone-100/80 border-stone-200' 
+                : 'bg-[#1C1917] border-white/10'
+            }`}>
+              {[
+                { id: 'kds', label: 'KDS Feed', icon: ChefHat, badge: activeKDSCount },
+                { id: 'floor', label: 'Floor Plan', icon: LayoutGrid },
+                { id: 'inventory', label: 'Menu & Addons', icon: UtensilsCrossed },
+                { id: 'tables', label: 'Table QR', icon: QrCode },
+                { id: 'analytics', label: 'Z-Report', icon: DollarSign }
+              ].map(tab => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => { sounds.playClick(); setActiveTab(tab.id); }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-syne font-bold transition flex items-center gap-1.5 ${
+                      isActive
+                        ? isLight
+                          ? 'bg-[#12100E] text-[#FAF7F2] shadow-sm'
+                          : 'bg-[#FAF7F2] text-[#12100E] shadow-sm'
+                        : isLight
+                        ? 'text-stone-600 hover:text-black'
+                        : 'text-stone-400 hover:text-white'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    <span>{tab.label}</span>
+                    {tab.badge > 0 && (
+                      <span className="px-1.5 py-0.2 rounded-full bg-[#D04834] text-white text-[10px] font-mono font-bold">
+                        {tab.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
 
-            {/* Right: Sleek Minimal Action Controls (Removed Storefront button, Redesigned Lock POS) */}
+            {/* Right: Quick Controls & Lock */}
             <div className="flex items-center gap-2">
               <button
                 onClick={handleManualRefresh}
-                className="p-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition"
+                className={`p-2 rounded-xl border transition ${
+                  isLight 
+                    ? 'bg-white border-stone-200 text-stone-600 hover:text-black hover:bg-stone-50' 
+                    : 'bg-[#1C1917] border-white/10 text-stone-400 hover:text-white'
+                }`}
                 title="Sync & Refresh Orders"
               >
-                <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-amber-400' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[#D04834]' : ''}`} />
               </button>
 
               <button
                 onClick={handleLockAdmin}
-                className="btn-3d btn-3d-dark px-3.5 py-1.5 rounded-xl text-xs font-bold font-syne text-slate-300 hover:text-rose-400 border border-slate-700/80 transition flex items-center gap-1.5 shadow-md group"
-                title="Lock Terminal & Sign Out"
+                className={`px-3 py-1.5 rounded-xl text-xs font-syne font-bold border transition flex items-center gap-1.5 shadow-xs cursor-pointer ${
+                  isLight 
+                    ? 'bg-white border-stone-200 text-stone-700 hover:text-[#D04834] hover:border-stone-300' 
+                    : 'bg-[#1C1917] border-white/10 text-stone-300 hover:text-rose-400'
+                }`}
+                title="Lock Terminal & Return"
               >
-                <Lock className="w-3.5 h-3.5 text-slate-400 group-hover:text-rose-400 transition-colors" />
+                <Lock className="w-3.5 h-3.5 text-stone-400" />
                 <span>Lock POS</span>
               </button>
             </div>
 
           </div>
 
-          {/* Mobile Tab Strip */}
-          <div className="grid grid-cols-5 gap-1 py-2 border-t border-slate-800 lg:hidden">
-            <button
-              onClick={() => { sounds.playClick(); setActiveTab('kds'); }}
-              className={`py-2 px-1 rounded-xl text-[10px] font-bold text-center transition flex items-center justify-center gap-1 ${
-                activeTab === 'kds' ? 'bg-amber-400 text-slate-950' : 'bg-slate-800/80 text-slate-300'
-              }`}
-            >
-              <ChefHat className="w-3 h-3" />
-              <span>KDS</span>
-            </button>
-
-            <button
-              onClick={() => { sounds.playClick(); setActiveTab('floor'); }}
-              className={`py-2 px-1 rounded-xl text-[10px] font-bold text-center transition flex items-center justify-center gap-1 ${
-                activeTab === 'floor' ? 'bg-amber-400 text-slate-950' : 'bg-slate-800/80 text-slate-300'
-              }`}
-            >
-              <LayoutGrid className="w-3 h-3" />
-              <span>Floor</span>
-            </button>
-
-            <button
-              onClick={() => { sounds.playClick(); setActiveTab('inventory'); }}
-              className={`py-2 px-1 rounded-xl text-[10px] font-bold text-center transition flex items-center justify-center gap-1 ${
-                activeTab === 'inventory' ? 'bg-amber-400 text-slate-950' : 'bg-slate-800/80 text-slate-300'
-              }`}
-            >
-              <UtensilsCrossed className="w-3 h-3" />
-              <span>Menu</span>
-            </button>
-
-            <button
-              onClick={() => { sounds.playClick(); setActiveTab('tables'); }}
-              className={`py-2 px-1 rounded-xl text-[10px] font-bold text-center transition flex items-center justify-center gap-1 ${
-                activeTab === 'tables' ? 'bg-amber-400 text-slate-950' : 'bg-slate-800/80 text-slate-300'
-              }`}
-            >
-              <QrCode className="w-3 h-3" />
-              <span>QR</span>
-            </button>
-
-            <button
-              onClick={() => { sounds.playClick(); setActiveTab('analytics'); }}
-              className={`py-2 px-1 rounded-xl text-[10px] font-bold text-center transition flex items-center justify-center gap-1 ${
-                activeTab === 'analytics' ? 'bg-amber-400 text-slate-950' : 'bg-slate-800/80 text-slate-300'
-              }`}
-            >
-              <DollarSign className="w-3 h-3" />
-              <span>Z-Report</span>
-            </button>
+          {/* Mobile Navigation Strip */}
+          <div className={`grid grid-cols-5 gap-1 py-2 border-t lg:hidden ${
+            isLight ? 'border-stone-200' : 'border-white/10'
+          }`}>
+            {[
+              { id: 'kds', label: 'KDS', icon: ChefHat },
+              { id: 'floor', label: 'Floor', icon: LayoutGrid },
+              { id: 'inventory', label: 'Menu', icon: UtensilsCrossed },
+              { id: 'tables', label: 'QR', icon: QrCode },
+              { id: 'analytics', label: 'Z-Report', icon: DollarSign }
+            ].map(tab => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => { sounds.playClick(); setActiveTab(tab.id); }}
+                  className={`py-1.5 px-1 rounded-xl text-[10px] font-syne font-bold text-center transition flex items-center justify-center gap-1 ${
+                    isActive
+                      ? isLight ? 'bg-[#12100E] text-white' : 'bg-white text-black'
+                      : isLight ? 'bg-stone-100 text-stone-600' : 'bg-[#1C1917] text-stone-400'
+                  }`}
+                >
+                  <Icon className="w-3 h-3" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
           </div>
 
         </div>
       </header>
 
-      {/* 2. MAIN DASHBOARD CONTENT */}
+      {/* 2. MAIN DASHBOARD CANVAS */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
         
         {/* ACTIVE TABLE SERVICE REQUESTS BANNER */}
@@ -575,17 +532,21 @@ export function AdminDashboard({ onBackToClient }) {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-4 rounded-3xl bg-amber-400/10 border-2 border-amber-400/40 shadow-2xl space-y-2.5"
+            className={`p-4 rounded-3xl border shadow-lg space-y-2.5 ${
+              isLight 
+                ? 'bg-amber-50 border-amber-200 text-stone-800' 
+                : 'bg-amber-950/20 border-amber-500/30 text-stone-200'
+            }`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <BellRing className="w-5 h-5 text-amber-400 animate-bounce" />
-                <h3 className="text-sm font-black text-white font-syne uppercase tracking-wider">
-                  Active Table Service Requests ({serviceRequests.length})
+                <BellRing className="w-4 h-4 text-[#D04834] animate-bounce" />
+                <h3 className="text-xs font-mono font-bold uppercase tracking-widest">
+                  Active Table Requests ({serviceRequests.length})
                 </h3>
               </div>
-              <span className="text-[10px] font-mono text-amber-300 uppercase tracking-widest font-bold">
-                Captain Alert Active
+              <span className="text-[10px] font-mono text-[#D04834] uppercase tracking-widest font-bold">
+                Attention Required
               </span>
             </div>
 
@@ -593,25 +554,31 @@ export function AdminDashboard({ onBackToClient }) {
               {serviceRequests.map(req => (
                 <div
                   key={req.id}
-                  className="p-3 rounded-2xl bg-slate-900 border border-amber-400/30 flex items-center justify-between gap-3 shadow-md"
+                  className={`p-3 rounded-2xl border flex items-center justify-between gap-3 shadow-xs ${
+                    isLight 
+                      ? 'bg-white border-stone-200' 
+                      : 'bg-[#1C1917] border-white/10'
+                  }`}
                 >
                   <div className="space-y-0.5">
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded-md bg-amber-400 text-slate-950 font-mono font-black text-xs">
+                      <span className={`px-2 py-0.5 rounded font-mono font-bold text-xs ${
+                        isLight ? 'bg-[#12100E] text-white' : 'bg-white text-black'
+                      }`}>
                         TABLE #{req.tableNumber}
                       </span>
-                      <span className="text-xs font-bold text-white capitalize font-syne">
-                        {req.type === 'water' ? 'Drinking Water' : req.type === 'waiter' ? 'Call Captain' : req.type === 'bill' ? 'Table Bill' : 'Table Cleaning'}
+                      <span className="text-xs font-syne font-bold capitalize">
+                        {req.type === 'water' ? 'Drinking Water' : req.type === 'waiter' ? 'Call Waiter' : req.type === 'bill' ? 'Bill Request' : 'Table Cleaning'}
                       </span>
                     </div>
-                    <p className="text-[10px] text-slate-400 font-mono">
+                    <p className={`text-[10px] font-mono ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
                       {new Date(req.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
 
                   <button
                     onClick={() => dismissServiceRequest(req.id)}
-                    className="btn-3d btn-3d-emerald px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shrink-0"
+                    className="px-3 py-1.5 rounded-xl text-xs font-syne font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1 shrink-0 cursor-pointer"
                   >
                     <Check className="w-3.5 h-3.5" />
                     <span>Attended</span>
@@ -628,92 +595,104 @@ export function AdminDashboard({ onBackToClient }) {
         {activeTab === 'kds' && (
           <div className="space-y-6">
             
-            {/* Top Workflow Overview Bar */}
-            <div className="p-4 rounded-3xl bg-slate-900/90 border border-slate-800 flex flex-col lg:flex-row items-center justify-between gap-4 shadow-xl">
+            {/* Station Routing & Status Bar */}
+            <div className={`p-4 rounded-3xl border flex flex-col lg:flex-row items-center justify-between gap-4 shadow-sm transition-colors ${
+              isLight 
+                ? 'bg-white border-[#E8E2D5]' 
+                : 'bg-[#1C1917] border-white/10'
+            }`}>
               
-              {/* Station Routing Filter */}
-              <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-950 border border-slate-800 w-full lg:w-auto overflow-x-auto no-scrollbar">
-                <button
-                  onClick={() => { sounds.playClick(); setActiveStation('all'); }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 ${
-                    activeStation === 'all'
-                      ? 'bg-amber-400 text-slate-950 shadow-md'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Layers className="w-3.5 h-3.5" />
-                  <span>All Stations</span>
-                </button>
-
-                <button
-                  onClick={() => { sounds.playClick(); setActiveStation('kitchen'); }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 ${
-                    activeStation === 'kitchen'
-                      ? 'bg-amber-400 text-slate-950 shadow-md'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Flame className="w-3.5 h-3.5" />
-                  <span>Main Kitchen & Grill</span>
-                </button>
-
-                <button
-                  onClick={() => { sounds.playClick(); setActiveStation('bar'); }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 ${
-                    activeStation === 'bar'
-                      ? 'bg-amber-400 text-slate-950 shadow-md'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  <Coffee className="w-3.5 h-3.5" />
-                  <span>Beverage & Bar</span>
-                </button>
+              {/* Station Routing Selector */}
+              <div className={`flex items-center gap-1.5 p-1 rounded-2xl border w-full lg:w-auto overflow-x-auto no-scrollbar ${
+                isLight ? 'bg-stone-100 border-stone-200' : 'bg-[#0E0C0B] border-white/5'
+              }`}>
+                {[
+                  { id: 'all', label: 'All Stations', icon: Layers },
+                  { id: 'kitchen', label: 'Kitchen & Oven', icon: Flame },
+                  { id: 'bar', label: 'Bar & Coffee', icon: Coffee }
+                ].map(st => {
+                  const Icon = st.icon;
+                  const isActive = activeStation === st.id;
+                  return (
+                    <button
+                      key={st.id}
+                      onClick={() => { sounds.playClick(); setActiveStation(st.id); }}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-syne font-bold whitespace-nowrap transition flex items-center gap-1.5 ${
+                        isActive
+                          ? isLight
+                            ? 'bg-[#12100E] text-white shadow-xs'
+                            : 'bg-white text-black shadow-xs'
+                          : isLight
+                          ? 'text-stone-600 hover:text-black'
+                          : 'text-stone-400 hover:text-white'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                      <span>{st.label}</span>
+                    </button>
+                  );
+                })}
               </div>
 
-              {/* Realtime Stream Status */}
-              <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Station: <strong className="text-white uppercase">{activeStation}</strong></span>
+              {/* Realtime Stream Info */}
+              <div className={`flex items-center gap-2 text-xs font-mono ${
+                isLight ? 'text-stone-600' : 'text-stone-400'
+              }`}>
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                <span>Routing: <strong className="uppercase font-bold">{activeStation}</strong></span>
               </div>
             </div>
 
             {/* Filter Pills Bar */}
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
               {[
-                { id: 'all', label: 'All Orders', count: orders.length, activeClass: 'bg-white text-slate-950' },
-                { id: 'new', label: 'New Incoming', count: newOrdersCount, activeClass: 'bg-amber-400 text-slate-950 font-bold' },
-                { id: 'prep', label: 'In Preparation', count: inPrepCount, activeClass: 'bg-cyan-400 text-slate-950 font-bold' },
-                { id: 'ready', label: 'Ready for Service', count: readyCount, activeClass: 'bg-emerald-400 text-slate-950 font-bold' },
-                { id: 'completed', label: 'Completed', count: completedCount, activeClass: 'bg-slate-700 text-white font-bold' }
-              ].map(f => (
-                <button
-                  key={f.id}
-                  onClick={() => { sounds.playClick(); setOrderFilter(f.id); }}
-                  className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2 border ${
-                    orderFilter === f.id
-                      ? `${f.activeClass} border-transparent shadow-md`
-                      : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
-                  }`}
-                >
-                  <span>{f.label}</span>
-                  <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-black ${
-                    orderFilter === f.id ? 'bg-black/20 text-current' : 'bg-slate-800 text-slate-300'
-                  }`}>
-                    {f.count}
-                  </span>
-                </button>
-              ))}
+                { id: 'all', label: 'All Orders', count: orders.length },
+                { id: 'new', label: 'New Incoming', count: newOrdersCount },
+                { id: 'prep', label: 'In Preparation', count: inPrepCount },
+                { id: 'ready', label: 'Ready for Service', count: readyCount },
+                { id: 'completed', label: 'Completed', count: completedCount }
+              ].map(f => {
+                const isSelected = orderFilter === f.id;
+                return (
+                  <button
+                    key={f.id}
+                    onClick={() => { sounds.playClick(); setOrderFilter(f.id); }}
+                    className={`px-4 py-2 rounded-xl text-xs font-syne font-bold whitespace-nowrap transition-all flex items-center gap-2 border ${
+                      isSelected
+                        ? isLight
+                          ? 'bg-[#12100E] text-[#FAF7F2] border-[#12100E] shadow-sm'
+                          : 'bg-[#FAF7F2] text-[#12100E] border-[#FAF7F2] shadow-sm'
+                        : isLight
+                        ? 'bg-white border-[#E8E2D5] text-stone-600 hover:text-black'
+                        : 'bg-[#1C1917] border-white/10 text-stone-400 hover:text-white'
+                    }`}
+                  >
+                    <span>{f.label}</span>
+                    <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
+                      isSelected 
+                        ? isLight ? 'bg-white/20 text-white' : 'bg-black/20 text-black' 
+                        : isLight ? 'bg-stone-100 text-stone-700' : 'bg-white/10 text-stone-300'
+                    }`}>
+                      {f.count}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
 
-            {/* KDS Order Cards Grid */}
+            {/* KDS Order Slips Grid */}
             {filteredOrders.length === 0 ? (
-              <div className="text-center py-20 bg-slate-900/60 rounded-3xl border border-slate-800 space-y-3">
-                <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-slate-500 mx-auto">
+              <div className={`text-center py-20 rounded-3xl border space-y-3 ${
+                isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
+              }`}>
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto ${
+                  isLight ? 'bg-stone-100 text-stone-400' : 'bg-white/5 text-stone-500'
+                }`}>
                   <ChefHat className="w-6 h-6" />
                 </div>
-                <h3 className="text-lg font-bold text-white font-syne">No Orders in this Queue</h3>
-                <p className="text-slate-400 text-xs max-w-sm mx-auto">
-                  Incoming guest orders will automatically populate here in real time.
+                <h3 className="text-xl font-editorial tracking-tight font-normal">No orders in this queue</h3>
+                <p className={`text-xs max-w-sm mx-auto leading-relaxed ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                  Incoming customer slips will automatically populate this kitchen station in real time.
                 </p>
               </div>
             ) : (
@@ -728,39 +707,44 @@ export function AdminDashboard({ onBackToClient }) {
                     <motion.div
                       key={order.id}
                       layout
-                      initial={{ opacity: 0, scale: 0.96 }}
+                      initial={{ opacity: 0, scale: 0.97 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className={`relative rounded-3xl border flex flex-col justify-between overflow-hidden shadow-xl transition-all ${
-                        isNew
-                          ? 'bg-slate-900 border-amber-500/40 ring-1 ring-amber-500/30'
-                          : isCooking
-                          ? 'bg-slate-900 border-cyan-500/40 ring-1 ring-cyan-500/30'
-                          : isReady
-                          ? 'bg-slate-900 border-emerald-500/40 ring-1 ring-emerald-500/30'
-                          : 'bg-slate-900/70 border-slate-800 opacity-80'
+                      className={`relative rounded-3xl border flex flex-col justify-between overflow-hidden shadow-md transition-all ${
+                        isLight 
+                          ? 'bg-white border-[#E8E2D5]' 
+                          : 'bg-[#1C1917] border-white/10'
                       }`}
                     >
                       
+                      {/* Physical Slip Top Perforation Accents */}
+                      <div className="h-1.5 w-full bg-gradient-to-r from-transparent via-[#D04834] to-transparent opacity-70" />
+
                       {/* Ticket Header */}
-                      <div className="p-5 pb-3 border-b border-slate-800 space-y-3">
+                      <div className={`p-5 pb-3 border-b space-y-3 ${
+                        isLight ? 'border-stone-200' : 'border-white/10'
+                      }`}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             {order.diningMode === 'table' ? (
-                              <span className="px-3 py-1 rounded-xl bg-amber-400 text-slate-950 font-black text-xs font-mono tracking-wider shadow-sm">
+                              <span className={`px-3 py-1 rounded-xl font-mono font-bold text-xs tracking-wider shadow-xs ${
+                                isLight ? 'bg-[#12100E] text-white' : 'bg-white text-black'
+                              }`}>
                                 TABLE #{order.tableNumber || '04'}
                               </span>
                             ) : order.diningMode === 'delivery' ? (
-                              <span className="px-3 py-1 rounded-xl bg-emerald-400 text-slate-950 font-black text-xs font-mono tracking-wider shadow-sm inline-flex items-center gap-1.5">
+                              <span className="px-3 py-1 rounded-xl bg-emerald-600 text-white font-mono font-bold text-xs tracking-wider shadow-xs inline-flex items-center gap-1.5">
                                 <Truck className="w-3.5 h-3.5" />
                                 <span>DELIVERY</span>
                               </span>
                             ) : (
-                              <span className="px-3 py-1 rounded-xl bg-cyan-400 text-slate-950 font-black text-xs font-mono tracking-wider shadow-sm">
+                              <span className="px-3 py-1 rounded-xl bg-[#D04834] text-white font-mono font-bold text-xs tracking-wider shadow-xs">
                                 {order.pickupToken || 'COUNTER PICKUP'}
                               </span>
                             )}
 
-                            <span className="px-2 py-1 rounded-lg bg-slate-950 border border-slate-800 text-[11px] font-mono text-slate-300 font-bold">
+                            <span className={`px-2 py-1 rounded-lg border text-[11px] font-number font-bold ${
+                              isLight ? 'bg-stone-50 border-stone-200 text-stone-700' : 'bg-[#0E0C0B] border-white/10 text-stone-300'
+                            }`}>
                               #{order.orderNumber}
                             </span>
                           </div>
@@ -769,19 +753,21 @@ export function AdminDashboard({ onBackToClient }) {
                         </div>
 
                         {/* Customer Information */}
-                        <div className="flex items-center justify-between text-xs text-slate-300">
-                          <span className="font-bold text-white truncate max-w-[160px] inline-flex items-center gap-1.5">
-                            <User className="w-3.5 h-3.5 text-slate-400" />
-                            <span>{order.customerName || 'Guest Diner'}</span>
+                        <div className={`flex items-center justify-between text-xs ${
+                          isLight ? 'text-stone-600' : 'text-stone-300'
+                        }`}>
+                          <span className="font-bold truncate max-w-[160px] inline-flex items-center gap-1.5">
+                            <User className="w-3.5 h-3.5 text-stone-400" />
+                            <span>{order.customerName || 'Table Guest'}</span>
                           </span>
-                          <span className="font-mono text-slate-400 text-[11px]">
+                          <span className="font-mono text-[11px]">
                             {order.customerPhone ? `+91 ${order.customerPhone}` : 'Dine-In Guest'}
                           </span>
                         </div>
 
                         {order.deliveryAddress && (
-                          <div className="p-2 rounded-lg bg-slate-950 border border-emerald-500/20 text-[11px] text-emerald-300 font-mono inline-flex items-center gap-1.5">
-                            <MapPin className="w-3 h-3 text-emerald-400 shrink-0" />
+                          <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-700 dark:text-emerald-300 font-mono inline-flex items-center gap-1.5">
+                            <MapPin className="w-3 h-3 text-emerald-600 dark:text-emerald-400 shrink-0" />
                             <span className="truncate">{order.deliveryAddress}</span>
                           </div>
                         )}
@@ -789,31 +775,33 @@ export function AdminDashboard({ onBackToClient }) {
                         {/* Payment Status Banner */}
                         <div className={`p-2.5 rounded-xl border flex items-center justify-between text-xs ${
                           order.paymentStatus === 'paid'
-                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
-                            : 'bg-amber-400/10 border-amber-400/30 text-amber-300'
+                            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-800 dark:text-emerald-300'
+                            : 'bg-amber-500/10 border-amber-500/20 text-amber-800 dark:text-amber-300'
                         }`}>
-                          <div className="flex items-center gap-1.5 font-bold">
+                          <div className="flex items-center gap-1.5 font-bold font-mono">
                             {order.paymentStatus === 'paid' ? (
                               <>
-                                <CreditCard className="w-4 h-4 text-emerald-400" />
-                                <span>PAID ONLINE</span>
+                                <CreditCard className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                                <span>PAID ONLINE (UPI)</span>
                               </>
                             ) : (
                               <>
-                                <Banknote className="w-4 h-4 text-amber-400" />
-                                <span>COLLECT CASH</span>
+                                <Banknote className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                                <span>DUE AT COUNTER</span>
                               </>
                             )}
                           </div>
-                          <span className="font-mono font-black text-white text-sm">
+                          <span className="font-number font-bold text-sm text-[#D04834]">
                             ₹{order.total}
                           </span>
                         </div>
                       </div>
 
-                      {/* Items Checklist */}
+                      {/* Items to Prepare Checklist */}
                       <div className="p-5 flex-1 space-y-2.5">
-                        <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                        <div className={`text-[10px] font-mono font-bold uppercase tracking-widest ${
+                          isLight ? 'text-stone-500' : 'text-stone-400'
+                        }`}>
                           Items to Prepare ({order.items?.length || 0}):
                         </div>
 
@@ -821,14 +809,20 @@ export function AdminDashboard({ onBackToClient }) {
                           {order.items?.map((item, idx) => (
                             <div
                               key={idx}
-                              className="p-3 rounded-2xl bg-slate-950 border border-slate-800 space-y-1.5"
+                              className={`p-3 rounded-2xl border space-y-1.5 ${
+                                isLight 
+                                  ? 'bg-stone-50/70 border-stone-200' 
+                                  : 'bg-[#0E0C0B] border-white/5'
+                              }`}
                             >
                               <div className="flex items-start justify-between gap-2">
-                                <p className="font-bold text-white text-xs leading-snug">
-                                  <span className="text-amber-400 text-sm font-black mr-1.5">{item.qty} ×</span>
+                                <p className="font-bold text-xs leading-snug">
+                                  <span className="text-[#D04834] text-sm font-number font-bold mr-1.5">
+                                    {item.qty} ×
+                                  </span>
                                   {item.name}
                                 </p>
-                                <span className="font-mono text-slate-300 font-bold text-xs shrink-0">
+                                <span className="font-number font-bold text-xs shrink-0">
                                   ₹{item.price * item.qty}
                                 </span>
                               </div>
@@ -836,15 +830,15 @@ export function AdminDashboard({ onBackToClient }) {
                               {(item.spice || (item.addons && item.addons.length > 0)) && (
                                 <div className="flex items-center flex-wrap gap-1.5 pt-0.5">
                                   {item.spice && (
-                                    <span className="px-2 py-0.5 rounded-md bg-rose-950/60 border border-rose-800 text-[10px] text-rose-300 font-semibold inline-flex items-center gap-1">
-                                      <Flame className="w-3 h-3 text-rose-400" />
+                                    <span className="px-2 py-0.5 rounded-md bg-rose-500/10 border border-rose-500/20 text-[10px] text-rose-700 dark:text-rose-300 font-mono inline-flex items-center gap-1">
+                                      <Flame className="w-3 h-3 text-[#D04834]" />
                                       <span>{item.spice}</span>
                                     </span>
                                   )}
                                   {item.addons?.map((addon, aIdx) => (
                                     <span
                                       key={aIdx}
-                                      className="px-2 py-0.5 rounded-md bg-amber-400/10 border border-amber-400/20 text-[10px] text-amber-300 font-semibold"
+                                      className="px-2 py-0.5 rounded-md bg-stone-200/60 dark:bg-white/10 text-[10px] font-mono"
                                     >
                                       + {addon.name} (+₹{addon.price})
                                     </span>
@@ -856,14 +850,20 @@ export function AdminDashboard({ onBackToClient }) {
                         </div>
                       </div>
 
-                      {/* Ticket Action Stages */}
-                      <div className="p-5 pt-3 bg-slate-950/60 border-t border-slate-800 space-y-2.5">
+                      {/* Ticket Progression Action Stage Buttons */}
+                      <div className={`p-5 pt-3 border-t space-y-2.5 ${
+                        isLight ? 'bg-stone-50/50 border-stone-200' : 'bg-[#0E0C0B]/60 border-white/10'
+                      }`}>
                         {isNew && (
                           <button
                             onClick={() => handleStatusChange(order.id, 'cooking')}
-                            className="btn-3d btn-3d-amber w-full py-3 px-4 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 tracking-wide"
+                            className={`w-full py-3 px-4 rounded-2xl text-xs sm:text-sm font-syne font-bold flex items-center justify-center gap-2 shadow-sm transition cursor-pointer ${
+                              isLight 
+                                ? 'bg-[#12100E] text-white hover:bg-stone-800' 
+                                : 'bg-white text-black hover:bg-stone-200'
+                            }`}
                           >
-                            <Flame className="w-4 h-4 shrink-0" />
+                            <Flame className="w-4 h-4 shrink-0 text-[#D04834]" />
                             <span>Stage 1: Start Cooking</span>
                           </button>
                         )}
@@ -872,17 +872,21 @@ export function AdminDashboard({ onBackToClient }) {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => revertOrderStatus(order.id)}
-                              className="btn-3d btn-3d-dark px-3.5 py-3 rounded-2xl text-slate-300 hover:text-amber-300 transition flex items-center justify-center shrink-0"
-                              title="Undo Stage"
+                              className={`p-3 rounded-2xl border transition flex items-center justify-center shrink-0 cursor-pointer ${
+                                isLight 
+                                  ? 'bg-white border-stone-200 text-stone-600 hover:text-black' 
+                                  : 'bg-[#1C1917] border-white/10 text-stone-300 hover:text-white'
+                              }`}
+                              title="Revert Stage"
                             >
                               <RotateCcw className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleStatusChange(order.id, 'ready')}
-                              className="btn-3d btn-3d-cyan flex-1 py-3 px-4 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 tracking-wide"
+                              className="flex-1 py-3 px-4 rounded-2xl text-xs sm:text-sm font-syne font-bold bg-[#D04834] hover:bg-[#b83d2b] text-white flex items-center justify-center gap-2 shadow-sm transition cursor-pointer"
                             >
                               <BellRing className="w-4 h-4 shrink-0" />
-                              <span>Stage 2: Food is Ready</span>
+                              <span>Stage 2: Food Ready for Service</span>
                             </button>
                           </div>
                         )}
@@ -891,33 +895,49 @@ export function AdminDashboard({ onBackToClient }) {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => revertOrderStatus(order.id)}
-                              className="btn-3d btn-3d-dark px-3.5 py-3 rounded-2xl text-slate-300 hover:text-cyan-300 transition flex items-center justify-center shrink-0"
-                              title="Undo Stage"
+                              className={`p-3 rounded-2xl border transition flex items-center justify-center shrink-0 cursor-pointer ${
+                                isLight 
+                                  ? 'bg-white border-stone-200 text-stone-600 hover:text-black' 
+                                  : 'bg-[#1C1917] border-white/10 text-stone-300 hover:text-white'
+                              }`}
+                              title="Revert Stage"
                             >
                               <RotateCcw className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleStatusChange(order.id, 'served')}
-                              className="btn-3d btn-3d-emerald flex-1 py-3 px-4 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 tracking-wide"
+                              className={`flex-1 py-3 px-4 rounded-2xl text-xs sm:text-sm font-syne font-bold flex items-center justify-center gap-2 shadow-sm transition cursor-pointer ${
+                                isLight 
+                                  ? 'bg-[#12100E] text-white hover:bg-stone-800' 
+                                  : 'bg-white text-black hover:bg-stone-200'
+                              }`}
                             >
-                              <CheckCircle2 className="w-4 h-4 shrink-0" />
-                              <span>Stage 3: Complete Order</span>
+                              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
+                              <span>Stage 3: Order Served</span>
                             </button>
                           </div>
                         )}
 
                         {isServed && (
                           <div className="space-y-2">
-                            <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-center text-xs font-bold text-slate-400 flex items-center justify-center gap-1.5">
-                              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                            <div className={`p-2.5 rounded-xl border text-center text-xs font-mono font-bold flex items-center justify-center gap-1.5 ${
+                              isLight 
+                                ? 'bg-stone-100 border-stone-200 text-stone-700' 
+                                : 'bg-[#1C1917] border-white/10 text-stone-300'
+                            }`}>
+                              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                               <span>Order Completed & Served</span>
                             </div>
                             <button
                               onClick={() => revertOrderStatus(order.id)}
-                              className="btn-3d btn-3d-dark w-full py-2 px-3 rounded-xl text-xs font-bold text-amber-300 hover:text-white flex items-center justify-center gap-1.5"
+                              className={`w-full py-2 px-3 rounded-xl border text-xs font-mono transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                                isLight 
+                                  ? 'bg-white border-stone-200 text-stone-600 hover:text-black' 
+                                  : 'bg-[#1C1917] border-white/10 text-stone-300 hover:text-white'
+                              }`}
                             >
-                              <RotateCcw className="w-3.5 h-3.5" />
-                              <span>Undo / Re-open to Ready</span>
+                              <RotateCcw className="w-3.5 h-3.5 text-[#D04834]" />
+                              <span>Reopen Order as Ready</span>
                             </button>
                           </div>
                         )}
@@ -925,22 +945,26 @@ export function AdminDashboard({ onBackToClient }) {
                         <div className="flex items-center justify-between gap-2 pt-1">
                           <button
                             onClick={() => { sounds.playClick(); setViewingSlip(order); }}
-                            className="btn-3d btn-3d-dark flex-1 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition flex items-center justify-center gap-1.5"
+                            className={`flex-1 py-2 rounded-xl border text-xs font-syne font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                              isLight 
+                                ? 'bg-white border-stone-200 text-stone-700 hover:text-black hover:bg-stone-100' 
+                                : 'bg-[#1C1917] border-white/10 text-stone-300 hover:text-white'
+                            }`}
                           >
-                            <Printer className="w-3.5 h-3.5 text-amber-400" />
-                            <span>Print KOT / Bill</span>
+                            <Printer className="w-3.5 h-3.5 text-[#D04834]" />
+                            <span>Print Order Slip / Receipt</span>
                           </button>
 
                           {!isServed && (
                             <button
                               onClick={() => {
-                                if (confirm(`Void Order #${order.orderNumber}?`)) {
+                                if (confirm(`Cancel order #${order.orderNumber}?`)) {
                                   handleStatusChange(order.id, 'cancelled');
                                 }
                               }}
-                              className="btn-3d btn-3d-dark px-3.5 py-2 rounded-xl text-xs font-medium text-rose-400 hover:text-rose-300 transition"
+                              className="px-3.5 py-2 rounded-xl text-xs font-mono text-rose-600 dark:text-rose-400 hover:underline cursor-pointer"
                             >
-                              Void
+                              Cancel
                             </button>
                           )}
                         </div>
@@ -961,30 +985,32 @@ export function AdminDashboard({ onBackToClient }) {
         {/* ========================================================================= */}
         {activeTab === 'floor' && (
           <div className="space-y-6">
-            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className={`p-6 rounded-3xl border shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 transition-colors ${
+              isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
+            }`}>
               <div>
-                <h2 className="text-xl font-bold text-white font-syne">Live Dining Floor Plan</h2>
-                <p className="text-slate-400 text-xs mt-1">
-                  Real-time visual map of all tables, guest occupancy, active cooking orders, and service calls.
+                <h2 className="text-2xl font-editorial tracking-tight font-normal">Floor Plan &amp; Seating Layout</h2>
+                <p className={`text-xs mt-1 ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                  Real-time table layout, guest occupancy, and live order status.
                 </p>
               </div>
 
               <div className="flex items-center flex-wrap gap-3 text-xs font-mono">
                 <div className="flex items-center gap-1.5">
                   <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
-                  <span className="text-slate-300">Available</span>
+                  <span>Available</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-full bg-amber-400 inline-block" />
-                  <span className="text-slate-300">Cooking</span>
+                  <span className="w-3 h-3 rounded-full bg-amber-500 inline-block" />
+                  <span>Cooking</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-full bg-cyan-400 inline-block" />
-                  <span className="text-slate-300">Served</span>
+                  <span className="w-3 h-3 rounded-full bg-cyan-500 inline-block" />
+                  <span>Served</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-full bg-rose-500 inline-block animate-pulse" />
-                  <span className="text-rose-300">Service Call</span>
+                  <span className="w-3 h-3 rounded-full bg-[#D04834] inline-block animate-pulse" />
+                  <span>Call</span>
                 </div>
               </div>
             </div>
@@ -994,61 +1020,69 @@ export function AdminDashboard({ onBackToClient }) {
                 const tableOrder = orders.find(o => o.tableNumber === t.number && o.status !== 'served' && o.status !== 'cancelled');
                 const hasServiceReq = serviceRequests?.some(r => r.tableNumber === t.number);
 
-                let statusBadge = { bg: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300', label: 'Available' };
+                let statusBadge = { bg: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300', label: 'Available' };
                 if (hasServiceReq) {
-                  statusBadge = { bg: 'bg-rose-500/20 border-rose-500/50 text-rose-300 animate-pulse', label: 'Service Alert' };
+                  statusBadge = { bg: 'bg-rose-500/20 border-rose-500/50 text-rose-600 dark:text-rose-400 animate-pulse', label: 'Table Call' };
                 } else if (tableOrder) {
                   if (tableOrder.status === 'cooking') {
-                    statusBadge = { bg: 'bg-amber-400/20 border-amber-400/40 text-amber-300', label: 'Cooking' };
+                    statusBadge = { bg: 'bg-amber-500/20 border-amber-500/40 text-amber-700 dark:text-amber-300', label: 'Cooking' };
                   } else if (tableOrder.status === 'ready') {
-                    statusBadge = { bg: 'bg-cyan-400/20 border-cyan-400/40 text-cyan-300', label: 'Food Ready' };
+                    statusBadge = { bg: 'bg-cyan-500/20 border-cyan-500/40 text-cyan-700 dark:text-cyan-300', label: 'Food Ready' };
                   } else {
-                    statusBadge = { bg: 'bg-amber-400/15 border-amber-400/30 text-amber-200', label: 'New Order' };
+                    statusBadge = { bg: 'bg-amber-400/15 border-amber-400/30 text-amber-700 dark:text-amber-200', label: 'New Order' };
                   }
                 }
 
                 return (
                   <div
                     key={t.id}
-                    className={`p-5 rounded-3xl border transition-all flex flex-col justify-between space-y-4 shadow-lg ${
+                    className={`p-5 rounded-3xl border transition-all flex flex-col justify-between space-y-4 shadow-sm ${
                       hasServiceReq
-                        ? 'bg-slate-900 border-rose-500 ring-2 ring-rose-500/40'
+                        ? 'border-[#D04834] ring-2 ring-[#D04834]/40 bg-white dark:bg-[#1C1917]'
                         : tableOrder
-                        ? 'bg-slate-900 border-amber-400/40'
-                        : 'bg-slate-900/60 border-slate-800'
+                        ? isLight ? 'bg-white border-[#12100E]' : 'bg-[#1C1917] border-white/20'
+                        : isLight ? 'bg-white/80 border-stone-200' : 'bg-[#1C1917]/70 border-white/10'
                     }`}
                   >
                     <div>
                       <div className="flex items-center justify-between">
-                        <span className="font-mono text-base font-black text-white">
-                          TABLE #{t.number < 10 ? `0${t.number}` : t.number}
+                        <span className="font-mono text-base font-bold">
+                          TABLE #<span className="font-number font-bold">{t.number < 10 ? `0${t.number}` : t.number}</span>
                         </span>
                         <span className={`px-2 py-0.5 rounded-lg border text-[10px] font-mono font-bold ${statusBadge.bg}`}>
                           {statusBadge.label}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400 font-mono mt-1.5">Capacity: {t.capacity} Guests</p>
+                      <p className={`text-xs font-mono mt-1.5 ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                        Capacity: <span className="font-number font-bold">{t.capacity}</span> Seats
+                      </p>
                     </div>
 
                     {tableOrder ? (
-                      <div className="p-3 rounded-2xl bg-slate-950 border border-slate-800 space-y-1.5 text-xs">
-                        <div className="flex items-center justify-between text-slate-300 font-bold">
-                          <span>#{tableOrder.orderNumber}</span>
-                          <span className="text-amber-400 font-mono">₹{tableOrder.total}</span>
+                      <div className={`p-3 rounded-2xl border space-y-1.5 text-xs ${
+                        isLight ? 'bg-stone-50 border-stone-200' : 'bg-[#0E0C0B] border-white/5'
+                      }`}>
+                        <div className="flex items-center justify-between font-bold">
+                          <span>#<span className="font-number font-bold">{tableOrder.orderNumber}</span></span>
+                          <span className="font-number font-bold text-[#D04834]">₹{tableOrder.total}</span>
                         </div>
-                        <p className="text-[11px] text-slate-400 truncate">
+                        <p className={`text-[11px] truncate ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
                           {tableOrder.items?.length} items ({tableOrder.items?.map(i => i.name).join(', ')})
                         </p>
                         <button
                           onClick={() => { sounds.playClick(); setViewingSlip(tableOrder); }}
-                          className="w-full py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300 hover:text-white font-mono mt-1"
+                          className={`w-full py-1.5 rounded-lg border text-[11px] font-mono mt-1 transition cursor-pointer ${
+                            isLight 
+                              ? 'bg-white border-stone-200 hover:bg-stone-100 text-stone-700' 
+                              : 'bg-[#1C1917] border-white/10 hover:bg-white/10 text-stone-300'
+                          }`}
                         >
-                          View Live Slip
+                          View Order Slip
                         </button>
                       </div>
                     ) : (
-                      <div className="py-4 text-center text-xs text-slate-600 font-mono">
-                        Ready for seating
+                      <div className={`py-4 text-center text-xs font-mono ${isLight ? 'text-stone-400' : 'text-stone-500'}`}>
+                        Available for guests
                       </div>
                     )}
                   </div>
@@ -1059,43 +1093,53 @@ export function AdminDashboard({ onBackToClient }) {
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 3: FULL MENU CRUD & STOCK MANAGER (Working Add, Edit, Delete, Addons & Rates) */}
+        {/* TAB 3: FULL MENU CRUD & STOCK MANAGER */}
         {/* ========================================================================= */}
         {activeTab === 'inventory' && (
           <div className="space-y-6">
             
-            {/* Header & Controls with prominent + Add Item Button */}
-            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
+            {/* Header with Add Item Button */}
+            <div className={`p-6 rounded-3xl border shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 transition-colors ${
+              isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
+            }`}>
               <div>
-                <h2 className="text-xl font-bold text-white font-syne flex items-center gap-2">
-                  <UtensilsCrossed className="w-5 h-5 text-amber-400" />
-                  <span>Menu & Addon Rates Manager</span>
+                <h2 className="text-2xl font-editorial tracking-tight font-normal flex items-center gap-2">
+                  <UtensilsCrossed className="w-5 h-5 text-[#D04834]" />
+                  <span>Menu &amp; Dish Catalog</span>
                 </h2>
-                <p className="text-slate-400 text-xs mt-1">
-                  Add new dishes, customize rates and addons, edit item descriptions, or 86 out-of-stock items in real time.
+                <p className={`text-xs mt-1 ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                  Add new dishes, update prices, configure add-on options, or mark out-of-stock items instantly.
                 </p>
               </div>
 
               <div className="flex items-center gap-3 w-full md:w-auto">
                 {/* Search Box */}
                 <div className="relative flex-1 md:w-60">
-                  <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     value={stockSearch}
                     onChange={(e) => setStockSearch(e.target.value)}
-                    placeholder="Search menu..."
-                    className="w-full pl-10 pr-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400 transition"
+                    placeholder="Search dishes..."
+                    className={`w-full pl-10 pr-3 py-2 rounded-xl border text-xs focus:outline-none transition ${
+                      isLight 
+                        ? 'bg-stone-50 border-stone-200 text-stone-900 focus:border-[#12100E]' 
+                        : 'bg-[#0E0C0B] border-white/10 text-white focus:border-white/30'
+                    }`}
                   />
                 </div>
 
-                {/* 3D Add New Item Button */}
+                {/* Add New Item Button */}
                 <button
                   onClick={handleOpenAddModal}
-                  className="btn-3d btn-3d-amber px-4 py-2.5 rounded-xl text-xs font-bold font-syne whitespace-nowrap flex items-center gap-1.5 shadow-lg"
+                  className={`px-4 py-2.5 rounded-2xl text-xs font-syne font-bold whitespace-nowrap flex items-center gap-1.5 shadow-sm transition cursor-pointer ${
+                    isLight 
+                      ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800' 
+                      : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200'
+                  }`}
                 >
                   <Plus className="w-4 h-4 stroke-[2.5]" />
-                  <span>Add New Dish</span>
+                  <span>Add Dish</span>
                 </button>
               </div>
             </div>
@@ -1104,10 +1148,14 @@ export function AdminDashboard({ onBackToClient }) {
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
               <button
                 onClick={() => { sounds.playClick(); setStockCategory('all'); }}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition border ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-syne font-bold whitespace-nowrap transition border ${
                   stockCategory === 'all'
-                    ? 'bg-amber-400 text-slate-950 border-amber-400 shadow-sm'
-                    : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+                    ? isLight
+                      ? 'bg-[#12100E] text-white border-[#12100E]'
+                      : 'bg-white text-black border-white'
+                    : isLight
+                    ? 'bg-white border-stone-200 text-stone-600 hover:text-black'
+                    : 'bg-[#1C1917] border-white/10 text-stone-400 hover:text-white'
                 }`}
               >
                 All Dishes ({menuItems.length})
@@ -1116,10 +1164,14 @@ export function AdminDashboard({ onBackToClient }) {
                 <button
                   key={cat.id}
                   onClick={() => { sounds.playClick(); setStockCategory(cat.id); }}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition border ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-syne font-bold whitespace-nowrap transition border ${
                     stockCategory === cat.id
-                      ? 'bg-amber-400 text-slate-950 border-amber-400 shadow-sm'
-                      : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+                      ? isLight
+                        ? 'bg-[#12100E] text-white border-[#12100E]'
+                        : 'bg-white text-black border-white'
+                      : isLight
+                      ? 'bg-white border-stone-200 text-stone-600 hover:text-black'
+                      : 'bg-[#1C1917] border-white/10 text-stone-400 hover:text-white'
                   }`}
                 >
                   {cat.name}
@@ -1127,7 +1179,7 @@ export function AdminDashboard({ onBackToClient }) {
               ))}
             </div>
 
-            {/* Dishes Grid with Edit, Delete & Addon Badges */}
+            {/* Dishes Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredMenuItems.map(item => {
                 const isOutOfStock = menuStockOverrides[item.id];
@@ -1135,16 +1187,16 @@ export function AdminDashboard({ onBackToClient }) {
                 return (
                   <div
                     key={item.id}
-                    className={`p-4 rounded-3xl border transition-all flex flex-col justify-between space-y-3.5 ${
+                    className={`p-4 rounded-3xl border transition-all flex flex-col justify-between space-y-3.5 shadow-sm ${
                       isOutOfStock
-                        ? 'bg-slate-950/60 border-rose-900/40 opacity-75'
-                        : 'bg-slate-900 border-slate-800 shadow-md hover:border-slate-700'
+                        ? isLight ? 'bg-stone-100/70 border-stone-300 opacity-60' : 'bg-stone-900/40 border-stone-800 opacity-60'
+                        : isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
                     }`}
                   >
                     <div>
-                      {/* Top Thumbnail & Edit/Delete Toolbar */}
+                      {/* Top Thumbnail & Info */}
                       <div className="flex items-start gap-3">
-                        <div className="relative w-16 h-16 rounded-2xl overflow-hidden border border-slate-800 shrink-0 bg-slate-950">
+                        <div className="relative w-16 h-16 rounded-2xl overflow-hidden border border-stone-200 shrink-0 bg-stone-100">
                           <img
                             src={item.image}
                             alt={item.name}
@@ -1158,19 +1210,21 @@ export function AdminDashboard({ onBackToClient }) {
                         </div>
 
                         <div className="min-w-0 flex-1">
-                          <p className="text-xs font-bold text-white truncate font-syne">{item.name}</p>
-                          <p className="text-[11px] font-mono text-amber-400 font-bold mt-0.5">₹{item.price}</p>
-                          <span className="text-[10px] text-slate-500 font-mono capitalize block">
+                          <p className="text-sm font-editorial font-normal truncate">{item.name}</p>
+                          <p className="text-xs font-number text-[#D04834] font-bold mt-0.5">₹{item.price}</p>
+                          <span className={`text-[10px] font-mono capitalize block ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
                             {item.category?.replace('-', ' ')} • {item.prepTime || '10m'}
                           </span>
                         </div>
                       </div>
 
-                      {/* Addons & Customization Summary */}
-                      <div className="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-mono text-slate-400">
-                        <span>{item.addons?.length || 0} Addon Rates</span>
+                      {/* Addon count */}
+                      <div className={`mt-2.5 pt-2 border-t flex items-center justify-between text-[11px] font-mono ${
+                        isLight ? 'border-stone-100 text-stone-500' : 'border-white/5 text-stone-400'
+                      }`}>
+                        <span><span className="font-number font-bold">{item.addons?.length || 0}</span> Add-ons</span>
                         {item.isBestseller && (
-                          <span className="px-1.5 py-0.2 rounded bg-amber-400/10 text-amber-300 text-[9px] font-bold border border-amber-400/20">
+                          <span className="px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-700 dark:text-amber-300 text-[9px] font-mono font-bold">
                             POPULAR
                           </span>
                         )}
@@ -1178,54 +1232,60 @@ export function AdminDashboard({ onBackToClient }) {
                     </div>
 
                     {/* Action Bar: Edit, Delete, Stock Toggle */}
-                    <div className="space-y-2 pt-1 border-t border-slate-800/60">
-                      
-                      {/* Edit & Delete 3D Buttons */}
+                    <div className={`space-y-2 pt-1 border-t ${isLight ? 'border-stone-100' : 'border-white/5'}`}>
                       <div className="grid grid-cols-2 gap-2">
                         <button
                           onClick={() => handleOpenEditModal(item)}
-                          className="btn-3d btn-3d-dark py-1.5 rounded-xl text-xs font-bold font-syne flex items-center justify-center gap-1 text-slate-300 hover:text-white"
+                          className={`py-1.5 rounded-xl text-xs font-syne font-bold flex items-center justify-center gap-1 border transition cursor-pointer ${
+                            isLight 
+                              ? 'bg-stone-50 border-stone-200 text-stone-700 hover:text-black hover:bg-stone-100' 
+                              : 'bg-[#0E0C0B] border-white/5 text-stone-300 hover:text-white'
+                          }`}
                         >
-                          <Edit2 className="w-3.5 h-3.5 text-amber-400" />
-                          <span>Edit Dish</span>
+                          <Edit2 className="w-3.5 h-3.5 text-[#D04834]" />
+                          <span>Edit</span>
                         </button>
 
                         <button
                           onClick={() => setDeleteConfirmItem(item)}
-                          className="btn-3d btn-3d-dark py-1.5 rounded-xl text-xs font-bold font-syne flex items-center justify-center gap-1 text-rose-400 hover:text-rose-300"
+                          className={`py-1.5 rounded-xl text-xs font-syne font-bold flex items-center justify-center gap-1 border transition cursor-pointer ${
+                            isLight 
+                              ? 'bg-stone-50 border-stone-200 text-rose-600 hover:bg-rose-50' 
+                              : 'bg-[#0E0C0B] border-white/5 text-rose-400 hover:bg-rose-950/20'
+                          }`}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                           <span>Delete</span>
                         </button>
                       </div>
 
-                      {/* Stock 86'd Toggle Switch */}
+                      {/* Out of Stock Toggle */}
                       <button
                         onClick={() => {
                           sounds.playClick();
                           toggleItemStock(item.id);
                         }}
-                        className={`w-full py-2 px-3 rounded-xl text-[11px] font-bold font-syne transition flex items-center justify-between border ${
+                        className={`w-full py-2 px-3 rounded-xl text-[11px] font-syne font-bold transition flex items-center justify-between border cursor-pointer ${
                           isOutOfStock
-                            ? 'bg-rose-950/40 hover:bg-rose-900/60 border-rose-800 text-rose-300'
-                            : 'bg-emerald-950/40 hover:bg-emerald-900/60 border-emerald-800 text-emerald-300'
+                            ? 'bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300'
+                            : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
                         }`}
                       >
                         <span className="flex items-center gap-1.5">
                           {isOutOfStock ? (
                             <>
-                              <X className="w-3 h-3 text-rose-400" />
-                              <span>86'D / OUT OF STOCK</span>
+                              <X className="w-3 h-3 text-rose-500" />
+                              <span>OUT OF STOCK / 86'D</span>
                             </>
                           ) : (
                             <>
-                              <Check className="w-3 h-3 text-emerald-400" />
+                              <Check className="w-3 h-3 text-emerald-500" />
                               <span>IN STOCK</span>
                             </>
                           )}
                         </span>
                         <span className="text-[10px] underline font-mono">
-                          {isOutOfStock ? 'Enable' : 'Disable'}
+                          {isOutOfStock ? 'Mark Available' : 'Mark Out of Stock'}
                         </span>
                       </button>
                     </div>
@@ -1239,31 +1299,37 @@ export function AdminDashboard({ onBackToClient }) {
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 4: TABLE QR PLAQUES & PRINTING MATRIX */}
+        {/* TAB 4: TABLE QR PLAQUES */}
         {/* ========================================================================= */}
         {activeTab === 'tables' && (
           <div className="space-y-6">
-            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className={`p-6 rounded-3xl border shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 transition-colors ${
+              isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
+            }`}>
               <div>
-                <h2 className="text-xl font-bold text-white font-syne">Table QR Plaque Generator</h2>
-                <p className="text-slate-400 text-xs mt-1">
-                  Select any table to generate high-resolution QR plaques for acrylic stands and seat stickers.
+                <h2 className="text-2xl font-editorial tracking-tight font-normal">Table QR Code Generator</h2>
+                <p className={`text-xs mt-1 ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                  Select a table to print acrylic stands or table QR code stickers.
                 </p>
               </div>
 
               <button
                 onClick={() => window.print()}
-                className="btn-3d btn-3d-amber px-5 py-2.5 rounded-xl font-bold text-xs font-syne transition flex items-center gap-1.5"
+                className={`px-5 py-2.5 rounded-2xl font-syne font-bold text-xs transition flex items-center gap-1.5 shadow-sm cursor-pointer ${
+                  isLight 
+                    ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800' 
+                    : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200'
+                }`}
               >
                 <Printer className="w-4 h-4" />
-                <span>Print Table Stickers</span>
+                <span>Print Table QR Stands</span>
               </button>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               <div className="lg:col-span-7 space-y-3">
-                <p className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
-                  Select Dining Table:
+                <p className={`text-xs font-mono font-bold uppercase tracking-wider ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                  Select Table:
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -1271,48 +1337,54 @@ export function AdminDashboard({ onBackToClient }) {
                     <button
                       key={t.id}
                       onClick={() => { sounds.playClick(); setSelectedTableForQR(t.number); }}
-                      className={`p-4 rounded-2xl border text-left transition ${
+                      className={`p-4 rounded-2xl border text-left transition cursor-pointer ${
                         selectedTableForQR === t.number
-                          ? 'bg-amber-400 text-slate-950 border-amber-400 font-bold shadow-lg scale-102'
-                          : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700'
+                          ? isLight
+                            ? 'bg-[#12100E] text-white border-[#12100E] shadow-sm'
+                            : 'bg-white text-black border-white shadow-sm'
+                          : isLight
+                          ? 'bg-white border-stone-200 text-stone-700 hover:border-stone-400'
+                          : 'bg-[#1C1917] border-white/10 text-stone-300 hover:border-white/20'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-mono text-sm font-black">
+                        <span className="font-mono text-sm font-bold">
                           T-{t.number < 10 ? `0${t.number}` : t.number}
                         </span>
-                        <QrCode className="w-4 h-4" />
+                        <QrCode className="w-4 h-4 text-[#D04834]" />
                       </div>
-                      <p className="text-xs font-syne font-bold mt-2">Table #{t.number < 10 ? `0${t.number}` : t.number}</p>
-                      <p className="text-[10px] opacity-75 font-mono">Seats {t.capacity} Guests</p>
+                      <p className="text-sm font-editorial mt-2">Table #{t.number < 10 ? `0${t.number}` : t.number}</p>
+                      <p className="text-[10px] opacity-75 font-mono">Seats: {t.capacity} Guests</p>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div className="lg:col-span-5">
-                <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl space-y-5 text-center flex flex-col items-center">
-                  <div className="w-full pb-3 border-b border-slate-800">
-                    <span className="px-3 py-1 rounded-full bg-amber-400/10 text-amber-300 font-mono text-[10px] font-bold border border-amber-400/20">
-                      PLAQUE PREVIEW
+                <div className={`p-6 rounded-3xl border shadow-lg space-y-5 text-center flex flex-col items-center transition-colors ${
+                  isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
+                }`}>
+                  <div className={`w-full pb-3 border-b ${isLight ? 'border-stone-200' : 'border-white/10'}`}>
+                    <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold border border-stone-300">
+                      STAND PREVIEW
                     </span>
-                    <h3 className="text-lg font-black text-white font-syne mt-2">
+                    <h3 className="text-xl font-editorial font-normal mt-2">
                       {BRAND_CONFIG.brandName}
                     </h3>
                   </div>
 
-                  <div className="p-5 bg-white rounded-3xl shadow-inner w-56 h-56 flex flex-col items-center justify-center border-4 border-slate-950">
-                    <QrCode className="w-36 h-36 text-slate-950" />
-                    <span className="font-mono text-slate-950 font-black text-xs tracking-widest mt-1">
+                  <div className="p-5 bg-white rounded-3xl shadow-inner w-56 h-56 flex flex-col items-center justify-center border-4 border-stone-900">
+                    <QrCode className="w-36 h-36 text-stone-950" />
+                    <span className="font-mono text-stone-950 font-bold text-xs tracking-widest mt-1">
                       TABLE #{selectedTableForQR < 10 ? `0${selectedTableForQR}` : selectedTableForQR}
                     </span>
                   </div>
 
                   <div className="space-y-1">
-                    <p className="text-white font-bold text-xs font-syne">
-                      Scan Table QR to View Menu & Order
+                    <p className="font-syne font-bold text-xs">
+                      Scan QR code with phone camera to place order
                     </p>
-                    <p className="text-slate-500 text-[10px] font-mono">
+                    <p className={`text-[10px] font-mono ${isLight ? 'text-stone-400' : 'text-stone-500'}`}>
                       https://thccafe.in/table/{selectedTableForQR}
                     </p>
                   </div>
@@ -1327,17 +1399,23 @@ export function AdminDashboard({ onBackToClient }) {
         {/* ========================================================================= */}
         {activeTab === 'analytics' && (
           <div className="space-y-6">
-            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className={`p-6 rounded-3xl border shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
+              isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
+            }`}>
               <div>
-                <h2 className="text-xl font-bold text-white font-syne">Daily Shift & Z-Report Settlement</h2>
-                <p className="text-slate-400 text-xs mt-1">
-                  Complete end-of-day financial reconciliation, taxes, and shift summary.
+                <h2 className="text-2xl font-editorial tracking-tight font-normal">Shift Summary &amp; Z-Report</h2>
+                <p className={`text-xs mt-1 ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                  Daily financial reconciliation, GST breakdown, and shift sales summary.
                 </p>
               </div>
 
               <button
                 onClick={handleExportZReportCSV}
-                className="btn-3d btn-3d-amber px-4 py-2.5 rounded-xl font-bold text-xs font-syne flex items-center gap-1.5"
+                className={`px-4 py-2.5 rounded-2xl font-syne font-bold text-xs flex items-center gap-1.5 shadow-sm transition cursor-pointer ${
+                  isLight 
+                    ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800' 
+                    : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200'
+                }`}
               >
                 <Download className="w-4 h-4" />
                 <span>Export Z-Report (CSV)</span>
@@ -1345,100 +1423,125 @@ export function AdminDashboard({ onBackToClient }) {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="p-5 rounded-3xl bg-slate-900 border border-slate-800 space-y-2 shadow-lg">
-                <div className="flex items-center justify-between text-slate-400 text-xs">
-                  <span>Gross Sales</span>
-                  <DollarSign className="w-4 h-4 text-amber-400" />
+              <div className={`p-5 rounded-3xl border space-y-2 shadow-sm ${
+                isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
+              }`}>
+                <div className={`flex items-center justify-between text-xs ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                  <span>Total Sales</span>
+                  <DollarSign className="w-4 h-4 text-[#D04834]" />
                 </div>
-                <p className="text-2xl font-black text-white font-syne">₹{totalRevenue}</p>
-                <p className="text-[11px] text-emerald-400 font-mono flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3" /> Today's Shift Revenue
+                <p className="text-2xl font-number font-bold text-[#D04834]">₹{totalRevenue}</p>
+                <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" /> Active Shift Revenue
                 </p>
               </div>
 
-              <div className="p-5 rounded-3xl bg-slate-900 border border-slate-800 space-y-2 shadow-lg">
-                <div className="flex items-center justify-between text-slate-400 text-xs">
+              <div className={`p-5 rounded-3xl border space-y-2 shadow-sm ${
+                isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
+              }`}>
+                <div className={`flex items-center justify-between text-xs ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
                   <span>Digital Payments</span>
-                  <CreditCard className="w-4 h-4 text-emerald-400" />
+                  <CreditCard className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <p className="text-2xl font-black text-emerald-400 font-syne">₹{onlineRevenue}</p>
-                <p className="text-[11px] text-slate-400 font-mono">UPI & Contactless</p>
+                <p className="text-2xl font-number font-bold text-emerald-700 dark:text-emerald-400">₹{onlineRevenue}</p>
+                <p className={`text-[11px] font-mono ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>UPI &amp; Contactless</p>
               </div>
 
-              <div className="p-5 rounded-3xl bg-slate-900 border border-slate-800 space-y-2 shadow-lg">
-                <div className="flex items-center justify-between text-slate-400 text-xs">
-                  <span>Cash Register</span>
-                  <Banknote className="w-4 h-4 text-amber-400" />
+              <div className={`p-5 rounded-3xl border space-y-2 shadow-sm ${
+                isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
+              }`}>
+                <div className={`flex items-center justify-between text-xs ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                  <span>Cash at Till</span>
+                  <Banknote className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                 </div>
-                <p className="text-2xl font-black text-amber-300 font-syne">₹{cashRevenue}</p>
-                <p className="text-[11px] text-slate-400 font-mono">Collect at Counter</p>
+                <p className="text-2xl font-number font-bold text-amber-700 dark:text-amber-300">₹{cashRevenue}</p>
+                <p className={`text-[11px] font-mono ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>Collected at Counter</p>
               </div>
 
-              <div className="p-5 rounded-3xl bg-slate-900 border border-slate-800 space-y-2 shadow-lg">
-                <div className="flex items-center justify-between text-slate-400 text-xs">
-                  <span>Avg Order Value</span>
-                  <Award className="w-4 h-4 text-cyan-400" />
+              <div className={`p-5 rounded-3xl border space-y-2 shadow-sm ${
+                isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
+              }`}>
+                <div className={`flex items-center justify-between text-xs ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                  <span>Average Ticket Value</span>
+                  <Award className="w-4 h-4 text-stone-400" />
                 </div>
-                <p className="text-2xl font-black text-white font-syne">₹{avgTicketValue}</p>
-                <p className="text-[11px] text-slate-400 font-mono">{validOrders.length} Total Orders</p>
+                <p className="text-2xl font-number font-bold">₹{avgTicketValue}</p>
+                <p className={`text-[11px] font-mono ${isLight ? 'text-stone-500' : 'text-stone-400'}`}><span className="font-number font-bold">{validOrders.length}</span> Orders Recorded</p>
               </div>
             </div>
 
-            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4 shadow-xl">
-              <h3 className="text-base font-bold text-white font-syne">Shift Financial Reconciliation</h3>
+            {/* Reconciliation Cards */}
+            <div className={`p-6 rounded-3xl border space-y-4 shadow-sm ${
+              isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
+            }`}>
+              <h3 className="text-base font-syne font-bold">Shift Tax &amp; Revenue Breakdown</h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
-                  <p className="text-xs text-slate-400 font-mono">Net Food Sales</p>
-                  <p className="text-xl font-bold text-white font-mono">₹{totalRevenue - totalGst}</p>
+                <div className={`p-4 rounded-2xl border space-y-1 ${
+                  isLight ? 'bg-stone-50 border-stone-200' : 'bg-[#0E0C0B] border-white/5'
+                }`}>
+                  <p className={`text-xs font-mono ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>Net Food Sales</p>
+                  <p className="text-xl font-bold font-number">₹{totalRevenue - totalGst}</p>
                 </div>
-                <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
-                  <p className="text-xs text-slate-400 font-mono">GST / VAT (5%)</p>
-                  <p className="text-xl font-bold text-cyan-300 font-mono">₹{totalGst}</p>
+                <div className={`p-4 rounded-2xl border space-y-1 ${
+                  isLight ? 'bg-stone-50 border-stone-200' : 'bg-[#0E0C0B] border-white/5'
+                }`}>
+                  <p className={`text-xs font-mono ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>GST Tax (5%)</p>
+                  <p className="text-xl font-bold text-[#D04834] font-number">₹{totalGst}</p>
                 </div>
-                <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
-                  <p className="text-xs text-slate-400 font-mono">Staff Tip Pool</p>
-                  <p className="text-xl font-bold text-amber-300 font-mono">₹{totalTips}</p>
+                <div className={`p-4 rounded-2xl border space-y-1 ${
+                  isLight ? 'bg-stone-50 border-stone-200' : 'bg-[#0E0C0B] border-white/5'
+                }`}>
+                  <p className={`text-xs font-mono ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>Staff Tip Pool</p>
+                  <p className="text-xl font-bold text-amber-600 dark:text-amber-300 font-number">₹{totalTips}</p>
                 </div>
               </div>
             </div>
 
             {/* Recent Orders Log Table */}
-            <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl space-y-4">
+            <div className={`p-6 rounded-3xl border shadow-sm space-y-4 ${
+              isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
+            }`}>
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-white font-syne">Recent Transactions Log</h3>
-                <span className="text-xs text-slate-400 font-mono">{orders.length} Recorded Orders</span>
+                <h3 className="text-base font-syne font-bold">Recent Orders Register</h3>
+                <span className={`text-xs font-mono ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                  <span className="font-number font-bold">{orders.length}</span> Orders in System
+                </span>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-slate-800 text-slate-400 font-mono text-[10px] uppercase">
-                      <th className="pb-3">Order ID</th>
-                      <th className="pb-3">Type / Seat</th>
-                      <th className="pb-3">Customer</th>
+                    <tr className={`border-b font-mono text-[10px] uppercase ${
+                      isLight ? 'border-stone-200 text-stone-500' : 'border-white/10 text-stone-400'
+                    }`}>
+                      <th className="pb-3">Order #</th>
+                      <th className="pb-3">Table / Type</th>
+                      <th className="pb-3">Guest</th>
                       <th className="pb-3">Payment</th>
                       <th className="pb-3">Status</th>
-                      <th className="pb-3 text-right">Amount</th>
+                      <th className="pb-3 text-right">Total</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/60 font-mono">
+                  <tbody className={`divide-y font-mono ${isLight ? 'divide-stone-100' : 'divide-white/5'}`}>
                     {orders.slice(0, 10).map(o => (
-                      <tr key={o.id} className="text-slate-300 hover:bg-slate-800/30">
-                        <td className="py-3 font-bold text-white">#{o.orderNumber}</td>
+                      <tr key={o.id} className={`transition ${isLight ? 'hover:bg-stone-50' : 'hover:bg-white/5'}`}>
+                        <td className="py-3 font-bold">#<span className="font-number font-bold">{o.orderNumber}</span></td>
                         <td className="py-3">
                           {o.diningMode === 'table' ? `Table #${o.tableNumber}` : 'Counter'}
                         </td>
                         <td className="py-3">{o.customerName || 'Guest'}</td>
                         <td className="py-3">
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            o.paymentStatus === 'paid' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-400/20 text-amber-300'
+                            o.paymentStatus === 'paid' 
+                              ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400' 
+                              : 'bg-amber-500/15 text-amber-700 dark:text-amber-300'
                           }`}>
                             {o.paymentStatus === 'paid' ? 'UPI' : 'Cash'}
                           </span>
                         </td>
-                        <td className="py-3 capitalize text-slate-300">{o.status}</td>
-                        <td className="py-3 text-right font-black text-white">₹{o.total}</td>
+                        <td className="py-3 capitalize">{o.status}</td>
+                        <td className="py-3 text-right font-number font-bold text-[#D04834]">₹{o.total}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -1451,63 +1554,83 @@ export function AdminDashboard({ onBackToClient }) {
 
       </main>
 
-      {/* 3. WORKING ADD & EDIT MENU ITEM MODAL (With Addons & Rates) */}
+      {/* 3. WORKING ADD & EDIT MENU ITEM MODAL */}
       <AnimatePresence>
         {isItemModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md overflow-y-auto font-sans">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-5 my-8 max-h-[90vh] overflow-y-auto no-scrollbar"
+              className={`relative w-full max-w-2xl rounded-3xl p-6 shadow-2xl space-y-5 my-8 max-h-[90vh] overflow-y-auto border transition-colors ${
+                isLight ? 'bg-[#FAF7F2] text-[#12100E] border-[#E8E2D5]' : 'bg-[#141210] text-[#FAF7F2] border-white/10'
+              }`}
             >
               {/* Modal Header */}
-              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-400 flex items-center justify-center">
-                    {editingItem ? <Edit2 className="w-5 h-5" /> : <Plus className="w-5 h-5 stroke-[2.5]" />}
+              <div className={`flex items-center justify-between pb-4 border-b ${
+                isLight ? 'border-stone-200' : 'border-white/10'
+              }`}>
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${
+                    isLight ? 'bg-white text-[#12100E] border border-[#E8E2D5]' : 'bg-white/10 text-white'
+                  }`}>
+                    {editingItem ? <Edit2 className="w-5 h-5 text-[#D04834]" /> : <Plus className="w-5 h-5 text-[#D04834] stroke-[2.5]" />}
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-white font-syne">
-                      {editingItem ? `Edit Dish: ${editingItem.name}` : 'Add New Dish to Menu'}
+                    <h3 className="text-xl font-editorial font-normal">
+                      {editingItem ? `Edit: ${editingItem.name}` : 'Add Dish to Menu'}
                     </h3>
-                    <p className="text-slate-400 text-xs">
-                      Changes publish instantly across customer storefront & digital menus.
+                    <p className={`text-xs ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                      Changes reflect instantly on customer menus and table QR orders.
                     </p>
                   </div>
                 </div>
 
                 <button
                   onClick={() => setIsItemModalOpen(false)}
-                  className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white"
+                  className={`p-2 rounded-xl border transition ${
+                    isLight ? 'border-stone-200 text-stone-500 hover:text-black' : 'border-white/10 text-stone-400 hover:text-white'
+                  }`}
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Form Body */}
-              <form onSubmit={handleSaveItem} className="space-y-5 text-xs">
+              <form onSubmit={handleSaveItem} className="space-y-4 text-xs">
                 
                 {/* 1. Basic Details */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-slate-300 font-semibold font-syne">Dish / Item Name *</label>
+                    <label className={`font-syne font-bold ${isLight ? 'text-stone-700' : 'text-stone-300'}`}>
+                      Dish Name *
+                    </label>
                     <input
                       type="text"
                       required
                       value={itemForm.name}
                       onChange={(e) => setItemForm({ ...itemForm, name: e.target.value })}
-                      placeholder="e.g. Pahadi Butter Chicken Sizzler"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400"
+                      placeholder="e.g. Margherita Basilico Pizza"
+                      className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none transition ${
+                        isLight 
+                          ? 'bg-white border-stone-300 text-stone-900 focus:border-[#12100E]' 
+                          : 'bg-[#0E0C0B] border-white/10 text-white focus:border-white/30'
+                      }`}
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-slate-300 font-semibold font-syne">Menu Category *</label>
+                    <label className={`font-syne font-bold ${isLight ? 'text-stone-700' : 'text-stone-300'}`}>
+                      Category *
+                    </label>
                     <select
                       value={itemForm.category}
                       onChange={(e) => setItemForm({ ...itemForm, category: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-amber-400 capitalize"
+                      className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none capitalize transition ${
+                        isLight 
+                          ? 'bg-white border-stone-300 text-stone-900 focus:border-[#12100E]' 
+                          : 'bg-[#0E0C0B] border-white/10 text-white focus:border-white/30'
+                      }`}
                     >
                       {CATEGORIES.filter(c => c.id !== 'all').map(c => (
                         <option key={c.id} value={c.id}>{c.name}</option>
@@ -1519,42 +1642,58 @@ export function AdminDashboard({ onBackToClient }) {
                 {/* 2. Price, Prep Time, Dietary */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="space-y-1">
-                    <label className="text-slate-300 font-semibold font-syne">Base Price (₹) *</label>
+                    <label className={`font-syne font-bold ${isLight ? 'text-stone-700' : 'text-stone-300'}`}>
+                      Base Price (₹) *
+                    </label>
                     <input
                       type="number"
                       min="1"
                       required
                       value={itemForm.price}
                       onChange={(e) => setItemForm({ ...itemForm, price: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono font-bold focus:outline-none focus:border-amber-400"
+                      className={`w-full px-3.5 py-2.5 rounded-xl border font-mono font-bold focus:outline-none transition ${
+                        isLight 
+                          ? 'bg-white border-stone-300 text-stone-900 focus:border-[#12100E]' 
+                          : 'bg-[#0E0C0B] border-white/10 text-white focus:border-white/30'
+                      }`}
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-slate-300 font-semibold font-syne">Prep Time</label>
+                    <label className={`font-syne font-bold ${isLight ? 'text-stone-700' : 'text-stone-300'}`}>
+                      Prep / Cooking Time
+                    </label>
                     <input
                       type="text"
                       value={itemForm.prepTime}
                       onChange={(e) => setItemForm({ ...itemForm, prepTime: e.target.value })}
                       placeholder="e.g. 10-12 mins"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400"
+                      className={`w-full px-3.5 py-2.5 rounded-xl border focus:outline-none transition ${
+                        isLight 
+                          ? 'bg-white border-stone-300 text-stone-900 focus:border-[#12100E]' 
+                          : 'bg-[#0E0C0B] border-white/10 text-white focus:border-white/30'
+                      }`}
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-slate-300 font-semibold font-syne">Dietary Type</label>
-                    <div className="grid grid-cols-3 gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
+                    <label className={`font-syne font-bold ${isLight ? 'text-stone-700' : 'text-stone-300'}`}>
+                      Dietary Preference
+                    </label>
+                    <div className={`grid grid-cols-3 gap-1 p-1 rounded-xl border ${
+                      isLight ? 'bg-white border-stone-200' : 'bg-[#0E0C0B] border-white/10'
+                    }`}>
                       {[
-                        { id: 'veg', label: 'Veg', activeClass: 'bg-emerald-500 text-slate-950' },
-                        { id: 'nonveg', label: 'Non-Veg', activeClass: 'bg-rose-500 text-white' },
-                        { id: 'egg', label: 'Egg', activeClass: 'bg-amber-400 text-slate-950' }
+                        { id: 'veg', label: 'Veg', activeClass: 'bg-emerald-600 text-white' },
+                        { id: 'nonveg', label: 'Non-Veg', activeClass: 'bg-rose-600 text-white' },
+                        { id: 'egg', label: 'Egg', activeClass: 'bg-amber-500 text-white' }
                       ].map(d => (
                         <button
                           key={d.id}
                           type="button"
                           onClick={() => { sounds.playClick(); setItemForm({ ...itemForm, diet: d.id }); }}
-                          className={`py-1.5 rounded-lg text-[11px] font-bold text-center transition ${
-                            itemForm.diet === d.id ? d.activeClass : 'text-slate-400 hover:text-white'
+                          className={`py-1.5 rounded-lg text-[11px] font-mono font-bold text-center transition cursor-pointer ${
+                            itemForm.diet === d.id ? d.activeClass : 'text-stone-400 hover:text-black dark:hover:text-white'
                           }`}
                         >
                           {d.label}
@@ -1566,44 +1705,53 @@ export function AdminDashboard({ onBackToClient }) {
 
                 {/* 3. Description */}
                 <div className="space-y-1">
-                  <label className="text-slate-300 font-semibold font-syne">Dish Description</label>
+                  <label className={`font-syne font-bold ${isLight ? 'text-stone-700' : 'text-stone-300'}`}>
+                    Dish Description
+                  </label>
                   <textarea
                     rows="2"
                     value={itemForm.description}
                     onChange={(e) => setItemForm({ ...itemForm, description: e.target.value })}
-                    placeholder="Describe ingredients, cooking style, and serving garnishes..."
-                    className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400 resize-none"
+                    placeholder="Describe ingredients, preparation, herbs, and flavors..."
+                    className={`w-full px-3.5 py-2 rounded-xl border focus:outline-none resize-none transition ${
+                      isLight 
+                        ? 'bg-white border-stone-300 text-stone-900 focus:border-[#12100E]' 
+                        : 'bg-[#0E0C0B] border-white/10 text-white focus:border-white/30'
+                    }`}
                   />
                 </div>
 
-                {/* 4. Dish Image URL & 1-Tap Preset Image Picker */}
-                <div className="space-y-2 p-3.5 rounded-2xl bg-slate-950 border border-slate-800">
-                  <div className="flex items-center justify-between">
-                    <label className="text-slate-300 font-semibold font-syne flex items-center gap-1.5">
-                      <Image className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Dish Image URL or Quick Presets</span>
-                    </label>
-                  </div>
+                {/* 4. Dish Image URL & Quick Chips */}
+                <div className={`space-y-2 p-3.5 rounded-2xl border ${
+                  isLight ? 'bg-white border-stone-200' : 'bg-[#0E0C0B] border-white/10'
+                }`}>
+                  <label className={`font-syne font-bold flex items-center gap-1.5 ${isLight ? 'text-stone-700' : 'text-stone-300'}`}>
+                    <ImageIcon className="w-3.5 h-3.5 text-[#D04834]" />
+                    <span>Dish Image (URL or Quick Presets)</span>
+                  </label>
 
                   <input
                     type="url"
                     value={itemForm.image}
                     onChange={(e) => setItemForm({ ...itemForm, image: e.target.value })}
                     placeholder="https://images.unsplash.com/..."
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white font-mono text-[11px] placeholder:text-slate-600 focus:outline-none focus:border-amber-400"
+                    className={`w-full px-3 py-2 rounded-xl border font-mono text-[11px] focus:outline-none transition ${
+                      isLight 
+                        ? 'bg-stone-50 border-stone-200 text-stone-900 focus:border-[#12100E]' 
+                        : 'bg-[#1C1917] border-white/10 text-white focus:border-white/30'
+                    }`}
                   />
 
-                  {/* Preset Quick Chips */}
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1">
                     {PRESET_DISH_IMAGES.map((p, idx) => (
                       <button
                         key={idx}
                         type="button"
                         onClick={() => { sounds.playClick(); setItemForm({ ...itemForm, image: p.url }); }}
-                        className={`px-2.5 py-1 rounded-lg text-[10px] font-mono whitespace-nowrap transition border ${
+                        className={`px-2.5 py-1 rounded-lg text-[10px] font-mono whitespace-nowrap transition border cursor-pointer ${
                           itemForm.image === p.url
-                            ? 'bg-amber-400 text-slate-950 border-amber-400 font-bold'
-                            : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+                            ? isLight ? 'bg-[#12100E] text-white border-[#12100E]' : 'bg-white text-black border-white'
+                            : isLight ? 'bg-white border-stone-200 text-stone-600' : 'bg-[#1C1917] border-white/10 text-stone-400'
                         }`}
                       >
                         {p.label}
@@ -1612,52 +1760,60 @@ export function AdminDashboard({ onBackToClient }) {
                   </div>
                 </div>
 
-                {/* 5. Highlight Toggles (Bestseller, Spicy) */}
+                {/* 5. Highlight Toggles */}
                 <div className="grid grid-cols-2 gap-3">
-                  <label className="p-3 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-between cursor-pointer">
-                    <span className="font-semibold text-slate-300 font-syne flex items-center gap-1.5">
-                      <Award className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Bestseller / Popular</span>
+                  <label className={`p-3 rounded-2xl border flex items-center justify-between cursor-pointer ${
+                    isLight ? 'bg-white border-stone-200' : 'bg-[#0E0C0B] border-white/10'
+                  }`}>
+                    <span className="font-syne font-bold flex items-center gap-1.5">
+                      <Award className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Chef's Special / Bestseller</span>
                     </span>
                     <input
                       type="checkbox"
                       checked={itemForm.isBestseller}
                       onChange={(e) => setItemForm({ ...itemForm, isBestseller: e.target.checked })}
-                      className="w-4 h-4 accent-amber-400 rounded cursor-pointer"
+                      className="w-4 h-4 accent-[#12100E] rounded cursor-pointer"
                     />
                   </label>
 
-                  <label className="p-3 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-between cursor-pointer">
-                    <span className="font-semibold text-slate-300 font-syne flex items-center gap-1.5">
-                      <Flame className="w-3.5 h-3.5 text-rose-400" />
-                      <span>Spicy Tadka</span>
+                  <label className={`p-3 rounded-2xl border flex items-center justify-between cursor-pointer ${
+                    isLight ? 'bg-white border-stone-200' : 'bg-[#0E0C0B] border-white/10'
+                  }`}>
+                    <span className="font-syne font-bold flex items-center gap-1.5">
+                      <Flame className="w-3.5 h-3.5 text-[#D04834]" />
+                      <span>Spicy / Hot</span>
                     </span>
                     <input
                       type="checkbox"
                       checked={itemForm.isSpicy}
                       onChange={(e) => setItemForm({ ...itemForm, isSpicy: e.target.checked })}
-                      className="w-4 h-4 accent-rose-500 rounded cursor-pointer"
+                      className="w-4 h-4 accent-[#D04834] rounded cursor-pointer"
                     />
                   </label>
                 </div>
 
-                {/* 6. ADDONS & RATES SECTION (Comprehensive Working Addons Manager) */}
-                <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+                {/* 6. Custom Addons Manager */}
+                <div className={`p-4 rounded-2xl border space-y-3 ${
+                  isLight ? 'bg-white border-stone-200' : 'bg-[#0E0C0B] border-white/10'
+                }`}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="text-xs font-bold text-white font-syne flex items-center gap-1.5">
-                        <Tag className="w-3.5 h-3.5 text-amber-400" />
-                        <span>Custom Addons & Extra Rates</span>
+                      <h4 className="text-xs font-syne font-bold flex items-center gap-1.5">
+                        <Tag className="w-3.5 h-3.5 text-[#D04834]" />
+                        <span>Custom Add-ons &amp; Extra Ingredients</span>
                       </h4>
-                      <p className="text-[10px] text-slate-500 font-mono">
-                        Addons shown on modal when customer clicks "Customize"
+                      <p className={`text-[10px] font-mono ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                        Options shown to guests when customizing their dish
                       </p>
                     </div>
 
                     <button
                       type="button"
                       onClick={handleAddAddonRow}
-                      className="btn-3d btn-3d-amber px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1"
+                      className={`px-3 py-1.5 rounded-xl text-[11px] font-syne font-bold flex items-center gap-1 transition cursor-pointer ${
+                        isLight ? 'bg-[#12100E] text-white' : 'bg-white text-black'
+                      }`}
                     >
                       <Plus className="w-3 h-3 stroke-[2.5]" />
                       <span>Add Option</span>
@@ -1665,8 +1821,8 @@ export function AdminDashboard({ onBackToClient }) {
                   </div>
 
                   {itemForm.addons.length === 0 ? (
-                    <p className="text-center py-4 text-slate-600 text-xs italic font-mono">
-                      No custom addons configured for this dish.
+                    <p className={`text-center py-4 text-xs italic font-mono ${isLight ? 'text-stone-400' : 'text-stone-500'}`}>
+                      No add-ons configured for this dish.
                     </p>
                   ) : (
                     <div className="space-y-2">
@@ -1676,23 +1832,29 @@ export function AdminDashboard({ onBackToClient }) {
                             type="text"
                             value={addon.name}
                             onChange={(e) => handleUpdateAddon(idx, 'name', e.target.value)}
-                            placeholder="Addon name (e.g. Extra Amul Cheese)"
-                            className="flex-1 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400 text-xs"
+                            placeholder="Option name (e.g. Buffalo Mozzarella)"
+                            className={`flex-1 px-3 py-1.5 rounded-xl border text-xs focus:outline-none transition ${
+                              isLight 
+                                ? 'bg-stone-50 border-stone-200 text-stone-900 focus:border-[#12100E]' 
+                                : 'bg-[#1C1917] border-white/10 text-white focus:border-white/30'
+                            }`}
                           />
-                          <div className="flex items-center gap-1 bg-slate-900 px-2 py-1 rounded-xl border border-slate-800">
-                            <span className="text-amber-400 font-mono text-xs">₹</span>
+                          <div className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border ${
+                            isLight ? 'bg-stone-50 border-stone-200' : 'bg-[#1C1917] border-white/10'
+                          }`}>
+                            <span className="text-[#D04834] font-mono text-xs font-bold">₹</span>
                             <input
                               type="number"
                               min="0"
                               value={addon.price}
                               onChange={(e) => handleUpdateAddon(idx, 'price', e.target.value)}
-                              className="w-16 bg-transparent text-white font-mono text-xs font-bold focus:outline-none"
+                              className="w-14 bg-transparent font-mono text-xs font-bold focus:outline-none"
                             />
                           </div>
                           <button
                             type="button"
                             onClick={() => handleDeleteAddon(idx)}
-                            className="p-1.5 rounded-xl bg-slate-900 hover:bg-rose-950 text-slate-500 hover:text-rose-400 border border-slate-800 transition"
+                            className="p-2 rounded-xl text-stone-400 hover:text-rose-500 transition cursor-pointer"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -1702,23 +1864,27 @@ export function AdminDashboard({ onBackToClient }) {
                   )}
                 </div>
 
-                {/* 7. Spice Level Options Manager */}
-                <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2.5">
-                  <label className="text-slate-300 font-semibold font-syne block">
-                    Spice Levels / Customization Options
+                {/* 7. Spice Levels */}
+                <div className={`p-4 rounded-2xl border space-y-2.5 ${
+                  isLight ? 'bg-white border-stone-200' : 'bg-[#0E0C0B] border-white/10'
+                }`}>
+                  <label className="font-syne font-bold block">
+                    Spice Level Options
                   </label>
 
                   <div className="flex flex-wrap gap-1.5">
                     {itemForm.spiceOptions.map((spice, sIdx) => (
                       <span
                         key={sIdx}
-                        className="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 text-[11px] font-mono flex items-center gap-1.5"
+                        className={`px-2.5 py-1 rounded-lg border text-[11px] font-mono flex items-center gap-1.5 ${
+                          isLight ? 'bg-stone-50 border-stone-200 text-stone-700' : 'bg-[#1C1917] border-white/10 text-stone-300'
+                        }`}
                       >
                         <span>{spice}</span>
                         <button
                           type="button"
                           onClick={() => handleRemoveSpiceOption(spice)}
-                          className="text-slate-500 hover:text-rose-400"
+                          className="text-stone-400 hover:text-rose-500 cursor-pointer"
                         >
                           <X className="w-3 h-3" />
                         </button>
@@ -1731,35 +1897,49 @@ export function AdminDashboard({ onBackToClient }) {
                       type="text"
                       value={itemForm.newSpiceInput}
                       onChange={(e) => setItemForm({ ...itemForm, newSpiceInput: e.target.value })}
-                      placeholder="Add spice option (e.g. Extra Green Chillies)"
-                      className="flex-1 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400 text-xs"
+                      placeholder="New level (e.g. Extra Spicy)"
+                      className={`flex-1 px-3 py-1.5 rounded-xl border text-xs focus:outline-none transition ${
+                        isLight 
+                          ? 'bg-stone-50 border-stone-200 text-stone-900 focus:border-[#12100E]' 
+                          : 'bg-[#1C1917] border-white/10 text-white focus:border-white/30'
+                      }`}
                     />
                     <button
                       type="button"
                       onClick={handleAddSpiceOption}
-                      className="btn-3d btn-3d-dark px-3 py-1.5 rounded-xl text-xs font-bold font-syne"
+                      className={`px-3 py-1.5 rounded-xl text-xs font-syne font-bold border transition cursor-pointer ${
+                        isLight ? 'bg-white border-stone-200 text-stone-700' : 'bg-[#1C1917] border-white/10 text-stone-300'
+                      }`}
                     >
-                      Add Option
+                      Add
                     </button>
                   </div>
                 </div>
 
                 {/* Modal Footer Controls */}
-                <div className="pt-4 border-t border-slate-800 flex items-center justify-end gap-2.5">
+                <div className={`pt-4 border-t flex items-center justify-end gap-2.5 ${
+                  isLight ? 'border-stone-200' : 'border-white/10'
+                }`}>
                   <button
                     type="button"
                     onClick={() => setIsItemModalOpen(false)}
-                    className="btn-3d btn-3d-dark px-4 py-2.5 rounded-xl font-bold font-syne text-xs text-slate-300"
+                    className={`px-4 py-2.5 rounded-xl font-syne font-bold text-xs border transition cursor-pointer ${
+                      isLight ? 'border-stone-200 text-stone-600 hover:text-black' : 'border-white/10 text-stone-400 hover:text-white'
+                    }`}
                   >
                     Cancel
                   </button>
 
                   <button
                     type="submit"
-                    className="btn-3d btn-3d-amber px-6 py-2.5 rounded-xl font-bold font-syne text-xs flex items-center gap-1.5 shadow-xl"
+                    className={`px-6 py-2.5 rounded-xl font-syne font-bold text-xs flex items-center gap-1.5 shadow-md transition cursor-pointer ${
+                      isLight 
+                        ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800' 
+                        : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200'
+                    }`}
                   >
                     <Check className="w-4 h-4 stroke-[2.5]" />
-                    <span>{editingItem ? 'Save & Update Dish' : 'Publish Dish to Live Menu'}</span>
+                    <span>{editingItem ? 'Save Changes' : 'Publish to Menu'}</span>
                   </button>
                 </div>
 
@@ -1773,34 +1953,38 @@ export function AdminDashboard({ onBackToClient }) {
       {/* 4. SAFE DELETE CONFIRMATION DIALOG */}
       <AnimatePresence>
         {deleteConfirmItem && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md font-sans">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-sm bg-slate-900 border border-rose-900/60 rounded-3xl p-6 shadow-2xl space-y-4 text-center"
+              className={`w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 text-center border ${
+                isLight ? 'bg-[#FAF7F2] text-[#12100E] border-[#E8E2D5]' : 'bg-[#141210] text-[#FAF7F2] border-white/10'
+              }`}
             >
-              <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center mx-auto">
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 flex items-center justify-center mx-auto">
                 <Trash2 className="w-6 h-6" />
               </div>
 
               <div>
-                <h3 className="text-base font-bold text-white font-syne">Delete Menu Item?</h3>
-                <p className="text-slate-400 text-xs mt-1">
-                  Are you sure you want to delete <strong className="text-white">"{deleteConfirmItem.name}"</strong>? This will remove it permanently from the active customer menu.
+                <h3 className="text-xl font-editorial font-normal">Delete this dish?</h3>
+                <p className={`text-xs mt-1 leading-relaxed ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                  Are you sure you want to remove <strong className="font-bold">"{deleteConfirmItem.name}"</strong>? This dish will be permanently removed from all digital menus and table ordering.
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-2 pt-2">
                 <button
                   onClick={() => setDeleteConfirmItem(null)}
-                  className="btn-3d btn-3d-dark py-2.5 rounded-xl font-bold font-syne text-xs text-slate-300"
+                  className={`py-2.5 rounded-xl font-syne font-bold text-xs border transition cursor-pointer ${
+                    isLight ? 'border-stone-200 text-stone-600' : 'border-white/10 text-stone-400'
+                  }`}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleConfirmDelete}
-                  className="btn-3d btn-3d-rose py-2.5 rounded-xl font-bold font-syne text-xs"
+                  className="py-2.5 rounded-xl font-syne font-bold text-xs bg-[#D04834] text-white hover:bg-[#b83d2b] transition cursor-pointer"
                 >
                   Confirm Delete
                 </button>
@@ -1810,77 +1994,78 @@ export function AdminDashboard({ onBackToClient }) {
         )}
       </AnimatePresence>
 
-      {/* 5. THERMAL KITCHEN KOT / RECEIPT MODAL */}
+      {/* 5. THERMAL KITCHEN KOT / RECEIPT SLIP MODAL */}
       <AnimatePresence>
         {viewingSlip && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md font-mono">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              className="relative w-full max-w-sm bg-white text-slate-950 rounded-3xl p-6 shadow-2xl font-mono text-xs overflow-hidden"
+              className="relative w-full max-w-sm bg-white text-stone-950 rounded-3xl p-6 shadow-2xl text-xs overflow-hidden border border-stone-300"
             >
               <button
                 onClick={() => setViewingSlip(null)}
-                className="absolute top-4 right-4 p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700"
+                className="absolute top-4 right-4 p-1.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 cursor-pointer"
+                aria-label="Close"
               >
                 <X className="w-4 h-4" />
               </button>
 
-              <div className="text-center pb-3 border-b-2 border-dashed border-slate-300 space-y-1">
-                <h3 className="text-base font-black tracking-tight uppercase">
+              <div className="text-center pb-3 border-b-2 border-dashed border-stone-300 space-y-1">
+                <h3 className="text-base font-bold tracking-tight uppercase">
                   {BRAND_CONFIG.brandName}
                 </h3>
-                <p className="text-[10px] text-slate-600">
+                <p className="text-[10px] text-stone-600">
                   {BRAND_CONFIG.contact.fullAddress}
                 </p>
                 <div className="pt-1 text-[11px] font-bold">
-                  {viewingSlip.diningMode === 'table'
-                    ? `TABLE #${viewingSlip.tableNumber || '04'}`
+                  {viewingSlip.diningMode === 'table' 
+                    ? <>TABLE #<span className="font-number font-bold">{viewingSlip.tableNumber || '04'}</span></>
                     : 'COUNTER PICKUP'}
                 </div>
-                <p className="text-[10px] text-slate-500">
-                  Ticket #{viewingSlip.orderNumber} • {new Date(viewingSlip.createdAt).toLocaleTimeString()}
+                <p className="text-[10px] text-stone-500">
+                  Order #<span className="font-number font-bold">{viewingSlip.orderNumber}</span> • {new Date(viewingSlip.createdAt).toLocaleTimeString()}
                 </p>
               </div>
 
               {/* Items */}
-              <div className="py-3 border-b-2 border-dashed border-slate-300 space-y-2">
+              <div className="py-3 border-b-2 border-dashed border-stone-300 space-y-2">
                 {viewingSlip.items?.map((item, i) => (
                   <div key={i} className="flex justify-between items-start">
                     <div>
                       <p className="font-bold">
-                        {item.qty} × {item.name}
+                        <span className="font-number font-bold">{item.qty}</span> × {item.name}
                       </p>
-                      {item.spice && <p className="text-[10px] text-slate-600">Spice: {item.spice}</p>}
+                      {item.spice && <p className="text-[10px] text-stone-600">Spice: {item.spice}</p>}
                     </div>
-                    <span className="font-bold">₹{item.price * item.qty}</span>
+                    <span className="font-number font-bold">₹{item.price * item.qty}</span>
                   </div>
                 ))}
               </div>
 
               {/* Total Breakdown */}
-              <div className="py-2.5 border-b-2 border-dashed border-slate-300 space-y-1">
+              <div className="py-2.5 border-b-2 border-dashed border-stone-300 space-y-1">
                 <div className="flex justify-between">
                   <span>Payment:</span>
-                  <span className="font-bold uppercase">{viewingSlip.paymentStatus === 'paid' ? 'PAID ONLINE' : 'CASH DUE'}</span>
+                  <span className="font-bold uppercase">{viewingSlip.paymentStatus === 'paid' ? 'PAID ONLINE' : 'DUE AT COUNTER'}</span>
                 </div>
-                <div className="flex justify-between text-sm font-black pt-1">
-                  <span>TOTAL BILL:</span>
-                  <span>₹{viewingSlip.total}</span>
+                <div className="flex justify-between text-sm font-bold pt-1">
+                  <span>TOTAL:</span>
+                  <span className="text-[#D04834] font-number font-bold">₹{viewingSlip.total}</span>
                 </div>
               </div>
 
               <div className="pt-4 flex gap-2">
                 <button
                   onClick={() => window.print()}
-                  className="flex-1 py-2.5 rounded-xl bg-slate-950 text-white font-bold text-xs flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2.5 rounded-xl bg-stone-950 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <Printer className="w-3.5 h-3.5" /> Print Receipt
                 </button>
                 <button
                   onClick={() => setViewingSlip(null)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-200 text-slate-800 font-bold text-xs"
+                  className="px-4 py-2.5 rounded-xl bg-stone-200 text-stone-800 font-bold text-xs cursor-pointer"
                 >
                   Close
                 </button>

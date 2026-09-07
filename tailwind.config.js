@@ -75,7 +75,9 @@ export default {
         syne: ['"Syne"', 'sans-serif'],
         clash: ['"Clash Display"', 'sans-serif'],
         panchang: ['"Panchang"', 'sans-serif'],
-        mono: ['"Space Mono"', '"JetBrains Mono"', 'monospace'],
+        mono: ['"Outfit"', '"JetBrains Mono"', '"Space Mono"', 'monospace'],
+        number: ['"Outfit"', '"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        numeric: ['"Outfit"', '"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         'glow-yellow': '0 0 25px -5px rgba(235, 215, 63, 0.45)',

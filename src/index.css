@@ -627,4 +627,12 @@ body.debug-wireframe * {
   box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.6);
 }
 
+/* Minimal Bold Number Typography */
+.font-number, .font-numeric {
+  font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.02em;
+}
+
 

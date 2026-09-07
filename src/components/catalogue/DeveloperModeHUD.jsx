@@ -309,7 +309,7 @@ export function DeveloperModeHUD({ isDevMode, onCloseDevMode }) {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     {Object.entries(CATALOGUE_DATA.developerSpecs.lighthouse).map(([k, v]) => (
                       <div key={k} className="p-3.5 rounded-2xl bg-black/80 border border-white/10 text-center">
-                        <p className="font-panchang font-bold text-2xl text-[#ebd73f]">{v}</p>
+                        <p className="font-number font-bold text-2xl text-[#ebd73f]">{v}</p>
                         <p className="text-[10px] text-slate-400 uppercase mt-0.5">{k}</p>
                       </div>
                     ))}

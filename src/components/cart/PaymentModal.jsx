@@ -9,17 +9,14 @@ import {
   Smartphone, 
   Receipt, 
   Loader2,
-  Lock,
-  Sparkles,
-  ArrowRight,
   Award,
-  Store,
-  Truck
+  ArrowRight
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useCart } from '../../context/CartContext';
 import { useOrder } from '../../context/OrderContext';
-import { CAFE_CONFIG } from '../../data/cafeConfig';
+import { useTheme } from '../../context/ThemeContext';
+import { CAFE_CONFIG, BRAND_CONFIG } from '../../data/cafeConfig';
 import { sounds } from '../../utils/audio';
 import { processBillingTransaction } from '../../utils/loyaltyStorage';
 
@@ -45,6 +42,7 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
   } = useCart();
 
   const { placeOrder } = useOrder();
+  const { isLight } = useTheme();
 
   const [paymentType, setPaymentType] = useState('online'); // 'online' | 'counter'
   const [isProcessing, setIsProcessing] = useState(false);
@@ -128,30 +126,45 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md overflow-y-auto font-sans">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           transition={{ duration: 0.2 }}
-          className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-7 shadow-2xl my-6 overflow-hidden"
+          className={`relative w-full max-w-md rounded-3xl p-6 sm:p-7 shadow-2xl my-6 overflow-hidden border transition-colors ${
+            isLight 
+              ? 'bg-[#FAF7F2] text-[#12100E] border-[#E8E2D5]' 
+              : 'bg-[#141210] text-[#FAF7F2] border-white/10'
+          }`}
         >
           {/* Close */}
           <button
             onClick={() => { sounds.playClick(); onClose(); }}
-            className="absolute top-5 right-5 p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition"
+            className={`absolute top-5 right-5 p-2 rounded-xl border transition-all ${
+              isLight 
+                ? 'border-stone-200 text-stone-500 hover:text-black hover:bg-stone-100' 
+                : 'border-white/10 text-stone-400 hover:text-white hover:bg-white/5'
+            }`}
             aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
 
-          {/* Title */}
-          <div className="text-center mb-4">
-            <h3 className="text-xl sm:text-2xl font-bold text-white font-syne">
-              Complete Your Order
+          {/* Title Masthead */}
+          <div className="text-center mb-6">
+            <span className={`text-[10px] font-mono uppercase tracking-widest px-2.5 py-0.5 rounded-full border ${
+              isLight 
+                ? 'bg-stone-100 border-stone-200 text-stone-600' 
+                : 'bg-white/5 border-white/10 text-stone-400'
+            }`}>
+              Order Checkout
+            </span>
+            <h3 className="text-2xl font-editorial tracking-tight mt-2 font-normal">
+              Confirm Order
             </h3>
-            <p className="text-amber-400 text-sm font-bold mt-1">
-              Total Bill: ₹{grandTotal} • {
+            <p className="text-sm font-number mt-1 text-[#D04834] font-bold">
+              Total: ₹{grandTotal} • {
                 diningMode === 'table'
                   ? `Table #${activeTable || '04'}`
                   : diningMode === 'delivery'
@@ -161,56 +174,75 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
             </p>
           </div>
 
-          {/* Integrated Loyalty Stamp Notice (ONLY in dedicated Loyalty Model) */}
+          {/* Loyalty Stamp Notice */}
           {operationalModel === 'loyalty' && (
-            <div className="p-2.5 rounded-xl bg-amber-400/10 border border-amber-400/20 flex items-center justify-between text-[11px] font-mono text-amber-300 mb-5">
-              <div className="flex items-center gap-1.5">
-                <Award className="w-3.5 h-3.5 text-amber-400" />
-                <span>Loyalty Club: +1 Stamp earned on billing!</span>
+            <div className={`p-3 rounded-2xl border flex items-center justify-between text-xs mb-5 ${
+              isLight 
+                ? 'bg-white border-[#E8E2D5] text-stone-700' 
+                : 'bg-[#1C1917] border-white/10 text-stone-300'
+            }`}>
+              <div className="flex items-center gap-2">
+                <Award className="w-4 h-4 text-[#D04834]" />
+                <span className="font-syne font-bold text-xs">Loyalty Club Reward</span>
               </div>
-              <span className="font-bold">Stamp {Math.min(7, loyaltyVisits + 1)}/7</span>
+              <span className="font-number text-xs font-bold text-[#D04834]">
+                Stamp {Math.min(7, loyaltyVisits + 1)}/7
+              </span>
             </div>
           )}
 
-          {/* Simple Step 1: Choose Payment Method */}
-          <div className="space-y-3 mb-5">
-            <label className="text-xs font-bold text-slate-300 block">
-              Step 1: Choose how you want to pay
+          {/* Step 1: Payment Method Selector */}
+          <div className="space-y-2.5 mb-5">
+            <label className={`text-[10px] font-mono uppercase tracking-widest block font-bold ${
+              isLight ? 'text-stone-500' : 'text-stone-400'
+            }`}>
+              1. Select Payment Method:
             </label>
 
             <div className="grid grid-cols-2 gap-2.5">
               <button
                 type="button"
                 onClick={() => { sounds.playClick(); setPaymentType('online'); }}
-                className={`p-3.5 rounded-2xl border-2 text-left transition ${
+                className={`p-3.5 rounded-2xl border text-left transition ${
                   paymentType === 'online'
-                    ? 'bg-amber-400/15 border-amber-400 text-white'
-                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                    ? isLight
+                      ? 'bg-white border-[#12100E] shadow-sm ring-1 ring-[#12100E]'
+                      : 'bg-[#1C1917] border-white shadow-sm ring-1 ring-white'
+                    : isLight
+                    ? 'bg-white/60 border-[#E8E2D5] text-stone-500 hover:text-black'
+                    : 'bg-[#0E0C0B] border-white/5 text-stone-400 hover:text-white'
                 }`}
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <Smartphone className="w-4 h-4 text-amber-400" />
-                  <span className="font-bold text-xs">Pay Online</span>
+                  <Smartphone className="w-4 h-4 text-[#D04834]" />
+                  <span className="font-syne font-bold text-xs">Online UPI</span>
                 </div>
-                <p className="text-[11px] text-slate-400">GPay, PhonePe, Paytm, UPI</p>
+                <p className={`text-[11px] leading-tight ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                  GPay, PhonePe, UPI QR
+                </p>
               </button>
+
               <button
                 type="button"
                 onClick={() => { sounds.playClick(); setPaymentType('counter'); }}
-                className={`p-3.5 rounded-2xl border-2 text-left transition ${
+                className={`p-3.5 rounded-2xl border text-left transition ${
                   paymentType === 'counter'
-                    ? 'bg-cyan-400/15 border-cyan-400 text-white'
-                    : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                    ? isLight
+                      ? 'bg-white border-[#12100E] shadow-sm ring-1 ring-[#12100E]'
+                      : 'bg-[#1C1917] border-white shadow-sm ring-1 ring-white'
+                    : isLight
+                    ? 'bg-white/60 border-[#E8E2D5] text-stone-500 hover:text-black'
+                    : 'bg-[#0E0C0B] border-white/5 text-stone-400 hover:text-white'
                 }`}
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <Receipt className="w-4 h-4 text-cyan-400" />
-                  <span className="font-bold text-xs">
+                  <Receipt className="w-4 h-4 text-[#D04834]" />
+                  <span className="font-syne font-bold text-xs">
                     {diningMode === 'delivery' ? 'Cash on Delivery' : 'Pay at Counter'}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400">
-                  {diningMode === 'delivery' ? 'Pay rider at doorstep' : 'Cash or card at desk'}
+                <p className={`text-[11px] leading-tight ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                  {diningMode === 'delivery' ? 'Cash/UPI to courier' : 'Cash or card at counter'}
                 </p>
               </button>
             </div>
@@ -219,56 +251,78 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
           {/* Step 2 Content */}
           {paymentType === 'online' ? (
             <div className="space-y-4">
-              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-center space-y-2">
-                <div className="w-10 h-10 rounded-xl bg-amber-400/10 text-amber-400 flex items-center justify-center mx-auto">
+              <div className={`p-4 rounded-2xl border text-center space-y-2 ${
+                isLight 
+                  ? 'bg-white border-[#E8E2D5]' 
+                  : 'bg-[#1C1917] border-white/10'
+              }`}>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center mx-auto ${
+                  isLight ? 'bg-stone-100 text-[#12100E]' : 'bg-white/10 text-white'
+                }`}>
                   <QrCode className="w-5 h-5" />
                 </div>
-                <h4 className="font-bold text-white text-sm">Instant UPI QR Payment</h4>
-                <p className="text-slate-400 text-xs">
-                  Pay to: <span className="text-amber-400 font-mono font-bold">{CAFE_CONFIG.mockUpiId}</span>
+                <h4 className="font-editorial text-base">Instant UPI QR Settlement</h4>
+                <p className={`text-xs font-mono ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                  UPI ID: <span className="font-bold text-[#D04834]">{CAFE_CONFIG.mockUpiId}</span>
                 </p>
-                <div className="py-2 flex items-center justify-center gap-2">
-                  <span className="px-2 py-0.5 rounded-md bg-white/5 text-[10px] text-slate-300 font-mono">GPay</span>
-                  <span className="px-2 py-0.5 rounded-md bg-white/5 text-[10px] text-slate-300 font-mono">PhonePe</span>
-                  <span className="px-2 py-0.5 rounded-md bg-white/5 text-[10px] text-slate-300 font-mono">Paytm</span>
-                  <span className="px-2 py-0.5 rounded-md bg-white/5 text-[10px] text-slate-300 font-mono">Any UPI</span>
+                <div className="py-1 flex items-center justify-center gap-2">
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase ${
+                    isLight ? 'bg-stone-100 text-stone-700' : 'bg-white/5 text-stone-300'
+                  }`}>GPay</span>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase ${
+                    isLight ? 'bg-stone-100 text-stone-700' : 'bg-white/5 text-stone-300'
+                  }`}>PhonePe</span>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase ${
+                    isLight ? 'bg-stone-100 text-stone-700' : 'bg-white/5 text-stone-300'
+                  }`}>Paytm</span>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase ${
+                    isLight ? 'bg-stone-100 text-stone-700' : 'bg-white/5 text-stone-300'
+                  }`}>Any App</span>
                 </div>
               </div>
 
               <button
                 disabled={isProcessing}
                 onClick={() => handleCompleteOrder('online', 'paid', 'UPI Online')}
-                className="w-full py-3.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-sm shadow-md transition flex items-center justify-center gap-2"
+                className={`w-full py-3.5 rounded-2xl font-syne font-bold text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer ${
+                  isLight 
+                    ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800' 
+                    : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200'
+                }`}
               >
                 {isProcessing ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Sending Order to Kitchen...</span>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Sending order to kitchen...</span>
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 className="w-5 h-5" />
-                    <span>Confirm & Send Order to Kitchen (₹{grandTotal})</span>
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Confirm & Send to Kitchen (<span className="font-number font-bold">₹{grandTotal}</span>)</span>
                   </>
                 )}
               </button>
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="p-4 rounded-2xl bg-slate-950 border border-cyan-500/30 text-left space-y-2">
-                <h4 className="font-bold text-white text-sm flex items-center gap-2">
-                  <Receipt className="w-4 h-4 text-cyan-400" />
+              <div className={`p-4 rounded-2xl border text-left space-y-2 ${
+                isLight 
+                  ? 'bg-white border-[#E8E2D5]' 
+                  : 'bg-[#1C1917] border-white/10'
+              }`}>
+                <h4 className="font-editorial text-base flex items-center gap-2">
+                  <Receipt className="w-4 h-4 text-[#D04834]" />
                   <span>
                     {diningMode === 'delivery' 
                       ? 'Cash on Delivery (COD)' 
-                      : 'Cash Payment at Billing Counter'}
+                      : 'Pay Directly at Counter'}
                   </span>
                 </h4>
-                <p className="text-slate-300 text-xs leading-relaxed">
+                <p className={`text-xs leading-relaxed ${isLight ? 'text-stone-600' : 'text-stone-300'}`}>
                   {diningMode === 'delivery' ? (
-                    <>Your order will be prepared and dispatched immediately. You can pay <strong>₹{grandTotal}</strong> in cash or UPI QR to the delivery rider at your doorstep.</>
+                    <>Your order will be prepared immediately. Pay <strong className="font-number font-bold">₹{grandTotal}</strong> in cash or UPI to the courier upon delivery.</>
                   ) : (
-                    <>Your food order will go straight to the kitchen now. You can pay <strong>₹{grandTotal}</strong> in cash or card at the cafe counter when you finish.</>
+                    <>Your order will be sent to our chefs right away. You can settle the bill of <strong className="font-number font-bold">₹{grandTotal}</strong> at the counter when you finish.</>
                   )}
                 </p>
               </div>
@@ -280,20 +334,23 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
                   'pending', 
                   diningMode === 'delivery' ? 'Cash on Delivery (COD)' : 'Pay at Counter'
                 )}
-                className="w-full py-3.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-sm shadow-md transition flex items-center justify-center gap-2"
+                className={`w-full py-3.5 rounded-2xl font-syne font-bold text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer ${
+                  isLight 
+                    ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800' 
+                    : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200'
+                }`}
               >
                 {isProcessing ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Placing Order...</span>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Placing order...</span>
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 className="w-5 h-5" />
+                    <CheckCircle2 className="w-4 h-4" />
                     <span>
-                      {diningMode === 'delivery' 
-                        ? `Confirm Cash on Delivery (₹${grandTotal})` 
-                        : `Confirm Order Now (₹${grandTotal})`}
+                      {diningMode === 'delivery' ? 'Confirm Delivery Order (' : 'Send Order to Kitchen ('}
+                      <span className="font-number font-bold">₹{grandTotal}</span>)
                     </span>
                   </>
                 )}
@@ -301,10 +358,12 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
             </div>
           )}
 
-          {/* Simple Safe Badge */}
-          <div className="mt-5 pt-3 border-t border-slate-800 flex items-center justify-center gap-2 text-xs text-slate-400">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>100% Safe & Verified Order</span>
+          {/* Safe Badge */}
+          <div className={`mt-5 pt-3 border-t flex items-center justify-center gap-2 text-xs font-mono ${
+            isLight ? 'border-stone-200 text-stone-500' : 'border-white/10 text-stone-400'
+          }`}>
+            <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <span>Encrypted &amp; Verified Order • {BRAND_CONFIG.brandName}</span>
           </div>
 
         </motion.div>
