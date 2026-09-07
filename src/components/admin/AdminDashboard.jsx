@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ChefHat, 
@@ -32,7 +32,8 @@ import {
   Truck, 
   MapPin,
   User,
-  Award
+  Award,
+  Upload
 } from 'lucide-react';
 import { useOrder } from '../../context/OrderContext';
 import { useAuth } from '../../context/AuthContext';
@@ -153,6 +154,76 @@ export function AdminDashboard({ onBackToClient }) {
       { id: 'addon-2', name: 'Garlic Herb Glaze', price: 25 }
     ]
   });
+
+  const dishFileInputRef = useRef(null);
+  const [isDraggingDishImage, setIsDraggingDishImage] = useState(false);
+  const [imageUploadStatus, setImageUploadStatus] = useState(null); // 'uploading' | 'success' | 'error'
+
+  // Process and resize user-uploaded image for lightning performance and lightweight storage
+  const processImageFile = (file) => {
+    if (!file || !file.type.startsWith('image/')) {
+      alert('Please select a valid image file (JPG, PNG, WEBP).');
+      return;
+    }
+    
+    setImageUploadStatus('uploading');
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        // High-definition aspect ratio preserved with max 1200px limit
+        const maxDim = 1200;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Compress to high-fidelity JPEG data URL
+        const optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.88);
+        setItemForm(prev => ({ ...prev, image: optimizedDataUrl }));
+        setImageUploadStatus('success');
+        sounds.playClick();
+        setTimeout(() => setImageUploadStatus(null), 3000);
+      };
+      img.onerror = () => {
+        setImageUploadStatus('error');
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDishImageUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processImageFile(file);
+    }
+    e.target.value = '';
+  };
+
+  const handleDishImageDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingDishImage(false);
+    const file = e.dataTransfer?.files?.[0];
+    if (file) {
+      processImageFile(file);
+    }
+  };
 
   const handleOpenAddModal = () => {
     sounds.playClick();
@@ -1723,42 +1794,143 @@ export function AdminDashboard({ onBackToClient }) {
                   />
                 </div>
 
-                {/* 4. Dish Image URL & Quick Chips */}
-                <div className={`space-y-2 p-3.5 rounded-2xl border ${
+                {/* 4. Dish Image: Upload from Computer/Gallery, URL or Quick Presets */}
+                <div className={`space-y-3 p-4 rounded-2xl border transition-colors ${
                   isLight ? 'bg-white border-stone-200' : 'bg-[#0E0C0B] border-white/10'
                 }`}>
-                  <label className={`font-syne font-bold flex items-center gap-1.5 ${isLight ? 'text-stone-700' : 'text-stone-300'}`}>
-                    <ImageIcon className="w-3.5 h-3.5 text-[#D04834]" />
-                    <span>Dish Image (URL or Quick Presets)</span>
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className={`font-syne font-bold text-xs flex items-center gap-1.5 ${isLight ? 'text-stone-700' : 'text-stone-300'}`}>
+                      <ImageIcon className="w-3.5 h-3.5 text-[#D04834]" />
+                      <span>Dish Image (Upload from Computer, URL or Presets)</span>
+                    </label>
+                    {itemForm.image?.startsWith('data:') && (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-semibold border border-emerald-500/20">
+                        Uploaded from Computer
+                      </span>
+                    )}
+                  </div>
 
-                  <input
-                    type="url"
-                    value={itemForm.image}
-                    onChange={(e) => setItemForm({ ...itemForm, image: e.target.value })}
-                    placeholder="https://images.unsplash.com/..."
-                    className={`w-full px-3 py-2 rounded-xl border font-mono text-[11px] focus:outline-none transition ${
-                      isLight 
-                        ? 'bg-stone-50 border-stone-200 text-stone-900 focus:border-[#12100E]' 
-                        : 'bg-[#1C1917] border-white/10 text-white focus:border-white/30'
-                    }`}
+                  {/* Hidden Native File Input for Gallery / Local Filesystem */}
+                  <input 
+                    type="file" 
+                    ref={dishFileInputRef} 
+                    onChange={handleDishImageUpload} 
+                    accept="image/*" 
+                    className="hidden" 
                   />
 
-                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1">
-                    {PRESET_DISH_IMAGES.map((p, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => { sounds.playClick(); setItemForm({ ...itemForm, image: p.url }); }}
-                        className={`px-2.5 py-1 rounded-lg text-[10px] font-mono whitespace-nowrap transition border cursor-pointer ${
-                          itemForm.image === p.url
-                            ? isLight ? 'bg-[#12100E] text-white border-[#12100E]' : 'bg-white text-black border-white'
-                            : isLight ? 'bg-white border-stone-200 text-stone-600' : 'bg-[#1C1917] border-white/10 text-stone-400'
-                        }`}
-                      >
-                        {p.label}
-                      </button>
-                    ))}
+                  {/* Upload Drop Zone & Live Preview Box */}
+                  <div
+                    onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingDishImage(true); }}
+                    onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingDishImage(false); }}
+                    onDrop={handleDishImageDrop}
+                    className={`rounded-2xl border-2 border-dashed transition-all p-3.5 flex flex-col sm:flex-row items-center gap-4 ${
+                      isDraggingDishImage
+                        ? 'border-[#D04834] bg-[#D04834]/10 scale-[1.01]'
+                        : isLight 
+                        ? 'border-stone-200 bg-stone-50/80 hover:border-stone-400' 
+                        : 'border-white/15 bg-[#141210] hover:border-white/30'
+                    }`}
+                  >
+                    {/* Live Image Preview Thumbnail */}
+                    {itemForm.image ? (
+                      <div className="relative w-full sm:w-36 h-28 rounded-xl overflow-hidden bg-stone-900 shrink-0 border border-black/10 shadow-sm group">
+                        <img 
+                          src={itemForm.image} 
+                          alt="Dish Preview" 
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+                        />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 p-2">
+                          <button
+                            type="button"
+                            onClick={() => dishFileInputRef.current?.click()}
+                            className="px-2 py-1 rounded-lg bg-white text-black text-[10px] font-mono font-bold shadow hover:bg-stone-200 transition cursor-pointer"
+                          >
+                            Change
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-full sm:w-36 h-28 rounded-xl border border-dashed flex flex-col items-center justify-center text-stone-400 shrink-0 bg-black/5">
+                        <ImageIcon className="w-6 h-6 opacity-40 mb-1" />
+                        <span className="text-[10px] font-mono">No Photo</span>
+                      </div>
+                    )}
+
+                    {/* Upload Controls & Drag Area */}
+                    <div className="flex-1 space-y-2 text-center sm:text-left w-full">
+                      <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-start">
+                        <button
+                          type="button"
+                          onClick={() => { sounds.playClick(); dishFileInputRef.current?.click(); }}
+                          className="px-3.5 py-2 rounded-xl text-xs font-syne font-bold uppercase tracking-wider flex items-center gap-2 bg-[#D04834] hover:bg-[#b03b29] text-white shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer"
+                        >
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>Upload from Gallery (Computer)</span>
+                        </button>
+
+                        {itemForm.image && (
+                          <button
+                            type="button"
+                            onClick={() => { sounds.playClick(); setItemForm(prev => ({ ...prev, image: '' })); }}
+                            className={`px-2.5 py-1.5 rounded-xl text-[11px] font-mono border transition cursor-pointer ${
+                              isLight ? 'border-stone-300 text-stone-600 hover:text-rose-600 hover:border-rose-300' : 'border-white/20 text-stone-400 hover:text-rose-400 hover:border-rose-400/30'
+                            }`}
+                          >
+                            Clear Photo
+                          </button>
+                        )}
+                      </div>
+
+                      <p className="text-[11px] opacity-60 font-mono">
+                        Select any dish photo from your gallery/files, or drag and drop it here. Automatically compressed and optimized for high-speed loading.
+                      </p>
+
+                      {imageUploadStatus === 'success' && (
+                        <p className="text-[11px] font-mono text-emerald-500 font-semibold flex items-center gap-1 justify-center sm:justify-start">
+                          <CheckCircle2 className="w-3.5 h-3.5" /> Image successfully uploaded from gallery!
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Alternative: Enter Image URL */}
+                  <div className="space-y-1 pt-1">
+                    <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider opacity-60">
+                      <span>Or paste an image link:</span>
+                    </div>
+                    <input
+                      type="url"
+                      value={itemForm.image}
+                      onChange={(e) => setItemForm({ ...itemForm, image: e.target.value })}
+                      placeholder="https://images.unsplash.com/... or /images/..."
+                      className={`w-full px-3 py-2 rounded-xl border font-mono text-[11px] focus:outline-none transition ${
+                        isLight 
+                          ? 'bg-stone-50 border-stone-200 text-stone-900 focus:border-[#12100E]' 
+                          : 'bg-[#1C1917] border-white/10 text-white focus:border-white/30'
+                      }`}
+                    />
+                  </div>
+
+                  {/* Quick Presets */}
+                  <div className="space-y-1 pt-1">
+                    <span className="text-[10px] font-mono uppercase tracking-wider opacity-60 block">Quick Culinary Presets:</span>
+                    <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-0.5">
+                      {PRESET_DISH_IMAGES.map((p, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => { sounds.playClick(); setItemForm({ ...itemForm, image: p.url }); }}
+                          className={`px-2.5 py-1 rounded-lg text-[10px] font-mono whitespace-nowrap transition border cursor-pointer ${
+                            itemForm.image === p.url
+                              ? isLight ? 'bg-[#12100E] text-white border-[#12100E]' : 'bg-white text-black border-white'
+                              : isLight ? 'bg-white border-stone-200 text-stone-600 hover:border-stone-400' : 'bg-[#1C1917] border-white/10 text-stone-400 hover:border-white/30'
+                          }`}
+                        >
+                          {p.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
