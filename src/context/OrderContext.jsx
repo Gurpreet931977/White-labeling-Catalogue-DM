@@ -87,6 +87,37 @@ export function sanitizeMenuItemsList(items) {
   return items.map(sanitizeMenuItem);
 }
 
+export const DEFAULT_TABLES = [
+  { id: "T1", number: 1, name: "Table 01", capacity: 2, zone: 'main', zoneName: 'Main Dining Hall', desc: 'Window-side two-seater, warm ambient glow' },
+  { id: "T2", number: 2, name: "Table 02", capacity: 4, zone: 'main', zoneName: 'Main Dining Hall', desc: 'Center family table near espresso bar' },
+  { id: "T3", number: 3, name: "Table 03", capacity: 6, zone: 'main', zoneName: 'Main Dining Hall', desc: 'Spacious dining table, acoustic warmth' },
+  { id: "T4", number: 4, name: "Table 04", capacity: 4, zone: 'main', zoneName: 'Main Dining Hall', desc: 'Bistro booth with charging power plugs' },
+  { id: "T5", number: 5, name: "Table 05", capacity: 2, zone: 'patio', zoneName: 'Garden Patio', desc: 'Open-air balcony two-seater, terrace view' },
+  { id: "T6", number: 6, name: "Table 06", capacity: 8, zone: 'patio', zoneName: 'Garden Patio', desc: 'Long cedarwood communal table' },
+  { id: "T7", number: 7, name: "Table 07", capacity: 4, zone: 'patio', zoneName: 'Garden Patio', desc: 'Patio gazebo seating with garden breeze' },
+  { id: "T8", number: 8, name: "Table 08", capacity: 6, zone: 'patio', zoneName: 'Garden Patio', desc: 'Pergola dining with highway panorama' },
+  { id: "T9", number: 9, name: "Table 09", capacity: 4, zone: 'lounge', zoneName: 'VIP Lounge', desc: 'Velvet booth, soft jazz acoustic zone' },
+  { id: "T10", number: 10, name: "Table 10", capacity: 4, zone: 'lounge', zoneName: 'VIP Lounge', desc: 'Corner plush lounge booth' },
+  { id: "T11", number: 11, name: "Table 11", capacity: 2, zone: 'lounge', zoneName: 'VIP Lounge', desc: 'Private intimate cocktail booth' },
+  { id: "T12", number: 12, name: "Table 12", capacity: 10, zone: 'lounge', zoneName: 'VIP Lounge', desc: 'Executive master banquet table' }
+];
+
+export function createDefaultTable(num) {
+  const zone = num <= 4 ? 'main' : num <= 8 ? 'patio' : 'lounge';
+  const zoneName = zone === 'main' ? 'Main Dining Hall' : zone === 'patio' ? 'Garden Patio' : 'VIP Lounge';
+  const capacities = [2, 4, 6, 4, 2, 8, 4, 6, 4, 4, 2, 10];
+  const cap = capacities[(num - 1) % capacities.length] || 4;
+  return {
+    id: `T${num}`,
+    number: num,
+    name: `Table ${num < 10 ? `0${num}` : num}`,
+    capacity: cap,
+    zone,
+    zoneName,
+    desc: `Dine-in seat ${num < 10 ? `0${num}` : num} in ${zoneName}`
+  };
+}
+
 const MENU_DATA_VERSION = 'v2026_closeup_food_v2';
 
 export function OrderProvider({ children }) {
@@ -118,7 +149,19 @@ export function OrderProvider({ children }) {
   const [orders, setOrders] = useState(() => {
     try {
       const saved = localStorage.getItem('thc_orders');
-      return saved ? JSON.parse(saved) : FALLBACK_ORDERS;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Guarantee unpaid counter orders are on hold in 'placed' status awaiting counter settlement
+          return parsed.map(o => {
+            if (o.paymentStatus !== 'paid' && (o.status === 'cooking' || o.status === 'ready')) {
+              return { ...o, status: 'placed' };
+            }
+            return o;
+          });
+        }
+      }
+      return FALLBACK_ORDERS;
     } catch (e) {
       return FALLBACK_ORDERS;
     }
@@ -144,6 +187,30 @@ export function OrderProvider({ children }) {
       return saved ? JSON.parse(saved) : [];
     } catch (e) {
       return [];
+    }
+  });
+
+  // Dynamic Dining Tables Setup with localStorage persistence
+  const [tables, setTables] = useState(() => {
+    try {
+      const saved = localStorage.getItem('thc_cafe_tables');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      return DEFAULT_TABLES;
+    } catch (e) {
+      return DEFAULT_TABLES;
+    }
+  });
+
+  // Manually Vacated Tables Map: { [tableNumber]: timestamp }
+  const [manuallyVacatedTables, setManuallyVacatedTables] = useState(() => {
+    try {
+      const saved = localStorage.getItem('thc_manually_vacated_tables');
+      return saved ? JSON.parse(saved) : {};
+    } catch (e) {
+      return {};
     }
   });
 
@@ -205,13 +272,14 @@ export function OrderProvider({ children }) {
           });
         } else if (type === 'STATUS_UPDATE') {
           setOrders(prev =>
-            prev.map(o => (o.id === payload.id ? { ...o, status: payload.status } : o))
+            prev.map(o => (o.id === payload.id ? { ...o, ...payload } : o))
           );
         } else if (type === 'STOCK_UPDATE') {
           setMenuStockOverrides(payload);
         } else if (type === 'SERVICE_REQUEST') {
-          sounds.playServiceCallChime();
+          sounds.playCinematicTableAlarm();
           setServiceRequests(prev => [payload, ...prev.filter(r => r.id !== payload.id)]);
+          window.dispatchEvent(new CustomEvent('thc_table_service_alarm', { detail: payload }));
         } else if (type === 'DISMISS_SERVICE') {
           setServiceRequests(prev => prev.filter(r => r.id !== payload));
         } else if (type === 'MENU_ITEM_CREATED') {
@@ -220,6 +288,11 @@ export function OrderProvider({ children }) {
           setMenuItems(prev => prev.map(i => i.id === payload.id ? { ...i, ...payload.data } : i));
         } else if (type === 'MENU_ITEM_DELETED') {
           setMenuItems(prev => prev.filter(i => i.id !== payload));
+        } else if (type === 'TABLES_UPDATED') {
+          setTables(payload);
+        } else if (type === 'TABLE_VACATED') {
+          setManuallyVacatedTables(prev => ({ ...prev, [payload.tableNumber]: payload.timestamp }));
+          window.dispatchEvent(new CustomEvent('thc_table_vacated', { detail: payload }));
         }
       };
     } catch (e) {
@@ -255,6 +328,14 @@ export function OrderProvider({ children }) {
   useEffect(() => {
     localStorage.setItem('thc_menu_stock', JSON.stringify(menuStockOverrides));
   }, [menuStockOverrides]);
+
+  useEffect(() => {
+    localStorage.setItem('thc_cafe_tables', JSON.stringify(tables));
+  }, [tables]);
+
+  useEffect(() => {
+    localStorage.setItem('thc_manually_vacated_tables', JSON.stringify(manuallyVacatedTables));
+  }, [manuallyVacatedTables]);
 
   // Lively Customer Notification Trigger when Order Status changes
   useEffect(() => {
@@ -340,10 +421,24 @@ export function OrderProvider({ children }) {
     return tempOrder;
   };
 
-  // Update Order Status
+  // Update Order Status (attaches servedAt timestamp when served)
   const updateOrderStatus = async (orderId, newStatus) => {
+    let targetTableNum = null;
+    let servedTimestamp = null;
+
     setOrders(prev =>
-      prev.map(o => (o.id === orderId ? { ...o, status: newStatus } : o))
+      prev.map(o => {
+        if (o.id === orderId) {
+          const updated = { ...o, status: newStatus };
+          targetTableNum = o.tableNumber;
+          if (newStatus === 'served' && !o.servedAt) {
+            servedTimestamp = new Date().toISOString();
+            updated.servedAt = servedTimestamp;
+          }
+          return updated;
+        }
+        return o;
+      })
     );
 
     if (newStatus === 'ready') {
@@ -352,10 +447,48 @@ export function OrderProvider({ children }) {
       sounds.playClick();
     }
 
-    broadcastEvent('STATUS_UPDATE', { id: orderId, status: newStatus });
+    broadcastEvent('STATUS_UPDATE', { 
+      id: orderId, 
+      status: newStatus,
+      servedAt: servedTimestamp,
+      tableNumber: targetTableNum
+    });
 
     try {
       await api.updateOrderStatus(orderId, newStatus);
+    } catch (e) {
+      console.warn('Backend order status update error:', e);
+    }
+  };
+
+  // Cashier action: Collect Counter Payment and release order to kitchen cooking
+  const collectPaymentAndStartCooking = async (orderId) => {
+    sounds.playKitchenAlert();
+    let targetTableNum = null;
+
+    setOrders(prev =>
+      prev.map(o => {
+        if (o.id === orderId) {
+          targetTableNum = o.tableNumber;
+          return {
+            ...o,
+            paymentStatus: 'paid',
+            status: 'cooking'
+          };
+        }
+        return o;
+      })
+    );
+
+    broadcastEvent('STATUS_UPDATE', {
+      id: orderId,
+      status: 'cooking',
+      paymentStatus: 'paid',
+      tableNumber: targetTableNum
+    });
+
+    try {
+      await api.updateOrderStatus(orderId, 'cooking');
     } catch (e) {
       console.warn('Backend order status update error:', e);
     }
@@ -381,19 +514,25 @@ export function OrderProvider({ children }) {
     await updateOrderStatus(orderId, previousStatus);
   };
 
-  // Request Table Service (Water, Captain/Waiter, Bill, Cleaning)
+  // Request Table Service (Water, Captain/Waiter, Cleaning)
   const requestTableService = (tableNumber, type = 'water') => {
     sounds.playClick();
+    const num = Number(tableNumber) || 4;
     const newReq = {
       id: `SRV-${Date.now()}`,
-      tableNumber: tableNumber || 4,
-      type, // 'water' | 'waiter' | 'bill' | 'clean'
+      tableNumber: num,
+      type, // 'water' | 'waiter' | 'clean'
       timestamp: new Date().toISOString(),
       status: 'pending'
     };
 
     setServiceRequests(prev => [newReq, ...prev]);
     broadcastEvent('SERVICE_REQUEST', newReq);
+
+    // Trigger local 3-second cinematic table alarm and window notification event
+    sounds.playCinematicTableAlarm();
+    window.dispatchEvent(new CustomEvent('thc_table_service_alarm', { detail: newReq }));
+
     return newReq;
   };
 
@@ -403,6 +542,164 @@ export function OrderProvider({ children }) {
     setServiceRequests(prev => prev.filter(r => r.id !== requestId));
     broadcastEvent('DISMISS_SERVICE', requestId);
   };
+
+  // Vacate Table (Manual or Automatic after 30-min turnover)
+  const vacateTable = useCallback((tableNumber) => {
+    const num = Number(tableNumber);
+    if (!num) return;
+    const now = Date.now();
+    setManuallyVacatedTables(prev => ({ ...prev, [num]: now }));
+    broadcastEvent('TABLE_VACATED', { tableNumber: num, timestamp: now });
+    window.dispatchEvent(new CustomEvent('thc_table_vacated', { detail: { tableNumber: num, timestamp: now } }));
+  }, []);
+
+  // Table Capacity Management (Admin Controls)
+  const setTableCount = useCallback((count) => {
+    sounds.playClick();
+    const targetCount = Math.max(1, Math.min(50, Number(count) || 12));
+    setTables(prev => {
+      let updated;
+      if (targetCount > prev.length) {
+        const next = [...prev];
+        for (let i = prev.length + 1; i <= targetCount; i++) {
+          next.push(createDefaultTable(i));
+        }
+        updated = next;
+      } else if (targetCount < prev.length) {
+        updated = prev.slice(0, targetCount);
+      } else {
+        return prev;
+      }
+      broadcastEvent('TABLES_UPDATED', updated);
+      return updated;
+    });
+  }, []);
+
+  const addTable = useCallback((tableData = {}) => {
+    sounds.playClick();
+    setTables(prev => {
+      const nextNumber = prev.length > 0 ? Math.max(...prev.map(t => t.number)) + 1 : 1;
+      const newTable = {
+        ...createDefaultTable(nextNumber),
+        ...tableData,
+        number: nextNumber,
+        id: `T${nextNumber}`
+      };
+      const updated = [...prev, newTable];
+      broadcastEvent('TABLES_UPDATED', updated);
+      return updated;
+    });
+  }, []);
+
+  const removeTable = useCallback((tableNumber) => {
+    sounds.playClick();
+    setTables(prev => {
+      if (prev.length <= 1) return prev;
+      const numToRemove = tableNumber !== undefined ? Number(tableNumber) : Math.max(...prev.map(t => t.number));
+      const updated = prev.filter(t => t.number !== numToRemove);
+      broadcastEvent('TABLES_UPDATED', updated);
+      return updated;
+    });
+  }, []);
+
+  const resetTablesToDefault = useCallback(() => {
+    sounds.playClick();
+    setTables(DEFAULT_TABLES);
+    broadcastEvent('TABLES_UPDATED', DEFAULT_TABLES);
+  }, []);
+
+  // Compute live occupancy for any table (with 30-min turnover logic)
+  const TURNOVER_MINUTES = 30;
+
+  const getTableOccupancy = useCallback((tableNumber) => {
+    const num = Number(tableNumber);
+    if (!num) return { isBusy: false, status: 'vacant', order: null, remainingMins: 0 };
+
+    const manualVacatedAt = manuallyVacatedTables[num];
+
+    // Find table orders (excluding cancelled)
+    const tableOrders = orders.filter(o => 
+      Number(o.tableNumber) === num && o.status !== 'cancelled'
+    );
+
+    if (tableOrders.length === 0) {
+      return { isBusy: false, status: 'vacant', order: null, remainingMins: 0 };
+    }
+
+    // 1. Check for active in-progress order (placed, cooking, ready)
+    const activeOrder = tableOrders.find(o => 
+      o.status === 'placed' || o.status === 'cooking' || o.status === 'ready'
+    );
+    if (activeOrder) {
+      return {
+        isBusy: true,
+        status: 'occupied',
+        stage: activeOrder.status,
+        order: activeOrder,
+        remainingMins: null
+      };
+    }
+
+    // 2. Check for served orders within 30-minute turnover window
+    const servedOrders = tableOrders.filter(o => o.status === 'served');
+    if (servedOrders.length > 0) {
+      servedOrders.sort((a, b) => {
+        const timeA = new Date(a.servedAt || a.updatedAt || a.createdAt).getTime();
+        const timeB = new Date(b.servedAt || b.updatedAt || b.createdAt).getTime();
+        return timeB - timeA;
+      });
+      const latestServed = servedOrders[0];
+      const servedTime = new Date(latestServed.servedAt || latestServed.updatedAt || latestServed.createdAt).getTime();
+
+      // If manually cleared after this served time
+      if (manualVacatedAt && manualVacatedAt >= servedTime) {
+        return { isBusy: false, status: 'vacant', order: null, remainingMins: 0 };
+      }
+
+      const elapsedMs = Date.now() - servedTime;
+      const turnoverMs = TURNOVER_MINUTES * 60 * 1000;
+
+      if (elapsedMs < turnoverMs) {
+        const remainingMs = turnoverMs - elapsedMs;
+        const remainingMins = Math.max(1, Math.ceil(remainingMs / (60 * 1000)));
+        return {
+          isBusy: true,
+          status: 'served_dining',
+          stage: 'served',
+          order: latestServed,
+          remainingMins,
+          servedAt: latestServed.servedAt || latestServed.createdAt
+        };
+      }
+    }
+
+    return { isBusy: false, status: 'vacant', order: null, remainingMins: 0 };
+  }, [orders, manuallyVacatedTables]);
+
+  // Periodic check (every 10s): Automatically vacate served tables after 30 mins
+  useEffect(() => {
+    const checkTurnover = () => {
+      const now = Date.now();
+      const turnoverMs = TURNOVER_MINUTES * 60 * 1000;
+
+      orders.forEach(order => {
+        if (order.status === 'served' && order.tableNumber) {
+          const num = Number(order.tableNumber);
+          const servedTime = new Date(order.servedAt || order.updatedAt || order.createdAt).getTime();
+          const manualVacatedAt = manuallyVacatedTables[num];
+
+          // If 30 mins elapsed and table not yet marked vacated
+          if (now - servedTime >= turnoverMs && (!manualVacatedAt || manualVacatedAt < servedTime)) {
+            vacateTable(num);
+          }
+        }
+      });
+    };
+
+    checkTurnover();
+    const interval = setInterval(checkTurnover, 10000);
+    return () => clearInterval(interval);
+  }, [orders, manuallyVacatedTables, vacateTable]);
 
   // Toggle Stock
   const toggleItemStock = async (itemId) => {
@@ -482,6 +779,7 @@ export function OrderProvider({ children }) {
         setLiveOrderToast,
         placeOrder,
         updateOrderStatus,
+        collectPaymentAndStartCooking,
         revertOrderStatus,
         requestTableService,
         dismissServiceRequest,
@@ -491,7 +789,16 @@ export function OrderProvider({ children }) {
         deleteMenuItem,
         resetMenuToDefaults,
         setActiveCustomerOrderId,
-        syncWithDatabase
+        syncWithDatabase,
+        tables,
+        setTables,
+        setTableCount,
+        addTable,
+        removeTable,
+        resetTablesToDefault,
+        vacateTable,
+        getTableOccupancy,
+        manuallyVacatedTables
       }}
     >
       {children}

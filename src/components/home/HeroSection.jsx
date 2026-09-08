@@ -222,7 +222,7 @@ export function HeroSection({
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="flex flex-wrap items-center gap-3 pt-2"
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2"
             >
               {/* Primary Button */}
               <button
@@ -230,10 +230,10 @@ export function HeroSection({
                   sounds.playClick();
                   onExploreMenu();
                 }}
-                className={`relative px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-syne font-black text-xs sm:text-sm tracking-wider uppercase flex items-center gap-3 transition group shadow-xl cursor-pointer ${
+                className={`relative px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-syne font-black text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-3 transition active:scale-[0.98] group shadow-xl cursor-pointer ${
                   isLight
-                    ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-black shadow-black/15'
-                    : 'bg-[#FAF7F2] text-[#12100E] hover:bg-[#E8E0D2] shadow-black/40'
+                    ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-black shadow-black/15 active:bg-black'
+                    : 'bg-[#FAF7F2] text-[#12100E] hover:bg-[#E8E0D2] shadow-black/40 active:bg-white'
                 }`}
               >
                 <UtensilsCrossed className="w-4 h-4 transition-transform group-hover:rotate-12" />
@@ -245,24 +245,24 @@ export function HeroSection({
               {operationalModel === 'table-qr' && (
                 <button
                   onClick={() => { sounds.playClick(); onOpenScanner(); }}
-                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl font-mono text-xs sm:text-sm tracking-wide flex items-center gap-2.5 transition border cursor-pointer ${
+                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl font-mono text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2.5 transition active:scale-[0.98] border cursor-pointer ${
                     isLight
-                      ? 'bg-[#EAE4D9] hover:bg-[#DFD8CC] text-[#12100E] border-black/15'
-                      : 'bg-[#1C1815] hover:bg-[#25201C] text-stone-200 border-white/15'
+                      ? 'bg-[#EAE4D9] hover:bg-[#DFD8CC] active:bg-[#d6cfc1] text-[#12100E] border-black/15'
+                      : 'bg-[#1C1815] hover:bg-[#25201C] active:bg-[#2e2722] text-stone-200 border-white/15'
                   }`}
                 >
                   <QrCode className="w-4 h-4 text-[#D04834]" />
-                  <span>SCAN TABLE QR</span>
+                  <span>SELECT TABLE / SCAN QR</span>
                 </button>
               )}
 
               {operationalModel === 'self-serve' && (
                 <button
                   onClick={() => { sounds.playClick(); onExploreMenu(); }}
-                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl font-mono text-xs sm:text-sm tracking-wide flex items-center gap-2.5 transition border cursor-pointer ${
+                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl font-mono text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2.5 transition active:scale-[0.98] border cursor-pointer ${
                     isLight
-                      ? 'bg-[#EAE4D9] hover:bg-[#DFD8CC] text-[#12100E] border-black/15'
-                      : 'bg-[#1C1815] hover:bg-[#25201C] text-stone-200 border-white/15'
+                      ? 'bg-[#EAE4D9] hover:bg-[#DFD8CC] active:bg-[#d6cfc1] text-[#12100E] border-black/15'
+                      : 'bg-[#1C1815] hover:bg-[#25201C] active:bg-[#2e2722] text-stone-200 border-white/15'
                   }`}
                 >
                   <Store className="w-4 h-4 text-cyan-500" />
@@ -276,10 +276,10 @@ export function HeroSection({
                     sounds.playClick();
                     if (onOpenReservation) onOpenReservation();
                   }}
-                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl font-mono text-xs sm:text-sm tracking-wide flex items-center gap-2.5 transition border cursor-pointer ${
+                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl font-mono text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2.5 transition active:scale-[0.98] border cursor-pointer ${
                     isLight
-                      ? 'bg-[#EAE4D9] hover:bg-[#DFD8CC] text-[#12100E] border-black/15'
-                      : 'bg-[#1C1815] hover:bg-[#25201C] text-stone-200 border-white/15'
+                      ? 'bg-[#EAE4D9] hover:bg-[#DFD8CC] active:bg-[#d6cfc1] text-[#12100E] border-black/15'
+                      : 'bg-[#1C1815] hover:bg-[#25201C] active:bg-[#2e2722] text-stone-200 border-white/15'
                   }`}
                 >
                   <Calendar className="w-4 h-4 text-[#D04834]" />
@@ -290,10 +290,10 @@ export function HeroSection({
               {operationalModel === 'delivery' && (
                 <button
                   onClick={() => { sounds.playClick(); onExploreMenu(); }}
-                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl font-mono text-xs sm:text-sm tracking-wide flex items-center gap-2.5 transition border cursor-pointer ${
+                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl font-mono text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2.5 transition active:scale-[0.98] border cursor-pointer ${
                     isLight
-                      ? 'bg-[#EAE4D9] hover:bg-[#DFD8CC] text-[#12100E] border-black/15'
-                      : 'bg-[#1C1815] hover:bg-[#25201C] text-stone-200 border-white/15'
+                      ? 'bg-[#EAE4D9] hover:bg-[#DFD8CC] active:bg-[#d6cfc1] text-[#12100E] border-black/15'
+                      : 'bg-[#1C1815] hover:bg-[#25201C] active:bg-[#2e2722] text-stone-200 border-white/15'
                   }`}
                 >
                   <Truck className="w-4 h-4 text-emerald-600" />

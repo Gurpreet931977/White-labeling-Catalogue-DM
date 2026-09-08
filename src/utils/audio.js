@@ -183,26 +183,94 @@ class SoundController {
     } catch (e) {}
   }
 
-  // Table Service Call chime (Distinct two-tone bell)
-  playServiceCallChime() {
+  // Cinematic 3-Second Table Service Alarm (Warm, luxury, orchestral chime)
+  playCinematicTableAlarm() {
     if (!this.enabled) return;
     try {
       this.init();
       if (!this.ctx) return;
       const now = this.ctx.currentTime;
-      [880, 1318.51].forEach((freq, i) => {
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, now + i * 0.15);
-        gain.gain.setValueAtTime(0.22, now + i * 0.15);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.15 + 0.6);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now + i * 0.15);
-        osc.stop(now + i * 0.15 + 0.6);
+
+      // Stop any previously playing alarm
+      this.stopCinematicTableAlarm();
+
+      // Master low-pass filter to keep sound velvety, warm, with zero harsh high-frequency spikes
+      const masterFilter = this.ctx.createBiquadFilter();
+      masterFilter.type = 'lowpass';
+      masterFilter.frequency.setValueAtTime(1350, now);
+      masterFilter.Q.setValueAtTime(1.1, now);
+
+      // Master output gain over 3.0 seconds
+      const masterGain = this.ctx.createGain();
+      masterGain.gain.setValueAtTime(0.42, now);
+      masterGain.gain.exponentialRampToValueAtTime(0.001, now + 3.0);
+
+      masterFilter.connect(masterGain);
+      masterGain.connect(this.ctx.destination);
+
+      this._activeAlarmNodes = [masterGain, masterFilter];
+
+      // 3-Pulse Cinematic Chime Sequence across 3 seconds:
+      // Pulse 1 at 0.0s: Deep warm fundamental (F3 174.61Hz, C4 261.63Hz, A4 440Hz)
+      // Pulse 2 at 0.85s: Harmonious lift (G3 196.0Hz, D4 293.66Hz, B4 493.88Hz)
+      // Pulse 3 at 1.7s: Grand luxury resolution (C3 130.81Hz, C4 261.63Hz, G4 392Hz, E5 659.25Hz) with long 1.3s tail
+      const chords = [
+        { time: 0.0, freqs: [174.61, 261.63, 440.0], dur: 1.1, vol: 0.28 },
+        { time: 0.85, freqs: [196.0, 293.66, 493.88], dur: 1.1, vol: 0.32 },
+        { time: 1.7, freqs: [130.81, 261.63, 392.0, 659.25], dur: 1.3, vol: 0.38 }
+      ];
+
+      chords.forEach(({ time, freqs, dur, vol }) => {
+        const strikeTime = now + time;
+        freqs.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          // Smooth sinusoidal fundamental with soft warm triangle overtone
+          osc.type = idx === 0 ? 'sine' : idx % 2 === 0 ? 'triangle' : 'sine';
+          osc.frequency.setValueAtTime(freq, strikeTime);
+
+          // Soft 25ms attack to eliminate clicks
+          gain.gain.setValueAtTime(0.0001, strikeTime);
+          gain.gain.linearRampToValueAtTime(vol * (idx === 0 ? 1.0 : 0.65), strikeTime + 0.025);
+          // Rich, lingering exponential decay
+          gain.gain.exponentialRampToValueAtTime(0.0001, strikeTime + dur);
+
+          osc.connect(gain);
+          gain.connect(masterFilter);
+
+          osc.start(strikeTime);
+          osc.stop(strikeTime + dur);
+          this._activeAlarmNodes.push(osc, gain);
+        });
       });
+    } catch (e) {
+      console.warn('Cinematic alarm error:', e);
+    }
+  }
+
+  stopCinematicTableAlarm() {
+    try {
+      if (this._activeAlarmNodes && this.ctx) {
+        const now = this.ctx.currentTime;
+        this._activeAlarmNodes.forEach(node => {
+          try {
+            if (node.gain) {
+              node.gain.linearRampToValueAtTime(0.0001, now + 0.08);
+            }
+            if (node.stop) {
+              node.stop(now + 0.1);
+            }
+          } catch (e) {}
+        });
+        this._activeAlarmNodes = [];
+      }
     } catch (e) {}
+  }
+
+  // Alias for backward compatibility
+  playServiceCallChime() {
+    this.playCinematicTableAlarm();
   }
 
   // Gamified Rubber Stamp Squish & Pop

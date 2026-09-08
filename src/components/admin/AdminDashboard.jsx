@@ -35,7 +35,9 @@ import {
   Award,
   Upload,
   Copy,
-  ExternalLink
+  ExternalLink,
+  Droplets,
+  AlertTriangle
 } from 'lucide-react';
 import { useOrder } from '../../context/OrderContext';
 import { useAuth } from '../../context/AuthContext';
@@ -65,14 +67,16 @@ const PRESET_DISH_IMAGES = [
 
 // Live Elapsed Stopwatch Timer Component
 function LiveElapsedTimer({ createdAt }) {
-  const [elapsed, setElapsed] = useState({ mins: 0, secs: 0 });
+  const [elapsed, setElapsed] = useState({ hours: 0, mins: 0, secs: 0, totalMins: 0 });
 
   useEffect(() => {
     const calc = () => {
       const diff = Math.max(0, Math.floor((Date.now() - new Date(createdAt).getTime()) / 1000));
-      const mins = Math.floor(diff / 60);
+      const totalMins = Math.floor(diff / 60);
+      const hours = Math.floor(totalMins / 60);
+      const mins = totalMins % 60;
       const secs = diff % 60;
-      setElapsed({ mins, secs });
+      setElapsed({ hours, mins, secs, totalMins });
     };
 
     calc();
@@ -80,9 +84,18 @@ function LiveElapsedTimer({ createdAt }) {
     return () => clearInterval(interval);
   }, [createdAt]);
 
-  const { mins, secs } = elapsed;
-  const isUrgent = mins >= 15;
-  const isWarning = mins >= 8 && mins < 15;
+  const { hours, mins, secs, totalMins } = elapsed;
+  const isUrgent = totalMins >= 15;
+  const isWarning = totalMins >= 8 && totalMins < 15;
+
+  let displayTime = '';
+  if (hours >= 24) {
+    displayTime = `${Math.floor(hours / 24)}d ${hours % 24}h`;
+  } else if (hours > 0) {
+    displayTime = `${hours}h ${mins}m`;
+  } else {
+    displayTime = `${mins}m ${secs < 10 ? `0${secs}` : secs}s`;
+  }
 
   return (
     <div
@@ -93,10 +106,10 @@ function LiveElapsedTimer({ createdAt }) {
           ? 'bg-amber-500/15 border-amber-500/40 text-amber-700 dark:text-amber-300'
           : 'bg-emerald-500/15 border-emerald-500/40 text-emerald-700 dark:text-emerald-300'
       }`}
-      title={`Order placed ${mins}m ago`}
+      title={`Order placed ${totalMins}m ago`}
     >
       <Clock className="w-3 h-3" />
-      <span>{mins}m {secs < 10 ? `0${secs}` : secs}s</span>
+      <span>{displayTime}</span>
     </div>
   );
 }
@@ -109,12 +122,20 @@ export function AdminDashboard({ onBackToClient }) {
     updateMenuItem,
     deleteMenuItem,
     updateOrderStatus, 
+    collectPaymentAndStartCooking,
     revertOrderStatus,
     menuStockOverrides, 
     toggleItemStock,
     serviceRequests,
     dismissServiceRequest,
-    syncWithDatabase
+    syncWithDatabase,
+    tables = [],
+    setTableCount,
+    addTable,
+    removeTable,
+    resetTablesToDefault,
+    vacateTable,
+    getTableOccupancy
   } = useOrder();
 
   const { adminLogout } = useAuth();
@@ -136,6 +157,13 @@ export function AdminDashboard({ onBackToClient }) {
   const [copiedTableUrl, setCopiedTableUrl] = useState(false);
   const [viewingSlip, setViewingSlip] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Live 3-Second Table Service Alarm State
+  const [activeAlarmNotification, setActiveAlarmNotification] = useState(null);
+  const [alarmCountdown, setAlarmCountdown] = useState(3);
+  const alarmTimerRef = useRef(null);
+  const countdownIntervalRef = useRef(null);
+  const autoDismissBannerRef = useRef(null);
 
   // Menu Item Modal State (Add / Edit)
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
@@ -534,8 +562,8 @@ export function AdminDashboard({ onBackToClient }) {
 
   const handleBatchPrintAllTables = async () => {
     sounds.playClick();
-    const tables = BRAND_CONFIG.tables || [];
-    const qrPromises = tables.map(async (t) => {
+    const tableList = tables && tables.length > 0 ? tables : (BRAND_CONFIG.tables || []);
+    const qrPromises = tableList.map(async (t) => {
       const url = getTableOrderUrl(t.number);
       const dataUrl = await generateQRCodeDataUrl(url, { width: 220, margin: 1 });
       return { ...t, qr: dataUrl, url };
@@ -587,6 +615,63 @@ export function AdminDashboard({ onBackToClient }) {
     `);
     printWindow.document.close();
   };
+
+  // Trigger 3-Second Cinematic Alarm for Table Requests
+  const triggerTableAlarm = useCallback((serviceReq) => {
+    sounds.playCinematicTableAlarm();
+    setActiveAlarmNotification(serviceReq);
+    setAlarmCountdown(3);
+
+    if (alarmTimerRef.current) clearTimeout(alarmTimerRef.current);
+    if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
+    if (autoDismissBannerRef.current) clearTimeout(autoDismissBannerRef.current);
+
+    countdownIntervalRef.current = setInterval(() => {
+      setAlarmCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdownIntervalRef.current);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    // Stop acoustic sound at exactly 3.0 seconds
+    alarmTimerRef.current = setTimeout(() => {
+      sounds.stopCinematicTableAlarm();
+    }, 3000);
+
+    // Auto-dismiss visual HUD banner after 10 seconds if unattended
+    autoDismissBannerRef.current = setTimeout(() => {
+      setActiveAlarmNotification(null);
+    }, 10000);
+  }, []);
+
+  const handleDismissActiveAlarm = useCallback((attend = false) => {
+    if (alarmTimerRef.current) clearTimeout(alarmTimerRef.current);
+    if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
+    if (autoDismissBannerRef.current) clearTimeout(autoDismissBannerRef.current);
+    sounds.stopCinematicTableAlarm();
+    if (attend && activeAlarmNotification?.id) {
+      dismissServiceRequest(activeAlarmNotification.id);
+    }
+    setActiveAlarmNotification(null);
+  }, [activeAlarmNotification, dismissServiceRequest]);
+
+  useEffect(() => {
+    const handleAlarmEvent = (e) => {
+      if (e.detail) {
+        triggerTableAlarm(e.detail);
+      }
+    };
+    window.addEventListener('thc_table_service_alarm', handleAlarmEvent);
+    return () => {
+      window.removeEventListener('thc_table_service_alarm', handleAlarmEvent);
+      if (alarmTimerRef.current) clearTimeout(alarmTimerRef.current);
+      if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
+      if (autoDismissBannerRef.current) clearTimeout(autoDismissBannerRef.current);
+    };
+  }, [triggerTableAlarm]);
 
   // Financial & Order Metrics
   const validOrders = orders.filter(o => o.status !== 'cancelled');
@@ -833,6 +918,114 @@ export function AdminDashboard({ onBackToClient }) {
         </div>
       </header>
 
+      {/* FLOATING 3-SECOND CINEMATIC TABLE ALARM HUD BANNER */}
+      <AnimatePresence>
+        {activeAlarmNotification && (
+          <motion.div
+            initial={{ opacity: 0, y: -40, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -30, scale: 0.96 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+            className="fixed top-3 sm:top-5 inset-x-0 mx-auto z-50 w-[94%] max-w-2xl px-2 pointer-events-auto"
+          >
+            <div className={`relative overflow-hidden rounded-3xl border-2 p-4 sm:p-5 backdrop-blur-2xl shadow-2xl transition-all ${
+              isLight
+                ? 'bg-white/95 border-amber-400/90 text-stone-900 shadow-amber-500/20'
+                : 'bg-[#1C1814]/95 border-[#E8E439]/60 text-stone-100 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_40px_rgba(232,228,57,0.2)]'
+            }`}>
+              {/* Animated Top Progress Line for 3-Second Alarm */}
+              <div className="absolute top-0 inset-x-0 h-1.5 bg-black/10 dark:bg-white/10 overflow-hidden">
+                <motion.div
+                  initial={{ width: '100%' }}
+                  animate={{ width: `${Math.max(0, (alarmCountdown / 3) * 100)}%` }}
+                  transition={{ duration: 1, ease: 'linear' }}
+                  className="h-full bg-gradient-to-r from-[#D04834] via-amber-400 to-[#E8E439]"
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-0.5">
+                {/* Left Info: Table Badge & Service Details */}
+                <div className="flex items-center gap-3.5">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-md ${
+                    activeAlarmNotification.type === 'water'
+                      ? 'bg-sky-500/20 text-sky-500 border border-sky-500/40'
+                      : 'bg-amber-500/20 text-amber-500 border border-amber-500/40'
+                  }`}>
+                    {activeAlarmNotification.type === 'water' ? (
+                      <Droplets className="w-6 h-6 animate-pulse" />
+                    ) : (
+                      <BellRing className="w-6 h-6 animate-bounce" />
+                    )}
+                  </div>
+
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-lg bg-[#D04834] text-white font-mono font-black text-xs tracking-wider shadow-xs uppercase">
+                        TABLE #{activeAlarmNotification.tableNumber}
+                      </span>
+                      <span className="text-xs font-mono uppercase tracking-widest text-[#D04834] font-bold flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-[#D04834] animate-ping" />
+                        Live Service Call
+                      </span>
+                    </div>
+
+                    <h4 className="text-base sm:text-lg font-syne font-black tracking-tight mt-0.5">
+                      {activeAlarmNotification.type === 'water'
+                        ? 'Drinking Water Refill Requested'
+                        : 'Captain / Waiter Assistance Requested'}
+                    </h4>
+
+                    {/* Alarm Acoustic Status & Visualizer */}
+                    <div className="flex items-center gap-2 mt-1">
+                      {alarmCountdown > 0 ? (
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-0.5 h-3.5">
+                            <span className="w-1 bg-amber-400 rounded-full animate-[pulse_0.35s_ease-in-out_infinite] h-3" />
+                            <span className="w-1 bg-[#D04834] rounded-full animate-[pulse_0.5s_ease-in-out_infinite] h-3.5" />
+                            <span className="w-1 bg-amber-400 rounded-full animate-[pulse_0.4s_ease-in-out_infinite] h-2.5" />
+                            <span className="w-1 bg-[#E8E439] rounded-full animate-[pulse_0.6s_ease-in-out_infinite] h-4" />
+                          </div>
+                          <span className="text-[11px] font-mono font-bold text-amber-600 dark:text-amber-300">
+                            Cinematic Alarm Ringing ({alarmCountdown}s)
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-[11px] font-mono text-stone-500 dark:text-stone-400">
+                          Chime Complete • Table waiting for server
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Action Buttons */}
+                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                  <button
+                    onClick={() => handleDismissActiveAlarm(true)}
+                    className="flex-1 sm:flex-initial px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-syne font-bold text-xs flex items-center justify-center gap-2 shadow-lg hover:shadow-emerald-600/30 transition-all cursor-pointer"
+                  >
+                    <Check className="w-4 h-4" />
+                    <span>Attend Table #{activeAlarmNotification.tableNumber}</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleDismissActiveAlarm(false)}
+                    className={`p-2.5 rounded-2xl border transition-colors cursor-pointer ${
+                      isLight 
+                        ? 'bg-stone-100 hover:bg-stone-200 text-stone-600 border-stone-300' 
+                        : 'bg-white/10 hover:bg-white/15 text-stone-300 border-white/10'
+                    }`}
+                    title="Dismiss alert"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* 2. MAIN DASHBOARD CANVAS */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
         
@@ -877,7 +1070,7 @@ export function AdminDashboard({ onBackToClient }) {
                         TABLE #{req.tableNumber}
                       </span>
                       <span className="text-xs font-syne font-bold capitalize">
-                        {req.type === 'water' ? 'Drinking Water' : req.type === 'waiter' ? 'Call Waiter' : req.type === 'bill' ? 'Bill Request' : 'Table Cleaning'}
+                        {req.type === 'water' ? 'Drinking Water' : 'Call Waiter'}
                       </span>
                     </div>
                     <p className={`text-[10px] font-mono ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
@@ -1085,7 +1278,7 @@ export function AdminDashboard({ onBackToClient }) {
                         <div className={`p-2.5 rounded-xl border flex items-center justify-between text-xs ${
                           order.paymentStatus === 'paid'
                             ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-800 dark:text-emerald-300'
-                            : 'bg-amber-500/10 border-amber-500/20 text-amber-800 dark:text-amber-300'
+                            : 'bg-amber-500/15 border-amber-500/35 text-amber-900 dark:text-amber-200'
                         }`}>
                           <div className="flex items-center gap-1.5 font-bold font-mono">
                             {order.paymentStatus === 'paid' ? (
@@ -1095,8 +1288,8 @@ export function AdminDashboard({ onBackToClient }) {
                               </>
                             ) : (
                               <>
-                                <Banknote className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                                <span>DUE AT COUNTER</span>
+                                <Banknote className="w-4 h-4 text-[#D04834]" />
+                                <span className="text-[#D04834]">DUE AT COUNTER • HOLD COOKING</span>
                               </>
                             )}
                           </div>
@@ -1163,92 +1356,122 @@ export function AdminDashboard({ onBackToClient }) {
                       <div className={`p-5 pt-3 border-t space-y-2.5 ${
                         isLight ? 'bg-stone-50/50 border-stone-200' : 'bg-[#0E0C0B]/60 border-white/10'
                       }`}>
-                        {isNew && (
-                          <button
-                            onClick={() => handleStatusChange(order.id, 'cooking')}
-                            className={`w-full py-3 px-4 rounded-2xl text-xs sm:text-sm font-syne font-bold flex items-center justify-center gap-2 shadow-sm transition cursor-pointer ${
+                        {order.paymentStatus !== 'paid' ? (
+                          <div className="space-y-2.5">
+                            <div className={`p-3 rounded-2xl border text-xs flex items-start gap-2.5 ${
                               isLight 
-                                ? 'bg-[#12100E] text-white hover:bg-stone-800' 
-                                : 'bg-white text-black hover:bg-stone-200'
-                            }`}
-                          >
-                            <Flame className="w-4 h-4 shrink-0 text-[#D04834]" />
-                            <span>Stage 1: Start Cooking</span>
-                          </button>
-                        )}
-
-                        {isCooking && (
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => revertOrderStatus(order.id)}
-                              className={`p-3 rounded-2xl border transition flex items-center justify-center shrink-0 cursor-pointer ${
-                                isLight 
-                                  ? 'bg-white border-stone-200 text-stone-600 hover:text-black' 
-                                  : 'bg-[#1C1917] border-white/10 text-stone-300 hover:text-white'
-                              }`}
-                              title="Revert Stage"
-                            >
-                              <RotateCcw className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => handleStatusChange(order.id, 'ready')}
-                              className="flex-1 py-3 px-4 rounded-2xl text-xs sm:text-sm font-syne font-bold bg-[#D04834] hover:bg-[#b83d2b] text-white flex items-center justify-center gap-2 shadow-sm transition cursor-pointer"
-                            >
-                              <BellRing className="w-4 h-4 shrink-0" />
-                              <span>Stage 2: Food Ready for Service</span>
-                            </button>
-                          </div>
-                        )}
-
-                        {isReady && (
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => revertOrderStatus(order.id)}
-                              className={`p-3 rounded-2xl border transition flex items-center justify-center shrink-0 cursor-pointer ${
-                                isLight 
-                                  ? 'bg-white border-stone-200 text-stone-600 hover:text-black' 
-                                  : 'bg-[#1C1917] border-white/10 text-stone-300 hover:text-white'
-                              }`}
-                              title="Revert Stage"
-                            >
-                              <RotateCcw className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => handleStatusChange(order.id, 'served')}
-                              className={`flex-1 py-3 px-4 rounded-2xl text-xs sm:text-sm font-syne font-bold flex items-center justify-center gap-2 shadow-sm transition cursor-pointer ${
-                                isLight 
-                                  ? 'bg-[#12100E] text-white hover:bg-stone-800' 
-                                  : 'bg-white text-black hover:bg-stone-200'
-                              }`}
-                            >
-                              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
-                              <span>Stage 3: Order Served</span>
-                            </button>
-                          </div>
-                        )}
-
-                        {isServed && (
-                          <div className="space-y-2">
-                            <div className={`p-2.5 rounded-xl border text-center text-xs font-mono font-bold flex items-center justify-center gap-1.5 ${
-                              isLight 
-                                ? 'bg-stone-100 border-stone-200 text-stone-700' 
-                                : 'bg-[#1C1917] border-white/10 text-stone-300'
+                                ? 'bg-amber-500/15 border-amber-500/35 text-amber-950' 
+                                : 'bg-amber-500/15 border-amber-500/25 text-amber-200'
                             }`}>
-                              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                              <span>Order Completed & Served</span>
+                              <AlertTriangle className="w-4 h-4 text-[#D04834] shrink-0 mt-0.5" />
+                              <div>
+                                <p className="font-bold text-rose-600 dark:text-rose-400">
+                                  ⚠️ Preparation On Hold — Awaiting Counter Payment
+                                </p>
+                                <p className="text-[11px] opacity-90 mt-0.5 leading-relaxed">
+                                  Policy: Food is NOT to be cooked until guest settles ₹{order.total} at the counter. Tap below once payment is received to fire ticket to kitchen.
+                                </p>
+                              </div>
                             </div>
+
                             <button
-                              onClick={() => revertOrderStatus(order.id)}
-                              className={`w-full py-2 px-3 rounded-xl border text-xs font-mono transition flex items-center justify-center gap-1.5 cursor-pointer ${
-                                isLight 
-                                  ? 'bg-white border-stone-200 text-stone-600 hover:text-black' 
-                                  : 'bg-[#1C1917] border-white/10 text-stone-300 hover:text-white'
-                              }`}
+                              onClick={() => collectPaymentAndStartCooking(order.id)}
+                              className="w-full py-3.5 px-4 rounded-2xl text-xs sm:text-sm font-syne font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white flex items-center justify-center gap-2 shadow-md transition cursor-pointer"
                             >
-                              <RotateCcw className="w-3.5 h-3.5 text-[#D04834]" />
-                              <span>Reopen Order as Ready</span>
+                              <Banknote className="w-4 h-4 shrink-0 text-amber-200" />
+                              <span>💰 Collect ₹{order.total} &amp; Start Cooking</span>
                             </button>
                           </div>
+                        ) : (
+                          <>
+                            {isNew && (
+                              <button
+                                onClick={() => handleStatusChange(order.id, 'cooking')}
+                                className={`w-full py-3 px-4 rounded-2xl text-xs sm:text-sm font-syne font-bold flex items-center justify-center gap-2 shadow-sm transition cursor-pointer ${
+                                  isLight 
+                                    ? 'bg-[#12100E] text-white hover:bg-stone-800' 
+                                    : 'bg-white text-black hover:bg-stone-200'
+                                }`}
+                              >
+                                <Flame className="w-4 h-4 shrink-0 text-[#D04834]" />
+                                <span>Stage 1: Start Cooking</span>
+                              </button>
+                            )}
+
+                            {isCooking && (
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => revertOrderStatus(order.id)}
+                                  className={`p-3 rounded-2xl border transition flex items-center justify-center shrink-0 cursor-pointer ${
+                                    isLight 
+                                      ? 'bg-white border-stone-200 text-stone-600 hover:text-black' 
+                                      : 'bg-[#1C1917] border-white/10 text-stone-300 hover:text-white'
+                                  }`}
+                                  title="Revert Stage"
+                                >
+                                  <RotateCcw className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleStatusChange(order.id, 'ready')}
+                                  className="flex-1 py-3 px-4 rounded-2xl text-xs sm:text-sm font-syne font-bold bg-[#D04834] hover:bg-[#b83d2b] text-white flex items-center justify-center gap-2 shadow-sm transition cursor-pointer"
+                                >
+                                  <BellRing className="w-4 h-4 shrink-0" />
+                                  <span>Stage 2: Food Ready for Service</span>
+                                </button>
+                              </div>
+                            )}
+
+                            {isReady && (
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => revertOrderStatus(order.id)}
+                                  className={`p-3 rounded-2xl border transition flex items-center justify-center shrink-0 cursor-pointer ${
+                                    isLight 
+                                      ? 'bg-white border-stone-200 text-stone-600 hover:text-black' 
+                                      : 'bg-[#1C1917] border-white/10 text-stone-300 hover:text-white'
+                                  }`}
+                                  title="Revert Stage"
+                                >
+                                  <RotateCcw className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleStatusChange(order.id, 'served')}
+                                  className={`flex-1 py-3 px-4 rounded-2xl text-xs sm:text-sm font-syne font-bold flex items-center justify-center gap-2 shadow-sm transition cursor-pointer ${
+                                    isLight 
+                                      ? 'bg-[#12100E] text-white hover:bg-stone-800' 
+                                      : 'bg-white text-black hover:bg-stone-200'
+                                  }`}
+                                >
+                                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
+                                  <span>Stage 3: Order Served</span>
+                                </button>
+                              </div>
+                            )}
+
+                            {isServed && (
+                              <div className="space-y-2">
+                                <div className={`p-2.5 rounded-xl border text-center text-xs font-mono font-bold flex items-center justify-center gap-1.5 ${
+                                  isLight 
+                                    ? 'bg-stone-100 border-stone-200 text-stone-700' 
+                                    : 'bg-[#1C1917] border-white/10 text-stone-300'
+                                }`}>
+                                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                                  <span>Order Completed &amp; Served</span>
+                                </div>
+                                <button
+                                  onClick={() => revertOrderStatus(order.id)}
+                                  className={`w-full py-2 px-3 rounded-xl border text-xs font-mono transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                                    isLight 
+                                      ? 'bg-white border-stone-200 text-stone-600 hover:text-black' 
+                                      : 'bg-[#1C1917] border-white/10 text-stone-300 hover:text-white'
+                                  }`}
+                                >
+                                  <RotateCcw className="w-3.5 h-3.5 text-[#D04834]" />
+                                  <span>Reopen Order as Ready</span>
+                                </button>
+                              </div>
+                            )}
+                          </>
                         )}
 
                         <div className="flex items-center justify-between gap-2 pt-1">
@@ -1292,114 +1515,257 @@ export function AdminDashboard({ onBackToClient }) {
         {/* ========================================================================= */}
         {/* TAB 2: INTERACTIVE TABLE FLOOR PLAN */}
         {/* ========================================================================= */}
-        {activeTab === 'floor' && (
-          <div className="space-y-6">
-            <div className={`p-6 rounded-3xl border shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 transition-colors ${
-              isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
-            }`}>
-              <div>
-                <h2 className="text-2xl font-editorial tracking-tight font-normal">Floor Plan &amp; Seating Layout</h2>
-                <p className={`text-xs mt-1 ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
-                  Real-time table layout, guest occupancy, and live order status.
-                </p>
-              </div>
+        {/* ========================================================================= */}
+        {/* TAB 2: INTERACTIVE TABLE FLOOR PLAN & CAPACITY MANAGEMENT */}
+        {/* ========================================================================= */}
+        {activeTab === 'floor' && (() => {
+          const activeTablesList = tables && tables.length > 0 ? tables : BRAND_CONFIG.tables;
+          const tableOccupancyMap = activeTablesList.map(t => {
+            const occ = getTableOccupancy ? getTableOccupancy(t.number) : { isBusy: false, status: 'vacant' };
+            const hasServiceReq = serviceRequests?.some(r => r.tableNumber === t.number);
+            return { table: t, occ, hasServiceReq };
+          });
 
-              <div className="flex items-center flex-wrap gap-3 text-xs font-mono">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
-                  <span>Available</span>
+          const totalTablesCount = activeTablesList.length;
+          const busyTablesCount = tableOccupancyMap.filter(item => item.occ.isBusy || item.hasServiceReq).length;
+          const vacantTablesCount = totalTablesCount - busyTablesCount;
+
+          return (
+            <div className="space-y-6">
+              {/* Floor Plan Header & Legend */}
+              <div className={`p-6 rounded-3xl border shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 transition-colors ${
+                isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
+              }`}>
+                <div>
+                  <h2 className="text-2xl font-editorial tracking-tight font-normal">Floor Plan &amp; Table Management</h2>
+                  <p className={`text-xs mt-1 ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                    Real-time guest occupancy, 30-min served dining turnover, and staff table capacity controls.
+                  </p>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-full bg-amber-500 inline-block" />
-                  <span>Cooking</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-full bg-cyan-500 inline-block" />
-                  <span>Served</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-full bg-[#D04834] inline-block animate-pulse" />
-                  <span>Call</span>
-                </div>
-              </div>
-            </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {BRAND_CONFIG.tables.map(t => {
-                const tableOrder = orders.find(o => o.tableNumber === t.number && o.status !== 'served' && o.status !== 'cancelled');
-                const hasServiceReq = serviceRequests?.some(r => r.tableNumber === t.number);
-
-                let statusBadge = { bg: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300', label: 'Available' };
-                if (hasServiceReq) {
-                  statusBadge = { bg: 'bg-rose-500/20 border-rose-500/50 text-rose-600 dark:text-rose-400 animate-pulse', label: 'Table Call' };
-                } else if (tableOrder) {
-                  if (tableOrder.status === 'cooking') {
-                    statusBadge = { bg: 'bg-amber-500/20 border-amber-500/40 text-amber-700 dark:text-amber-300', label: 'Cooking' };
-                  } else if (tableOrder.status === 'ready') {
-                    statusBadge = { bg: 'bg-cyan-500/20 border-cyan-500/40 text-cyan-700 dark:text-cyan-300', label: 'Food Ready' };
-                  } else {
-                    statusBadge = { bg: 'bg-amber-400/15 border-amber-400/30 text-amber-700 dark:text-amber-200', label: 'New Order' };
-                  }
-                }
-
-                return (
-                  <div
-                    key={t.id}
-                    className={`p-5 rounded-3xl border transition-all flex flex-col justify-between space-y-4 shadow-sm ${
-                      hasServiceReq
-                        ? 'border-[#D04834] ring-2 ring-[#D04834]/40 bg-white dark:bg-[#1C1917]'
-                        : tableOrder
-                        ? isLight ? 'bg-white border-[#12100E]' : 'bg-[#1C1917] border-white/20'
-                        : isLight ? 'bg-white/80 border-stone-200' : 'bg-[#1C1917]/70 border-white/10'
-                    }`}
-                  >
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono text-base font-bold">
-                          TABLE #<span className="font-number font-bold">{t.number < 10 ? `0${t.number}` : t.number}</span>
-                        </span>
-                        <span className={`px-2 py-0.5 rounded-lg border text-[10px] font-mono font-bold ${statusBadge.bg}`}>
-                          {statusBadge.label}
-                        </span>
-                      </div>
-                      <p className={`text-xs font-mono mt-1.5 ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
-                        Capacity: <span className="font-number font-bold">{t.capacity}</span> Seats
-                      </p>
-                    </div>
-
-                    {tableOrder ? (
-                      <div className={`p-3 rounded-2xl border space-y-1.5 text-xs ${
-                        isLight ? 'bg-stone-50 border-stone-200' : 'bg-[#0E0C0B] border-white/5'
-                      }`}>
-                        <div className="flex items-center justify-between font-bold">
-                          <span>#<span className="font-number font-bold">{tableOrder.orderNumber}</span></span>
-                          <span className="font-number font-bold text-[#D04834]">₹{tableOrder.total}</span>
-                        </div>
-                        <p className={`text-[11px] truncate ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
-                          {tableOrder.items?.length} items ({tableOrder.items?.map(i => i.name).join(', ')})
-                        </p>
-                        <button
-                          onClick={() => { sounds.playClick(); setViewingSlip(tableOrder); }}
-                          className={`w-full py-1.5 rounded-lg border text-[11px] font-mono mt-1 transition cursor-pointer ${
-                            isLight 
-                              ? 'bg-white border-stone-200 hover:bg-stone-100 text-stone-700' 
-                              : 'bg-[#1C1917] border-white/10 hover:bg-white/10 text-stone-300'
-                          }`}
-                        >
-                          View Order Slip
-                        </button>
-                      </div>
-                    ) : (
-                      <div className={`py-4 text-center text-xs font-mono ${isLight ? 'text-stone-400' : 'text-stone-500'}`}>
-                        Available for guests
-                      </div>
-                    )}
+                <div className="flex items-center flex-wrap gap-3 text-xs font-mono">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
+                    <span>Vacant ({vacantTablesCount})</span>
                   </div>
-                );
-              })}
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#D04834] inline-block" />
+                    <span>Occupied ({busyTablesCount})</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 inline-block" />
+                    <span>Served (30m Dining)</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#D04834] inline-block animate-pulse" />
+                    <span>Table Call</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Staff Table Capacity Control Bar */}
+              <div className={`p-4 sm:p-5 rounded-3xl border flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
+                isLight ? 'bg-[#F9F6F0] border-[#E8E2D5]' : 'bg-[#141210] border-white/10'
+              }`}>
+                <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
+                  <div className="flex items-center gap-2">
+                    <LayoutGrid className="w-4 h-4 text-[#D04834]" />
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider">
+                      Cafe Table Capacity:
+                    </span>
+                  </div>
+                  
+                  {/* Stepper Controls */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => removeTable()}
+                      disabled={totalTablesCount <= 1}
+                      className={`w-8 h-8 rounded-xl border flex items-center justify-center font-bold text-base transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
+                        isLight ? 'bg-white border-stone-300 text-stone-800 hover:bg-stone-100' : 'bg-white/10 border-white/10 text-white hover:bg-white/20'
+                      }`}
+                      title="Remove highest-numbered table"
+                    >
+                      -
+                    </button>
+                    <span className={`px-3 py-1 rounded-xl border text-sm font-mono font-bold ${
+                      isLight ? 'bg-white border-stone-300 text-[#12100E]' : 'bg-[#1C1917] border-white/15 text-white'
+                    }`}>
+                      {totalTablesCount} Tables
+                    </span>
+                    <button
+                      onClick={() => addTable()}
+                      disabled={totalTablesCount >= 40}
+                      className={`w-8 h-8 rounded-xl border flex items-center justify-center font-bold text-base transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
+                        isLight ? 'bg-white border-stone-300 text-stone-800 hover:bg-stone-100' : 'bg-white/10 border-white/10 text-white hover:bg-white/20'
+                      }`}
+                      title="Add a new dining table"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                {/* Quick Presets & Reset */}
+                <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto justify-end scrollbar-none">
+                  <span className={`text-[10px] font-mono hidden md:inline ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                    Presets:
+                  </span>
+                  {[8, 12, 16, 20].map(cnt => (
+                    <button
+                      key={cnt}
+                      onClick={() => setTableCount(cnt)}
+                      className={`px-2.5 py-1 rounded-xl text-xs font-mono border transition cursor-pointer ${
+                        totalTablesCount === cnt
+                          ? 'bg-[#D04834] text-white border-[#D04834] font-bold shadow-xs'
+                          : isLight
+                          ? 'bg-white border-stone-200 text-stone-600 hover:border-stone-400'
+                          : 'bg-[#1C1917] border-white/10 text-stone-400 hover:text-white'
+                      }`}
+                    >
+                      {cnt}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => resetTablesToDefault()}
+                    className={`px-2.5 py-1 rounded-xl text-xs font-mono border transition cursor-pointer ${
+                      isLight 
+                        ? 'bg-stone-100 border-stone-300 text-stone-600 hover:bg-stone-200' 
+                        : 'bg-white/5 border-white/10 text-stone-400 hover:bg-white/10 hover:text-white'
+                    }`}
+                    title="Reset tables to default 12"
+                  >
+                    Reset (12)
+                  </button>
+                </div>
+              </div>
+
+              {/* Table Cards Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {tableOccupancyMap.map(({ table: t, occ, hasServiceReq }) => {
+                  let statusBadge = { 
+                    bg: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300', 
+                    label: '🟢 Vacant' 
+                  };
+
+                  if (hasServiceReq) {
+                    statusBadge = { 
+                      bg: 'bg-rose-500/20 border-rose-500/50 text-rose-600 dark:text-rose-400 animate-pulse', 
+                      label: '🚨 Table Call' 
+                    };
+                  } else if (occ.isBusy) {
+                    if (occ.status === 'served_dining') {
+                      statusBadge = { 
+                        bg: 'bg-cyan-500/20 border-cyan-500/40 text-cyan-700 dark:text-cyan-300 font-bold', 
+                        label: `🍽️ Served (${occ.remainingMins}m left)` 
+                      };
+                    } else if (occ.stage === 'cooking') {
+                      statusBadge = { 
+                        bg: 'bg-amber-500/20 border-amber-500/40 text-amber-700 dark:text-amber-300', 
+                        label: '🔥 Cooking' 
+                      };
+                    } else if (occ.stage === 'ready') {
+                      statusBadge = { 
+                        bg: 'bg-cyan-500/20 border-cyan-500/40 text-cyan-700 dark:text-cyan-300', 
+                        label: '🛎️ Food Ready' 
+                      };
+                    } else {
+                      statusBadge = { 
+                        bg: 'bg-amber-400/15 border-amber-400/30 text-amber-700 dark:text-amber-200', 
+                        label: '⏳ New Order' 
+                      };
+                    }
+                  }
+
+                  const tableOrder = occ.order;
+
+                  return (
+                    <div
+                      key={t.id}
+                      className={`p-5 rounded-3xl border transition-all flex flex-col justify-between space-y-4 shadow-sm ${
+                        hasServiceReq
+                          ? 'border-[#D04834] ring-2 ring-[#D04834]/40 bg-white dark:bg-[#1C1917]'
+                          : occ.isBusy
+                          ? isLight ? 'bg-white border-[#12100E] shadow-md' : 'bg-[#1C1917] border-white/20 shadow-md'
+                          : isLight ? 'bg-white/80 border-stone-200' : 'bg-[#1C1917]/70 border-white/10'
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono text-base font-bold">
+                            TABLE #<span className="font-number font-bold">{t.number < 10 ? `0${t.number}` : t.number}</span>
+                          </span>
+                          <span className={`px-2 py-0.5 rounded-lg border text-[10px] font-mono font-bold ${statusBadge.bg}`}>
+                            {statusBadge.label}
+                          </span>
+                        </div>
+                        <p className={`text-xs font-mono mt-1.5 ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                          Capacity: <span className="font-number font-bold">{t.capacity}</span> Seats • {t.zoneName || 'Main Dining'}
+                        </p>
+                      </div>
+
+                      {tableOrder ? (
+                        <div className={`p-3 rounded-2xl border space-y-2 text-xs ${
+                          isLight ? 'bg-stone-50 border-stone-200' : 'bg-[#0E0C0B] border-white/5'
+                        }`}>
+                          <div className="flex items-center justify-between font-bold">
+                            <span>#<span className="font-number font-bold">{tableOrder.orderNumber}</span></span>
+                            <span className="font-number font-bold text-[#D04834]">₹{tableOrder.total}</span>
+                          </div>
+                          <p className={`text-[11px] truncate ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
+                            {tableOrder.items?.length} items ({tableOrder.items?.map(i => i.name).join(', ')})
+                          </p>
+                          
+                          <div className="flex items-center gap-1.5 pt-1">
+                            <button
+                              onClick={() => { sounds.playClick(); setViewingSlip(tableOrder); }}
+                              className={`flex-1 py-1.5 rounded-lg border text-[11px] font-mono transition cursor-pointer ${
+                                isLight 
+                                  ? 'bg-white border-stone-200 hover:bg-stone-100 text-stone-700' 
+                                  : 'bg-[#1C1917] border-white/10 hover:bg-white/10 text-stone-300'
+                              }`}
+                            >
+                              Slip
+                            </button>
+
+                            {/* Mark Vacant / Release Button */}
+                            <button
+                              onClick={() => { sounds.playClick(); vacateTable(t.number); }}
+                              className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-[11px] font-bold flex items-center gap-1 transition cursor-pointer shadow-xs"
+                              title="Immediately mark table vacant and release guest seat"
+                            >
+                              <Check className="w-3 h-3" />
+                              <span>Vacate</span>
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-2 py-2">
+                          <div className={`text-center text-xs font-mono ${isLight ? 'text-emerald-700' : 'text-emerald-400'}`}>
+                            Ready for new guests
+                          </div>
+                          <button
+                            onClick={() => {
+                              sounds.playClick();
+                              setSelectedTableForQR(t.number);
+                              setActiveTab('tables');
+                            }}
+                            className={`w-full py-1.5 rounded-xl border text-[11px] font-mono transition cursor-pointer ${
+                              isLight
+                                ? 'bg-stone-100 hover:bg-stone-200 text-stone-700 border-stone-200'
+                                : 'bg-white/5 hover:bg-white/10 text-stone-300 border-white/10'
+                            }`}
+                          >
+                            Print QR Stand
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* ========================================================================= */}
         {/* TAB 3: FULL MENU CRUD & STOCK MANAGER */}
@@ -1657,12 +2023,12 @@ export function AdminDashboard({ onBackToClient }) {
                     Select Table to Generate QR:
                   </p>
                   <span className="text-[11px] font-mono text-[#D04834] font-semibold">
-                    12 Active Tables Configured
+                    {(tables && tables.length > 0 ? tables : BRAND_CONFIG.tables).length} Active Tables Configured
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {BRAND_CONFIG.tables.map(t => (
+                  {(tables && tables.length > 0 ? tables : BRAND_CONFIG.tables).map(t => (
                     <button
                       key={t.id}
                       onClick={() => { sounds.playClick(); setSelectedTableForQR(t.number); }}

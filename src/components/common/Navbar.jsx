@@ -261,18 +261,20 @@ export function Navbar({
             <button
               onClick={() => {
                 sounds.playClick();
-                if (operationalModel === 'table-qr' || operationalModel === 'loyalty' || (operationalModel === 'hybrid' && diningMode === 'table')) {
-                  onOpenScanner();
-                } else if (operationalModel === 'showcase' && onOpenReservation) {
+                if (operationalModel === 'showcase' && onOpenReservation) {
                   onOpenReservation();
+                } else if (onOpenScanner) {
+                  onOpenScanner();
+                } else if (onOpenModelSwitcher) {
+                  onOpenModelSwitcher();
                 }
               }}
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-mono transition ${
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-mono transition cursor-pointer ${
                 isLight
                   ? 'bg-[#EAE4D9] border-black/10 text-[#12100E] hover:border-black/25'
                   : 'bg-[#1A1715] border-white/10 text-stone-200 hover:border-white/25'
               }`}
-              title="Station & Service Context"
+              title="Click to change Table or dining station"
             >
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               {operationalModel === 'self-serve' || diningMode === 'counter' ? (
@@ -281,8 +283,10 @@ export function Navbar({
                 <span className="hidden sm:inline">Delivery</span>
               ) : operationalModel === 'showcase' ? (
                 <span className="hidden sm:inline">Showcase</span>
+              ) : activeTable ? (
+                <span className="hidden sm:inline font-bold">{`Table #${activeTable}`}</span>
               ) : (
-                <span className="hidden sm:inline font-bold">{`Table #${activeTable || '04'}`}</span>
+                <span className="hidden sm:inline font-bold text-[#D04834]">Select Table</span>
               )}
             </button>
 
@@ -562,23 +566,6 @@ export function Navbar({
                 <ArrowRight className="w-5 h-5 opacity-40 group-hover:translate-x-2 group-hover:opacity-100 transition" />
               </button>
 
-              <button
-                onClick={handleAdminClick}
-                className={`w-full text-left group flex items-baseline justify-between border-b pb-4 ${isLight ? 'border-black/10' : 'border-white/5'}`}
-              >
-                <div>
-                  <span className="text-[10px] font-mono opacity-60 uppercase tracking-widest block mb-1">
-                    04 // STAFF TERMINAL
-                  </span>
-                  <span className={`font-editorial text-2xl font-bold group-hover:text-[#D04834] transition flex items-center gap-2 ${
-                    isLight ? 'text-stone-700' : 'text-stone-300'
-                  }`}>
-                    <span>Kitchen POS</span>
-                    {!isAdminLoggedIn && <Lock className="w-4 h-4 opacity-50" />}
-                  </span>
-                </div>
-                <ArrowRight className="w-5 h-5 opacity-40 group-hover:translate-x-2 group-hover:opacity-100 transition" />
-              </button>
             </div>
 
             {/* Theme Toggle & Bottom Meta */}

@@ -13,7 +13,9 @@ import {
   ArrowRight,
   Copy,
   Check,
-  ExternalLink
+  ExternalLink,
+  AlertTriangle,
+  Banknote
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useCart } from '../../context/CartContext';
@@ -53,6 +55,8 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
   const [upiQrDataUrl, setUpiQrDataUrl] = useState('');
   const [isUpiLoading, setIsUpiLoading] = useState(false);
   const [copiedUpi, setCopiedUpi] = useState(false);
+  const [showCounterConfirmation, setShowCounterConfirmation] = useState(false);
+  const [counterAcknowledged, setCounterAcknowledged] = useState(false);
 
   // Generate authentic NPCI UPI payment deep link and scannable QR
   const upiId = CAFE_CONFIG.mockUpiId || 'thccafe@icici';
@@ -176,18 +180,25 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md overflow-y-auto font-sans">
+      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-md overflow-hidden font-sans">
+        {/* Backdrop tap to close */}
+        <div className="absolute inset-0 -z-10" onClick={() => { sounds.playClick(); onClose(); }} />
+
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 15 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          transition={{ duration: 0.2 }}
-          className={`relative w-full max-w-md rounded-3xl p-6 sm:p-7 shadow-2xl my-6 overflow-hidden border transition-colors ${
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 40 }}
+          transition={{ type: "spring", damping: 25, stiffness: 300 }}
+          className={`relative w-full max-w-md rounded-t-[32px] sm:rounded-3xl p-5 sm:p-7 shadow-2xl overflow-y-auto max-h-[92vh] sm:max-h-[90vh] border transition-colors flex flex-col ${
             isLight 
               ? 'bg-[#FAF7F2] text-[#12100E] border-[#E8E2D5]' 
               : 'bg-[#141210] text-[#FAF7F2] border-white/10'
           }`}
         >
+          {/* Mobile Drag Indicator */}
+          <div className="sm:hidden pt-0 pb-2.5 flex justify-center shrink-0">
+            <div className="w-12 h-1.5 bg-stone-400/50 rounded-full" />
+          </div>
           {/* Close */}
           <button
             onClick={() => { sounds.playClick(); onClose(); }}
@@ -423,35 +434,56 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className={`p-4 rounded-2xl border text-left space-y-2 ${
-                isLight 
-                  ? 'bg-white border-[#E8E2D5]' 
-                  : 'bg-[#1C1917] border-white/10'
-              }`}>
-                <h4 className="font-editorial text-base flex items-center gap-2">
-                  <Receipt className="w-4 h-4 text-[#D04834]" />
-                  <span>
-                    {diningMode === 'delivery' 
-                      ? 'Cash on Delivery (COD)' 
-                      : 'Pay Directly at Counter'}
-                  </span>
-                </h4>
-                <p className={`text-xs leading-relaxed ${isLight ? 'text-stone-600' : 'text-stone-300'}`}>
-                  {diningMode === 'delivery' ? (
-                    <>Your order will be prepared immediately. Pay <strong className="font-number font-bold">₹{grandTotal}</strong> in cash or UPI to the courier upon delivery.</>
-                  ) : (
-                    <>Your order will be sent to our chefs right away. You can settle the bill of <strong className="font-number font-bold">₹{grandTotal}</strong> at the counter when you finish.</>
-                  )}
-                </p>
-              </div>
+              {diningMode === 'delivery' ? (
+                <div className={`p-4 rounded-2xl border text-left space-y-2 ${
+                  isLight ? 'bg-white border-[#E8E2D5]' : 'bg-[#1C1917] border-white/10'
+                }`}>
+                  <h4 className="font-editorial text-base flex items-center gap-2">
+                    <Receipt className="w-4 h-4 text-[#D04834]" />
+                    <span>Cash on Delivery (COD)</span>
+                  </h4>
+                  <p className={`text-xs leading-relaxed ${isLight ? 'text-stone-600' : 'text-stone-300'}`}>
+                    Your order will be prepared immediately. Pay <strong className="font-number font-bold">₹{grandTotal}</strong> in cash or UPI to the delivery rider upon arrival.
+                  </p>
+                </div>
+              ) : (
+                /* Notice #1: In-Tab Policy Warning */
+                <div className={`p-4 rounded-2xl border text-left space-y-2.5 transition-all ${
+                  isLight ? 'bg-amber-500/10 border-amber-500/30' : 'bg-amber-500/10 border-amber-500/25'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-editorial text-base flex items-center gap-2 text-amber-900 dark:text-amber-200">
+                      <Banknote className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                      <span>Pay at Counter Desk</span>
+                    </h4>
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30">
+                      Pre-Payment Policy
+                    </span>
+                  </div>
+
+                  <div className={`text-xs leading-relaxed space-y-1.5 ${isLight ? 'text-stone-700' : 'text-stone-300'}`}>
+                    <div className="p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/30 font-semibold text-rose-700 dark:text-rose-300 flex items-start gap-2">
+                      <AlertTriangle className="w-4 h-4 text-[#D04834] shrink-0 mt-0.5" />
+                      <span>Food is prepared ONLY AFTER you pay at the counter desk.</span>
+                    </div>
+                    <p className="text-[11px] opacity-90 pl-1">
+                      To guarantee swift kitchen coordination and zero billing disputes, our chefs begin handcrafting your dishes the moment your payment of <strong className="font-number font-bold">₹{grandTotal}</strong> is confirmed at the cashier counter.
+                    </p>
+                  </div>
+                </div>
+              )}
 
               <button
                 disabled={isProcessing}
-                onClick={() => handleCompleteOrder(
-                  diningMode === 'delivery' ? 'cod' : 'counter', 
-                  'pending', 
-                  diningMode === 'delivery' ? 'Cash on Delivery (COD)' : 'Pay at Counter'
-                )}
+                onClick={() => {
+                  sounds.playClick();
+                  if (diningMode === 'delivery') {
+                    handleCompleteOrder('cod', 'unpaid', 'Cash on Delivery (COD)');
+                  } else {
+                    setCounterAcknowledged(false);
+                    setShowCounterConfirmation(true);
+                  }
+                }}
                 className={`w-full py-3.5 rounded-2xl font-syne font-bold text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer ${
                   isLight 
                     ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800' 
@@ -465,16 +497,134 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4" />
                     <span>
-                      {diningMode === 'delivery' ? 'Confirm Delivery Order (' : 'Send Order to Kitchen ('}
-                      <span className="font-number font-bold">₹{grandTotal}</span>)
+                      {diningMode === 'delivery' ? `Confirm Delivery Order (₹${grandTotal})` : `Verify Pay-at-Counter Policy (₹${grandTotal})`}
                     </span>
                   </>
                 )}
               </button>
             </div>
           )}
+
+          {/* Notice #2: Pre-Order Pay-at-Counter Confirmation Modal */}
+          <AnimatePresence>
+            {showCounterConfirmation && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[120] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm"
+              >
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 30 }}
+                  transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                  className={`max-w-md w-full rounded-t-[32px] sm:rounded-3xl p-6 sm:p-7 border shadow-2xl space-y-5 text-left relative max-h-[92vh] overflow-y-auto ${
+                    isLight ? 'bg-[#FAF7F2] border-[#E8E2D5] text-[#12100E]' : 'bg-[#161412] border-white/10 text-[#FAF7F2]'
+                  }`}
+                >
+                  <button
+                    onClick={() => { sounds.playClick(); setShowCounterConfirmation(false); }}
+                    className="absolute top-4 right-4 p-2 rounded-xl text-stone-400 hover:text-stone-700 dark:hover:text-white transition"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+
+                  <div className="flex items-center gap-3 pr-8">
+                    <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                      <AlertTriangle className="w-6 h-6 text-[#D04834]" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-[#D04834] font-bold">
+                        Notice 2 of 3 • Pre-Payment Required
+                      </span>
+                      <h3 className="text-xl font-editorial font-bold tracking-tight">
+                        Please Pay at Counter First
+                      </h3>
+                    </div>
+                  </div>
+
+                  <div className={`p-4 rounded-2xl border space-y-2.5 text-xs ${
+                    isLight ? 'bg-amber-500/10 border-amber-500/30 text-stone-800' : 'bg-amber-500/10 border-amber-500/20 text-stone-200'
+                  }`}>
+                    <div className="flex items-start gap-2.5">
+                      <span className="text-base shrink-0">🛑</span>
+                      <p className="leading-snug">
+                        <strong>Chefs will NOT start cooking yet:</strong> Your order will remain in queued hold until <strong className="font-number font-bold text-[#D04834]">₹{grandTotal}</strong> is settled at the billing counter.
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-2.5">
+                      <span className="text-base shrink-0">🏃</span>
+                      <p className="leading-snug">
+                        <strong>Pay immediately after confirming:</strong> Walk up to the counter desk with your Table #{activeTable || '01'} to settle with cash or QR.
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-2.5">
+                      <span className="text-base shrink-0">⚡</span>
+                      <p className="leading-snug">
+                        <strong>Instant Kitchen Release:</strong> The moment our cashier taps "Paid", your food will be fired to the grill and stoves right away.
+                      </p>
+                    </div>
+                  </div>
+
+                  <label className={`flex items-start gap-3 p-3.5 rounded-2xl border cursor-pointer select-none transition text-xs ${
+                    counterAcknowledged 
+                      ? (isLight ? 'bg-emerald-50 border-emerald-300 text-emerald-950 shadow-sm' : 'bg-emerald-950/20 border-emerald-500/40 text-emerald-200')
+                      : (isLight ? 'bg-white border-stone-200 hover:bg-stone-50' : 'bg-white/5 border-white/10 hover:bg-white/10')
+                  }`}>
+                    <input
+                      type="checkbox"
+                      checked={counterAcknowledged}
+                      onChange={(e) => { sounds.playClick(); setCounterAcknowledged(e.target.checked); }}
+                      className="mt-0.5 accent-[#D04834] w-4 h-4 rounded cursor-pointer"
+                    />
+                    <span className="font-medium leading-snug">
+                      I understand that our food will <strong>only be prepared after I pay ₹{grandTotal}</strong> at the counter.
+                    </span>
+                  </label>
+
+                  <div className="space-y-2 pt-1">
+                    <button
+                      disabled={!counterAcknowledged || isProcessing}
+                      onClick={() => {
+                        setShowCounterConfirmation(false);
+                        handleCompleteOrder('counter', 'unpaid', 'Pay at Counter');
+                      }}
+                      className={`w-full py-3.5 rounded-2xl font-syne font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer ${
+                        !counterAcknowledged || isProcessing
+                          ? 'opacity-50 cursor-not-allowed bg-stone-300 dark:bg-stone-800 text-stone-500'
+                          : 'bg-[#D04834] hover:bg-[#b83d2b] text-white'
+                      }`}
+                    >
+                      {isProcessing ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <CheckCircle2 className="w-4 h-4" />
+                      )}
+                      <span>I Understand • Confirm &amp; I'll Pay Now</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        sounds.playClick();
+                        setShowCounterConfirmation(false);
+                        setPaymentType('online');
+                      }}
+                      className={`w-full py-2.5 rounded-2xl text-xs font-mono font-bold transition flex items-center justify-center gap-1.5 ${
+                        isLight ? 'text-stone-600 hover:text-black' : 'text-stone-300 hover:text-white'
+                      }`}
+                    >
+                      <span>Prefer instant cooking without waiting? Switch to UPI</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-[#D04834]" />
+                    </button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Safe Badge */}
           <div className={`mt-5 pt-3 border-t flex items-center justify-center gap-2 text-xs font-mono ${

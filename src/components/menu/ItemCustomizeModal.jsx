@@ -41,20 +41,28 @@ export function ItemCustomizeModal({ item, isOpen, onClose }) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md overflow-y-auto font-sans">
+      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-md overflow-hidden font-sans">
+        {/* Backdrop tap to close */}
+        <div className="absolute inset-0 -z-10" onClick={() => { sounds.playClick(); onClose(); }} />
+
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 15 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          transition={{ duration: 0.2 }}
-          className={`relative w-full max-w-md rounded-3xl overflow-hidden shadow-2xl my-6 border transition-colors ${
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 40 }}
+          transition={{ type: "spring", damping: 25, stiffness: 300 }}
+          className={`relative w-full max-w-md rounded-t-[32px] sm:rounded-3xl overflow-hidden shadow-2xl border transition-colors flex flex-col max-h-[92vh] sm:max-h-[85vh] ${
             isLight 
               ? 'bg-[#FAF7F2] text-[#12100E] border-[#E8E2D5]' 
               : 'bg-[#141210] text-[#FAF7F2] border-white/10'
           }`}
         >
+          {/* Mobile Sheet Drag Indicator */}
+          <div className="sm:hidden pt-2.5 pb-1 flex justify-center">
+            <div className="w-12 h-1.5 bg-stone-400/50 rounded-full" />
+          </div>
+
           {/* Header Image with Gradient */}
-          <div className="relative h-44 sm:h-48 bg-stone-900">
+          <div className="relative h-44 sm:h-48 bg-stone-900 shrink-0">
             <img
               src={item.image}
               alt={item.name}
@@ -224,13 +232,14 @@ export function ItemCustomizeModal({ item, isOpen, onClose }) {
                   sounds.playClick();
                   if (quantity > 1) setQuantity(quantity - 1);
                 }}
-                className={`w-7 h-7 rounded-lg flex items-center justify-center transition ${
-                  isLight ? 'text-stone-700 hover:bg-white' : 'text-stone-400 hover:text-white hover:bg-white/10'
+                className={`w-8 h-8 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center transition active:scale-95 ${
+                  isLight ? 'text-stone-700 hover:bg-white active:bg-stone-200' : 'text-stone-400 hover:text-white hover:bg-white/10 active:bg-white/20'
                 }`}
+                aria-label="Decrease quantity"
               >
                 <Minus className="w-3.5 h-3.5" />
               </button>
-              <span className="font-number font-bold text-sm w-4 text-center">
+              <span className="font-number font-bold text-sm w-5 text-center">
                 {quantity}
               </span>
               <button
@@ -238,9 +247,10 @@ export function ItemCustomizeModal({ item, isOpen, onClose }) {
                   sounds.playClick();
                   setQuantity(quantity + 1);
                 }}
-                className={`w-7 h-7 rounded-lg flex items-center justify-center transition ${
-                  isLight ? 'text-stone-700 hover:bg-white' : 'text-stone-400 hover:text-white hover:bg-white/10'
+                className={`w-8 h-8 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center transition active:scale-95 ${
+                  isLight ? 'text-stone-700 hover:bg-white active:bg-stone-200' : 'text-stone-400 hover:text-white hover:bg-white/10 active:bg-white/20'
                 }`}
+                aria-label="Increase quantity"
               >
                 <Plus className="w-3.5 h-3.5" />
               </button>
@@ -248,10 +258,10 @@ export function ItemCustomizeModal({ item, isOpen, onClose }) {
 
             <button
               onClick={handleConfirm}
-              className={`flex-1 py-3 px-4 rounded-2xl font-syne font-bold text-xs transition flex items-center justify-between shadow-sm cursor-pointer ${
+              className={`flex-1 py-3.5 sm:py-3 px-4 rounded-2xl font-syne font-bold text-xs transition active:scale-[0.98] flex items-center justify-between shadow-sm cursor-pointer ${
                 isLight 
-                  ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800' 
-                  : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200'
+                  ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800 active:bg-black' 
+                  : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200 active:bg-white'
               }`}
             >
               <span>ADD TO ORDER</span>

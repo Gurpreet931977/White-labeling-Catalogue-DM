@@ -20,7 +20,8 @@ import {
   Truck,
   Calendar,
   ThumbsUp,
-  Flame
+  Flame,
+  ChefHat
 } from 'lucide-react';
 import { CATEGORIES, MENU_ITEMS, CULINARY_SYNONYMS } from '../../data/menuData';
 import { useCart } from '../../context/CartContext';
@@ -116,8 +117,12 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
 
   const handleTableService = (type, label) => {
     sounds.playClick();
+    if (!activeTable) {
+      if (onOpenScanner) onOpenScanner();
+      return;
+    }
     requestTableService(activeTable, type);
-    setServiceFeedback(`Requested ${label} for Table #${activeTable || '04'} • Server notified`);
+    setServiceFeedback(`Requested ${label} for Table #${activeTable} • Server notified`);
     setTimeout(() => setServiceFeedback(null), 4000);
   };
 
@@ -190,11 +195,82 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
   };
 
   return (
-    <section id="menu-section" className={`py-8 sm:py-14 relative transition-colors duration-300 ${
+    <section id="menu-section" className={`pt-3 sm:pt-5 pb-12 sm:pb-16 relative transition-colors duration-300 ${
       isLight ? 'bg-[#FAF7F2] text-[#12100E]' : 'bg-[#12100E] text-[#FAF7F2]'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
+        {/* Atelier Table Dining Welcome & Status Header (Fills space above Table Connected) */}
+        <div className="mb-4 sm:mb-5 space-y-2.5 text-left">
+          {/* Top Breadcrumb & Live Kitchen Status Pill */}
+          <div className="flex flex-wrap items-center justify-between gap-2.5 pb-2.5 border-b border-black/10 dark:border-white/10">
+            <div className="flex items-center gap-2 text-[11px] font-mono tracking-wider uppercase">
+              <span className="text-[#D04834] font-bold flex items-center gap-1">
+                <Sparkles className="w-3 h-3" />
+                MILAN ATELIER
+              </span>
+              <span className={isLight ? 'text-black/20' : 'text-white/20'}>/</span>
+              <span className={isLight ? 'text-stone-600' : 'text-stone-300'}>IN-SEAT DINING</span>
+              <span className={isLight ? 'text-black/20' : 'text-white/20'}>/</span>
+              <span className={`font-bold ${activeTable ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#D04834]'}`}>
+                {activeTable ? `TABLE #${activeTable}` : 'NO TABLE BOUND'}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <div className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono border ${
+                isLight 
+                  ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
+                  : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+              }`}>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>KITCHEN FIRING • LIVE PREP</span>
+              </div>
+              <span className={`text-[10px] font-mono hidden sm:inline ${
+                isLight ? 'text-stone-500' : 'text-stone-400'
+              }`}>
+                {BRAND_CONFIG.contact.openingHours}
+              </span>
+            </div>
+          </div>
+
+          {/* Editorial Headline & Brief Dining Context */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
+            <div>
+              <h2 className="text-xl sm:text-3xl font-editorial font-bold tracking-tight">
+                <span className={isLight ? 'text-[#12100E]' : 'text-white'}>
+                  Seat-Side Ordering & Table Concierge
+                </span>
+              </h2>
+              <p className={`text-xs font-mono mt-0.5 max-w-2xl ${isLight ? 'text-stone-600' : 'text-stone-400'}`}>
+                Handcrafted woodfired recipes, artisanal sourdough crusts, and specialty brews prepared fresh and delivered straight to your seat.
+              </p>
+            </div>
+
+            {/* Quick Dining Value Badges */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none shrink-0">
+              <div className={`px-2.5 py-1 rounded-xl border text-[10px] font-mono flex items-center gap-1.5 shrink-0 ${
+                isLight ? 'bg-white border-black/10 text-stone-700' : 'bg-white/5 border-white/10 text-stone-300'
+              }`}>
+                <Flame className="w-3 h-3 text-[#D04834]" />
+                <span>Woodfired Live</span>
+              </div>
+              <div className={`px-2.5 py-1 rounded-xl border text-[10px] font-mono flex items-center gap-1.5 shrink-0 ${
+                isLight ? 'bg-white border-black/10 text-stone-700' : 'bg-white/5 border-white/10 text-stone-300'
+              }`}>
+                <ChefHat className="w-3 h-3 text-emerald-500" />
+                <span>Chef Prepared</span>
+              </div>
+              <div className={`px-2.5 py-1 rounded-xl border text-[10px] font-mono flex items-center gap-1.5 shrink-0 ${
+                isLight ? 'bg-white border-black/10 text-stone-700' : 'bg-white/5 border-white/10 text-stone-300'
+              }`}>
+                <Clock className="w-3 h-3 text-amber-500" />
+                <span>12-15m Avg Prep</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Service Station Status Bar */}
         <div className={`mb-6 p-4 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg text-left transition-colors ${
           isLight ? 'bg-white border-black/10 shadow-stone-300/30' : 'bg-[#1A1614] border-white/10'
@@ -226,10 +302,10 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
                     : operationalModel === 'showcase'
                     ? 'Curated Tasting & Menu Showcase'
                     : operationalModel === 'loyalty'
-                    ? `Loyalty Club Table #${activeTable || '04'} (${loyaltyVisits || 1}/7 Stamps)`
-                    : `Table #${activeTable || '04'} Connected`}
+                    ? activeTable ? `Loyalty Club Table #${activeTable} (${loyaltyVisits || 1}/7 Stamps)` : 'Loyalty Club • Select Table'
+                    : activeTable ? `Table #${activeTable} Connected` : 'Select Dining Table'}
                 </span>
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                <CheckCircle2 className={`w-4 h-4 ${activeTable ? 'text-emerald-500' : 'text-amber-500'}`} />
               </p>
               <p className={`text-xs font-mono ${isLight ? 'text-stone-600' : 'text-stone-400'}`}>
                 {operationalModel === 'self-serve'
@@ -240,7 +316,9 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
                   ? 'Browse handcrafted recipes and reserve your VIP table'
                   : operationalModel === 'loyalty'
                   ? 'Orders placed automatically earn +1 punch stamp upon billing'
-                  : 'Orders are freshly prepared and served directly to your seat'}
+                  : activeTable
+                  ? 'Orders are freshly prepared and served directly to your seat'
+                  : 'Tap to select an available table or scan table QR plaque'}
               </p>
             </div>
           </div>
@@ -274,7 +352,7 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
                 }`}
               >
                 <QrCode className="w-3.5 h-3.5 text-[#D04834]" />
-                <span>Change Table</span>
+                <span>{activeTable ? 'Change Table' : 'Select Table'}</span>
               </button>
             ) : null}
           </div>
@@ -289,7 +367,7 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
               <div className="flex items-center gap-2">
                 <BellRing className="w-3.5 h-3.5 text-[#D04834]" />
                 <span className={`font-bold font-editorial text-sm ${isLight ? 'text-[#12100E]' : 'text-white'}`}>
-                  Table #{activeTable || '04'} Service:
+                  {activeTable ? `Table #${activeTable} Service:` : 'Seat Service:'}
                 </span>
               </div>
               <span className={`text-[11px] hidden md:inline ${isLight ? 'text-stone-600' : 'text-stone-400'}`}>
@@ -303,41 +381,31 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
                 <span>{serviceFeedback}</span>
               </div>
             ) : (
-              <div className="grid grid-cols-3 gap-2 w-full sm:w-auto">
+              <div className="grid grid-cols-2 gap-2 w-full sm:w-auto">
                 <button
                   onClick={() => handleTableService('water', 'Drinking Water')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-mono flex items-center justify-center gap-1.5 border transition cursor-pointer ${
+                  className={`px-4 py-2 sm:py-1.5 rounded-xl text-xs font-mono font-medium flex items-center justify-center gap-1.5 border transition active:scale-95 cursor-pointer ${
                     isLight
-                      ? 'bg-white hover:bg-black/5 text-cyan-600 border-black/10'
-                      : 'bg-white/5 hover:bg-white/10 text-cyan-300 border-white/10'
+                      ? 'bg-white hover:bg-stone-50 active:bg-stone-100 text-sky-700 border-stone-200 shadow-2xs'
+                      : 'bg-[#1C1917] hover:bg-[#25201C] active:bg-[#2f2924] text-sky-400 border-white/10'
                   }`}
+                  title="Request drinking water for your table"
                 >
-                  <Droplets className="w-3.5 h-3.5" />
+                  <Droplets className="w-3.5 h-3.5 text-sky-500" />
                   <span>Water</span>
                 </button>
 
                 <button
                   onClick={() => handleTableService('waiter', 'Captain / Waiter')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-mono flex items-center justify-center gap-1.5 border transition cursor-pointer ${
+                  className={`px-4 py-2 sm:py-1.5 rounded-xl text-xs font-mono font-medium flex items-center justify-center gap-1.5 border transition active:scale-95 cursor-pointer ${
                     isLight
-                      ? 'bg-white hover:bg-black/5 text-[#D04834] border-black/10'
-                      : 'bg-white/5 hover:bg-white/10 text-[#E8E439] border-white/10'
+                      ? 'bg-white hover:bg-stone-50 active:bg-stone-100 text-[#D04834] border-stone-200 shadow-2xs'
+                      : 'bg-[#1C1917] hover:bg-[#25201C] active:bg-[#2f2924] text-[#E8E439] border-white/10'
                   }`}
+                  title="Call Captain / Waiter to your table"
                 >
-                  <BellRing className="w-3.5 h-3.5" />
+                  <BellRing className="w-3.5 h-3.5 text-[#D04834]" />
                   <span>Waiter</span>
-                </button>
-
-                <button
-                  onClick={() => handleTableService('bill', 'Table Bill')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-mono flex items-center justify-center gap-1.5 border transition cursor-pointer ${
-                    isLight
-                      ? 'bg-white hover:bg-black/5 text-emerald-600 border-black/10'
-                      : 'bg-white/5 hover:bg-white/10 text-emerald-300 border-white/10'
-                  }`}
-                >
-                  <Receipt className="w-3.5 h-3.5" />
-                  <span>Bill</span>
                 </button>
               </div>
             )}
@@ -690,12 +758,12 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
                           e.stopPropagation();
                           handleItemAdd(item);
                         }}
-                        className={`px-3.5 py-1.5 rounded-xl font-syne text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-md ${
+                        className={`px-4 py-2 sm:px-3.5 sm:py-1.5 rounded-xl font-syne text-xs font-bold transition active:scale-95 flex items-center gap-1.5 cursor-pointer shadow-md ${
                           isOutOfStock && operationalModel !== 'showcase'
                             ? 'bg-stone-300 text-stone-500 cursor-not-allowed'
                             : isLight
-                            ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-black'
-                            : 'bg-[#FAF7F2] text-[#12100E] hover:bg-[#E8E0D2]'
+                            ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-black active:bg-stone-800'
+                            : 'bg-[#FAF7F2] text-[#12100E] hover:bg-[#E8E0D2] active:bg-white'
                         }`}
                       >
                         {operationalModel === 'showcase' ? (

@@ -142,7 +142,7 @@ export function CartDrawer({
           className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         />
 
-        <div className="absolute inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
+        <div className="absolute inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
@@ -611,34 +611,37 @@ export function CartDrawer({
                             }`}>
                               <button
                                 onClick={() => updateQuantity(cartItem.cartItemId, -1)}
-                                className={`w-6 h-6 rounded-lg flex items-center justify-center transition ${
+                                className={`w-7 h-7 sm:w-6 sm:h-6 rounded-lg flex items-center justify-center transition active:scale-90 ${
                                   isLight 
-                                    ? 'text-stone-700 hover:bg-white' 
-                                    : 'text-stone-400 hover:text-white hover:bg-white/10'
+                                    ? 'text-stone-700 hover:bg-white active:bg-stone-200' 
+                                    : 'text-stone-400 hover:text-white hover:bg-white/10 active:bg-white/20'
                                 }`}
+                                aria-label="Decrease quantity"
                               >
-                                <Minus className="w-3 h-3" />
+                                <Minus className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
                               </button>
                               <span className="w-6 text-center font-number font-bold text-sm">
                                 {cartItem.quantity}
                               </span>
                               <button
                                 onClick={() => updateQuantity(cartItem.cartItemId, 1)}
-                                className={`w-6 h-6 rounded-lg flex items-center justify-center transition ${
+                                className={`w-7 h-7 sm:w-6 sm:h-6 rounded-lg flex items-center justify-center transition active:scale-90 ${
                                   isLight 
-                                    ? 'text-stone-700 hover:bg-white' 
-                                    : 'text-stone-400 hover:text-white hover:bg-white/10'
+                                    ? 'text-stone-700 hover:bg-white active:bg-stone-200' 
+                                    : 'text-stone-400 hover:text-white hover:bg-white/10 active:bg-white/20'
                                 }`}
+                                aria-label="Increase quantity"
                               >
-                                <Plus className="w-3 h-3" />
+                                <Plus className="w-3.5 h-3.5 sm:w-3 sm:h-3" />
                               </button>
                             </div>
                             <button
                               onClick={() => removeFromCart(cartItem.cartItemId)}
-                              className="text-stone-400 hover:text-[#D04834] p-1 transition"
+                              className="text-stone-400 hover:text-[#D04834] p-1.5 rounded-lg active:scale-90 transition"
                               title="Remove item"
+                              aria-label="Remove item"
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Trash2 className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
                             </button>
                           </div>
                         </div>

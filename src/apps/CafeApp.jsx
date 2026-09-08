@@ -9,8 +9,10 @@ import {
   X, 
   ArrowLeft, 
   Layers, 
-  ExternalLink 
+  ExternalLink,
+  Monitor
 } from 'lucide-react';
+import { MobileBottomBar } from '../components/common/MobileBottomBar';
 import { Navbar } from '../components/common/Navbar';
 import { Footer } from '../components/common/Footer';
 import { HeroSection } from '../components/home/HeroSection';
@@ -59,6 +61,19 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
     setIsAdminLoginOpen,
     requireCustomerAuth 
   } = useAuth();
+
+  const [isMobileDevice, setIsMobileDevice] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth < 768;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileDevice(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Scroll to top on view change
   useEffect(() => {
@@ -222,7 +237,7 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
       </AnimatePresence>
 
       {/* Main Content Area */}
-      <main className="flex-grow">
+      <main className="flex-grow pb-24 md:pb-0">
         {/* VIEW 1: HOME */}
         {currentView === 'home' && (
           <>
@@ -247,7 +262,7 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
 
         {/* VIEW 2: MENU (Customer Auth Protected) */}
         {currentView === 'menu' && (
-          <div className="pt-2">
+          <div className="pt-0">
             <MenuSection
               onSelectItemForCustomize={(item) => setSelectedItemForCustomize(item)}
               onOpenScanner={() => setIsScannerOpen(true)}
@@ -265,9 +280,34 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
           />
         )}
 
-        {/* VIEW 4: ADMIN / POS PORTAL (Password Protected) */}
+        {/* VIEW 4: ADMIN / POS PORTAL (PC Only • Guarded on Mobile) */}
         {currentView === 'admin' && (
-          isAdminLoggedIn ? (
+          isMobileDevice ? (
+            <div className="min-h-[75vh] flex flex-col items-center justify-center p-6 text-center space-y-4 font-sans">
+              <div className="w-16 h-16 rounded-3xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center mx-auto text-[#D04834] shadow-md">
+                <Monitor className="w-8 h-8 text-[#D04834]" />
+              </div>
+              <div className="space-y-2 max-w-sm mx-auto">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-800 dark:text-amber-300">
+                  Desktop Station Required
+                </span>
+                <h3 className={`text-2xl font-editorial font-bold ${isLight ? 'text-[#12100E]' : 'text-white'}`}>
+                  Staff POS Terminal
+                </h3>
+                <p className={`text-xs leading-relaxed ${isLight ? 'text-stone-600' : 'text-stone-400'}`}>
+                  Kitchen Display and Staff POS are optimized exclusively for counter screens and desktop tablets. Please open this terminal from your billing computer.
+                </p>
+              </div>
+              <button
+                onClick={() => { sounds.playClick(); setCurrentView('menu'); }}
+                className={`px-6 py-3 rounded-2xl font-syne font-bold text-xs uppercase tracking-wider transition cursor-pointer shadow-md ${
+                  isLight ? 'bg-[#12100E] text-white hover:bg-black' : 'bg-white text-black hover:bg-stone-200'
+                }`}
+              >
+                Return to Customer Menu
+              </button>
+            </div>
+          ) : isAdminLoggedIn ? (
             <AdminDashboard
               onBackToClient={() => setCurrentView('home')}
             />
@@ -299,29 +339,29 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
         )}
       </main>
 
-      {/* Floating Mobile Cart Bar (Mobile Only: md:hidden) */}
+      {/* Floating Mobile Cart Bar (Positioned above MobileBottomBar on phones) */}
       <AnimatePresence>
         {currentView !== 'admin' && itemCount > 0 && (
           <motion.div
             initial={{ y: 80, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 80, opacity: 0 }}
-            className="md:hidden fixed bottom-4 inset-x-4 z-40"
+            className="md:hidden fixed bottom-[72px] inset-x-3 z-40 max-w-md mx-auto"
           >
             <button
               onClick={() => { sounds.playClick(); setIsCartOpen(true); }}
-              className="w-full p-3.5 rounded-2xl bg-[#FAF7F2] text-[#12100E] font-bold shadow-2xl flex items-center justify-between active:scale-95 transition border border-white/20"
+              className="w-full p-3.5 rounded-2xl bg-[#12100E] text-[#FAF7F2] dark:bg-[#FAF7F2] dark:text-[#12100E] font-bold shadow-2xl flex items-center justify-between active:scale-95 transition border border-white/20"
             >
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[#12100E] text-[#FAF7F2] flex items-center justify-center font-bold text-xs font-number">
+                <div className="w-8 h-8 rounded-xl bg-[#FAF7F2] text-[#12100E] dark:bg-[#12100E] dark:text-[#FAF7F2] flex items-center justify-center font-bold text-xs font-number shadow-xs">
                   {itemCount}
                 </div>
                 <div className="text-left">
-                  <p className="text-xs font-black font-syne leading-tight">Vedi Ordine</p>
-                  <p className="text-[11px] font-number font-bold text-stone-700">₹{grandTotal}</p>
+                  <p className="text-xs font-black font-syne leading-tight">View Your Order</p>
+                  <p className="text-[11px] font-number font-bold text-stone-300 dark:text-stone-700">₹{grandTotal}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 text-xs font-black font-syne uppercase tracking-wider bg-[#12100E] text-[#FAF7F2] px-3.5 py-1.5 rounded-xl">
+              <div className="flex items-center gap-1.5 text-xs font-black font-syne uppercase tracking-wider bg-[#D04834] text-white px-3.5 py-1.5 rounded-xl shadow-xs">
                 <span>Checkout</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
@@ -412,6 +452,18 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
         isOpen={isReservationOpen}
         onClose={() => setIsReservationOpen(false)}
       />
+
+      {/* Native Thumb-Friendly Mobile Bottom Navigation Bar (md:hidden) */}
+      {currentView !== 'admin' && (
+        <MobileBottomBar
+          currentView={currentView}
+          onNavigateHome={() => setCurrentView('home')}
+          onNavigateMenu={handleNavigateMenu}
+          onOpenScanner={() => setIsScannerOpen(true)}
+          onOpenTracker={() => setCurrentView('tracker')}
+          onOpenCart={() => setIsCartOpen(true)}
+        />
+      )}
 
       {/* Full-Screen Radial Iris Theme Screen Transition */}
       <ThemeScreenTransition />

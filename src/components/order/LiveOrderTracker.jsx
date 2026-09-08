@@ -13,7 +13,9 @@ import {
   MapPin,
   Flame,
   Truck,
-  Store
+  Store,
+  AlertTriangle,
+  Banknote
 } from 'lucide-react';
 import { useOrder } from '../../context/OrderContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -59,12 +61,41 @@ export function LiveOrderTracker({ onOrderMore, onBackHome }) {
     );
   }
 
+  const isCounterPaymentPending = activeCustomerOrder.paymentStatus !== 'paid' && activeCustomerOrder.diningMode !== 'delivery';
+
   const steps = activeCustomerOrder.diningMode === 'delivery'
     ? [
         { key: 'placed', label: '1. Placed', desc: 'Received and dispatched to kitchen station', icon: Receipt },
         { key: 'cooking', label: '2. In Kitchen', desc: 'Chef preparing freshly handcrafted dishes', icon: ChefHat },
         { key: 'ready', label: '3. Out for Delivery', desc: 'Courier rider on route to your doorstep', icon: Truck },
         { key: 'served', label: '4. Delivered', desc: 'Arrived hot at your door. Enjoy!', icon: Sparkles }
+      ]
+    : isCounterPaymentPending
+    ? [
+        { 
+          key: 'placed', 
+          label: '1. Pay at Counter', 
+          desc: `Food on hold. Please visit the billing counter to pay ₹${activeCustomerOrder.total}.`, 
+          icon: Banknote 
+        },
+        { 
+          key: 'cooking', 
+          label: '2. In Kitchen', 
+          desc: 'Chefs fire dishes to the kitchen immediately after counter payment is recorded.', 
+          icon: ChefHat 
+        },
+        { 
+          key: 'ready', 
+          label: '3. Serving', 
+          desc: activeCustomerOrder.pickupToken ? 'Ready for tray collection at pickup window' : `Service heading to Table #${activeCustomerOrder.tableNumber || '04'}`, 
+          icon: Bell 
+        },
+        { 
+          key: 'served', 
+          label: '4. Served', 
+          desc: 'Order served. Enjoy your dining experience!', 
+          icon: Sparkles 
+        }
       ]
     : (activeCustomerOrder.diningMode === 'counter' || activeCustomerOrder.pickupToken)
     ? [
@@ -179,11 +210,55 @@ export function LiveOrderTracker({ onOrderMore, onBackHome }) {
                 Estimated Time
               </p>
               <p className="text-base font-number font-bold">
-                {activeCustomerOrder.status === 'ready' ? 'READY NOW!' : activeCustomerOrder.status === 'served' ? 'COMPLETED' : `${minsLeft} Min`}
+                {isCounterPaymentPending && activeCustomerOrder.status === 'placed'
+                  ? 'ON HOLD (PAY AT COUNTER)'
+                  : activeCustomerOrder.status === 'ready' 
+                  ? 'READY NOW!' 
+                  : activeCustomerOrder.status === 'served' 
+                  ? 'COMPLETED' 
+                  : `${minsLeft} Min`}
               </p>
             </div>
           </div>
         </div>
+
+        {/* Notice #3: Persistent Counter Payment Required Banner */}
+        {isCounterPaymentPending && activeCustomerOrder.status === 'placed' && (
+          <div className={`p-5 rounded-2xl border-2 space-y-3 text-left shadow-lg ${
+            isLight 
+              ? 'bg-amber-500/10 border-amber-500/40 text-stone-900' 
+              : 'bg-amber-500/10 border-amber-500/30 text-[#FAF7F2]'
+          }`}>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#D04834] animate-ping" />
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#D04834]">
+                  Action Required • Notice 3 of 3
+                </span>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full bg-[#D04834] text-white text-[10px] font-mono font-bold uppercase tracking-wider">
+                Kitchen on Hold
+              </span>
+            </div>
+
+            <div className="space-y-1.5">
+              <h3 className="text-lg font-editorial font-bold flex items-center gap-2 text-rose-700 dark:text-rose-300">
+                <AlertTriangle className="w-5 h-5 text-[#D04834] shrink-0" />
+                <span>Please Settle ₹{activeCustomerOrder.total} at the Billing Counter</span>
+              </h3>
+              <p className={`text-xs leading-relaxed ${isLight ? 'text-stone-700' : 'text-stone-300'}`}>
+                Your order <strong>#{activeCustomerOrder.orderNumber}</strong> is safely received, but <strong>food preparation has NOT started yet</strong>. Please show this screen at the billing counter to pay. The moment payment is received, our chefs will immediately begin cooking your order!
+              </p>
+            </div>
+
+            <div className={`p-3 rounded-xl border flex items-center justify-between text-xs font-mono ${
+              isLight ? 'bg-white/80 border-amber-500/30 text-stone-800' : 'bg-black/30 border-white/10 text-stone-200'
+            }`}>
+              <span>Amount Due: <strong className="font-number font-bold text-[#D04834] text-sm">₹{activeCustomerOrder.total}</strong></span>
+              <span className="font-bold">{activeCustomerOrder.tableNumber ? `Table #${activeCustomerOrder.tableNumber}` : 'Takeaway Counter'}</span>
+            </div>
+          </div>
+        )}
 
         {/* COUNTER TOKEN BANNER */}
         {activeCustomerOrder.pickupToken && (
@@ -226,7 +301,7 @@ export function LiveOrderTracker({ onOrderMore, onBackHome }) {
               return (
                 <div key={step.key} className="relative z-10 flex flex-col items-center">
                   <div
-                    className={`w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-xs transition-all border ${
+                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-2xl flex items-center justify-center font-bold text-xs transition-all border ${
                       isCompleted
                         ? 'bg-[#12100E] text-white border-[#12100E]'
                         : isCurrent
@@ -237,13 +312,13 @@ export function LiveOrderTracker({ onOrderMore, onBackHome }) {
                     }`}
                   >
                     {isCompleted ? (
-                      <CheckCircle2 className="w-5 h-5 text-white" />
+                      <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     ) : (
-                      <StepIcon className="w-5 h-5" />
+                      <StepIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                     )}
                   </div>
                   <p
-                    className={`text-[11px] font-mono font-bold mt-2 text-center uppercase tracking-wider ${
+                    className={`text-[9px] sm:text-[11px] font-mono font-bold mt-2 text-center uppercase tracking-tight sm:tracking-wider max-w-[65px] sm:max-w-none leading-tight ${
                       isCurrent ? 'text-[#D04834]' : isCompleted ? (isLight ? 'text-stone-800' : 'text-white') : 'text-stone-400'
                     }`}
                   >
@@ -310,10 +385,10 @@ export function LiveOrderTracker({ onOrderMore, onBackHome }) {
                   className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
                     activeCustomerOrder.paymentStatus === 'paid'
                       ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30'
-                      : 'bg-amber-400/20 text-amber-700 dark:text-amber-300 border border-amber-400/30'
+                      : 'bg-amber-400/20 text-amber-700 dark:text-amber-300 border border-amber-400/30 animate-pulse'
                   }`}
                 >
-                  {activeCustomerOrder.paymentStatus === 'paid' ? 'PAID ONLINE' : 'PAY AT COUNTER'}
+                  {activeCustomerOrder.paymentStatus === 'paid' ? 'PAID ONLINE' : '⚠️ DUE AT COUNTER (HOLD)'}
                 </span>
               </div>
               <p className="text-xl font-editorial font-normal mt-2">
@@ -325,7 +400,11 @@ export function LiveOrderTracker({ onOrderMore, onBackHome }) {
               isLight ? 'border-stone-200 text-stone-500' : 'border-white/10 text-stone-400'
             }`}>
               <span>Order #<span className="font-number font-bold">{activeCustomerOrder.orderNumber}</span></span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold">Sent to Kitchen</span>
+              {activeCustomerOrder.paymentStatus === 'paid' ? (
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold">Kitchen Preparing</span>
+              ) : (
+                <span className="text-rose-600 dark:text-rose-400 font-bold">Pay at Counter to Cook</span>
+              )}
             </div>
           </div>
         </div>

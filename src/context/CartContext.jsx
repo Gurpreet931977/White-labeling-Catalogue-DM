@@ -164,7 +164,29 @@ export function CartProvider({ children }) {
   useEffect(() => {
     if (activeTable) {
       localStorage.setItem('thc_active_table', activeTable.toString());
+    } else {
+      localStorage.removeItem('thc_active_table');
     }
+  }, [activeTable]);
+
+  // Listen for table vacated events (auto after 30-min turnover or admin manual release)
+  useEffect(() => {
+    const handleTableVacated = (e) => {
+      const vacatedNum = Number(e?.detail?.tableNumber);
+      if (vacatedNum && Number(activeTable) === vacatedNum) {
+        setActiveTable(null);
+        localStorage.removeItem('thc_active_table');
+        window.dispatchEvent(new CustomEvent('thc_table_session_ended', {
+          detail: {
+            tableNumber: vacatedNum,
+            message: `Dining session at Table #${vacatedNum} has concluded. Table is now vacant.`
+          }
+        }));
+      }
+    };
+
+    window.addEventListener('thc_table_vacated', handleTableVacated);
+    return () => window.removeEventListener('thc_table_vacated', handleTableVacated);
   }, [activeTable]);
 
   useEffect(() => {
