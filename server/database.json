@@ -3,8 +3,8 @@
     {
       "id": "usr_admin_01",
       "role": "admin",
-      "name": "THC Admin Desk",
-      "email": "admin@thccafe.com",
+      "name": "Velour Admin Desk",
+      "email": "admin@velourcafe.com",
       "pin": "7788",
       "password": "admin",
       "createdAt": "2026-08-19T10:05:46.238Z"
@@ -23,7 +23,7 @@
   "orders": [
     {
       "id": "ORD-9081",
-      "orderNumber": "THC-104",
+      "orderNumber": "VEL-104",
       "tableNumber": 4,
       "diningMode": "table",
       "customerName": "Rahul Sharma",
@@ -63,7 +63,7 @@
     },
     {
       "id": "ORD-9080",
-      "orderNumber": "THC-103",
+      "orderNumber": "VEL-103",
       "tableNumber": 7,
       "diningMode": "table",
       "customerName": "Pooja Negi",
@@ -101,7 +101,7 @@
     },
     {
       "id": "ORD-9079",
-      "orderNumber": "THC-102",
+      "orderNumber": "VEL-102",
       "tableNumber": null,
       "diningMode": "counter",
       "customerName": "Vikram Sethi",
@@ -144,7 +144,7 @@
     "thc-04": false
   },
   "settings": {
-    "cafeName": "THC - Truckers Halt Cafe",
+    "cafeName": "Velour Cafe & Bistro",
     "location": "Rajpur Road, NH-72A Dehradun",
     "isOpen247": true,
     "activeTablesCount": 12

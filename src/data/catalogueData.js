@@ -44,7 +44,7 @@ export const CATALOGUE_DATA = {
       code: "01 / F&B",
       category: "cafes",
       title: "Cafes, Quick-Bites & Lounges",
-      clientBrand: "THC - Cafe & Italian Bistro",
+      clientBrand: "Velour - Cafe & Italian Bistro",
       badge: "INTERACTIVE SUITE",
       status: "PRODUCTION ACTIVE",
       headline: "7 Turnkey Operating Models: Table QR, Self-Serve, Delivery & Gamified Loyalty",

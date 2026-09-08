@@ -217,12 +217,16 @@ export function Navbar({
             className="flex items-center gap-2.5 sm:gap-3.5 cursor-pointer group select-none shrink-0"
           >
             <div className="relative">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black font-syne text-lg shadow-md group-hover:scale-105 transition-transform ${
+              <div className={`h-10 px-2.5 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-all overflow-hidden border ${
                 isLight
-                  ? 'bg-[#12100E] text-[#FAF7F2]'
-                  : 'bg-gradient-to-br from-[#FAF7F2] to-[#E8E0D2] text-[#12100E]'
+                  ? 'bg-white border-[#E8E2D5]'
+                  : 'bg-white/95 border-white/20'
               }`}>
-                {BRAND_CONFIG.logoInitials}
+                <img 
+                  src={BRAND_CONFIG.logoTransparent} 
+                  alt={BRAND_CONFIG.brandName} 
+                  className="h-7 w-auto object-contain drop-shadow-xs"
+                />
               </div>
               <span className={`absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#D04834] ring-2 ${
                 isLight ? 'ring-[#FAF7F2]' : 'ring-[#12100E]'
@@ -234,7 +238,7 @@ export function Navbar({
                 <span className={`font-editorial text-lg sm:text-2xl font-bold tracking-tight transition whitespace-nowrap ${
                   isLight ? 'text-[#12100E]' : 'text-white'
                 }`}>
-                  <span className="sm:hidden">{BRAND_CONFIG.shortName || 'THC Cafe'}</span>
+                  <span className="sm:hidden">{BRAND_CONFIG.shortName || 'Velour'}</span>
                   <span className="hidden sm:inline">{BRAND_CONFIG.brandName}</span>
                 </span>
               </div>
@@ -559,10 +563,14 @@ export function Navbar({
                 isLight ? 'bg-[#FAF7F2]/95 border-black/10' : 'bg-[#12100E]/95 border-white/10'
               }`}>
                 <div className="flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black font-syne text-base shadow-sm ${
-                    isLight ? 'bg-[#12100E] text-[#FAF7F2]' : 'bg-[#FAF7F2] text-[#12100E]'
+                  <div className={`h-9 px-2 rounded-xl flex items-center justify-center shadow-sm border overflow-hidden ${
+                    isLight ? 'bg-white border-[#E8E2D5]' : 'bg-white/95 border-white/20'
                   }`}>
-                    {BRAND_CONFIG.logoInitials}
+                    <img 
+                      src={BRAND_CONFIG.logoTransparent} 
+                      alt={BRAND_CONFIG.brandName} 
+                      className="h-6 w-auto object-contain"
+                    />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
@@ -668,7 +676,7 @@ export function Navbar({
                     </div>
                     <div>
                       <p className="text-[10px] font-mono opacity-60 uppercase tracking-wider">Free Guest Wi-Fi</p>
-                      <p className="text-xs font-mono font-bold tracking-tight">THC_GUEST_5G</p>
+                      <p className="text-xs font-mono font-bold tracking-tight">VELOUR_GUEST_5G</p>
                       <p className="text-[10px] font-mono opacity-70">Pass: sourdough2026</p>
                     </div>
                   </div>

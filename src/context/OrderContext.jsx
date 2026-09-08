@@ -8,7 +8,7 @@ const OrderContext = createContext();
 const FALLBACK_ORDERS = [
   {
     id: "ORD-9081",
-    orderNumber: "THC-104",
+    orderNumber: "VEL-104",
     tableNumber: 4,
     diningMode: "table",
     customerName: "Rahul Sharma",
@@ -31,7 +31,7 @@ const FALLBACK_ORDERS = [
   },
   {
     id: "ORD-9082",
-    orderNumber: "THC-105",
+    orderNumber: "VEL-105",
     tableNumber: 7,
     diningMode: "table",
     customerName: "Pooja Negi",
@@ -394,7 +394,7 @@ export function OrderProvider({ children }) {
   // Place Order
   const placeOrder = async (orderData) => {
     sounds.playOrderPlaced();
-    const orderNum = `THC-${Math.floor(100 + Math.random() * 900)}`;
+    const orderNum = `VEL-${Math.floor(100 + Math.random() * 900)}`;
     const tempOrder = {
       id: `ORD-${Date.now()}`,
       orderNumber: orderNum,

@@ -202,7 +202,7 @@ export function CafeBillingPOS({
       return;
     }
     let active = true;
-    const upiUrl = getUpiPaymentUrl('thccafe@icici', 'THC Cafe & Bistro', grandTotal, 'Counter POS Bill');
+    const upiUrl = getUpiPaymentUrl('velourcafe@icici', 'Velour Cafe & Bistro', grandTotal, 'Counter POS Bill');
     generateQRCodeDataUrl(upiUrl, {
       width: 200,
       margin: 1,

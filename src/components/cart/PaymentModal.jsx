@@ -62,9 +62,9 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
   const [counterAcknowledged, setCounterAcknowledged] = useState(false);
 
   // Generate authentic NPCI UPI payment deep link and scannable QR
-  const upiId = CAFE_CONFIG.mockUpiId || 'thccafe@icici';
-  const upiPayee = BRAND_CONFIG.brandName || 'THC Cafe and Bistro';
-  const orderNote = diningMode === 'table' ? `Table ${activeTable || '01'} Bill` : 'THC Cafe Order';
+  const upiId = CAFE_CONFIG.mockUpiId || 'velourcafe@icici';
+  const upiPayee = BRAND_CONFIG.brandName || 'Velour Cafe and Bistro';
+  const orderNote = diningMode === 'table' ? `Table ${activeTable || '01'} Bill` : 'Velour Cafe Order';
   const upiPaymentUrl = getUpiPaymentUrl(upiId, upiPayee, grandTotal, orderNote);
 
   useEffect(() => {

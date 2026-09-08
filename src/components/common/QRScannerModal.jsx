@@ -520,6 +520,11 @@ export function QRScannerModal({ isOpen, onClose, onScanComplete }) {
               </p>
 
               <div className="p-4 bg-white rounded-3xl border-4 border-stone-900 shadow-xl my-4 flex flex-col items-center">
+                <img 
+                  src={BRAND_CONFIG.logoWhiteBg} 
+                  alt="Velour Cafe & Bistro" 
+                  className="h-9 w-auto object-contain rounded-md mb-2 shadow-xs"
+                />
                 {standeeQrUrl ? (
                   <img src={standeeQrUrl} alt="Table QR" className="w-44 h-44 object-contain rounded-lg" />
                 ) : (

@@ -86,10 +86,14 @@ export function Footer({ onNavigateMenu, onOpenScanner }) {
             {/* Col 1: Brand & Soul */}
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black font-syne text-sm ${
-                  isLight ? 'bg-[#12100E] text-[#FAF7F2]' : 'bg-[#FAF7F2] text-[#12100E]'
+                <div className={`h-8 px-2 rounded-lg flex items-center justify-center border overflow-hidden ${
+                  isLight ? 'bg-white border-[#E8E2D5]' : 'bg-white/95 border-white/20'
                 }`}>
-                  {BRAND_CONFIG.logoInitials}
+                  <img 
+                    src={BRAND_CONFIG.logoTransparent} 
+                    alt={BRAND_CONFIG.brandName} 
+                    className="h-5 w-auto object-contain"
+                  />
                 </div>
                 <h4 className={`font-editorial text-base font-bold ${isLight ? 'text-[#12100E]' : 'text-white'}`}>
                   {BRAND_CONFIG.brandName}

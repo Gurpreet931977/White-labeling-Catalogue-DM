@@ -48,8 +48,8 @@ export function getTableOrderUrl(tableNumber) {
  * @returns {string} UPI URI
  */
 export function getUpiPaymentUrl(upiId, payeeName, amount, note = 'Cafe Order') {
-  const cleanUpi = encodeURIComponent(upiId || 'thccafe@okhdfcbank');
-  const cleanName = encodeURIComponent(payeeName || 'THC Cafe and Bistro');
+  const cleanUpi = encodeURIComponent(upiId || 'velourcafe@okhdfcbank');
+  const cleanName = encodeURIComponent(payeeName || 'Velour Cafe and Bistro');
   const cleanAmount = Number(amount || 0).toFixed(2);
   const cleanNote = encodeURIComponent(note);
   

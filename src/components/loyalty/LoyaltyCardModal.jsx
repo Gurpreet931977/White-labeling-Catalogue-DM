@@ -66,13 +66,13 @@ export function LoyaltyCardModal({ isOpen, onClose, onOpenCart }) {
           {/* Top Bar */}
           <div className="flex items-center justify-between pb-4 border-b border-white/10 relative z-10">
             <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 flex items-center justify-center font-black shadow-lg shadow-amber-500/20">
-                <Award className="w-5 h-5" />
+              <div className="h-10 px-2 rounded-2xl bg-white text-slate-950 flex items-center justify-center shadow-lg border border-amber-400/30 overflow-hidden">
+                <img src={BRAND_CONFIG.logoTransparent} alt="Velour" className="h-7 w-auto object-contain" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-mono uppercase text-amber-400 tracking-wider font-bold">
-                    {BRAND_CONFIG.loyalty?.clubName || "THC Artisan Club"}
+                    {BRAND_CONFIG.loyalty?.clubName || "Velour Artisan Club"}
                   </span>
                   <span className="px-2 py-0.5 rounded-full bg-amber-400/15 text-amber-300 font-mono text-[9px] border border-amber-400/20 font-bold">
                     VIP PASS

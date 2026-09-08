@@ -144,7 +144,7 @@ export function CustomerReviews() {
               isLight ? 'text-stone-700' : 'text-stone-300'
             }`}>
               <Instagram className="w-4 h-4 text-[#D04834]" />
-              <span>CURATED FEED // @THCCAFE.MILANO</span>
+              <span>CURATED FEED // @VELOURCAFE.BISTRO</span>
             </div>
             <a
               href="https://instagram.com"

@@ -321,7 +321,7 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
                     </label>
                     <div className="p-4 rounded-2xl bg-slate-900 border border-amber-400/40 space-y-3">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-slate-300 font-syne font-bold">THC Artisan Club Card</span>
+                        <span className="text-slate-300 font-syne font-bold">Velour Artisan Club Card</span>
                         <span className="text-amber-400 font-mono font-bold">Stamps: 6 of 7 (Next = 50% OFF)</span>
                       </div>
                       <div className="flex items-center gap-1.5">

@@ -131,7 +131,7 @@ export const CATEGORY_MODELS = [
         price1: "349",
         item2: "Smoked Alfredo Penne & Brew",
         price2: "269",
-        specialAction: "Launch Full Live THC Website",
+        specialAction: "Launch Full Live Velour Website",
         stat1: "2.8x Table Speed",
         stat2: "99.4% Precision"
       },
@@ -410,7 +410,7 @@ export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
 
   // Selections
   const [selectedCategory, setSelectedCategory] = useState(CATEGORY_MODELS[0]);
-  const [selectedModel, setSelectedModel] = useState(CATEGORY_MODELS[0].models[0]); // Defaults to THC Cafe Model!
+  const [selectedModel, setSelectedModel] = useState(CATEGORY_MODELS[0].models[0]); // Defaults to Velour Cafe Model!
   const [selectedStyle, setSelectedStyle] = useState(CRAZY_STYLES[0]);
   
   // Custom Identity
@@ -710,7 +710,7 @@ export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
                   Choose Operational Architecture
                 </h3>
                 <p className="text-xs text-slate-400 font-clash mt-0.5">
-                  Select the exact operational flow (e.g. THC QR diner vs roastery vs bistro).
+                  Select the exact operational flow (e.g. Velour QR diner vs roastery vs bistro).
                 </p>
               </div>
 
@@ -1055,7 +1055,7 @@ export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
                         className="px-4 py-3 bg-white/10 hover:bg-white/20 text-white font-mono text-xs uppercase tracking-wider flex items-center gap-1.5 cursor-pointer"
                       >
                         <ExternalLink className="w-3.5 h-3.5 text-[#ebd73f]" />
-                        <span>Launch Full THC Website</span>
+                        <span>Launch Full Velour Website</span>
                       </button>
                     )}
                   </div>
@@ -1122,7 +1122,7 @@ export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
                         onClick={onLaunchLiveDemo}
                         className="px-5 py-3.5 bg-white text-black font-black text-sm uppercase tracking-wider border-3 border-black shadow-[4px_4px_0px_#000] hover:translate-x-0.5 hover:translate-y-0.5 cursor-pointer"
                       >
-                        Launch THC Live App
+                        Launch Velour Live App
                       </button>
                     )}
                   </div>
@@ -1185,7 +1185,7 @@ export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
                         onClick={onLaunchLiveDemo}
                         className="px-5 py-3 rounded-2xl bg-[#ebd73f] text-black font-clash font-bold text-xs shadow-xl cursor-pointer"
                       >
-                        Launch THC Live App
+                        Launch Velour Live App
                       </button>
                     )}
                   </div>
@@ -1235,7 +1235,7 @@ export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
                         onClick={onLaunchLiveDemo}
                         className="px-6 py-3 bg-[#d4af37] text-black font-mono text-[11px] tracking-[0.2em] uppercase font-bold cursor-pointer"
                       >
-                        Launch THC Live
+                        Launch Velour Live
                       </button>
                     )}
                   </div>
@@ -1303,7 +1303,7 @@ export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
                         onClick={onLaunchLiveDemo}
                         className="px-5 py-3 rounded-full bg-white text-black font-black text-xs cursor-pointer shadow-lg"
                       >
-                        Launch Live THC Site
+                        Launch Live Velour Site
                       </button>
                     )}
                   </div>
@@ -1365,7 +1365,7 @@ export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
                         onClick={onLaunchLiveDemo}
                         className="px-5 py-3.5 bg-white hover:bg-slate-200 text-black font-black italic text-xs uppercase tracking-wider -skew-x-12 cursor-pointer"
                       >
-                        Launch Live THC Site
+                        Launch Live Velour Site
                       </button>
                     )}
                   </div>

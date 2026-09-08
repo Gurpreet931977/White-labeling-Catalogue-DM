@@ -11,10 +11,10 @@ const INITIAL_DB = {
     {
       id: "usr_admin_01",
       role: "admin",
-      name: "THC Admin Desk",
-      email: "admin@thccafe.com",
+      name: "Velour Admin Desk",
+      email: "admin@velourcafe.com",
       pin: "7788",
-      password: "admin", // also accepts 'thc2026'
+      password: "admin", // also accepts 'velour2026'
       createdAt: new Date().toISOString()
     },
     {
@@ -30,7 +30,7 @@ const INITIAL_DB = {
   orders: [
     {
       id: "ORD-9081",
-      orderNumber: "THC-104",
+      orderNumber: "VEL-104",
       tableNumber: 4,
       diningMode: "table",
       customerName: "Rahul Sharma",
@@ -53,7 +53,7 @@ const INITIAL_DB = {
     },
     {
       id: "ORD-9080",
-      orderNumber: "THC-103",
+      orderNumber: "VEL-103",
       tableNumber: 7,
       diningMode: "table",
       customerName: "Pooja Negi",
@@ -76,7 +76,7 @@ const INITIAL_DB = {
     },
     {
       id: "ORD-9079",
-      orderNumber: "THC-102",
+      orderNumber: "VEL-102",
       tableNumber: null,
       diningMode: "counter",
       customerName: "Vikram Sethi",
@@ -100,7 +100,7 @@ const INITIAL_DB = {
   ],
   menu_stock: {},
   settings: {
-    cafeName: "THC - Truckers Halt Cafe",
+    cafeName: "Velour Cafe & Bistro",
     location: "Rajpur Road, NH-72A Dehradun",
     isOpen247: true,
     activeTablesCount: 12

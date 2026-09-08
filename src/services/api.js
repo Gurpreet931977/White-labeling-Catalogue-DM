@@ -88,7 +88,7 @@ export const api = {
       console.warn('Create order API failed, generating client-side fallback:', e);
       return {
         id: `ORD-${Date.now()}`,
-        orderNumber: `THC-${Math.floor(100 + Math.random() * 900)}`,
+        orderNumber: `VEL-${Math.floor(100 + Math.random() * 900)}`,
         createdAt: new Date().toISOString(),
         status: 'placed',
         ...orderData

@@ -42,7 +42,7 @@ export function thcApiPlugin() {
           if (cleanUrl === '/api/health' && method === 'GET') {
             return sendJson(res, 200, {
               status: 'online',
-              system: 'THC Backend Database Engine',
+              system: 'Velour Backend Database Engine',
               version: '2.0.0',
               timestamp: new Date().toISOString()
             });

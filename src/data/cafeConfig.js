@@ -9,9 +9,11 @@
 
 export const BRAND_CONFIG = {
   // Brand Identity
-  brandName: "THC Cafe & Bistro",
-  shortName: "THC Cafe",
-  logoInitials: "THC",
+  brandName: "Velour Cafe & Bistro",
+  shortName: "Velour",
+  logoInitials: "Velour",
+  logoTransparent: "/logos/velour-logo-trans.png",
+  logoWhiteBg: "/logos/velour-logo-white.png",
   tagline: "Artisan Kitchen • Handcrafted Italian & Specialty Brews",
   
   // Hero Section Customization
@@ -19,7 +21,7 @@ export const BRAND_CONFIG = {
     locationTag: "ARTISAN BISTRO • ITALIAN KITCHEN",
     headlineLine1: "Savor Every",
     headlineLine2: "Artisan Flavor.",
-    description: "Scan your table QR, indulge in hand-stretched wood-fired pizzas, silky Italian pastas, single-origin espresso, and gourmet cafe classics delivered fresh to your seat.",
+    description: "Indulge in hand-stretched wood-fired pizzas, silky Italian pastas, single-origin espresso, and gourmet cafe classics delivered fresh to your seat.",
     deliveryTag: "10-15 Min Table Serve",
     paymentTag: "UPI / Cash / Card",
     kitchenTag: "Fresh All-Day Kitchen"
@@ -33,10 +35,10 @@ export const BRAND_CONFIG = {
     fullAddress: "Rajpur Road, Near Clock Tower, Dehradun, Uttarakhand 248001",
     phone: "+91 98970 00842",
     whatsapp: "919897000842",
-    email: "contact@thccafe.in",
+    email: "contact@velourcafe.in",
     googleMapsUrl: "https://maps.google.com",
     openingHours: "Open Daily • 9:00 AM – 11:30 PM",
-    announcementText: "Use code: CAFE10 for 10% OFF • Scan Table QR to Order Instantly"
+    announcementText: "Use code: CAFE10 for 10% OFF • Select Dining Table to Order Instantly"
   },
 
   // Ratings & Social Proof
@@ -67,7 +69,7 @@ export const BRAND_CONFIG = {
     currencySymbol: "₹",
     currencyCode: "INR",
     gstRate: 0.05, // 5% Restaurant GST
-    mockUpiId: "thccafe@okhdfcbank",
+    mockUpiId: "velourcafe@okhdfcbank",
     allowCashOnCounter: true,
     allowOnlinePayment: true
   },
@@ -96,7 +98,7 @@ export const BRAND_CONFIG = {
     milestoneRewardTitle: "50% OFF Entire Order (or Free Signature Item)",
     milestonePromoCode: "LOYALTY50",
     milestoneDiscountPercent: 50,
-    clubName: "THC Artisan Club",
+    clubName: "Velour Artisan Club",
     stampIcon: "Coffee"
   },
 

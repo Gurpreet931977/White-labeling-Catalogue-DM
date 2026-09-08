@@ -420,7 +420,7 @@ export function AdminDashboard({ onBackToClient }) {
     if (!tableQrDataUrl) return;
     const a = document.createElement('a');
     a.href = tableQrDataUrl;
-    a.download = `THC-Cafe-Table-${selectedTableForQR < 10 ? `0${selectedTableForQR}` : selectedTableForQR}-QR.png`;
+    a.download = `Velour-Cafe-Table-${selectedTableForQR < 10 ? `0${selectedTableForQR}` : selectedTableForQR}-QR.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -544,7 +544,7 @@ export function AdminDashboard({ onBackToClient }) {
             <div class="instruct">Scan QR to View Menu &amp; Order</div>
             <div class="url">${currentTableOrderUrl}</div>
             <div class="wifi-box">
-              <strong>Cafe WiFi:</strong> THC-HighSpeed &bull; <strong>Pass:</strong> highwaycafe
+              <strong>Cafe WiFi:</strong> Velour-HighSpeed &bull; <strong>Pass:</strong> sourdough2026
             </div>
           </div>
           <script>
@@ -578,11 +578,11 @@ export function AdminDashboard({ onBackToClient }) {
 
     const itemsHtml = allQrs.map((t) => `
       <div class="card">
-        <div class="tag">THC CAFE &bull; STAND</div>
+        <div class="tag">VELOUR CAFE &bull; STAND</div>
         <div class="table-label">TABLE #${t.number < 10 ? `0${t.number}` : t.number}</div>
         <div class="qr-wrap"><img src="${t.qr}" /></div>
         <div class="help">Point camera to order directly</div>
-        <div class="subhelp">${t.capacity} Guests &bull; THC-HighSpeed WiFi</div>
+        <div class="subhelp">${t.capacity} Guests &bull; Velour-HighSpeed WiFi</div>
       </div>
     `).join('');
 
@@ -787,10 +787,14 @@ export function AdminDashboard({ onBackToClient }) {
             
             {/* Left: Atelier Brand Identity */}
             <div className="flex items-center gap-3">
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs shadow-sm transition-colors ${
-                isLight ? 'bg-[#12100E] text-white' : 'bg-white text-black'
+              <div className={`h-9 px-2 rounded-xl flex items-center justify-center border shadow-sm overflow-hidden ${
+                isLight ? 'bg-white border-stone-200' : 'bg-white text-black border-white/20'
               }`}>
-                {BRAND_CONFIG.logoInitials}
+                <img 
+                  src={BRAND_CONFIG.logoTransparent} 
+                  alt={BRAND_CONFIG.brandName} 
+                  className="h-6 w-auto object-contain"
+                />
               </div>
               <div>
                 <div className="flex items-center gap-2">

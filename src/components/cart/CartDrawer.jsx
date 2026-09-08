@@ -161,12 +161,12 @@ export function CartDrawer({
                 : 'bg-[#0E0C0B]/90 border-white/10'
             }`}>
               <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs shadow-sm transition-colors ${
+                <div className={`h-9 px-2 rounded-xl flex items-center justify-center border shadow-sm overflow-hidden ${
                   isLight 
-                    ? 'bg-[#12100E] text-[#FAF7F2]' 
-                    : 'bg-[#FAF7F2] text-[#12100E]'
+                    ? 'bg-white border-[#E8E2D5]' 
+                    : 'bg-white/95 border-white/20'
                 }`}>
-                  <ShoppingBag className="w-4 h-4" />
+                  <img src={BRAND_CONFIG.logoTransparent} alt="Velour" className="h-6 w-auto object-contain" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
