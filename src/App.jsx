@@ -7,62 +7,72 @@ import { GamifiedLoyaltyApp } from './apps/GamifiedLoyaltyApp';
 import { StudioPasswordGate, isStudioAuthenticated } from './components/studio/StudioPasswordGate';
 
 export default function App() {
-  // Support 'catalogue' (default), 'studio', 'cafe-variants', 'cafe-demo', or 'loyalty-app'
-  const [appMode, setAppMode] = useState(() => {
-    if (window.location.hash === '#loyalty' || window.location.hash === '#loyalty-pass') return 'loyalty-app';
-    if (window.location.hash === '#cafe-demo') return 'cafe-demo';
-    if (window.location.hash === '#cafe-options') return 'cafe-variants';
-    if (window.location.hash === '#studio' || window.location.hash === '#editor') return 'studio';
+  const getInitialAppMode = () => {
+    try {
+      const hash = (typeof window !== 'undefined' ? window.location.hash : '').toLowerCase();
+      if (hash.includes('loyalty')) return 'loyalty-app';
+      if (hash.includes('cafe-demo')) return 'cafe-demo';
+      if (hash.includes('cafe-options') || hash.includes('variants')) return 'cafe-variants';
+      if (hash.includes('studio') || hash.includes('editor')) return 'studio';
+    } catch (e) {}
     return 'catalogue';
-  });
+  };
+
+  // Support 'catalogue' (default), 'studio', 'cafe-variants', 'cafe-demo', or 'loyalty-app'
+  const [appMode, setAppMode] = useState(getInitialAppMode);
 
   // Studio password gate — persists for this browser tab session only
   const [studioAuthed, setStudioAuthed] = useState(() => isStudioAuthenticated());
 
   // Keep hash in sync for clean URL sharing & browser back/forward
   useEffect(() => {
-    if (appMode === 'loyalty-app') {
-      window.location.hash = 'loyalty';
-    } else if (appMode === 'cafe-demo') {
-      window.location.hash = 'cafe-demo';
-    } else if (appMode === 'cafe-variants') {
-      window.location.hash = 'cafe-options';
-    } else if (appMode === 'studio') {
-      window.location.hash = 'studio';
-    } else {
-      if (
-        window.location.hash === '#loyalty' ||
-        window.location.hash === '#loyalty-pass' ||
-        window.location.hash === '#cafe-demo' || 
-        window.location.hash === '#cafe-options' || 
-        window.location.hash === '#studio' || 
-        window.location.hash === '#editor'
-      ) {
-        history.replaceState(null, '', window.location.pathname + window.location.search);
+    try {
+      if (appMode === 'loyalty-app') {
+        window.location.hash = 'loyalty';
+      } else if (appMode === 'cafe-demo') {
+        window.location.hash = 'cafe-demo';
+      } else if (appMode === 'cafe-variants') {
+        window.location.hash = 'cafe-options';
+      } else if (appMode === 'studio') {
+        window.location.hash = 'studio';
+      } else {
+        const hash = window.location.hash.toLowerCase();
+        if (
+          hash.includes('loyalty') ||
+          hash.includes('cafe-demo') || 
+          hash.includes('cafe-options') || 
+          hash.includes('studio') || 
+          hash.includes('editor')
+        ) {
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
       }
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (e) {}
   }, [appMode]);
 
   // Handle browser back/forward buttons
   useEffect(() => {
     const handleHashChange = () => {
-      // In-page section jumps should never switch appMode
-      if (window.location.hash.startsWith('#section-')) {
-        return;
-      }
+      try {
+        const hash = window.location.hash.toLowerCase();
+        // In-page section jumps should never switch appMode
+        if (hash.startsWith('#section-')) {
+          return;
+        }
 
-      if (window.location.hash === '#loyalty' || window.location.hash === '#loyalty-pass') {
-        setAppMode('loyalty-app');
-      } else if (window.location.hash === '#cafe-demo') {
-        setAppMode('cafe-demo');
-      } else if (window.location.hash === '#cafe-options') {
-        setAppMode('cafe-variants');
-      } else if (window.location.hash === '#studio' || window.location.hash === '#editor') {
-        setAppMode('studio');
-      } else {
-        setAppMode('catalogue');
-      }
+        if (hash.includes('loyalty')) {
+          setAppMode('loyalty-app');
+        } else if (hash.includes('cafe-demo')) {
+          setAppMode('cafe-demo');
+        } else if (hash.includes('cafe-options') || hash.includes('variants')) {
+          setAppMode('cafe-variants');
+        } else if (hash.includes('studio') || hash.includes('editor')) {
+          setAppMode('studio');
+        } else {
+          setAppMode('catalogue');
+        }
+      } catch (e) {}
     };
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);

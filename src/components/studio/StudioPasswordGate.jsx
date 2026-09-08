@@ -11,17 +11,24 @@ function verifyPassword(input) {
 }
 
 function setSessionAuth() {
-  // Store a hashed token in sessionStorage (lasts only for this browser tab session)
-  const token = btoa(`dripp:${Date.now()}`);
-  sessionStorage.setItem(SESSION_KEY, token);
+  try {
+    const token = btoa(`dripp:${Date.now()}`);
+    sessionStorage.setItem(SESSION_KEY, token);
+  } catch (e) {}
 }
 
 export function isStudioAuthenticated() {
-  return !!sessionStorage.getItem(SESSION_KEY);
+  try {
+    return typeof window !== 'undefined' && !!sessionStorage.getItem(SESSION_KEY);
+  } catch (e) {
+    return false;
+  }
 }
 
 export function clearStudioAuth() {
-  sessionStorage.removeItem(SESSION_KEY);
+  try {
+    sessionStorage.removeItem(SESSION_KEY);
+  } catch (e) {}
 }
 
 export function StudioPasswordGate({ onAuthenticated, onBack }) {
