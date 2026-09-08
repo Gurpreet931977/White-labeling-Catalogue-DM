@@ -388,7 +388,7 @@ export function LiveOrderTracker({ onOrderMore, onBackHome }) {
                       : 'bg-amber-400/20 text-amber-700 dark:text-amber-300 border border-amber-400/30 animate-pulse'
                   }`}
                 >
-                  {activeCustomerOrder.paymentStatus === 'paid' ? 'PAID ONLINE' : '⚠️ DUE AT COUNTER (HOLD)'}
+                  {activeCustomerOrder.paymentStatus === 'paid' ? 'PAID ONLINE' : 'DUE AT COUNTER (HOLD)'}
                 </span>
               </div>
               <p className="text-xl font-editorial font-normal mt-2">

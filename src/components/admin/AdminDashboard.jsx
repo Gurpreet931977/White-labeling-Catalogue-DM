@@ -544,7 +544,7 @@ export function AdminDashboard({ onBackToClient }) {
             <div class="instruct">Scan QR to View Menu &amp; Order</div>
             <div class="url">${currentTableOrderUrl}</div>
             <div class="wifi-box">
-              📶 <strong>Cafe WiFi:</strong> THC-HighSpeed &bull; <strong>Pass:</strong> highwaycafe
+              <strong>Cafe WiFi:</strong> THC-HighSpeed &bull; <strong>Pass:</strong> highwaycafe
             </div>
           </div>
           <script>
@@ -1366,7 +1366,7 @@ export function AdminDashboard({ onBackToClient }) {
                               <AlertTriangle className="w-4 h-4 text-[#D04834] shrink-0 mt-0.5" />
                               <div>
                                 <p className="font-bold text-rose-600 dark:text-rose-400">
-                                  ⚠️ Preparation On Hold — Awaiting Counter Payment
+                                  Preparation On Hold — Awaiting Counter Payment
                                 </p>
                                 <p className="text-[11px] opacity-90 mt-0.5 leading-relaxed">
                                   Policy: Food is NOT to be cooked until guest settles ₹{order.total} at the counter. Tap below once payment is received to fire ticket to kitchen.
@@ -1379,7 +1379,7 @@ export function AdminDashboard({ onBackToClient }) {
                               className="w-full py-3.5 px-4 rounded-2xl text-xs sm:text-sm font-syne font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white flex items-center justify-center gap-2 shadow-md transition cursor-pointer"
                             >
                               <Banknote className="w-4 h-4 shrink-0 text-amber-200" />
-                              <span>💰 Collect ₹{order.total} &amp; Start Cooking</span>
+                              <span>Collect ₹{order.total} &amp; Start Cooking</span>
                             </button>
                           </div>
                         ) : (
@@ -1644,34 +1644,34 @@ export function AdminDashboard({ onBackToClient }) {
                 {tableOccupancyMap.map(({ table: t, occ, hasServiceReq }) => {
                   let statusBadge = { 
                     bg: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300', 
-                    label: '🟢 Vacant' 
+                    label: 'Vacant' 
                   };
 
                   if (hasServiceReq) {
                     statusBadge = { 
                       bg: 'bg-rose-500/20 border-rose-500/50 text-rose-600 dark:text-rose-400 animate-pulse', 
-                      label: '🚨 Table Call' 
+                      label: 'Table Call' 
                     };
                   } else if (occ.isBusy) {
                     if (occ.status === 'served_dining') {
                       statusBadge = { 
                         bg: 'bg-cyan-500/20 border-cyan-500/40 text-cyan-700 dark:text-cyan-300 font-bold', 
-                        label: `🍽️ Served (${occ.remainingMins}m left)` 
+                        label: `Served (${occ.remainingMins}m left)` 
                       };
                     } else if (occ.stage === 'cooking') {
                       statusBadge = { 
                         bg: 'bg-amber-500/20 border-amber-500/40 text-amber-700 dark:text-amber-300', 
-                        label: '🔥 Cooking' 
+                        label: 'Cooking' 
                       };
                     } else if (occ.stage === 'ready') {
                       statusBadge = { 
                         bg: 'bg-cyan-500/20 border-cyan-500/40 text-cyan-700 dark:text-cyan-300', 
-                        label: '🛎️ Food Ready' 
+                        label: 'Food Ready' 
                       };
                     } else {
                       statusBadge = { 
                         bg: 'bg-amber-400/15 border-amber-400/30 text-amber-700 dark:text-amber-200', 
-                        label: '⏳ New Order' 
+                        label: 'New Order' 
                       };
                     }
                   }

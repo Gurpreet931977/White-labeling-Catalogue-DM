@@ -15,7 +15,10 @@ import {
   Check,
   ExternalLink,
   AlertTriangle,
-  Banknote
+  Banknote,
+  ShieldAlert,
+  Store,
+  Zap
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useCart } from '../../context/CartContext';
@@ -550,19 +553,19 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
                     isLight ? 'bg-amber-500/10 border-amber-500/30 text-stone-800' : 'bg-amber-500/10 border-amber-500/20 text-stone-200'
                   }`}>
                     <div className="flex items-start gap-2.5">
-                      <span className="text-base shrink-0">🛑</span>
+                      <ShieldAlert className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
                       <p className="leading-snug">
                         <strong>Chefs will NOT start cooking yet:</strong> Your order will remain in queued hold until <strong className="font-number font-bold text-[#D04834]">₹{grandTotal}</strong> is settled at the billing counter.
                       </p>
                     </div>
                     <div className="flex items-start gap-2.5">
-                      <span className="text-base shrink-0">🏃</span>
+                      <Store className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
                       <p className="leading-snug">
                         <strong>Pay immediately after confirming:</strong> Walk up to the counter desk with your Table #{activeTable || '01'} to settle with cash or QR.
                       </p>
                     </div>
                     <div className="flex items-start gap-2.5">
-                      <span className="text-base shrink-0">⚡</span>
+                      <Zap className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                       <p className="leading-snug">
                         <strong>Instant Kitchen Release:</strong> The moment our cashier taps "Paid", your food will be fired to the grill and stoves right away.
                       </p>

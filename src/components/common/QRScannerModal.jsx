@@ -564,8 +564,8 @@ export function QRScannerModal({ isOpen, onClose, onScanComplete }) {
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
                   {[
                     { id: 'all', label: `All Tables (${totalCount})` },
-                    { id: 'vacant', label: `🟢 Vacant (${vacantCount})` },
-                    { id: 'busy', label: `🔴 Busy (${busyCount})` }
+                    { id: 'vacant', label: `Vacant (${vacantCount})` },
+                    { id: 'busy', label: `Busy (${busyCount})` }
                   ].map(tab => (
                     <button
                       key={tab.id}
@@ -611,19 +611,19 @@ export function QRScannerModal({ isOpen, onClose, onScanComplete }) {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[300px] sm:max-h-[330px] overflow-y-auto pr-1">
                 {filteredTables.map((t) => {
                   const isSelected = activeTable === t.number;
-                  let badge = { text: '🟢 VACANT', bg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' };
+                  let badge = { text: 'VACANT', bg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' };
 
                   if (isSelected) {
                     badge = { text: 'ACTIVE', bg: 'bg-[#D04834] text-white border-transparent' };
                   } else if (t.isBusy) {
                     if (t.occupancy?.status === 'served_dining') {
-                      badge = { text: `🍽️ DINING (${t.occupancy.remainingMins}m)`, bg: 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border-cyan-500/30' };
+                      badge = { text: `DINING (${t.occupancy.remainingMins}m)`, bg: 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border-cyan-500/30' };
                     } else if (t.occupancy?.stage === 'cooking') {
-                      badge = { text: '🔥 PREP', bg: 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-500/30' };
+                      badge = { text: 'PREP', bg: 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-500/30' };
                     } else if (t.occupancy?.stage === 'ready') {
-                      badge = { text: '🛎️ READY', bg: 'bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border-cyan-500/30' };
+                      badge = { text: 'READY', bg: 'bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border-cyan-500/30' };
                     } else {
-                      badge = { text: '🔴 BUSY', bg: 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/30' };
+                      badge = { text: 'BUSY', bg: 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/30' };
                     }
                   }
 

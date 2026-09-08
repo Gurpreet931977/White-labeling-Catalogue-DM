@@ -30,7 +30,7 @@ const CAMPAIGN_DISHES = [
     id: "thc-01",
     edition: "LOOK 01",
     shortCategory: "Pizza",
-    emoji: "🍕",
+    icon: Flame,
     tag: "WOOD-FIRED // 48H FERMENT",
     name: "Wood-Fired Margherita Basilico",
     price: 349,
@@ -45,7 +45,7 @@ const CAMPAIGN_DISHES = [
     id: "thc-05",
     edition: "LOOK 02",
     shortCategory: "Pasta",
-    emoji: "🍝",
+    icon: UtensilsCrossed,
     tag: "HANDMADE PASTA",
     name: "Smoked Alfredo White Sauce Penne",
     price: 269,
@@ -60,7 +60,7 @@ const CAMPAIGN_DISHES = [
     id: "thc-21",
     edition: "LOOK 03",
     shortCategory: "Coffee",
-    emoji: "☕",
+    icon: Coffee,
     tag: "SPECIALTY COFFEE // SINGLE-ORIGIN",
     name: "Classic Iced Caramel Macchiato",
     price: 189,
@@ -75,7 +75,7 @@ const CAMPAIGN_DISHES = [
     id: "thc-29",
     edition: "LOOK 04",
     shortCategory: "Dolci",
-    emoji: "🍰",
+    icon: Sparkles,
     tag: "ARTISAN DESSERT",
     name: "Tiramisu Classico della Casa",
     price: 229,
@@ -243,6 +243,7 @@ export function HeroSection({
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5 -mx-4 px-4">
               {CAMPAIGN_DISHES.map((dish, idx) => {
                 const isActive = idx === currentIndex;
+                const DishIcon = dish.icon;
                 return (
                   <button
                     key={dish.id}
@@ -261,7 +262,7 @@ export function HeroSection({
                           : 'bg-[#1C1815] text-stone-300 hover:bg-[#25201C] border border-white/10'
                     }`}
                   >
-                    <span>{dish.emoji}</span>
+                    <DishIcon className={`w-3.5 h-3.5 ${isActive ? isLight ? 'text-[#FAF7F2]' : 'text-[#12100E]' : isLight ? 'text-stone-600' : 'text-stone-400'}`} />
                     <span>{dish.shortCategory}</span>
                     {isActive && (
                       <span className="w-1.5 h-1.5 rounded-full bg-[#D04834]" />
