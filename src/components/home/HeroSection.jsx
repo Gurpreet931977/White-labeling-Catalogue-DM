@@ -203,7 +203,7 @@ export function HeroSection({
                 }`}
               >
                 <QrCode className="w-3 h-3 text-[#D04834]" />
-                <span>Scan QR</span>
+                <span>Select Table</span>
               </button>
             )}
           </div>
@@ -454,7 +454,7 @@ export function HeroSection({
                 }`}
               >
                 <QrCode className="w-3.5 h-3.5 text-[#D04834]" />
-                <span className="truncate">{activeTable ? `TABLE #${activeTable}` : 'SCAN TABLE QR'}</span>
+                <span className="truncate">{activeTable ? `TABLE #${activeTable}` : 'SELECT TABLE'}</span>
               </button>
             )}
 

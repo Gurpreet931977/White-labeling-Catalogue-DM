@@ -108,7 +108,7 @@ export function MobileBottomBar({
                 ? 'Delivery'
                 : activeTable
                 ? `Table #${activeTable}`
-                : 'Scan Table'}
+                : 'Select Table'}
             </span>
           </button>
 

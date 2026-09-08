@@ -318,7 +318,7 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
                   ? 'Orders placed automatically earn +1 punch stamp upon billing'
                   : activeTable
                   ? 'Orders are freshly prepared and served directly to your seat'
-                  : 'Tap to select an available table or scan table QR plaque'}
+                  : 'Tap to select an available table for direct dine-in service'}
               </p>
             </div>
           </div>

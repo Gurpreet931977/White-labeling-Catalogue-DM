@@ -72,7 +72,7 @@ export function Footer({ onNavigateMenu, onOpenScanner }) {
             }`}
           >
             <span className="hidden sm:inline">Select Dining Table</span>
-            <span className="sm:hidden">Scan Table Plaque</span>
+            <span className="sm:hidden">Select Table</span>
           </button>
         </div>
 

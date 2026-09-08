@@ -765,10 +765,10 @@ export function Navbar({
                         <QrCode className="w-4 h-4 text-[#D04834]" />
                         <div>
                           <p className="text-xs font-bold font-syne uppercase">
-                            {operationalModel === 'showcase' ? 'Table Reservation' : 'Scan Table Plaque QR'}
+                            {operationalModel === 'showcase' ? 'Table Reservation' : 'Select Dining Table'}
                           </p>
                           <p className="text-[10px] font-mono opacity-60">
-                            {activeTable ? `Currently assigned to Table #${activeTable}` : 'Tap to scan or select table'}
+                            {activeTable ? `Currently assigned to Table #${activeTable}` : 'Tap to select your table'}
                           </p>
                         </div>
                       </div>
