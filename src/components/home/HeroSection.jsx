@@ -637,8 +637,8 @@ export function HeroSection({
                       : 'bg-[#1C1815] hover:bg-[#25201C] active:bg-[#2e2722] text-stone-200 border-white/15'
                   }`}
                 >
-                  <QrCode className="w-4 h-4 text-[#D04834]" />
-                  <span>SELECT TABLE / SCAN QR</span>
+                  <UtensilsCrossed className="w-4 h-4 text-[#D04834]" />
+                  <span>SELECT DINING TABLE</span>
                 </button>
               )}
 

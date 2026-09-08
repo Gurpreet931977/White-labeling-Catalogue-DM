@@ -71,7 +71,8 @@ export function Footer({ onNavigateMenu, onOpenScanner }) {
                 : 'bg-[#1C1815] hover:bg-[#25201C] text-stone-200 border-white/15'
             }`}
           >
-            <span>Scan Table Plaque</span>
+            <span className="hidden sm:inline">Select Dining Table</span>
+            <span className="sm:hidden">Scan Table Plaque</span>
           </button>
         </div>
 

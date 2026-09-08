@@ -74,6 +74,22 @@ export function QRScannerModal({ isOpen, onClose, onScanComplete }) {
   const { tables = [], getTableOccupancy, serviceRequests = [] } = useOrder();
   const { isLight } = useTheme();
   
+  // Responsive desktop detection state (reactive to viewport resize)
+  const [isDesktop, setIsDesktop] = useState(() => isDesktopDevice());
+
+  useEffect(() => {
+    const handleResize = () => {
+      const desktop = isDesktopDevice();
+      setIsDesktop(desktop);
+      if (desktop) {
+        setScanMode('manual');
+        stopCamera();
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Dual Mode: 'manual' (PC / Desktop default) vs 'camera' (Mobile phone default)
   const [scanMode, setScanMode] = useState(() => isDesktopDevice() ? 'manual' : 'camera');
   const [selectedZone, setSelectedZone] = useState('all');
@@ -114,8 +130,9 @@ export function QRScannerModal({ isOpen, onClose, onScanComplete }) {
     setCameraActive(false);
   };
 
-  // Start live camera stream (ONLY called if user selects 'camera' mode)
+  // Start live camera stream (ONLY called if user selects 'camera' mode on mobile)
   const startCamera = async (mode = facingMode) => {
+    if (isDesktop) return; // Never start camera on desktop/PC
     stopCamera();
     setCameraError(null);
     setIsScanning(true);
@@ -286,14 +303,14 @@ export function QRScannerModal({ isOpen, onClose, onScanComplete }) {
   useEffect(() => {
     if (isOpen) {
       initAudio();
-      // On PC, default to manual table selector unless explicitly changed
-      const defaultMode = isDesktopDevice() ? 'manual' : 'camera';
-      setScanMode(defaultMode);
-
-      if (defaultMode === 'camera') {
-        startCamera(facingMode);
-      } else {
+      if (isDesktop) {
+        // On PC, strictly enforce Table Station selector, never camera
+        setScanMode('manual');
         stopCamera();
+      } else {
+        // On mobile, default to camera scanner
+        setScanMode('camera');
+        startCamera(facingMode);
       }
     } else {
       stopCamera();
@@ -301,7 +318,7 @@ export function QRScannerModal({ isOpen, onClose, onScanComplete }) {
       setScannedTable(null);
     }
     return () => stopCamera();
-  }, [isOpen]);
+  }, [isOpen, isDesktop]);
 
   // Dynamic tables list from OrderContext (with fallback to TABLES_METADATA)
   const activeTablesList = useMemo(() => {
@@ -363,80 +380,82 @@ export function QRScannerModal({ isOpen, onClose, onScanComplete }) {
           </div>
           {/* Top Control Bar: Audio Settings + Close Button */}
           <div className="absolute top-5 right-5 flex items-center gap-2 z-20">
-            {/* Sound Volume / Mute Widget */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => {
-                  initAudio();
-                  setShowVolumeControls(!showVolumeControls);
-                }}
-                className={`p-2 rounded-xl border transition cursor-pointer ${
-                  isLight
-                    ? 'border-stone-200 text-stone-600 hover:text-black hover:bg-stone-100'
-                    : 'border-white/10 text-stone-400 hover:text-white hover:bg-white/5'
-                }`}
-                title={isMuted ? 'Scan sound muted' : `Scan sound volume: ${Math.round(volume * 100)}%`}
-              >
-                {isMuted ? (
-                  <VolumeX className="w-4 h-4 text-[#D04834]" />
-                ) : volume < 0.5 ? (
-                  <Volume1 className="w-4 h-4 text-[#D04834]" />
-                ) : (
-                  <Volume2 className="w-4 h-4 text-[#D04834]" />
-                )}
-              </button>
+            {/* Sound Volume / Mute Widget (Mobile Camera Scan Chime) */}
+            {!isDesktop && (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => {
+                    initAudio();
+                    setShowVolumeControls(!showVolumeControls);
+                  }}
+                  className={`p-2 rounded-xl border transition cursor-pointer ${
+                    isLight
+                      ? 'border-stone-200 text-stone-600 hover:text-black hover:bg-stone-100'
+                      : 'border-white/10 text-stone-400 hover:text-white hover:bg-white/5'
+                  }`}
+                  title={isMuted ? 'Scan sound muted' : `Scan sound volume: ${Math.round(volume * 100)}%`}
+                >
+                  {isMuted ? (
+                    <VolumeX className="w-4 h-4 text-[#D04834]" />
+                  ) : volume < 0.5 ? (
+                    <Volume1 className="w-4 h-4 text-[#D04834]" />
+                  ) : (
+                    <Volume2 className="w-4 h-4 text-[#D04834]" />
+                  )}
+                </button>
 
-              {/* Expandable Audio Settings Popover */}
-              <AnimatePresence>
-                {showVolumeControls && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9, y: 5 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: 5 }}
-                    className={`absolute right-0 top-11 z-30 w-56 p-3.5 rounded-2xl border shadow-xl space-y-2.5 font-sans ${
-                      isLight ? 'bg-white border-stone-200 text-[#12100E]' : 'bg-[#1C1917] border-white/10 text-white'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-mono font-bold flex items-center gap-1 text-[#D04834]">
-                        <Zap className="w-3.5 h-3.5" />
-                        SCAN AUDIO
-                      </span>
-                      <button
-                        type="button"
-                        onClick={toggleMute}
-                        className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold transition ${
-                          isMuted ? 'bg-rose-500/10 text-rose-600' : 'bg-stone-100 text-stone-700'
-                        }`}
-                      >
-                        {isMuted ? 'UNMUTE' : 'MUTE'}
-                      </button>
-                    </div>
-
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-[10px] font-mono opacity-70">
-                        <span>Volume:</span>
-                        <span className="font-bold">{Math.round(volume * 100)}%</span>
+                {/* Expandable Audio Settings Popover */}
+                <AnimatePresence>
+                  {showVolumeControls && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9, y: 5 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.9, y: 5 }}
+                      className={`absolute right-0 top-11 z-30 w-56 p-3.5 rounded-2xl border shadow-xl space-y-2.5 font-sans ${
+                        isLight ? 'bg-white border-stone-200 text-[#12100E]' : 'bg-[#1C1917] border-white/10 text-white'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-mono font-bold flex items-center gap-1 text-[#D04834]">
+                          <Zap className="w-3.5 h-3.5" />
+                          SCAN AUDIO
+                        </span>
+                        <button
+                          type="button"
+                          onClick={toggleMute}
+                          className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold transition ${
+                            isMuted ? 'bg-rose-500/10 text-rose-600' : 'bg-stone-100 text-stone-700'
+                          }`}
+                        >
+                          {isMuted ? 'UNMUTE' : 'MUTE'}
+                        </button>
                       </div>
-                      <input
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.05"
-                        value={isMuted ? 0 : volume}
-                        disabled={isMuted}
-                        onChange={(e) => {
-                          initAudio();
-                          setVolume(e.target.value);
-                        }}
-                        className="w-full h-1.5 bg-stone-200 dark:bg-stone-800 rounded-lg appearance-none cursor-pointer accent-[#D04834]"
-                      />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-[10px] font-mono opacity-70">
+                          <span>Volume:</span>
+                          <span className="font-bold">{Math.round(volume * 100)}%</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="0"
+                          max="1"
+                          step="0.05"
+                          value={isMuted ? 0 : volume}
+                          disabled={isMuted}
+                          onChange={(e) => {
+                            initAudio();
+                            setVolume(e.target.value);
+                          }}
+                          className="w-full h-1.5 bg-stone-200 dark:bg-stone-800 rounded-lg appearance-none cursor-pointer accent-[#D04834]"
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
 
             {/* Close button */}
             <button
@@ -462,9 +481,9 @@ export function QRScannerModal({ isOpen, onClose, onScanComplete }) {
               }`}>
                 Dine-In Service // Table Station
               </span>
-              {isDesktopDevice() && (
+              {isDesktop && (
                 <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-mono text-[#D04834] font-semibold">
-                  <Monitor className="w-3 h-3" /> Desktop Optimized
+                  <Monitor className="w-3 h-3" /> Desktop Station
                 </span>
               )}
             </div>
@@ -472,75 +491,68 @@ export function QRScannerModal({ isOpen, onClose, onScanComplete }) {
               Select Dining Table
             </h3>
             <p className={`text-xs mt-1 ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
-              Link your order to a table seat for seamless kitchen delivery, or scan an acrylic table plaque.
+              {isDesktop 
+                ? 'Select a table to link kitchen orders directly to your seat with real-time occupancy status.'
+                : 'Link your order to a table seat for seamless kitchen delivery, or scan an acrylic table plaque.'}
             </p>
           </div>
 
-          {/* Boutique Mode Switcher Segmented Control */}
-          <div className={`flex items-center p-1 rounded-2xl border mb-5 shrink-0 transition-colors ${
-            isLight ? 'bg-stone-100 border-stone-200/80' : 'bg-white/5 border-white/10'
-          }`}>
-            <button
-              type="button"
-              onClick={() => {
-                sounds.playClick();
-                setScanMode('manual');
-                stopCamera();
-              }}
-              className={`flex-1 py-2 px-3 rounded-xl text-xs font-mono font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
-                scanMode === 'manual'
-                  ? isLight
-                    ? 'bg-[#12100E] text-[#FAF7F2] shadow-sm'
-                    : 'bg-[#FAF7F2] text-[#12100E] shadow-sm'
-                  : isLight
-                  ? 'text-stone-500 hover:text-black'
-                  : 'text-stone-400 hover:text-white'
-              }`}
-            >
-              <Monitor className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Table Selector (PC Mode)</span>
-              <span className="sm:hidden">Choose Table</span>
-              {isDesktopDevice() && (
-                <span className={`text-[9px] px-1.5 py-0.2 rounded font-bold uppercase hidden md:inline ${
-                  scanMode === 'manual' 
-                    ? isLight ? 'bg-white/20 text-white' : 'bg-black/15 text-black' 
-                    : 'bg-stone-200 dark:bg-stone-800 text-stone-600 dark:text-stone-300'
-                }`}>
-                  Instant
-                </span>
-              )}
-            </button>
+          {/* Boutique Mode Switcher Segmented Control (Mobile Only - Hidden on PC) */}
+          {!isDesktop && (
+            <div className={`flex items-center p-1 rounded-2xl border mb-5 shrink-0 transition-colors ${
+              isLight ? 'bg-stone-100 border-stone-200/80' : 'bg-white/5 border-white/10'
+            }`}>
+              <button
+                type="button"
+                onClick={() => {
+                  sounds.playClick();
+                  setScanMode('manual');
+                  stopCamera();
+                }}
+                className={`flex-1 py-2 px-3 rounded-xl text-xs font-mono font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
+                  scanMode === 'manual'
+                    ? isLight
+                      ? 'bg-[#12100E] text-[#FAF7F2] shadow-sm'
+                      : 'bg-[#FAF7F2] text-[#12100E] shadow-sm'
+                    : isLight
+                    ? 'text-stone-500 hover:text-black'
+                    : 'text-stone-400 hover:text-white'
+                }`}
+              >
+                <Monitor className="w-3.5 h-3.5" />
+                <span>Choose Table</span>
+              </button>
 
-            <button
-              type="button"
-              onClick={() => {
-                sounds.playClick();
-                setScanMode('camera');
-                startCamera(facingMode);
-              }}
-              className={`flex-1 py-2 px-3 rounded-xl text-xs font-mono font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
-                scanMode === 'camera'
-                  ? isLight
-                    ? 'bg-[#12100E] text-[#FAF7F2] shadow-sm'
-                    : 'bg-[#FAF7F2] text-[#12100E] shadow-sm'
-                  : isLight
-                  ? 'text-stone-500 hover:text-black'
-                  : 'text-stone-400 hover:text-white'
-              }`}
-            >
-              <Camera className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Camera QR Scanner</span>
-              <span className="sm:hidden">Scan QR</span>
-            </button>
-          </div>
+              <button
+                type="button"
+                onClick={() => {
+                  sounds.playClick();
+                  setScanMode('camera');
+                  startCamera(facingMode);
+                }}
+                className={`flex-1 py-2 px-3 rounded-xl text-xs font-mono font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
+                  scanMode === 'camera'
+                    ? isLight
+                      ? 'bg-[#12100E] text-[#FAF7F2] shadow-sm'
+                      : 'bg-[#FAF7F2] text-[#12100E] shadow-sm'
+                    : isLight
+                    ? 'text-stone-500 hover:text-black'
+                    : 'text-stone-400 hover:text-white'
+                }`}
+              >
+                <Camera className="w-3.5 h-3.5" />
+                <span>Scan QR</span>
+              </button>
+            </div>
+          )}
 
-          {/* Hidden Canvas for QR frame processing */}
-          <canvas ref={canvasRef} className="hidden" />
+          {/* Hidden Canvas for QR frame processing (Mobile Camera) */}
+          {!isDesktop && <canvas ref={canvasRef} className="hidden" />}
 
           {/* ========================================================================= */}
           {/* TAB 1: BOUTIQUE PC TABLE STATION SELECTOR                                 */}
           {/* ========================================================================= */}
-          {scanMode === 'manual' ? (
+          {isDesktop || scanMode === 'manual' ? (
             <div className="flex-1 overflow-y-auto space-y-4 pr-1">
               {/* Active Table Status Banner */}
               <div className={`p-3 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs font-mono transition-colors ${
