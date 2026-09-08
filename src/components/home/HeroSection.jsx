@@ -564,9 +564,7 @@ export function HeroSection({
           <div className="lg:col-span-6 space-y-6 sm:space-y-8 text-left">
             
             {/* Tagline Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
+            <div
               className={`inline-flex items-center gap-2.5 px-3 py-1 rounded-md border text-xs font-mono transition-colors ${
                 isLight
                   ? 'bg-[#EAE4D9] border-black/10 text-stone-700'
@@ -579,14 +577,11 @@ export function HeroSection({
               </span>
               <span className="opacity-30">•</span>
               <span className="text-[10px] opacity-70">ARTISAN CAFE & BISTRO</span>
-            </motion.div>
+            </div>
 
             {/* Dramatic Master Headline */}
             <div className="space-y-1">
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              <h1
                 className="text-4xl sm:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.04]"
               >
                 <span className={`font-editorial block transition-colors ${isLight ? 'text-[#12100E]' : 'text-white'}`}>
@@ -597,26 +592,20 @@ export function HeroSection({
                 }`}>
                   Stay Late.
                 </span>
-              </motion.h1>
+              </h1>
             </div>
 
             {/* Contemporary Editorial Body */}
-            <motion.p
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
+            <p
               className={`text-sm sm:text-base leading-relaxed max-w-lg font-normal transition-colors ${
                 isLight ? 'text-stone-600' : 'text-stone-300'
               }`}
             >
               {currentModelConfig.description}
-            </motion.p>
+            </p>
 
             {/* Editorial Action CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+            <div
               className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2"
             >
               {/* Primary Button */}
@@ -741,7 +730,7 @@ export function HeroSection({
                   <span>PUNCH CARD</span>
                 </button>
               )}
-            </motion.div>
+            </div>
 
             {/* Editorial Metadata Strip */}
             <div className={`grid grid-cols-3 gap-4 pt-8 border-t text-left transition-colors ${

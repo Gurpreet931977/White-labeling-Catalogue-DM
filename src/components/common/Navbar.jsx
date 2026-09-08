@@ -154,7 +154,7 @@ export function Navbar({
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-5 lg:px-6 xl:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20 gap-2 lg:gap-4">
           
           {/* Brand Wordmark (Milan High-Fashion Look) */}
@@ -295,7 +295,7 @@ export function Navbar({
             {operationalModel === 'loyalty' && onOpenLoyaltyModal && (
               <button
                 onClick={() => { sounds.playClick(); onOpenLoyaltyModal(); }}
-                className={`flex items-center gap-1.5 px-2.5 py-2 rounded-xl border transition text-xs font-mono font-bold ${
+                className={`hidden sm:flex items-center gap-1.5 px-2.5 py-2 rounded-xl border transition text-xs font-mono font-bold shrink-0 ${
                   is7thVisitUnlocked
                     ? 'bg-[#D04834]/20 border-[#D04834] text-[#D04834] animate-pulse'
                     : isLight
