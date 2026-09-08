@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShoppingBag, 
@@ -94,6 +95,18 @@ export function Navbar({
   const [copiedWifi, setCopiedWifi] = useState(false);
   const [copiedPromo, setCopiedPromo] = useState(false);
   const [serviceFeedback, setServiceFeedback] = useState(null);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
 
   const handleServiceCall = (type, label) => {
     sounds.playClick();
@@ -518,29 +531,30 @@ export function Navbar({
         </div>
       </div>
 
-      {/* Full Milan Fashion Editorial Mobile Concierge Drawer */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <div className="fixed inset-0 z-50 lg:hidden flex justify-end">
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setMobileMenuOpen(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            />
+      {/* Full Milan Fashion Editorial Mobile Concierge Drawer (Mounted to document.body) */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <div className="fixed inset-0 z-[100] lg:hidden flex justify-end">
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setMobileMenuOpen(false)}
+                className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[101]"
+              />
 
-            {/* Slide-in Concierge Sheet */}
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-              className={`relative w-full max-w-md h-full flex flex-col justify-between shadow-2xl z-10 overflow-y-auto ${
-                isLight ? 'bg-[#FAF7F2] text-[#12100E]' : 'bg-[#12100E] text-[#FAF7F2]'
-              }`}
-            >
+              {/* Slide-in Concierge Sheet */}
+              <motion.div
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                className={`relative w-full max-w-md h-full min-h-screen flex flex-col justify-between shadow-2xl z-[102] overflow-y-auto ${
+                  isLight ? 'bg-[#FAF7F2] text-[#12100E]' : 'bg-[#12100E] text-[#FAF7F2]'
+                }`}
+              >
               {/* Header */}
               <div className={`p-5 sm:p-6 border-b flex items-center justify-between sticky top-0 z-20 backdrop-blur-md ${
                 isLight ? 'bg-[#FAF7F2]/95 border-black/10' : 'bg-[#12100E]/95 border-white/10'
@@ -910,7 +924,9 @@ export function Navbar({
             </motion.div>
           </div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+    )}
 
     </header>
   );
