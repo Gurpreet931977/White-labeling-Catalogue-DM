@@ -133,6 +133,7 @@ export function AdminDashboard({ onBackToClient }) {
     setTableCount,
     addTable,
     removeTable,
+    updateTable,
     resetTablesToDefault,
     vacateTable,
     getTableOccupancy
@@ -157,6 +158,37 @@ export function AdminDashboard({ onBackToClient }) {
   const [copiedTableUrl, setCopiedTableUrl] = useState(false);
   const [viewingSlip, setViewingSlip] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Inline Table Editing State (Name & Seats Capacity)
+  const [editingTableNumber, setEditingTableNumber] = useState(null);
+  const [editTableName, setEditTableName] = useState('');
+  const [editTableCapacity, setEditTableCapacity] = useState(2);
+  const [editTableZone, setEditTableZone] = useState('Main Dining Hall');
+
+  const handleStartEditTable = (tableObj) => {
+    sounds.playClick();
+    setEditingTableNumber(tableObj.number);
+    setEditTableName(tableObj.name || `Table ${tableObj.number < 10 ? `0${tableObj.number}` : tableObj.number}`);
+    setEditTableCapacity(Number(tableObj.capacity) || 2);
+    setEditTableZone(tableObj.zoneName || 'Main Dining Hall');
+  };
+
+  const handleSaveTable = (tableNumber) => {
+    sounds.playClick();
+    if (updateTable) {
+      updateTable(tableNumber, {
+        name: editTableName.trim() || `Table ${tableNumber < 10 ? `0${tableNumber}` : tableNumber}`,
+        capacity: Math.max(1, Math.min(50, Number(editTableCapacity) || 1)),
+        zoneName: editTableZone
+      });
+    }
+    setEditingTableNumber(null);
+  };
+
+  const handleCancelEditTable = () => {
+    sounds.playClick();
+    setEditingTableNumber(null);
+  };
 
   // Live 3-Second Table Service Alarm State
   const [activeAlarmNotification, setActiveAlarmNotification] = useState(null);
@@ -537,7 +569,7 @@ export function AdminDashboard({ onBackToClient }) {
             <div class="tag">ORDER FROM TABLE</div>
             <h1 class="title">${BRAND_CONFIG.brandName}</h1>
             <div class="subtitle">Artisanal Highway Cafe & Kitchen</div>
-            <div class="table-badge">TABLE ${selectedTableForQR < 10 ? `0${selectedTableForQR}` : selectedTableForQR}</div>
+            <div class="table-badge">${((tables && tables.find(t => t.number === selectedTableForQR)?.name) || `TABLE #${selectedTableForQR < 10 ? `0${selectedTableForQR}` : selectedTableForQR}`).toUpperCase()}</div>
             <div class="qr-box">
               <img src="${tableQrDataUrl}" alt="Table ${selectedTableForQR} QR" />
             </div>
@@ -553,7 +585,7 @@ export function AdminDashboard({ onBackToClient }) {
                 window.print();
               }, 300);
             };
-          <\/script>
+          </script>
         </body>
       </html>
     `);
@@ -579,7 +611,7 @@ export function AdminDashboard({ onBackToClient }) {
     const itemsHtml = allQrs.map((t) => `
       <div class="card">
         <div class="tag">VELOUR CAFE &bull; STAND</div>
-        <div class="table-label">TABLE #${t.number < 10 ? `0${t.number}` : t.number}</div>
+        <div class="table-label">${(t.name || `TABLE #${t.number < 10 ? `0${t.number}` : t.number}`).toUpperCase()}</div>
         <div class="qr-wrap"><img src="${t.qr}" /></div>
         <div class="help">Point camera to order directly</div>
         <div class="subhelp">${t.capacity} Guests &bull; Velour-HighSpeed WiFi</div>
@@ -1693,19 +1725,143 @@ export function AdminDashboard({ onBackToClient }) {
                           : isLight ? 'bg-white/80 border-stone-200' : 'bg-[#1C1917]/70 border-white/10'
                       }`}
                     >
-                      <div>
-                        <div className="flex items-center justify-between">
-                          <span className="font-mono text-base font-bold">
-                            TABLE #<span className="font-number font-bold">{t.number < 10 ? `0${t.number}` : t.number}</span>
-                          </span>
-                          <span className={`px-2 py-0.5 rounded-lg border text-[10px] font-mono font-bold ${statusBadge.bg}`}>
-                            {statusBadge.label}
-                          </span>
+                      {editingTableNumber === t.number ? (
+                        <div className={`p-3 rounded-2xl border space-y-2.5 ${
+                          isLight ? 'bg-stone-50 border-[#D04834]/40 shadow-xs' : 'bg-[#12100E] border-[#D04834]/40 shadow-xs'
+                        }`}>
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#D04834]">
+                              Edit Table #{t.number < 10 ? `0${t.number}` : t.number}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={handleCancelEditTable}
+                              className="p-1 rounded-md text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 cursor-pointer"
+                              title="Cancel editing"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-mono uppercase font-bold block text-stone-500">
+                              Table Name
+                            </label>
+                            <input
+                              type="text"
+                              value={editTableName}
+                              onChange={(e) => setEditTableName(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') handleSaveTable(t.number);
+                                if (e.key === 'Escape') handleCancelEditTable();
+                              }}
+                              placeholder={`Table ${t.number < 10 ? `0${t.number}` : t.number}`}
+                              className={`w-full px-2.5 py-1.5 rounded-xl text-xs font-mono border focus:outline-none focus:ring-1 focus:ring-[#D04834] ${
+                                isLight ? 'bg-white border-stone-300 text-stone-900' : 'bg-[#1C1917] border-white/20 text-white'
+                              }`}
+                              autoFocus
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-mono uppercase font-bold block text-stone-500">
+                              Seats (Capacity)
+                            </label>
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => setEditTableCapacity(c => Math.max(1, Number(c) - 1))}
+                                className={`w-8 h-7 rounded-lg border font-mono font-bold flex items-center justify-center cursor-pointer transition ${
+                                  isLight ? 'bg-white border-stone-300 hover:bg-stone-100 text-stone-800' : 'bg-white/10 border-white/15 hover:bg-white/20 text-white'
+                                }`}
+                              >
+                                -
+                              </button>
+                              <input
+                                type="number"
+                                min="1"
+                                max="50"
+                                value={editTableCapacity}
+                                onChange={(e) => setEditTableCapacity(Math.max(1, Math.min(50, parseInt(e.target.value) || 1)))}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') handleSaveTable(t.number);
+                                  if (e.key === 'Escape') handleCancelEditTable();
+                                }}
+                                className={`flex-1 text-center py-1 rounded-lg text-xs font-mono font-bold border ${
+                                  isLight ? 'bg-white border-stone-300 text-stone-900' : 'bg-[#1C1917] border-white/20 text-white'
+                                }`}
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setEditTableCapacity(c => Math.min(50, Number(c) + 1))}
+                                className={`w-8 h-7 rounded-lg border font-mono font-bold flex items-center justify-center cursor-pointer transition ${
+                                  isLight ? 'bg-white border-stone-300 hover:bg-stone-100 text-stone-800' : 'bg-white/10 border-white/15 hover:bg-white/20 text-white'
+                                }`}
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 pt-1">
+                            <button
+                              type="button"
+                              onClick={() => handleSaveTable(t.number)}
+                              className="flex-1 py-1.5 px-2.5 rounded-xl bg-[#D04834] hover:bg-[#b83826] text-white text-xs font-syne font-bold flex items-center justify-center gap-1.5 transition shadow-xs cursor-pointer"
+                            >
+                              <Check className="w-3.5 h-3.5" />
+                              <span>Save</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={handleCancelEditTable}
+                              className={`py-1.5 px-2.5 rounded-xl border text-xs font-mono transition cursor-pointer ${
+                                isLight ? 'bg-white border-stone-300 hover:bg-stone-100 text-stone-600' : 'bg-white/5 border-white/15 hover:bg-white/10 text-stone-300'
+                              }`}
+                            >
+                              Cancel
+                            </button>
+                          </div>
                         </div>
-                        <p className={`text-xs font-mono mt-1.5 ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
-                          Capacity: <span className="font-number font-bold">{t.capacity}</span> Seats • {t.zoneName || 'Main Dining'}
-                        </p>
-                      </div>
+                      ) : (
+                        <div>
+                          <div className="flex items-center justify-between gap-1.5">
+                            <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                              <span 
+                                onClick={() => handleStartEditTable(t)}
+                                className="font-mono text-base font-bold truncate cursor-pointer hover:text-[#D04834] transition"
+                                title="Click to edit table name & seats"
+                              >
+                                {t.name ? t.name.toUpperCase() : `TABLE #${t.number < 10 ? `0${t.number}` : t.number}`}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); handleStartEditTable(t); }}
+                                className={`p-1 rounded-md border transition cursor-pointer shrink-0 ${
+                                  isLight 
+                                    ? 'border-stone-200 text-stone-400 hover:text-[#D04834] hover:bg-stone-100' 
+                                    : 'border-white/10 text-stone-400 hover:text-[#D04834] hover:bg-white/10'
+                                }`}
+                                title="Edit Name & Seats"
+                              >
+                                <Edit2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                            <span className={`px-2 py-0.5 rounded-lg border text-[10px] font-mono font-bold shrink-0 ${statusBadge.bg}`}>
+                              {statusBadge.label}
+                            </span>
+                          </div>
+                          <p 
+                            onClick={() => handleStartEditTable(t)}
+                            className={`text-xs font-mono mt-1.5 cursor-pointer hover:text-[#D04834] transition ${
+                              isLight ? 'text-stone-500' : 'text-stone-400'
+                            }`}
+                            title="Click to edit capacity"
+                          >
+                            Capacity: <span className="font-number font-bold text-[#D04834] underline decoration-dotted">{t.capacity} Seats</span> • {t.zoneName || 'Main Dining'}
+                          </p>
+                        </div>
+                      )}
 
                       {tableOrder ? (
                         <div className={`p-3 rounded-2xl border space-y-2 text-xs ${
@@ -2052,7 +2208,7 @@ export function AdminDashboard({ onBackToClient }) {
                         </span>
                         <span className={`w-2 h-2 rounded-full ${selectedTableForQR === t.number ? 'bg-[#D04834]' : 'bg-emerald-500'}`}></span>
                       </div>
-                      <p className="text-sm font-editorial mt-2">Table #{t.number < 10 ? `0${t.number}` : t.number}</p>
+                      <p className="text-sm font-editorial mt-2">{t.name || `Table #${t.number < 10 ? `0${t.number}` : t.number}`}</p>
                       <p className="text-[10px] opacity-75 font-mono">Seats: {t.capacity} Guests</p>
                     </button>
                   ))}
@@ -2086,8 +2242,8 @@ export function AdminDashboard({ onBackToClient }) {
                           alt={`Table ${selectedTableForQR} QR`} 
                           className="w-48 h-48 object-contain rounded-lg"
                         />
-                        <span className="font-mono text-stone-950 font-black text-xs tracking-widest mt-2 bg-stone-100 px-3 py-1 rounded-full border border-stone-300 shadow-xs">
-                          TABLE #{selectedTableForQR < 10 ? `0${selectedTableForQR}` : selectedTableForQR}
+                        <span className="font-mono text-stone-950 font-black text-xs tracking-widest mt-2 bg-stone-100 px-3 py-1 rounded-full border border-stone-300 shadow-xs uppercase">
+                          {((tables && tables.find(t => t.number === selectedTableForQR)?.name) || `TABLE #${selectedTableForQR < 10 ? `0${selectedTableForQR}` : selectedTableForQR}`).toUpperCase()}
                         </span>
                       </div>
                     )}
@@ -2171,6 +2327,79 @@ export function AdminDashboard({ onBackToClient }) {
                       <span>Print Stand</span>
                     </button>
                   </div>
+
+                  {/* Selected Table Name & Capacity Quick Editor */}
+                  {(() => {
+                    const selTable = (tables && tables.length > 0 ? tables : BRAND_CONFIG.tables).find(t => t.number === selectedTableForQR) || { number: selectedTableForQR, name: `Table ${selectedTableForQR}`, capacity: 4 };
+                    return (
+                      <div className={`w-full p-3.5 rounded-2xl border text-left space-y-2.5 ${
+                        isLight ? 'bg-stone-50 border-stone-200' : 'bg-[#141210] border-white/10'
+                      }`}>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#D04834] flex items-center gap-1.5">
+                            <Edit2 className="w-3 h-3" />
+                            <span>Edit Table Details</span>
+                          </span>
+                          <span className="text-[10px] font-mono text-stone-500">
+                            T-{selTable.number < 10 ? `0${selTable.number}` : selTable.number}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-mono uppercase text-stone-500 font-bold block">
+                              Table Name
+                            </label>
+                            <input
+                              type="text"
+                              value={selTable.name || ''}
+                              onChange={(e) => updateTable && updateTable(selTable.number, { name: e.target.value })}
+                              placeholder={`Table ${selTable.number < 10 ? `0${selTable.number}` : selTable.number}`}
+                              className={`w-full px-2.5 py-1.5 rounded-xl text-xs font-mono border focus:outline-none focus:ring-1 focus:ring-[#D04834] ${
+                                isLight ? 'bg-white border-stone-300 text-stone-900' : 'bg-white/5 border-white/15 text-white'
+                              }`}
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-mono uppercase text-stone-500 font-bold block">
+                              Seats (Capacity)
+                            </label>
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                onClick={() => updateTable && updateTable(selTable.number, { capacity: Math.max(1, (selTable.capacity || 2) - 1) })}
+                                className={`w-7 h-7 rounded-lg border font-mono font-bold flex items-center justify-center cursor-pointer transition ${
+                                  isLight ? 'bg-white border-stone-300 hover:bg-stone-100 text-stone-800' : 'bg-white/10 border-white/15 hover:bg-white/20 text-white'
+                                }`}
+                              >
+                                -
+                              </button>
+                              <input
+                                type="number"
+                                min="1"
+                                max="50"
+                                value={selTable.capacity || 2}
+                                onChange={(e) => updateTable && updateTable(selTable.number, { capacity: Math.max(1, Math.min(50, parseInt(e.target.value) || 1)) })}
+                                className={`w-12 text-center py-1 rounded-lg text-xs font-mono font-bold border ${
+                                  isLight ? 'bg-white border-stone-300 text-stone-900' : 'bg-white/5 border-white/15 text-white'
+                                }`}
+                              />
+                              <button
+                                type="button"
+                                onClick={() => updateTable && updateTable(selTable.number, { capacity: Math.min(50, (selTable.capacity || 2) + 1) })}
+                                className={`w-7 h-7 rounded-lg border font-mono font-bold flex items-center justify-center cursor-pointer transition ${
+                                  isLight ? 'bg-white border-stone-300 hover:bg-stone-100 text-stone-800' : 'bg-white/10 border-white/15 hover:bg-white/20 text-white'
+                                }`}
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
             </div>

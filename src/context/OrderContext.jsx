@@ -602,6 +602,32 @@ export function OrderProvider({ children }) {
     });
   }, []);
 
+  const updateTable = useCallback((tableNumber, updates = {}) => {
+    sounds.playClick();
+    setTables(prev => {
+      const num = Number(tableNumber);
+      const updated = prev.map(t => {
+        if (t.number === num) {
+          const newCapacity = updates.capacity !== undefined 
+            ? Math.max(1, Math.min(100, Number(updates.capacity) || 1)) 
+            : t.capacity;
+          const newName = updates.name !== undefined 
+            ? (String(updates.name).trim() || `Table ${num < 10 ? `0${num}` : num}`) 
+            : t.name;
+          return {
+            ...t,
+            ...updates,
+            name: newName,
+            capacity: newCapacity
+          };
+        }
+        return t;
+      });
+      broadcastEvent('TABLES_UPDATED', updated);
+      return updated;
+    });
+  }, []);
+
   const resetTablesToDefault = useCallback(() => {
     sounds.playClick();
     setTables(DEFAULT_TABLES);
@@ -795,6 +821,7 @@ export function OrderProvider({ children }) {
         setTableCount,
         addTable,
         removeTable,
+        updateTable,
         resetTablesToDefault,
         vacateTable,
         getTableOccupancy,

@@ -40,7 +40,13 @@ import { ThemeScreenTransition } from '../components/common/ThemeScreenTransitio
 import { sounds } from '../utils/audio';
 
 function CafeContent({ onBackToCatalogue, onBackToVariants }) {
-  const [currentView, setCurrentView] = useState('home'); // home | menu | tracker | admin
+  const [currentView, setCurrentView] = useState(() => {
+    try {
+      const hash = (typeof window !== 'undefined' ? window.location.hash : '').toLowerCase();
+      if (hash.includes('admin') || hash.includes('pos')) return 'admin';
+    } catch (e) {}
+    return 'home';
+  }); // home | menu | tracker | admin
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
