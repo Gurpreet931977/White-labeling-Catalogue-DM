@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   ArrowUpRight, 
-  Sparkles, 
   CheckCircle2, 
   Sliders, 
   Zap

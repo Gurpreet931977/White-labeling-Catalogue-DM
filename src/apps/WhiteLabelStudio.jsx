@@ -15,7 +15,6 @@ import {
   Code2, 
   Zap, 
   Flame, 
-  Sparkles, 
   Crown,
   Gauge, 
   Terminal,
@@ -67,7 +66,7 @@ export const CRAZY_STYLES = [
     id: "liquid-glass",
     name: "Liquid Aura Chrome",
     shortName: "Liquid Glass",
-    icon: Sparkles,
+    icon: Crown,
     category: "Iridescent & Crystal",
     accentGlow: "rgba(168, 85, 247, 0.4)",
     c60: "#070709",
@@ -1177,7 +1176,7 @@ export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
 
                   <div className="flex flex-wrap gap-2 pt-1">
                     <button className="px-6 py-3 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/30 backdrop-blur-2xl text-white font-clash font-bold text-xs shadow-2xl transition cursor-pointer flex items-center gap-2">
-                      <Sparkles className="w-3.5 h-3.5 text-purple-300" />
+                      <Crown className="w-3.5 h-3.5 text-purple-300" />
                       <span>{selectedModel.specialAction}</span>
                     </button>
 
@@ -1265,7 +1264,7 @@ export function WhiteLabelStudio({ onBackToCatalogue, onLaunchLiveDemo }) {
                 <div className="flex items-center justify-between pb-2">
                   <div className="flex items-center gap-2">
                     <div className="w-7 h-7 rounded-full bg-[#f43f5e] flex items-center justify-center">
-                      <Sparkles className="w-3.5 h-3.5 text-white" />
+                      <Crown className="w-3.5 h-3.5 text-white" />
                     </div>
                     <span className="font-black text-lg text-[#f43f5e]">{brandName}</span>
                   </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Clock, ThumbsUp, Flame, ArrowRight, Sparkles, Calendar } from 'lucide-react';
+import { Plus, Clock, ThumbsUp, Flame, ArrowRight, Calendar } from 'lucide-react';
 import { MENU_ITEMS } from '../../data/menuData';
 import { useCart } from '../../context/CartContext';
 import { useTheme } from '../../context/ThemeContext';

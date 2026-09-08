@@ -12,7 +12,9 @@ import {
   Store, 
   Truck, 
   Calendar,
-  Sparkles,
+  CakeSlice,
+  Crown,
+  ChefHat,
   Flame,
   Coffee,
   CheckCircle2,
@@ -75,7 +77,7 @@ const CAMPAIGN_DISHES = [
     id: "thc-29",
     edition: "LOOK 04",
     shortCategory: "Dolci",
-    icon: Sparkles,
+    icon: CakeSlice,
     tag: "ARTISAN DESSERT",
     name: "Tiramisu Classico della Casa",
     price: 229,
@@ -209,7 +211,7 @@ export function HeroSection({
           {/* Editorial Master Headline & Crisp Sensory Hook */}
           <div className="space-y-1">
             <div className="flex items-center gap-1.5">
-              <Sparkles className="w-3 h-3 text-[#D04834]" />
+              <Crown className="w-3 h-3 text-[#D04834]" />
               <span className="text-[9px] font-mono tracking-widest uppercase font-bold text-[#D04834]">
                 Artisan Cafe & Wood-Fired Bistro
               </span>
@@ -371,7 +373,7 @@ export function HeroSection({
                 <div className={`flex items-center gap-1.5 text-[10px] font-mono font-medium ${
                   isLight ? 'text-[#B83826]' : 'text-[#E86D58]'
                 }`}>
-                  <Sparkles className="w-3 h-3 shrink-0" />
+                  <ChefHat className="w-3 h-3 shrink-0" />
                   <span className="line-clamp-1">{currentDish.pairing}</span>
                 </div>
               </div>
@@ -571,7 +573,7 @@ export function HeroSection({
                   : 'bg-[#1E1A17] border-white/10 text-stone-300'
               }`}
             >
-              <Sparkles className="w-3.5 h-3.5 text-[#D04834]" />
+              <Crown className="w-3.5 h-3.5 text-[#D04834]" />
               <span className={`font-semibold tracking-wider ${isLight ? 'text-[#12100E]' : 'text-[#FAF7F2]'}`}>
                 FRESHLY CRAFTED.
               </span>

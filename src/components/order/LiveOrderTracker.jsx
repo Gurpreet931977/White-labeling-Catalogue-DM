@@ -5,7 +5,6 @@ import {
   Clock, 
   ChefHat, 
   Bell, 
-  Sparkles, 
   Phone, 
   UtensilsCrossed, 
   ArrowLeft,
@@ -68,7 +67,7 @@ export function LiveOrderTracker({ onOrderMore, onBackHome }) {
         { key: 'placed', label: '1. Placed', desc: 'Received and dispatched to kitchen station', icon: Receipt },
         { key: 'cooking', label: '2. In Kitchen', desc: 'Chef preparing freshly handcrafted dishes', icon: ChefHat },
         { key: 'ready', label: '3. Out for Delivery', desc: 'Courier rider on route to your doorstep', icon: Truck },
-        { key: 'served', label: '4. Delivered', desc: 'Arrived hot at your door. Enjoy!', icon: Sparkles }
+        { key: 'served', label: '4. Delivered', desc: 'Arrived hot at your door. Enjoy!', icon: CheckCircle2 }
       ]
     : isCounterPaymentPending
     ? [
@@ -94,7 +93,7 @@ export function LiveOrderTracker({ onOrderMore, onBackHome }) {
           key: 'served', 
           label: '4. Served', 
           desc: 'Order served. Enjoy your dining experience!', 
-          icon: Sparkles 
+          icon: CheckCircle2 
         }
       ]
     : (activeCustomerOrder.diningMode === 'counter' || activeCustomerOrder.pickupToken)
@@ -102,13 +101,13 @@ export function LiveOrderTracker({ onOrderMore, onBackHome }) {
         { key: 'placed', label: '1. Placed', desc: `${activeCustomerOrder.pickupToken || 'Queue Token'} active in queue`, icon: Receipt },
         { key: 'cooking', label: '2. Preparing', desc: 'Crafting at the express counter station', icon: ChefHat },
         { key: 'ready', label: '3. Ready', desc: 'Ready for tray collection at pickup window', icon: Bell },
-        { key: 'served', label: '4. Collected', desc: 'Collected. Enjoy your meal!', icon: Sparkles }
+        { key: 'served', label: '4. Collected', desc: 'Collected. Enjoy your meal!', icon: CheckCircle2 }
       ]
     : [
         { key: 'placed', label: '1. Placed', desc: 'Order received at kitchen terminal', icon: Receipt },
         { key: 'cooking', label: '2. Preparing', desc: 'Handcrafting dishes with fresh ingredients', icon: ChefHat },
         { key: 'ready', label: '3. Serving', desc: `Service heading to Table #${activeCustomerOrder.tableNumber || '04'}`, icon: Bell },
-        { key: 'served', label: '4. Served', desc: 'Served. Enjoy your dining experience!', icon: Sparkles }
+        { key: 'served', label: '4. Served', desc: 'Served. Enjoy your dining experience!', icon: CheckCircle2 }
       ];
 
   const getStepIndex = (status) => {

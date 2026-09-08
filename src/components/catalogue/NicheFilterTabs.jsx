@@ -5,7 +5,7 @@ import {
   Dumbbell, 
   Wine, 
   Trophy, 
-  Sparkles,
+  Scissors,
   LayoutGrid
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
@@ -17,7 +17,7 @@ const ICONS = {
   gyms: Dumbbell,
   clubs: Wine,
   turfs: Trophy,
-  salons: Sparkles
+  salons: Scissors
 };
 
 export function NicheFilterTabs({ categories, selectedCategory, onSelectCategory }) {

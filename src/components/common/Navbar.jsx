@@ -23,7 +23,6 @@ import {
   Store,
   Truck,
   ArrowRight,
-  Sparkles,
   MapPin,
   Clock,
   Sun,
@@ -806,7 +805,7 @@ export function Navbar({
                 }`}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-[#D04834]" />
+                      <Tag className="w-3.5 h-3.5 text-[#D04834]" />
                       <span className="text-[10px] font-mono font-bold tracking-wider uppercase text-[#D04834]">
                         Dine-In Promo Pass
                       </span>

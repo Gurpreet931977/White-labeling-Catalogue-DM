@@ -7,7 +7,7 @@ import {
   ArrowLeft,
   Volume2,
   VolumeX,
-  Sparkles,
+  Crown,
   QrCode,
   Users,
   Receipt,
@@ -347,7 +347,7 @@ export function GamifiedLoyaltyApp({ onBackToVariants, onBackToCatalogue }) {
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
             className="fixed top-24 inset-x-0 mx-auto w-fit z-50 px-5 py-2.5 rounded-2xl bg-[#7A1F1F] text-[#F2ECD8] border-2 border-[#1F1614] font-groovy font-bold text-xs shadow-[5px_5px_0px_#1F1614] flex items-center gap-2 pointer-events-none"
           >
-            <Sparkles className="w-4 h-4 text-[#E5A93C]" />
+            <Crown className="w-4 h-4 text-[#E5A93C]" />
             <span>{feedbackToast}</span>
           </motion.div>
         )}

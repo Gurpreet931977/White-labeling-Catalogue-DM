@@ -4,7 +4,7 @@ export const CATEGORIES = [
   { id: "woodfired-pizza", name: "Wood-Fired Pizzas", icon: "Flame" },
   { id: "pastas-mains", name: "Pastas & Bowls", icon: "Soup" },
   { id: "paninis-burgers", name: "Paninis & Burgers", icon: "Sandwich" },
-  { id: "appetizers-sides", name: "Starters & Sides", icon: "Sparkles" },
+  { id: "appetizers-sides", name: "Starters & Sides", icon: "Utensils" },
   { id: "coffee-brews", name: "Specialty Coffee", icon: "Coffee" },
   { id: "shakes-coolers", name: "Shakes & Coolers", icon: "GlassWater" },
   { id: "desserts", name: "Decadent Desserts", icon: "Moon" },

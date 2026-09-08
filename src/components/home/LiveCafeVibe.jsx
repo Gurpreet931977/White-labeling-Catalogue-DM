@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Users, Music, Coffee, CheckCircle2, Clock, Sparkles, Flame } from 'lucide-react';
+import { Users, Music, Coffee, CheckCircle2, Clock, Flame } from 'lucide-react';
 import { BRAND_CONFIG } from '../../data/cafeConfig';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -59,7 +59,7 @@ export function LiveCafeVibe() {
             <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-md border text-xs font-mono uppercase tracking-widest ${
               isLight ? 'bg-black/5 border-black/10 text-stone-700' : 'bg-white/5 border-white/10 text-stone-300'
             }`}>
-              <Sparkles className="w-3 h-3 text-[#D04834]" />
+              <Flame className="w-3 h-3 text-[#D04834]" />
               <span>THE BRAND MANIFESTO // 001</span>
             </div>
 

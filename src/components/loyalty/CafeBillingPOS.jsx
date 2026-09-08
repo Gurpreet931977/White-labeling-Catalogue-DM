@@ -18,7 +18,7 @@ import {
   QrCode,
   Flame,
   Gift,
-  Sparkles,
+  Coffee,
   Award,
   Zap,
   Star,
@@ -38,7 +38,7 @@ import { generateQRCodeDataUrl, getUpiPaymentUrl } from '../../utils/qrCode';
 const renderItemCategoryIcon = (category) => {
   if (category === 'bestsellers') return <Star className="w-3.5 h-3.5 text-[#2044E2]" />;
   if (category === 'treats') return <Cookie className="w-3.5 h-3.5 text-[#C25E3E]" />;
-  if (category === 'beverages') return <Sparkles className="w-3.5 h-3.5 text-[#2E7D32]" />;
+  if (category === 'beverages') return <Coffee className="w-3.5 h-3.5 text-[#2E7D32]" />;
   if (category === 'merch') return <ShoppingBag className="w-3.5 h-3.5 text-[#7A6B63]" />;
   return <Package className="w-3.5 h-3.5 text-[#2044E2]" />;
 };

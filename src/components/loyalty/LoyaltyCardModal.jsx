@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, 
   Award, 
-  Sparkles, 
+  Crown, 
   Check, 
   Coffee, 
   Utensils, 
@@ -235,7 +235,7 @@ export function LoyaltyCardModal({ isOpen, onClose, onOpenCart }) {
               onClick={handleManualCheckin}
               className="flex-1 py-2 rounded-xl bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/30 text-amber-300 font-syne font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Crown className="w-3.5 h-3.5" />
               <span>Mark Today's Visit (+1)</span>
             </button>
 

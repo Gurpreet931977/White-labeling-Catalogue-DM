@@ -28,7 +28,7 @@ export const LOYALTY_GIFTS_POOL = [
     type: 'voucher',
     badge: 'STORE CREDIT',
     desc: 'Enjoy an instant store voucher credit towards any purchases or specials.',
-    iconName: 'Sparkles',
+    iconName: 'Crown',
     color: 'from-orange-400 to-amber-600'
   },
   {

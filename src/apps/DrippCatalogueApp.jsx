@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Sparkles, 
+  Crown, 
   ArrowRight, 
   SlidersHorizontal, 
   Terminal, 
@@ -68,7 +68,7 @@ export function DrippCatalogueApp({ onOpenStudio, onOpenCafeOptions, onLaunchCaf
         {/* Section Heading */}
         <div className="text-center space-y-3 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-[#ebd73f]">
-            <Sparkles className="w-3.5 h-3.5" />
+            <Crown className="w-3.5 h-3.5" />
             <span>01 / WHITE-LABEL CATALOGUE</span>
           </div>
           <h2 className="font-panchang font-black text-3xl sm:text-4xl md:text-5xl tracking-tight text-white">

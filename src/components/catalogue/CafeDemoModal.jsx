@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, 
-  Sparkles, 
+  Crown, 
   ArrowRight, 
   Check, 
   Coffee, 
@@ -58,7 +58,7 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
 
   const getVariantIcon = () => {
     switch (variant.id) {
-      case 'gamified-loyalty': return Sparkles;
+      case 'gamified-loyalty': return Crown;
       case 'self-serve': return Store;
       case 'showcase': return Compass;
       case 'delivery': return Truck;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, 
-  Sparkles, 
+  Crown, 
   ArrowRight, 
   Check,
   Star
@@ -63,7 +63,7 @@ export function InteractiveDemoModal({ niche, isOpen, onClose, onOpenQuote }) {
           <div className="p-5 sm:p-6 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-black shadow-lg bg-[#ebd73f]">
-                <Sparkles className="w-5 h-5" />
+                <Crown className="w-5 h-5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">

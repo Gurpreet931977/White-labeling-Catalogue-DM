@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Truck, Flame, Bell, Coffee, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Truck, Flame, Bell, Coffee, Crown, CheckCircle2 } from 'lucide-react';
 
 export function LottieIcon({ type, className = "w-8 h-8", color = "#FFD000" }) {
   if (type === 'truck') {
@@ -102,5 +102,5 @@ export function LottieIcon({ type, className = "w-8 h-8", color = "#FFD000" }) {
     );
   }
 
-  return <Sparkles className={`${className} text-thc-yellow`} />;
+  return <Crown className={`${className} text-thc-yellow`} />;
 }

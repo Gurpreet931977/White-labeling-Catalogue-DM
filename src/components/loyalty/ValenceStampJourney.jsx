@@ -5,7 +5,7 @@ import {
   Flame, 
   Gift, 
   ArrowRight,
-  Sparkles,
+  Crown,
   Zap
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
@@ -291,7 +291,7 @@ export function ValenceStampJourney({
                 }}
                 className="px-6 py-3 rounded-2xl bg-[#E5A93C] hover:bg-[#F8CF75] text-[#1F1614] font-groovy font-black text-sm uppercase tracking-wider border-2 border-[#1F1614] shadow-[3px_3px_0px_#1F1614] cursor-pointer transition-all flex items-center gap-2"
               >
-                <Sparkles className="w-4 h-4" />
+                <Crown className="w-4 h-4" />
                 <span>CLAIM 50% REWARD NOW</span>
               </button>
             ) : (

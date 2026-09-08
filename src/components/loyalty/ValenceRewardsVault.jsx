@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Sparkles,
+  Crown,
   Gift,
   Percent,
   Clock,
@@ -154,7 +154,7 @@ export function ValenceRewardsVault({ customer, totalSlots = 6, currentGift }) {
               className="w-20 h-20 rounded-2xl bg-[#E5A93C] text-[#1F1614] border-3 border-[#1F1614] shadow-[4px_4px_0px_#1F1614] flex flex-col items-center justify-center cursor-pointer transition-all shrink-0"
             >
               {mysteryRevealed ? (
-                <Sparkles className="w-9 h-9 stroke-[2.5]" />
+                <Crown className="w-9 h-9 stroke-[2.5]" />
               ) : (
                 <>
                   <Gift className="w-8 h-8 stroke-[2.5]" />

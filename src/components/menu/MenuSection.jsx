@@ -14,7 +14,7 @@ import {
   X,
   ChevronDown,
   Layers,
-  Sparkles,
+  Crown,
   Utensils,
   Store,
   Truck,
@@ -206,7 +206,7 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
           <div className="flex flex-wrap items-center justify-between gap-2.5 pb-2.5 border-b border-black/10 dark:border-white/10">
             <div className="flex items-center gap-2 text-[11px] font-mono tracking-wider uppercase">
               <span className="text-[#D04834] font-bold flex items-center gap-1">
-                <Sparkles className="w-3 h-3" />
+                <Crown className="w-3 h-3" />
                 MILAN ATELIER
               </span>
               <span className={isLight ? 'text-black/20' : 'text-white/20'}>/</span>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Phone, Clock, Send, Navigation, Mail, ArrowUpRight, Sparkles } from 'lucide-react';
+import { MapPin, Phone, Clock, Send, Navigation, Mail, ArrowUpRight, Crown } from 'lucide-react';
 import { BRAND_CONFIG } from '../../data/cafeConfig';
 import { useTheme } from '../../context/ThemeContext';
 import { sounds } from '../../utils/audio';
@@ -21,7 +21,7 @@ export function Footer({ onNavigateMenu, onOpenScanner }) {
           <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-md border text-[10px] font-mono uppercase tracking-widest ${
             isLight ? 'bg-black/5 border-black/10 text-stone-700' : 'bg-white/5 border-white/10 text-stone-300'
           }`}>
-            <Sparkles className="w-3 h-3 text-[#D04834]" />
+            <Crown className="w-3 h-3 text-[#D04834]" />
             <span>SEE YOU SOON // ALWAYS WELCOME</span>
           </div>
 

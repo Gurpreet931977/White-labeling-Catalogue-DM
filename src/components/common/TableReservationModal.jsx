@@ -5,7 +5,6 @@ import {
   Calendar, 
   Clock, 
   Users, 
-  Sparkles, 
   CheckCircle2, 
   Phone, 
   User, 

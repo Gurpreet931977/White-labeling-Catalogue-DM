@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, 
   ArrowUpRight, 
-  Sparkles, 
+  Crown, 
   Coffee, 
   CheckCircle2, 
   Sliders, 
@@ -37,7 +37,7 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo, onLaunchL
     { id: 'Direct Online Doorstep Delivery', label: 'Doorstep Delivery', icon: Truck },
     { id: 'Hybrid Dine-In & Delivery', label: 'Hybrid Dual-Mode', icon: RefreshCw },
     { id: 'Loyalty Club & Visit Tracker', label: 'Loyalty POS', icon: Award },
-    { id: 'Gamified Member Loyalty Pass', label: 'Gamified Loyalty', icon: Sparkles },
+    { id: 'Gamified Member Loyalty Pass', label: 'Gamified Loyalty', icon: Crown },
   ];
 
   const filteredVariants = selectedFilter === 'all'
@@ -227,7 +227,7 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo, onLaunchL
                     }}
                     className="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-white font-clash text-xs font-semibold flex items-center justify-center gap-1.5 transition border border-white/10 cursor-pointer"
                   >
-                    <Sparkles className="w-3.5 h-3.5 text-[#ebd73f]" />
+                    <Crown className="w-3.5 h-3.5 text-[#ebd73f]" />
                     <span>Simulator</span>
                   </button>
 

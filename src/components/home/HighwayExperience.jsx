@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Clock, Sparkles, Coffee, Flame, QrCode, Music } from 'lucide-react';
+import { MapPin, Clock, Coffee, Flame, QrCode, Music } from 'lucide-react';
 import { BRAND_CONFIG } from '../../data/cafeConfig';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -39,7 +39,7 @@ export function CafeExperience() {
           <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-md border text-xs font-mono uppercase tracking-widest mb-3 ${
             isLight ? 'bg-black/5 border-black/10 text-stone-700' : 'bg-white/5 border-white/10 text-stone-300'
           }`}>
-            <Sparkles className="w-3.5 h-3.5 text-[#D04834]" />
+            <Flame className="w-3.5 h-3.5 text-[#D04834]" />
             <span>THE SPACE & CULTURE // 003</span>
           </div>
 

@@ -9,7 +9,6 @@ import {
   Volume2, 
   VolumeX, 
   Volume1, 
-  Sparkles,
   Zap,
   RefreshCw,
   Upload,
