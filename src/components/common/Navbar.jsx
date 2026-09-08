@@ -154,13 +154,13 @@ export function Navbar({
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-20 gap-2 lg:gap-4">
           
           {/* Brand Wordmark (Milan High-Fashion Look) */}
           <div 
             onClick={() => navTo('home')}
-            className="flex items-center gap-3.5 cursor-pointer group select-none"
+            className="flex items-center gap-2.5 sm:gap-3.5 cursor-pointer group select-none shrink-0"
           >
             <div className="relative">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black font-syne text-lg shadow-md group-hover:scale-105 transition-transform ${
@@ -190,17 +190,17 @@ export function Navbar({
                 <span>EST. 2024</span>
                 <span className={isLight ? 'text-black/20' : 'text-white/30'}>•</span>
                 <span>ED. 2026</span>
-                <span className={`hidden sm:inline ${isLight ? 'text-black/20' : 'text-white/30'}`}>•</span>
-                <span className={`hidden sm:inline ${isLight ? 'text-stone-600' : 'text-stone-300'}`}>ARTISAN CAFE & KITCHEN</span>
+                <span className={`hidden xl:inline ${isLight ? 'text-black/20' : 'text-white/30'}`}>•</span>
+                <span className={`hidden xl:inline ${isLight ? 'text-stone-600' : 'text-stone-300'}`}>ARTISAN CAFE & KITCHEN</span>
               </p>
             </div>
           </div>
 
           {/* Center Editorial Navigation Links */}
-          <nav className="hidden md:flex items-center gap-8 text-xs font-mono tracking-wider">
+          <nav className="hidden lg:flex items-center gap-3 xl:gap-8 text-xs font-mono tracking-wider shrink-0">
             <button
               onClick={() => navTo('home')}
-              className={`relative py-1 transition-colors flex items-center gap-1.5 uppercase ${
+              className={`relative py-1 transition-colors flex items-center gap-1.5 uppercase whitespace-nowrap ${
                 currentView === 'home'
                   ? isLight ? 'text-[#12100E] font-bold' : 'text-white font-bold'
                   : isLight ? 'text-stone-500 hover:text-black' : 'text-stone-400 hover:text-white'
@@ -218,7 +218,7 @@ export function Navbar({
 
             <button
               onClick={handleMenuClick}
-              className={`relative py-1 transition-colors flex items-center gap-1.5 uppercase ${
+              className={`relative py-1 transition-colors flex items-center gap-1.5 uppercase whitespace-nowrap ${
                 currentView === 'menu'
                   ? isLight ? 'text-[#12100E] font-bold' : 'text-white font-bold'
                   : isLight ? 'text-stone-500 hover:text-black' : 'text-stone-400 hover:text-white'
@@ -236,7 +236,7 @@ export function Navbar({
 
             <button
               onClick={handleAdminClick}
-              className={`relative py-1 transition-colors flex items-center gap-1.5 uppercase ${
+              className={`relative py-1 transition-colors flex items-center gap-1.5 uppercase whitespace-nowrap ${
                 currentView === 'admin'
                   ? 'text-[#D04834] font-bold'
                   : isLight ? 'text-stone-500 hover:text-black' : 'text-stone-400 hover:text-stone-200'
@@ -257,7 +257,7 @@ export function Navbar({
           </nav>
 
           {/* Right Action Area */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-2.5 shrink-0">
             {/* Dining Context Capsule */}
             <button
               onClick={() => {
@@ -270,7 +270,7 @@ export function Navbar({
                   onOpenModelSwitcher();
                 }
               }}
-              className={`hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-mono transition cursor-pointer ${
+              className={`hidden sm:flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border text-xs font-mono transition cursor-pointer shrink-0 ${
                 isLight
                   ? 'bg-[#EAE4D9] border-black/10 text-[#12100E] hover:border-black/25'
                   : 'bg-[#1A1715] border-white/10 text-stone-200 hover:border-white/25'
@@ -333,7 +333,7 @@ export function Navbar({
               <div className="relative">
                 <button
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                  className={`flex items-center gap-2 px-2.5 py-2 rounded-xl border text-xs transition ${
+                  className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border text-xs transition shrink-0 ${
                     isLight
                       ? 'bg-[#EAE4D9] border-black/10 text-[#12100E] hover:border-black/25'
                       : 'bg-[#1A1715] border-white/10 text-stone-200 hover:border-white/20'
@@ -344,10 +344,10 @@ export function Navbar({
                   }`}>
                     <User className="w-3 h-3" />
                   </div>
-                  <span className="hidden sm:inline max-w-[85px] truncate font-mono text-[11px]">
+                  <span className="hidden sm:inline max-w-[65px] lg:max-w-[85px] xl:max-w-[120px] truncate font-mono text-[11px]">
                     {customerUser?.name?.split(' ')[0] || 'Ospite'}
                   </span>
-                  <ChevronDown className="w-3 h-3 opacity-60" />
+                  <ChevronDown className="w-3 h-3 opacity-60 shrink-0" />
                 </button>
 
                 {profileDropdownOpen && (
@@ -397,7 +397,7 @@ export function Navbar({
             {/* LIGHT / DARK MODE TOGGLE BUTTON WITH CINEMATIC RIPPLE */}
             <button
               onClick={(e) => toggleTheme(e)}
-              className={`p-2 rounded-xl border transition flex items-center justify-center cursor-pointer ${
+              className={`p-1.5 sm:p-2 rounded-xl border transition flex items-center justify-center cursor-pointer shrink-0 ${
                 isLight
                   ? 'bg-[#EAE4D9] border-black/10 text-[#12100E] hover:bg-[#DFD8CC]'
                   : 'bg-[#1A1715] border-white/10 text-[#FAF7F2] hover:border-white/30'
@@ -415,7 +415,7 @@ export function Navbar({
             {/* Sound Toggle */}
             <button
               onClick={handleToggleSound}
-              className={`hidden sm:flex p-2 rounded-xl border transition ${
+              className={`hidden sm:flex p-1.5 sm:p-2 rounded-xl border transition shrink-0 ${
                 soundActive
                   ? isLight
                     ? 'bg-[#EAE4D9] border-black/10 text-stone-700 hover:border-black/30'
@@ -431,7 +431,7 @@ export function Navbar({
             {operationalModel === 'showcase' && onOpenReservation ? (
               <button
                 onClick={() => { sounds.playClick(); onOpenReservation(); }}
-                className={`relative flex items-center gap-2 px-4 py-2 rounded-xl font-syne font-black text-xs transition shadow-lg cursor-pointer tracking-wider uppercase ${
+                className={`relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-syne font-black text-xs transition shadow-lg cursor-pointer tracking-wider uppercase shrink-0 ${
                   isLight
                     ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-black'
                     : 'bg-[#FAF7F2] text-[#12100E] hover:bg-[#E8E0D2]'
@@ -443,7 +443,7 @@ export function Navbar({
             ) : (
               <button
                 onClick={() => { sounds.playClick(); onOpenCart(); }}
-                className={`relative flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl font-syne font-black text-xs transition shadow-lg cursor-pointer tracking-wider uppercase group ${
+                className={`relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl font-syne font-black text-xs transition shadow-lg cursor-pointer tracking-wider uppercase group shrink-0 ${
                   isLight
                     ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-black shadow-black/10'
                     : 'bg-[#FAF7F2] text-[#12100E] hover:bg-[#E8E0D2] shadow-black/30'
@@ -465,7 +465,7 @@ export function Navbar({
             {/* Mobile Lookbook Overlay Trigger */}
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className={`md:hidden p-2 rounded-xl border ${
+              className={`lg:hidden p-1.5 sm:p-2 rounded-xl border shrink-0 ${
                 isLight ? 'bg-[#EAE4D9] border-black/10 text-[#12100E]' : 'bg-[#1A1715] border-white/10 text-stone-200'
               }`}
               aria-label="Open Navigation Menu"
@@ -484,7 +484,7 @@ export function Navbar({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className={`fixed inset-0 z-50 flex flex-col justify-between p-6 sm:p-8 md:hidden overflow-y-auto ${
+            className={`fixed inset-0 z-50 flex flex-col justify-between p-6 sm:p-8 lg:hidden overflow-y-auto ${
               isLight ? 'bg-[#FAF7F2] text-[#12100E]' : 'bg-[#12100E] text-[#FAF7F2]'
             }`}
           >
