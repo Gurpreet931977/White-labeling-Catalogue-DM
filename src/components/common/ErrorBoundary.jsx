@@ -68,19 +68,19 @@ export class ErrorBoundary extends React.Component {
             </div>
 
             {this.state.error && (
-              <details className="text-left bg-black/40 border border-white/5 rounded-xl p-3 text-[11px] font-mono text-slate-400">
-                <summary className="cursor-pointer text-slate-500 hover:text-slate-300">
-                  Diagnostic Information
-                </summary>
-                <p className="mt-2 text-rose-400 font-bold break-all">
+              <div className="text-left bg-rose-500/10 border border-rose-500/30 rounded-2xl p-4 space-y-2">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-rose-400 font-bold block">
+                  Error Details:
+                </span>
+                <p className="text-xs font-mono text-rose-300 font-bold break-all">
                   {this.state.error.toString()}
                 </p>
                 {this.state.errorInfo?.componentStack && (
-                  <pre className="mt-1 text-[9px] text-slate-500 overflow-x-auto max-h-32">
+                  <pre className="mt-2 text-[10px] font-mono text-stone-400 overflow-x-auto max-h-40 bg-black/50 p-2.5 rounded-xl border border-white/5">
                     {this.state.errorInfo.componentStack}
                   </pre>
                 )}
-              </details>
+              </div>
             )}
           </div>
         </div>
