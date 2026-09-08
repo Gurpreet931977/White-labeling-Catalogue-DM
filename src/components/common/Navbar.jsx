@@ -177,10 +177,11 @@ export function Navbar({
 
             <div>
               <div className="flex items-baseline gap-2">
-                <span className={`font-editorial text-xl sm:text-2xl font-bold tracking-tight transition ${
+                <span className={`font-editorial text-lg sm:text-2xl font-bold tracking-tight transition whitespace-nowrap ${
                   isLight ? 'text-[#12100E]' : 'text-white'
                 }`}>
-                  {BRAND_CONFIG.brandName}
+                  <span className="sm:hidden">{BRAND_CONFIG.shortName || 'THC Cafe'}</span>
+                  <span className="hidden sm:inline">{BRAND_CONFIG.brandName}</span>
                 </span>
               </div>
               <p className={`text-[10px] font-mono tracking-wider flex items-center gap-2 ${
@@ -269,7 +270,7 @@ export function Navbar({
                   onOpenModelSwitcher();
                 }
               }}
-              className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-mono transition cursor-pointer ${
+              className={`hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-mono transition cursor-pointer ${
                 isLight
                   ? 'bg-[#EAE4D9] border-black/10 text-[#12100E] hover:border-black/25'
                   : 'bg-[#1A1715] border-white/10 text-stone-200 hover:border-white/25'
@@ -414,7 +415,7 @@ export function Navbar({
             {/* Sound Toggle */}
             <button
               onClick={handleToggleSound}
-              className={`p-2 rounded-xl border transition ${
+              className={`hidden sm:flex p-2 rounded-xl border transition ${
                 soundActive
                   ? isLight
                     ? 'bg-[#EAE4D9] border-black/10 text-stone-700 hover:border-black/30'
@@ -585,6 +586,23 @@ export function Navbar({
                   }`}
                 >
                   Switch
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs font-mono">
+                  {soundActive ? <Volume2 className="w-3.5 h-3.5 text-[#D04834]" /> : <VolumeX className="w-3.5 h-3.5 opacity-60" />}
+                  <span className="font-bold">{soundActive ? 'Sound On' : 'Sound Muted'}</span>
+                </div>
+                <button
+                  onClick={handleToggleSound}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold uppercase transition ${
+                    soundActive 
+                      ? isLight ? 'bg-black/10 text-black' : 'bg-white/10 text-white'
+                      : isLight ? 'bg-black/5 text-stone-500' : 'bg-white/5 text-stone-500'
+                  }`}
+                >
+                  {soundActive ? 'Mute' : 'Enable'}
                 </button>
               </div>
 
