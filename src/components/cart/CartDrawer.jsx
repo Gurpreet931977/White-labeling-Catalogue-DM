@@ -18,7 +18,8 @@ import {
   MapPin,
   Gift,
   Calendar,
-  Percent
+  Percent,
+  Users
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
@@ -32,7 +33,8 @@ export function CartDrawer({
   onProceedToPayment, 
   onRequireAuth,
   onOpenReservation,
-  onOpenLoyaltyModal
+  onOpenLoyaltyModal,
+  onOpenSplitBill
 }) {
   const {
     cart,
@@ -787,6 +789,22 @@ export function CartDrawer({
                     <span className="font-number text-2xl font-bold text-[#D04834]">₹{grandTotal}</span>
                   </div>
                 </div>
+
+                {/* Split the Bill Option for Seated Diners */}
+                {diningMode === 'table' && onOpenSplitBill && (
+                  <button
+                    type="button"
+                    onClick={() => { sounds.playClick(); onOpenSplitBill(); }}
+                    className={`w-full py-2.5 rounded-xl border text-xs font-mono font-bold flex items-center justify-center gap-2 transition active:scale-[0.99] cursor-pointer ${
+                      isLight
+                        ? 'bg-stone-100 hover:bg-stone-200 border-stone-300 text-stone-800'
+                        : 'bg-white/5 hover:bg-white/10 border-white/15 text-stone-200'
+                    }`}
+                  >
+                    <Users className="w-3.5 h-3.5 text-[#C5A880]" />
+                    <span>Split Bill (2 to 6 Diners • Individual UPI QRs)</span>
+                  </button>
+                )}
 
                 <button
                   onClick={handleProceed}

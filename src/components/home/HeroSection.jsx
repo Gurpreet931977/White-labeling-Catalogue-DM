@@ -18,12 +18,15 @@ import {
   Flame,
   Coffee,
   CheckCircle2,
-  MapPin
+  MapPin,
+  Sparkles,
+  Plus
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useTheme } from '../../context/ThemeContext';
 import { BRAND_CONFIG, MODEL_SYSTEM_CONFIG } from '../../data/cafeConfig';
+import { MENU_ITEMS } from '../../data/menuData';
 import { sounds } from '../../utils/audio';
 
 // Curated Editorial Campaign Dishes (High-Res Realistic Photography)
@@ -39,6 +42,11 @@ const CAMPAIGN_DISHES = [
     rating: "5.0",
     prepTime: "12 min",
     pairing: "Best paired with Cold Brew & Truffle Fries",
+    pairingItemIds: ["thc-21", "thc-17"],
+    pairingBundleName: "Signature Neapolitan Tasting Bundle",
+    pairingBundlePrice: 629,
+    pairingSavings: 108,
+    sommelierNote: "Natural sweetness of San Marzano D.O.P. concasse elevated by cold-aerated Arabica acidity.",
     image: "https://images.unsplash.com/photo-1604382355076-af4b0eb60143?auto=format&fit=crop&w=1200&q=85",
     description: "Slow-fermented Neapolitan crust, San Marzano tomato concasse, creamy buffalo mozzarella & fragrant sweet basil.",
     accent: "#D04834"
@@ -53,10 +61,15 @@ const CAMPAIGN_DISHES = [
     price: 269,
     rating: "4.9",
     prepTime: "12 min",
-    pairing: "Best paired with Iced Macchiato",
+    pairing: "Best paired with Iced Macchiato & Cheesy Focaccia",
+    pairingItemIds: ["thc-21", "thc-16"],
+    pairingBundleName: "Italian Cream & Roastery Bundle",
+    pairingBundlePrice: 539,
+    pairingSavings: 99,
+    sommelierNote: "Rich European butter and aged Parmesan cut gracefully by chilled espresso caramel microfoam.",
     image: "https://images.unsplash.com/photo-1645112411341-6c4fd023714a?auto=format&fit=crop&w=1200&q=85",
     description: "Velvety Parmesan & European butter cream sauce tossed with charred sweet corn and sautéed wild forest mushrooms.",
-    accent: "#E8E439"
+    accent: "#C5A880"
   },
   {
     id: "thc-21",
@@ -69,6 +82,11 @@ const CAMPAIGN_DISHES = [
     rating: "4.9",
     prepTime: "5 min",
     pairing: "Best paired with Tiramisu Classico",
+    pairingItemIds: ["thc-29"],
+    pairingBundleName: "Dolce Espresso Afternoon Pair",
+    pairingBundlePrice: 369,
+    pairingSavings: 49,
+    sommelierNote: "Madagascar vanilla infusion harmonizes with layered Savoiardi cocoa and espresso mascarpone.",
     image: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=1200&q=85",
     description: "Cold-aerated Madagascar vanilla milk poured over slow-dripped espresso float with salted butter caramel drizzle.",
     accent: "#C28E5C"
@@ -83,7 +101,12 @@ const CAMPAIGN_DISHES = [
     price: 229,
     rating: "5.0",
     prepTime: "4 min",
-    pairing: "Best paired with Double Espresso",
+    pairing: "Best paired with Double Ristretto Espresso",
+    pairingItemIds: ["thc-21"],
+    pairingBundleName: "House Mascarpone & Brew Bundle",
+    pairingBundlePrice: 359,
+    pairingSavings: 59,
+    sommelierNote: "Raw dusted Valrhona cocoa balances the airy sweetness of authentic Venetian mascarpone.",
     image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=1200&q=85",
     description: "Espresso-steeped Savoiardi biscuits layered with pillowy Italian mascarpone cream and dusted with raw cocoa.",
     accent: "#D04834"
@@ -98,13 +121,43 @@ export function HeroSection({
   onOpenLoyaltyModal
 }) {
   const { isCustomerLoggedIn } = useAuth();
-  const { operationalModel, diningMode, setDiningMode, activeTable } = useCart();
+  const { operationalModel, diningMode, setDiningMode, activeTable, addToCart } = useCart();
   const { isLight } = useTheme();
   const currentModelConfig = MODEL_SYSTEM_CONFIG[operationalModel] || MODEL_SYSTEM_CONFIG['table-qr'];
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
+  const [pairingToast, setPairingToast] = useState(null);
+
+  // Handle adding the chef's curated sommelier pairing bundle
+  const handleAddCuratedPairing = (e, dish) => {
+    e.stopPropagation();
+    sounds.playSuccess();
+    
+    // Add main dish
+    const mainDishItem = MENU_ITEMS.find(i => i.id === dish.id) || {
+      id: dish.id,
+      name: dish.name,
+      price: dish.price,
+      image: dish.image,
+      category: dish.shortCategory.toLowerCase()
+    };
+    addToCart(mainDishItem, 1);
+
+    // Add pairing companion items
+    if (dish.pairingItemIds && Array.isArray(dish.pairingItemIds)) {
+      dish.pairingItemIds.forEach(id => {
+        const compItem = MENU_ITEMS.find(i => i.id === id);
+        if (compItem) {
+          addToCart(compItem, 1);
+        }
+      });
+    }
+
+    setPairingToast(`${dish.pairingBundleName || 'Chef Pairing Bundle'} added to table order`);
+    setTimeout(() => setPairingToast(null), 3200);
+  };
 
   // Subtle 3D Card Tilt Physics
   const cardRef = useRef(null);
@@ -365,16 +418,28 @@ export function HeroSection({
               </div>
 
               {/* Description & Sommelier Pairing Tip */}
-              <div className="space-y-1 px-0.5">
+              <div className="space-y-1.5 px-0.5">
                 <p className={`text-[11px] leading-snug line-clamp-1 ${isLight ? 'text-stone-600' : 'text-stone-300'}`}>
                   {currentDish.description}
                 </p>
 
-                <div className={`flex items-center gap-1.5 text-[10px] font-mono font-medium ${
-                  isLight ? 'text-[#B83826]' : 'text-[#E86D58]'
+                <div className={`p-2 rounded-xl border flex items-center justify-between gap-2 ${
+                  isLight ? 'bg-black/[0.03] border-black/10' : 'bg-white/[0.03] border-white/10'
                 }`}>
-                  <ChefHat className="w-3 h-3 shrink-0" />
-                  <span className="line-clamp-1">{currentDish.pairing}</span>
+                  <div className="flex items-center gap-1.5 text-[10px] font-mono font-medium overflow-hidden">
+                    <ChefHat className="w-3 h-3 shrink-0 text-[#C5A880]" />
+                    <span className="truncate">{currentDish.pairing}</span>
+                  </div>
+
+                  {operationalModel !== 'showcase' && (
+                    <button
+                      onClick={(e) => handleAddCuratedPairing(e, currentDish)}
+                      className="px-2.5 py-1 rounded-lg bg-[#C5A880] text-[#12100E] font-mono text-[9px] font-bold shrink-0 transition active:scale-95 flex items-center gap-1 cursor-pointer shadow-sm"
+                    >
+                      <Plus className="w-2.5 h-2.5" />
+                      <span>Pair ₹{currentDish.pairingBundlePrice}</span>
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -799,17 +864,17 @@ export function HeroSection({
               </div>
 
               {/* Main Lookbook Photography Spread */}
-              <div className="relative aspect-[4/3] sm:aspect-[16/11] w-full rounded-2xl overflow-hidden my-4 bg-stone-950">
+              <div className="relative aspect-[4/3] sm:aspect-[16/11] w-full rounded-2xl overflow-hidden my-4 bg-stone-950 group/img">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={currentDish.id}
                     src={currentDish.image}
                     alt={currentDish.name}
-                    initial={{ opacity: 0, scale: 1.05 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                    className="w-full h-full object-cover"
+                    initial={{ opacity: 0, scale: 1.08 }}
+                    animate={{ opacity: 1, scale: 1.01 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105"
                   />
                 </AnimatePresence>
 
@@ -820,6 +885,25 @@ export function HeroSection({
                 <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-[#12100E]/85 backdrop-blur-md border border-white/15 text-[10px] font-mono tracking-wider text-[#FAF7F2] font-bold">
                   CHEF'S SIGNATURE
                 </div>
+
+                {/* Quick Add Main Dish Button */}
+                {operationalModel !== 'showcase' && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      sounds.playSuccess();
+                      const item = MENU_ITEMS.find(i => i.id === currentDish.id) || currentDish;
+                      addToCart(item, 1);
+                      setPairingToast(`${currentDish.name} added to order`);
+                      setTimeout(() => setPairingToast(null), 3000);
+                    }}
+                    className="absolute bottom-3 left-3 px-3 py-1.5 rounded-xl bg-[#12100E]/85 hover:bg-black backdrop-blur-md border border-white/20 text-white font-mono text-[10px] font-bold tracking-wider uppercase flex items-center gap-1.5 transition cursor-pointer active:scale-95 shadow-lg"
+                    title={`Quick add ${currentDish.name} to order`}
+                  >
+                    <Plus className="w-3 h-3 text-[#C5A880]" />
+                    <span>Quick Order</span>
+                  </button>
+                )}
 
                 {/* Floating Price Tag */}
                 <div className={`absolute bottom-3 right-3 px-3.5 py-1.5 rounded-xl font-number font-bold text-base tracking-tight shadow-xl ${
@@ -846,9 +930,30 @@ export function HeroSection({
                   {currentDish.description}
                 </p>
 
-                <p className="text-[10px] font-mono text-[#D04834] font-semibold pt-1">
-                  {currentDish.pairing}
-                </p>
+                {/* Sommelier Tasting Note & 1-Click Pairing Add */}
+                <div className={`p-3 rounded-2xl border text-[11px] font-mono flex items-center justify-between gap-3 mt-2.5 ${
+                  isLight ? 'bg-black/[0.03] border-black/10' : 'bg-white/[0.03] border-white/10'
+                }`}>
+                  <div className="space-y-0.5 overflow-hidden text-left">
+                    <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-widest text-[#C5A880] font-bold">
+                      <ChefHat className="w-3 h-3 text-[#C5A880]" />
+                      <span>Sommelier Pairing</span>
+                    </div>
+                    <p className={`text-[11px] font-sans line-clamp-1 ${isLight ? 'text-stone-700' : 'text-stone-300'}`}>
+                      {currentDish.sommelierNote || currentDish.pairing}
+                    </p>
+                  </div>
+
+                  {operationalModel !== 'showcase' && (
+                    <button
+                      onClick={(e) => handleAddCuratedPairing(e, currentDish)}
+                      className="px-3.5 py-2 rounded-xl bg-[#C5A880] hover:bg-[#B89358] text-[#12100E] font-mono text-[10px] font-bold tracking-wider uppercase shrink-0 transition flex items-center gap-1.5 cursor-pointer shadow-md active:scale-95"
+                    >
+                      <Plus className="w-3 h-3 stroke-[2.5]" />
+                      <span>Pair ₹{currentDish.pairingBundlePrice}</span>
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Prev / Next Minimalist Editorial Controls */}
@@ -898,6 +1003,23 @@ export function HeroSection({
         </div>
 
       </div>
+
+      {/* Sommelier Pairing Added Live Toast */}
+      <AnimatePresence>
+        {pairingToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="fixed top-28 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl bg-[#141210]/95 border border-[#C5A880]/50 text-[#FAF7F2] shadow-2xl backdrop-blur-xl flex items-center gap-3 text-xs font-mono"
+          >
+            <div className="w-6 h-6 rounded-full bg-[#C5A880]/20 flex items-center justify-center text-[#C5A880]">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
+            <span>{pairingToast}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

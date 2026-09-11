@@ -10,7 +10,10 @@ import {
   ArrowLeft, 
   Layers, 
   ExternalLink,
-  Monitor
+  Monitor,
+  Smartphone,
+  Calculator,
+  BellRing as BellIcon
 } from 'lucide-react';
 import { MobileBottomBar } from '../components/common/MobileBottomBar';
 import { Navbar } from '../components/common/Navbar';
@@ -32,6 +35,10 @@ import { AdminLoginModal } from '../components/auth/AdminLoginModal';
 import { ModelSwitcherModal } from '../components/common/ModelSwitcherModal';
 import { LoyaltyCardModal } from '../components/loyalty/LoyaltyCardModal';
 import { TableReservationModal } from '../components/common/TableReservationModal';
+import { MobileQrLiveModal } from '../components/common/MobileQrLiveModal';
+import { VipConciergeModal, VipConciergeFloatingButton } from '../components/common/VipConciergeModal';
+import { CafeRoiModal } from '../components/common/CafeRoiModal';
+import { SplitBillModal } from '../components/cart/SplitBillModal';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { CartProvider, useCart } from '../context/CartContext';
 import { OrderProvider, useOrder } from '../context/OrderContext';
@@ -53,9 +60,13 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
   const [isModelSwitcherOpen, setIsModelSwitcherOpen] = useState(false);
   const [isLoyaltyModalOpen, setIsLoyaltyModalOpen] = useState(false);
   const [isReservationOpen, setIsReservationOpen] = useState(false);
+  const [isLiveQrOpen, setIsLiveQrOpen] = useState(false);
+  const [isConciergeOpen, setIsConciergeOpen] = useState(false);
+  const [isRoiOpen, setIsRoiOpen] = useState(false);
+  const [isSplitBillOpen, setIsSplitBillOpen] = useState(false);
   const [selectedItemForCustomize, setSelectedItemForCustomize] = useState(null);
 
-  const { itemCount, grandTotal, operationalModel } = useCart();
+  const { itemCount, grandTotal, operationalModel, activeTable, diningMode } = useCart();
   const { activeCustomerOrder, liveOrderToast, setLiveOrderToast } = useOrder();
   const { isLight, isDark } = useTheme();
   const { 
@@ -111,14 +122,14 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
         <div className={`border-b px-4 py-2 text-xs flex items-center justify-between z-50 sticky top-0 backdrop-blur-md font-mono transition-colors ${
           isLight ? 'bg-[#F0EAE1]/95 border-black/10 text-stone-700' : 'bg-[#0A0807]/95 border-white/10 text-stone-300'
         }`}>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={() => {
                 sounds.playClick();
                 if (onBackToVariants) onBackToVariants();
                 else if (onBackToCatalogue) onBackToCatalogue();
               }}
-              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-[#ebd73f] hover:text-black font-semibold text-white transition-all text-[11px] cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-[#C5A880] hover:text-[#12100E] font-semibold text-white transition-all text-[11px] cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Cafe Options</span>
@@ -128,10 +139,10 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
             {/* Interactive Active Model Switcher Button */}
             <button
               onClick={() => { sounds.playClick(); setIsModelSwitcherOpen(true); }}
-              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#ebd73f]/15 hover:bg-[#ebd73f]/25 text-[#ebd73f] text-[11px] font-semibold border border-[#ebd73f]/30 transition cursor-pointer"
+              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#C5A880]/15 hover:bg-[#C5A880]/25 text-[#C5A880] text-[11px] font-semibold border border-[#C5A880]/30 transition cursor-pointer"
               title="Click to Switch Operating Model"
             >
-              <Layers className="w-3 h-3 text-[#ebd73f]" />
+              <Layers className="w-3 h-3 text-[#C5A880]" />
               <span>
                 MODEL: {
                   operationalModel === 'self-serve' ? 'Self-Serve Counter QSR' :
@@ -143,9 +154,31 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
                   'Artisan Dine-In & Table QR'
                 }
               </span>
-              <span className="px-1.5 py-0.2 rounded bg-[#ebd73f] text-black text-[9px] font-bold">
+              <span className="px-1.5 py-0.2 rounded bg-[#C5A880] text-[#12100E] text-[9px] font-bold">
                 SWITCH
               </span>
+            </button>
+          </div>
+
+          {/* Right Actions: Test on Phone & Cafe ROI */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => { sounds.playClick(); setIsLiveQrOpen(true); }}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/10 hover:bg-[#C5A880] hover:text-[#12100E] font-semibold text-white transition-all text-[11px] cursor-pointer border border-white/10"
+              title="Test Table QR on your smartphone camera"
+            >
+              <Smartphone className="w-3 h-3 text-[#C5A880]" />
+              <span className="hidden md:inline">Test on Phone</span>
+              <span className="md:hidden">Phone QR</span>
+            </button>
+
+            <button
+              onClick={() => { sounds.playClick(); setIsRoiOpen(true); }}
+              className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/10 hover:bg-[#C5A880] hover:text-[#12100E] font-semibold text-white transition-all text-[11px] cursor-pointer border border-white/10"
+              title="Calculate Commission Savings vs Aggregators"
+            >
+              <Calculator className="w-3 h-3 text-[#C5A880]" />
+              <span>Bistro ROI</span>
             </button>
           </div>
         </div>
@@ -171,6 +204,9 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
           onOpenLoyaltyModal={operationalModel === 'loyalty' ? () => setIsLoyaltyModalOpen(true) : null}
           onOpenReservation={() => setIsReservationOpen(true)}
           onOpenModelSwitcher={() => setIsModelSwitcherOpen(true)}
+          onOpenMobileQr={() => setIsLiveQrOpen(true)}
+          onOpenRoi={() => setIsRoiOpen(true)}
+          onOpenConcierge={() => setIsConciergeOpen(true)}
         />
       )}
 
@@ -421,6 +457,7 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
         onRequireAuth={(cb) => requireCustomerAuth(cb)}
         onOpenReservation={() => setIsReservationOpen(true)}
         onOpenLoyaltyModal={operationalModel === 'loyalty' ? () => setIsLoyaltyModalOpen(true) : null}
+        onOpenSplitBill={() => setIsSplitBillOpen(true)}
       />
 
       {/* 5. Payment Gateway Modal */}
@@ -458,6 +495,41 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
         isOpen={isReservationOpen}
         onClose={() => setIsReservationOpen(false)}
       />
+
+      {/* 10. Live Mobile QR Plaque Test Modal */}
+      <MobileQrLiveModal
+        isOpen={isLiveQrOpen}
+        onClose={() => setIsLiveQrOpen(false)}
+        activeTable={activeTable || 8}
+      />
+
+      {/* 11. VIP Table Concierge Modal */}
+      <VipConciergeModal
+        isOpen={isConciergeOpen}
+        onClose={() => setIsConciergeOpen(false)}
+      />
+
+      {/* 12. Bistro ROI & Economics Modal */}
+      <CafeRoiModal
+        isOpen={isRoiOpen}
+        onClose={() => setIsRoiOpen(false)}
+      />
+
+      {/* 13. Split Bill Modal */}
+      <SplitBillModal
+        isOpen={isSplitBillOpen}
+        onClose={() => setIsSplitBillOpen(false)}
+        grandTotal={grandTotal}
+        tableNumber={activeTable || 8}
+      />
+
+      {/* 14. Floating VIP Table Concierge Button (Seated Dine-In) */}
+      {currentView !== 'admin' && (operationalModel === 'table-qr' || operationalModel === 'hybrid' || diningMode === 'table') && (
+        <VipConciergeFloatingButton
+          onOpen={() => setIsConciergeOpen(true)}
+          activeTable={activeTable || 8}
+        />
+      )}
 
       {/* Native Thumb-Friendly Mobile Bottom Navigation Bar (md:hidden) */}
       {currentView !== 'admin' && (

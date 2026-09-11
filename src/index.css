@@ -635,4 +635,37 @@ body.debug-wireframe * {
   letter-spacing: -0.02em;
 }
 
+/* ========================================================================= */
+/* CHAMPAGNE BRASS & LUXURY HOSPITALITY ACCENTS                              */
+/* ========================================================================= */
+
+.text-brass {
+  color: #C5A880;
+}
+
+.bg-brass {
+  background-color: #C5A880;
+}
+
+.border-brass {
+  border-color: rgba(197, 168, 128, 0.35);
+}
+
+.brass-glow {
+  box-shadow: 0 0 30px -8px rgba(197, 168, 128, 0.3);
+}
+
+.btn-champagne {
+  background-color: #C5A880;
+  color: #12100E;
+  font-weight: 700;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-champagne:hover {
+  background-color: #B89358;
+  box-shadow: 0 10px 20px -5px rgba(197, 168, 128, 0.35);
+}
+
+
 
