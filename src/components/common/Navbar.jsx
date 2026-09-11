@@ -509,31 +509,29 @@ export function Navbar({
             {operationalModel === 'showcase' && onOpenReservation ? (
               <button
                 onClick={() => { sounds.playClick(); onOpenReservation(); }}
-                className={`relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-syne font-black text-xs transition shadow-lg cursor-pointer tracking-wider uppercase shrink-0 ${
+                className={`relative flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-full font-sans font-semibold text-xs transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer tracking-wider uppercase shrink-0 border active:scale-95 ${
                   isLight
-                    ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-black'
-                    : 'bg-[#FAF7F2] text-[#12100E] hover:bg-[#E8E0D2]'
+                    ? 'bg-[#141210] hover:bg-[#201C19] text-[#FAF7F2] border-black/15 shadow-black/10'
+                    : 'bg-[#181513] hover:bg-[#221E1B] text-[#FAF7F2] border-[#C5A880]/35 hover:border-[#C5A880]/70 shadow-black/30'
                 }`}
               >
-                <Calendar className="w-3.5 h-3.5 stroke-[2.5]" />
+                <Calendar className="w-3.5 h-3.5 stroke-[1.8] text-[#C5A880]" />
                 <span className="hidden sm:inline">Book Table</span>
               </button>
             ) : (
               <button
                 onClick={() => { sounds.playClick(); onOpenCart(); }}
-                className={`relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl font-syne font-black text-xs transition shadow-lg cursor-pointer tracking-wider uppercase group shrink-0 ${
+                className={`relative flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-full font-sans font-semibold text-xs transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer tracking-wider uppercase group shrink-0 border active:scale-95 ${
                   isLight
-                    ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-black shadow-black/10'
-                    : 'bg-[#FAF7F2] text-[#12100E] hover:bg-[#E8E0D2] shadow-black/30'
+                    ? 'bg-[#141210] hover:bg-[#201C19] text-[#FAF7F2] border-black/15 shadow-black/10'
+                    : 'bg-[#181513] hover:bg-[#221E1B] text-[#FAF7F2] border-[#C5A880]/35 hover:border-[#C5A880]/70 shadow-black/30'
                 }`}
                 title="View Bag"
               >
-                <ShoppingBag className="w-3.5 h-3.5 stroke-[2.5] group-hover:scale-110 transition-transform" />
-                <span className="hidden sm:inline">Order</span>
+                <ShoppingBag className="w-3.5 h-3.5 stroke-[1.8] text-[#C5A880] group-hover:scale-105 transition-transform" />
+                <span className="tracking-widest">Order</span>
                 {itemCount > 0 ? (
-                  <span className={`px-1.5 py-0.2 rounded-md text-[10px] font-number font-bold ${
-                    isLight ? 'bg-[#FAF7F2] text-[#12100E]' : 'bg-[#12100E] text-[#FAF7F2]'
-                  }`}>
+                  <span className="w-4.5 h-4.5 rounded-full text-[10px] font-mono font-bold leading-none bg-[#C5A880] text-[#12100E] flex items-center justify-center shadow-xs">
                     {itemCount}
                   </span>
                 ) : null}
@@ -939,8 +937,10 @@ export function Navbar({
                       setMobileMenuOpen(false);
                       if (onRequireAuth) onRequireAuth(() => navTo('menu'));
                     }}
-                    className={`w-full py-3 rounded-xl font-syne font-black text-xs text-center uppercase tracking-wider transition active:scale-95 shadow-md cursor-pointer ${
-                      isLight ? 'bg-[#12100E] text-[#FAF7F2]' : 'bg-[#FAF7F2] text-[#12100E]'
+                    className={`w-full py-3 rounded-2xl font-sans font-semibold text-xs text-center uppercase tracking-wider transition active:scale-95 shadow-md cursor-pointer border ${
+                      isLight
+                        ? 'bg-[#141210] hover:bg-black text-[#FAF7F2] border-black/15 shadow-black/10'
+                        : 'bg-[#FAF7F2] hover:bg-white text-[#12100E] border-white/20 shadow-black/30'
                     }`}
                   >
                     Sign In / Guest Profile

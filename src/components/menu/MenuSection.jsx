@@ -335,8 +335,8 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
             {operationalModel === 'showcase' ? (
               <button
                 onClick={() => { sounds.playClick(); if (onOpenReservation) onOpenReservation(); }}
-                className={`px-4 py-2 rounded-xl text-xs font-syne font-bold uppercase transition flex items-center gap-1.5 cursor-pointer ${
-                  isLight ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-black' : 'bg-[#FAF7F2] text-[#12100E] hover:bg-[#E8E0D2]'
+                className={`px-4 py-2 rounded-xl text-xs font-sans font-semibold uppercase tracking-wider transition flex items-center gap-1.5 cursor-pointer border ${
+                  isLight ? 'bg-[#141210] text-[#FAF7F2] hover:bg-black border-black/15' : 'bg-[#FAF7F2] text-[#12100E] hover:bg-[#E8E0D2] border-white/20'
                 }`}
               >
                 <Calendar className="w-3.5 h-3.5" />
@@ -652,8 +652,8 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
             <p className="opacity-60 text-xs font-mono">Try resetting your diet or search query.</p>
             <button
               onClick={() => { setSearchQuery(''); setIsVegOnly(false); setBestsellerOnly(false); setActiveCategory('all'); }}
-              className={`px-5 py-2.5 rounded-xl text-xs font-syne font-bold uppercase ${
-                isLight ? 'bg-[#12100E] text-[#FAF7F2]' : 'bg-[#FAF7F2] text-[#12100E]'
+              className={`px-6 py-2.5 rounded-2xl text-xs font-sans font-semibold uppercase tracking-wider transition border ${
+                isLight ? 'bg-[#141210] text-[#FAF7F2] border-black/15' : 'bg-[#FAF7F2] text-[#12100E] border-white/20'
               }`}
             >
               Reset Filters
@@ -758,22 +758,22 @@ export function MenuSection({ onSelectItemForCustomize, onOpenScanner, onRequire
                           e.stopPropagation();
                           handleItemAdd(item);
                         }}
-                        className={`px-4 py-2 sm:px-3.5 sm:py-1.5 rounded-xl font-syne text-xs font-bold transition active:scale-95 flex items-center gap-1.5 cursor-pointer shadow-md ${
+                        className={`px-4 py-2 sm:px-3.5 sm:py-1.5 rounded-xl font-sans text-xs font-semibold tracking-wide transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer shadow-md border ${
                           isOutOfStock && operationalModel !== 'showcase'
-                            ? 'bg-stone-300 text-stone-500 cursor-not-allowed'
+                            ? 'bg-stone-300 text-stone-500 border-transparent cursor-not-allowed'
                             : isLight
-                            ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-black active:bg-stone-800'
-                            : 'bg-[#FAF7F2] text-[#12100E] hover:bg-[#E8E0D2] active:bg-white'
+                            ? 'bg-[#141210] text-[#FAF7F2] hover:bg-black border-black/15 active:bg-stone-800'
+                            : 'bg-[#FAF7F2] text-[#12100E] hover:bg-white border-white/20 active:bg-stone-100'
                         }`}
                       >
                         {operationalModel === 'showcase' ? (
                           <>
-                            <Calendar className="w-3.5 h-3.5" />
+                            <Calendar className="w-3.5 h-3.5 stroke-[1.8]" />
                             <span>Reserve</span>
                           </>
                         ) : (
                           <>
-                            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                            <Plus className="w-3.5 h-3.5 stroke-[1.8]" />
                             <span>{item.customizable ? 'Customize' : 'Add'}</span>
                           </>
                         )}

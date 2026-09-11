@@ -289,6 +289,7 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
               onOpenAdmin={handleNavigateAdmin}
               onOpenReservation={() => setIsReservationOpen(true)}
               onOpenLoyaltyModal={() => setIsLoyaltyModalOpen(true)}
+              onOpenCart={() => setIsCartOpen(true)}
             />
             <LiveCafeVibe />
             <SignatureHighlights
@@ -296,6 +297,7 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
               onExploreAll={handleNavigateMenu}
               onRequireAuth={(cb) => requireCustomerAuth(cb)}
               onOpenReservation={() => setIsReservationOpen(true)}
+              onOpenCart={() => setIsCartOpen(true)}
             />
             <CafeExperience />
             <CustomerReviews />
@@ -342,8 +344,8 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
               </div>
               <button
                 onClick={() => { sounds.playClick(); setCurrentView('menu'); }}
-                className={`px-6 py-3 rounded-2xl font-syne font-bold text-xs uppercase tracking-wider transition cursor-pointer shadow-md ${
-                  isLight ? 'bg-[#12100E] text-white hover:bg-black' : 'bg-white text-black hover:bg-stone-200'
+                className={`px-6 py-3 rounded-2xl font-sans font-semibold text-xs uppercase tracking-wider transition cursor-pointer shadow-md border ${
+                  isLight ? 'bg-[#141210] text-white hover:bg-black border-black/15' : 'bg-white text-black hover:bg-stone-200 border-white/20'
                 }`}
               >
                 Return to Customer Menu
@@ -358,7 +360,7 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
               <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center mx-auto text-rose-400">
                 <span className="text-xl font-bold font-mono">POS</span>
               </div>
-              <h3 className="text-2xl font-bold text-white font-syne">Staff Panel is Password Protected</h3>
+              <h3 className="text-2xl font-bold text-white font-serif">Staff Panel is Password Protected</h3>
               <p className="text-slate-400 text-xs max-w-sm">
                 Please enter your cafe PIN to access live kitchen tickets and orders.
               </p>
@@ -399,11 +401,11 @@ function CafeContent({ onBackToCatalogue, onBackToVariants }) {
                   {itemCount}
                 </div>
                 <div className="text-left">
-                  <p className="text-xs font-black font-syne leading-tight">View Your Order</p>
+                  <p className="text-xs font-semibold font-sans leading-tight">View Your Order</p>
                   <p className="text-[11px] font-number font-bold text-stone-300 dark:text-stone-700">₹{grandTotal}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 text-xs font-black font-syne uppercase tracking-wider bg-[#D04834] text-white px-3.5 py-1.5 rounded-xl shadow-xs">
+              <div className="flex items-center gap-1.5 text-xs font-bold font-sans uppercase tracking-wider bg-[#D04834] text-white px-3.5 py-1.5 rounded-xl shadow-xs">
                 <span>Checkout</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>

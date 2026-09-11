@@ -341,7 +341,7 @@ export function QRScannerModal({ isOpen, onClose, onScanComplete }) {
                           }
                           handleCompleteTableConnection(t.number);
                         }}
-                        className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-syne font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                        className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-sans font-semibold transition flex items-center justify-center gap-1.5 cursor-pointer ${
                           isSelected
                             ? 'bg-[#D04834] text-white shadow-xs'
                             : t.isBusy
@@ -349,7 +349,7 @@ export function QRScannerModal({ isOpen, onClose, onScanComplete }) {
                               ? 'bg-amber-100 hover:bg-amber-200 text-amber-900'
                               : 'bg-amber-950/40 hover:bg-amber-900/60 text-amber-200'
                             : isLight
-                            ? 'bg-[#12100E] hover:bg-stone-800 text-white'
+                            ? 'bg-[#141210] hover:bg-[#201C19] text-white'
                             : 'bg-white hover:bg-stone-200 text-black'
                         }`}
                       >
@@ -413,8 +413,8 @@ export function QRScannerModal({ isOpen, onClose, onScanComplete }) {
                     if (num >= 1 && num <= 12) handleCompleteTableConnection(num);
                     else alert('Please enter a valid table number between 1 and 12');
                   }}
-                  className={`px-3 py-1.5 rounded-xl font-syne font-bold text-xs cursor-pointer transition shadow-xs ${
-                    isLight ? 'bg-[#12100E] text-white hover:bg-stone-800' : 'bg-white text-black hover:bg-stone-200'
+                  className={`px-4 py-2 rounded-xl font-sans font-semibold text-xs cursor-pointer transition shadow-xs border ${
+                    isLight ? 'bg-[#141210] text-white hover:bg-black border-black/15' : 'bg-white text-black hover:bg-stone-200 border-white/20'
                   }`}
                 >
                   Set Table
@@ -544,8 +544,8 @@ export function QRScannerModal({ isOpen, onClose, onScanComplete }) {
                     handleCompleteTableConnection(previewStandeeTable);
                     setPreviewStandeeTable(null);
                   }}
-                  className={`px-4 py-2 rounded-xl font-syne font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm ${
-                    isLight ? 'bg-[#12100E] text-white hover:bg-stone-800' : 'bg-white text-black hover:bg-stone-200'
+                  className={`px-4 py-2 rounded-xl font-sans font-semibold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm border ${
+                    isLight ? 'bg-[#141210] text-white hover:bg-black border-black/15' : 'bg-white text-black hover:bg-stone-200 border-white/20'
                   }`}
                 >
                   <Check className="w-3.5 h-3.5" />

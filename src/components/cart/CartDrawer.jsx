@@ -223,7 +223,7 @@ export function CartDrawer({
                   {onOpenReservation && (
                     <button
                       onClick={() => { onClose(); onOpenReservation(); }}
-                      className="px-4 py-2 rounded-xl text-xs font-syne font-bold flex items-center justify-center gap-1.5 mx-auto bg-[#12100E] text-white hover:bg-black transition cursor-pointer"
+                      className="px-4 py-2.5 rounded-xl text-xs font-sans font-semibold tracking-wide flex items-center justify-center gap-1.5 mx-auto bg-[#141210] text-white hover:bg-black transition cursor-pointer border border-white/10"
                     >
                       <Calendar className="w-3.5 h-3.5" />
                       <span>Book a Table Reservation</span>
@@ -245,7 +245,7 @@ export function CartDrawer({
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-1.5">
                       <Award className="w-4 h-4 text-[#D04834]" />
-                      <span className="font-syne font-bold text-xs tracking-wide">
+                      <span className="font-sans font-semibold text-xs tracking-wide">
                         The 7-Visit Loyalty Pass
                       </span>
                     </div>
@@ -278,7 +278,7 @@ export function CartDrawer({
                           e.stopPropagation();
                           claim7thVisitReward();
                         }}
-                        className="w-full py-1.5 rounded-xl bg-[#D04834] text-white font-syne font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm hover:brightness-105 transition cursor-pointer"
+                        className="w-full py-2 rounded-xl bg-[#D04834] text-white font-sans font-semibold text-xs flex items-center justify-center gap-1.5 shadow-sm hover:brightness-105 transition cursor-pointer"
                       >
                         <Gift className="w-3.5 h-3.5" />
                         <span>Apply 50% OFF (7th Visit Reward)</span>
@@ -315,9 +315,9 @@ export function CartDrawer({
                   </div>
                   <button
                     onClick={() => { sounds.playClick(); onClose(); }}
-                    className={`px-5 py-2.5 rounded-xl text-xs font-syne font-bold uppercase tracking-wider transition ${
+                    className={`px-6 py-3 rounded-2xl text-xs font-sans font-bold uppercase tracking-wider transition ${
                       isLight 
-                        ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800' 
+                        ? 'bg-[#141210] text-[#FAF7F2] hover:bg-stone-800' 
                         : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200'
                     }`}
                   >
@@ -381,7 +381,7 @@ export function CartDrawer({
                               <button
                                 key={tab.id}
                                 onClick={() => { sounds.playClick(); setDiningMode(tab.id); }}
-                                className={`p-2 rounded-xl text-xs font-syne font-bold transition flex items-center justify-center gap-1.5 border ${
+                                className={`p-2.5 rounded-xl text-xs font-sans font-semibold transition flex items-center justify-center gap-1.5 border ${
                                   isActive
                                     ? isLight
                                       ? 'bg-[#12100E] text-[#FAF7F2] border-[#12100E] shadow-xs'
@@ -411,7 +411,7 @@ export function CartDrawer({
                         <div className="grid grid-cols-2 gap-2">
                           <button
                             onClick={() => { sounds.playClick(); setDiningMode('table'); }}
-                            className={`p-2.5 rounded-xl border text-xs font-syne font-bold flex items-center justify-center gap-2 transition ${
+                            className={`p-2.5 rounded-xl border text-xs font-sans font-semibold flex items-center justify-center gap-2 transition ${
                               diningMode === 'table'
                                 ? isLight
                                   ? 'bg-[#12100E] text-[#FAF7F2] border-[#12100E] shadow-sm'
@@ -426,7 +426,7 @@ export function CartDrawer({
                           </button>
                           <button
                             onClick={() => { sounds.playClick(); setDiningMode('counter'); }}
-                            className={`p-2.5 rounded-xl border text-xs font-syne font-bold flex items-center justify-center gap-2 transition ${
+                            className={`p-2.5 rounded-xl border text-xs font-sans font-semibold flex items-center justify-center gap-2 transition ${
                               diningMode === 'counter'
                                 ? isLight
                                   ? 'bg-[#12100E] text-[#FAF7F2] border-[#12100E] shadow-sm'
@@ -694,9 +694,9 @@ export function CartDrawer({
                         />
                         <button
                           type="submit"
-                          className={`px-3 py-1.5 rounded-xl text-xs font-syne font-bold transition ${
+                          className={`px-3.5 py-1.5 rounded-xl text-xs font-sans font-semibold tracking-wide transition ${
                             isLight 
-                              ? 'bg-[#12100E] text-white hover:bg-stone-800' 
+                              ? 'bg-[#141210] text-[#FAF7F2] hover:bg-stone-800' 
                               : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200'
                           }`}
                         >
@@ -808,20 +808,20 @@ export function CartDrawer({
 
                 <button
                   onClick={handleProceed}
-                  className={`w-full py-3.5 rounded-2xl font-syne font-bold text-sm flex items-center justify-center gap-2 shadow-lg transition-transform active:scale-[0.99] cursor-pointer ${
+                  className={`w-full py-4 rounded-2xl font-sans font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2.5 shadow-xl transition-all duration-300 active:scale-[0.99] cursor-pointer border ${
                     isLight 
-                      ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800' 
-                      : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200'
+                      ? 'bg-[#141210] hover:bg-[#201C19] text-[#FAF7F2] border-black/15 shadow-black/15' 
+                      : 'bg-gradient-to-r from-[#FAF7F2] to-[#ECE5D8] hover:from-white hover:to-[#FAF7F2] text-[#141210] border-white/40 shadow-black/40 hover:shadow-[0_8px_30px_rgba(197,168,128,0.25)]'
                   }`}
                 >
-                  <span className="tracking-wide">
+                  <span className="tracking-widest">
                     {diningMode === 'table'
                       ? `PROCEED • TABLE #${tableInput || '4'}`
                       : diningMode === 'delivery'
                       ? 'PROCEED TO DELIVERY'
                       : 'PROCEED TO PICKUP'}
                   </span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 stroke-[1.8] text-[#C5A880] sm:text-current group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
             )}

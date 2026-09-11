@@ -258,13 +258,13 @@ export function ItemCustomizeModal({ item, isOpen, onClose }) {
 
             <button
               onClick={handleConfirm}
-              className={`flex-1 py-3.5 sm:py-3 px-4 rounded-2xl font-syne font-bold text-xs transition active:scale-[0.98] flex items-center justify-between shadow-sm cursor-pointer ${
+              className={`flex-1 py-3.5 sm:py-3.5 px-5 rounded-2xl font-sans font-bold text-xs tracking-wider uppercase transition-all duration-200 active:scale-[0.98] flex items-center justify-between shadow-md cursor-pointer border ${
                 isLight 
-                  ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800 active:bg-black' 
-                  : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200 active:bg-white'
+                  ? 'bg-[#141210] text-[#FAF7F2] hover:bg-[#201C19] border-black/15 shadow-black/10' 
+                  : 'bg-gradient-to-r from-[#FAF7F2] to-[#ECE5D8] text-[#141210] hover:from-white hover:to-[#FAF7F2] border-white/40 shadow-black/30'
               }`}
             >
-              <span>ADD TO ORDER</span>
+              <span className="tracking-widest">ADD TO ORDER</span>
               <span className="font-number font-bold text-sm">₹{totalPrice}</span>
             </button>
           </div>

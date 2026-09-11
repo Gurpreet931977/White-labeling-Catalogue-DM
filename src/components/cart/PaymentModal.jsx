@@ -247,7 +247,7 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
             }`}>
               <div className="flex items-center gap-2">
                 <Award className="w-4 h-4 text-[#D04834]" />
-                <span className="font-syne font-bold text-xs">Loyalty Club Reward</span>
+                <span className="font-sans font-semibold text-xs">Loyalty Club Reward</span>
               </div>
               <span className="font-number text-xs font-bold text-[#D04834]">
                 Stamp {Math.min(7, loyaltyVisits + 1)}/7
@@ -279,7 +279,7 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
               >
                 <div className="flex items-center gap-2 mb-1">
                   <Smartphone className="w-4 h-4 text-[#D04834]" />
-                  <span className="font-syne font-bold text-xs">Online UPI</span>
+                  <span className="font-sans font-semibold text-xs">Online UPI</span>
                 </div>
                 <p className={`text-[11px] leading-tight ${isLight ? 'text-stone-500' : 'text-stone-400'}`}>
                   GPay, PhonePe, UPI QR
@@ -301,7 +301,7 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
               >
                 <div className="flex items-center gap-2 mb-1">
                   <Receipt className="w-4 h-4 text-[#D04834]" />
-                  <span className="font-syne font-bold text-xs">
+                  <span className="font-sans font-semibold text-xs">
                     {diningMode === 'delivery' ? 'Cash on Delivery' : 'Pay at Counter'}
                   </span>
                 </div>
@@ -416,10 +416,10 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
               <button
                 disabled={isProcessing}
                 onClick={() => handleCompleteOrder('online', 'paid', 'UPI Online')}
-                className={`w-full py-3.5 rounded-2xl font-syne font-bold text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer ${
+                className={`w-full py-4 rounded-2xl font-sans font-bold text-xs sm:text-sm tracking-wider uppercase shadow-xl transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer border ${
                   isLight 
-                    ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800' 
-                    : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200'
+                    ? 'bg-[#141210] hover:bg-[#201C19] text-[#FAF7F2] border-black/15 shadow-black/15' 
+                    : 'bg-gradient-to-r from-[#FAF7F2] to-[#ECE5D8] hover:from-white hover:to-[#FAF7F2] text-[#141210] border-white/40 shadow-black/40 hover:shadow-[0_8px_30px_rgba(197,168,128,0.25)]'
                 }`}
               >
                 {isProcessing ? (
@@ -487,10 +487,10 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
                     setShowCounterConfirmation(true);
                   }
                 }}
-                className={`w-full py-3.5 rounded-2xl font-syne font-bold text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer ${
+                className={`w-full py-4 rounded-2xl font-sans font-bold text-xs sm:text-sm tracking-wider uppercase shadow-xl transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer border ${
                   isLight 
-                    ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-stone-800' 
-                    : 'bg-[#FAF7F2] text-[#12100E] hover:bg-stone-200'
+                    ? 'bg-[#141210] hover:bg-[#201C19] text-[#FAF7F2] border-black/15 shadow-black/15' 
+                    : 'bg-gradient-to-r from-[#FAF7F2] to-[#ECE5D8] hover:from-white hover:to-[#FAF7F2] text-[#141210] border-white/40 shadow-black/40 hover:shadow-[0_8px_30px_rgba(197,168,128,0.25)]'
                 }`}
               >
                 {isProcessing ? (
@@ -595,10 +595,10 @@ export function PaymentModal({ isOpen, onClose, onOrderPlacedSuccess }) {
                         setShowCounterConfirmation(false);
                         handleCompleteOrder('counter', 'unpaid', 'Pay at Counter');
                       }}
-                      className={`w-full py-3.5 rounded-2xl font-syne font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer ${
+                      className={`w-full py-4 rounded-2xl font-sans font-bold text-xs sm:text-sm tracking-wider uppercase shadow-xl transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
                         !counterAcknowledged || isProcessing
                           ? 'opacity-50 cursor-not-allowed bg-stone-300 dark:bg-stone-800 text-stone-500'
-                          : 'bg-[#D04834] hover:bg-[#b83d2b] text-white'
+                          : 'bg-[#D04834] hover:bg-[#b83d2b] text-white shadow-red-950/30'
                       }`}
                     >
                       {isProcessing ? (

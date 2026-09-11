@@ -118,7 +118,8 @@ export function HeroSection({
   onOpenScanner, 
   onOpenAdmin,
   onOpenReservation,
-  onOpenLoyaltyModal
+  onOpenLoyaltyModal,
+  onOpenCart
 }) {
   const { isCustomerLoggedIn } = useAuth();
   const { operationalModel, diningMode, setDiningMode, activeTable, addToCart } = useCart();
@@ -130,9 +131,10 @@ export function HeroSection({
   const [isPaused, setIsPaused] = useState(false);
   const [pairingToast, setPairingToast] = useState(null);
 
-  // Handle adding the chef's curated sommelier pairing bundle
-  const handleAddCuratedPairing = (e, dish) => {
+  // Handle 1-click Quick Order
+  const handleQuickOrder = (e, dish) => {
     e.stopPropagation();
+    e.preventDefault();
     sounds.playSuccess();
     
     // Add main dish
@@ -141,7 +143,32 @@ export function HeroSection({
       name: dish.name,
       price: dish.price,
       image: dish.image,
-      category: dish.shortCategory.toLowerCase()
+      category: dish.shortCategory ? dish.shortCategory.toLowerCase() : 'all'
+    };
+    addToCart(mainDishItem, 1);
+
+    setPairingToast(`${dish.name} added to table order`);
+    if (onOpenCart) {
+      setTimeout(() => {
+        onOpenCart();
+      }, 250);
+    }
+    setTimeout(() => setPairingToast(null), 3200);
+  };
+
+  // Handle adding the chef's curated sommelier pairing bundle
+  const handleAddCuratedPairing = (e, dish) => {
+    e.stopPropagation();
+    e.preventDefault();
+    sounds.playSuccess();
+    
+    // Add main dish
+    const mainDishItem = MENU_ITEMS.find(i => i.id === dish.id) || {
+      id: dish.id,
+      name: dish.name,
+      price: dish.price,
+      image: dish.image,
+      category: dish.shortCategory ? dish.shortCategory.toLowerCase() : 'all'
     };
     addToCart(mainDishItem, 1);
 
@@ -156,6 +183,11 @@ export function HeroSection({
     }
 
     setPairingToast(`${dish.pairingBundleName || 'Chef Pairing Bundle'} added to table order`);
+    if (onOpenCart) {
+      setTimeout(() => {
+        onOpenCart();
+      }, 250);
+    }
     setTimeout(() => setPairingToast(null), 3200);
   };
 
@@ -432,13 +464,24 @@ export function HeroSection({
                   </div>
 
                   {operationalModel !== 'showcase' && (
-                    <button
-                      onClick={(e) => handleAddCuratedPairing(e, currentDish)}
-                      className="px-2.5 py-1 rounded-lg bg-[#C5A880] text-[#12100E] font-mono text-[9px] font-bold shrink-0 transition active:scale-95 flex items-center gap-1 cursor-pointer shadow-sm"
-                    >
-                      <Plus className="w-2.5 h-2.5" />
-                      <span>Pair ₹{currentDish.pairingBundlePrice}</span>
-                    </button>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={(e) => handleQuickOrder(e, currentDish)}
+                        className="px-2 py-1 rounded-lg bg-[#12100E] dark:bg-white text-white dark:text-[#12100E] font-mono text-[9px] font-bold transition active:scale-95 flex items-center gap-1 cursor-pointer shadow-sm"
+                      >
+                        <Plus className="w-2.5 h-2.5" />
+                        <span>Order</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => handleAddCuratedPairing(e, currentDish)}
+                        className="px-2 py-1 rounded-lg bg-[#C5A880] text-[#12100E] font-mono text-[9px] font-bold transition active:scale-95 flex items-center gap-1 cursor-pointer shadow-sm"
+                      >
+                        <span>Pair ₹{currentDish.pairingBundlePrice}</span>
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -497,28 +540,28 @@ export function HeroSection({
                 sounds.playClick();
                 onExploreMenu();
               }}
-              className={`py-3 px-3 rounded-xl font-syne font-black text-xs tracking-wider uppercase flex items-center justify-center gap-1.5 transition active:scale-95 shadow-lg cursor-pointer ${
+              className={`py-3 px-3 rounded-2xl font-sans font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition-all duration-300 active:scale-95 shadow-lg cursor-pointer border ${
                 isLight
-                  ? 'bg-[#12100E] text-[#FAF7F2] active:bg-black shadow-black/15'
-                  : 'bg-[#FAF7F2] text-[#12100E] active:bg-white shadow-black/40'
+                  ? 'bg-[#141210] active:bg-[#201C19] text-[#FAF7F2] border-black/15 shadow-black/15'
+                  : 'bg-gradient-to-r from-[#FAF7F2] to-[#ECE5D8] active:bg-white text-[#141210] border-white/30 shadow-black/40'
               }`}
             >
-              <UtensilsCrossed className="w-3.5 h-3.5" />
-              <span>EXPLORE MENU</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <UtensilsCrossed className="w-3.5 h-3.5 stroke-[1.8] text-[#C5A880]" />
+              <span className="tracking-wider">EXPLORE MENU</span>
+              <ArrowRight className="w-3.5 h-3.5 stroke-[1.8]" />
             </button>
 
             {/* Secondary Context Button */}
             {operationalModel === 'table-qr' && (
               <button
                 onClick={() => { sounds.playClick(); onOpenScanner(); }}
-                className={`py-3 px-3 rounded-xl font-mono text-xs tracking-wide flex items-center justify-center gap-2 transition active:scale-95 border cursor-pointer ${
+                className={`py-3 px-3 rounded-2xl font-sans font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition active:scale-95 border cursor-pointer ${
                   isLight
-                    ? 'bg-[#EAE4D9] active:bg-[#DFD8CC] text-[#12100E] border-black/15'
-                    : 'bg-[#1C1815] active:bg-[#25201C] text-stone-200 border-white/15'
+                    ? 'bg-[#EAE4D9]/85 active:bg-[#DFD8CC] text-[#12100E] border-black/15 shadow-xs'
+                    : 'bg-[#1C1815]/90 active:bg-[#25201C] text-[#FAF7F2] border-white/10 shadow-xs'
                 }`}
               >
-                <QrCode className="w-3.5 h-3.5 text-[#D04834]" />
+                <QrCode className="w-3.5 h-3.5 stroke-[1.8] text-[#D04834]" />
                 <span className="truncate">{activeTable ? `TABLE #${activeTable}` : 'SELECT TABLE'}</span>
               </button>
             )}
@@ -526,13 +569,13 @@ export function HeroSection({
             {operationalModel === 'self-serve' && (
               <button
                 onClick={() => { sounds.playClick(); onExploreMenu(); }}
-                className={`py-3 px-3 rounded-xl font-mono text-xs tracking-wide flex items-center justify-center gap-2 transition active:scale-95 border cursor-pointer ${
+                className={`py-3 px-3 rounded-2xl font-sans font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition active:scale-95 border cursor-pointer ${
                   isLight
-                    ? 'bg-[#EAE4D9] active:bg-[#DFD8CC] text-[#12100E] border-black/15'
-                    : 'bg-[#1C1815] active:bg-[#25201C] text-stone-200 border-white/15'
+                    ? 'bg-[#EAE4D9]/85 active:bg-[#DFD8CC] text-[#12100E] border-black/15 shadow-xs'
+                    : 'bg-[#1C1815]/90 active:bg-[#25201C] text-[#FAF7F2] border-white/10 shadow-xs'
                 }`}
               >
-                <Store className="w-3.5 h-3.5 text-cyan-500" />
+                <Store className="w-3.5 h-3.5 stroke-[1.8] text-cyan-500" />
                 <span>COUNTER PICKUP</span>
               </button>
             )}
@@ -543,13 +586,13 @@ export function HeroSection({
                   sounds.playClick();
                   if (onOpenReservation) onOpenReservation();
                 }}
-                className={`py-3 px-3 rounded-xl font-mono text-xs tracking-wide flex items-center justify-center gap-2 transition active:scale-95 border cursor-pointer ${
+                className={`py-3 px-3 rounded-2xl font-sans font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition active:scale-95 border cursor-pointer ${
                   isLight
-                    ? 'bg-[#EAE4D9] active:bg-[#DFD8CC] text-[#12100E] border-black/15'
-                    : 'bg-[#1C1815] active:bg-[#25201C] text-stone-200 border-white/15'
+                    ? 'bg-[#EAE4D9]/85 active:bg-[#DFD8CC] text-[#12100E] border-black/15 shadow-xs'
+                    : 'bg-[#1C1815]/90 active:bg-[#25201C] text-[#FAF7F2] border-white/10 shadow-xs'
                 }`}
               >
-                <Calendar className="w-3.5 h-3.5 text-[#D04834]" />
+                <Calendar className="w-3.5 h-3.5 stroke-[1.8] text-[#C5A880]" />
                 <span>BOOK A TABLE</span>
               </button>
             )}
@@ -557,13 +600,13 @@ export function HeroSection({
             {operationalModel === 'delivery' && (
               <button
                 onClick={() => { sounds.playClick(); onExploreMenu(); }}
-                className={`py-3 px-3 rounded-xl font-mono text-xs tracking-wide flex items-center justify-center gap-2 transition active:scale-95 border cursor-pointer ${
+                className={`py-3 px-3 rounded-2xl font-sans font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition active:scale-95 border cursor-pointer ${
                   isLight
-                    ? 'bg-[#EAE4D9] active:bg-[#DFD8CC] text-[#12100E] border-black/15'
-                    : 'bg-[#1C1815] active:bg-[#25201C] text-stone-200 border-white/15'
+                    ? 'bg-[#EAE4D9]/85 active:bg-[#DFD8CC] text-[#12100E] border-black/15 shadow-xs'
+                    : 'bg-[#1C1815]/90 active:bg-[#25201C] text-[#FAF7F2] border-white/10 shadow-xs'
                 }`}
               >
-                <Truck className="w-3.5 h-3.5 text-emerald-600" />
+                <Truck className="w-3.5 h-3.5 stroke-[1.8] text-emerald-500" />
                 <span>FAST DELIVERY</span>
               </button>
             )}
@@ -571,13 +614,13 @@ export function HeroSection({
             {operationalModel === 'hybrid' && (
               <button
                 onClick={() => { sounds.playClick(); onOpenScanner(); }}
-                className={`py-3 px-3 rounded-xl font-mono text-xs tracking-wide flex items-center justify-center gap-2 transition active:scale-95 border cursor-pointer ${
+                className={`py-3 px-3 rounded-2xl font-sans font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition active:scale-95 border cursor-pointer ${
                   isLight
-                    ? 'bg-[#EAE4D9] active:bg-[#DFD8CC] text-[#12100E] border-black/15'
-                    : 'bg-[#1C1815] active:bg-[#25201C] text-stone-200 border-white/15'
+                    ? 'bg-[#EAE4D9]/85 active:bg-[#DFD8CC] text-[#12100E] border-black/15 shadow-xs'
+                    : 'bg-[#1C1815]/90 active:bg-[#25201C] text-[#FAF7F2] border-white/10 shadow-xs'
                 }`}
               >
-                <QrCode className="w-3.5 h-3.5 text-[#D04834]" />
+                <QrCode className="w-3.5 h-3.5 stroke-[1.8] text-[#D04834]" />
                 <span>TABLE / PICKUP</span>
               </button>
             )}
@@ -588,13 +631,13 @@ export function HeroSection({
                   sounds.playClick();
                   if (onOpenLoyaltyModal) onOpenLoyaltyModal();
                 }}
-                className={`py-3 px-3 rounded-xl font-mono text-xs tracking-wide flex items-center justify-center gap-2 transition active:scale-95 border cursor-pointer ${
+                className={`py-3 px-3 rounded-2xl font-sans font-semibold text-xs tracking-wider uppercase flex items-center justify-center gap-2 transition active:scale-95 border cursor-pointer ${
                   isLight
-                    ? 'bg-[#EAE4D9] active:bg-[#DFD8CC] text-[#12100E] border-black/15'
-                    : 'bg-[#1C1815] active:bg-[#25201C] text-stone-200 border-white/15'
+                    ? 'bg-[#EAE4D9]/85 active:bg-[#DFD8CC] text-[#12100E] border-black/15 shadow-xs'
+                    : 'bg-[#1C1815]/90 active:bg-[#25201C] text-[#FAF7F2] border-white/10 shadow-xs'
                 }`}
               >
-                <Award className="w-3.5 h-3.5 text-[#D04834]" />
+                <Award className="w-3.5 h-3.5 stroke-[1.8] text-[#C5A880]" />
                 <span>PUNCH CARD</span>
               </button>
             )}
@@ -681,28 +724,28 @@ export function HeroSection({
                   sounds.playClick();
                   onExploreMenu();
                 }}
-                className={`relative px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-syne font-black text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-3 transition active:scale-[0.98] group shadow-xl cursor-pointer ${
+                className={`relative px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-sans font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-3 transition-all duration-300 active:scale-[0.98] group shadow-xl cursor-pointer border ${
                   isLight
-                    ? 'bg-[#12100E] text-[#FAF7F2] hover:bg-black shadow-black/15 active:bg-black'
-                    : 'bg-[#FAF7F2] text-[#12100E] hover:bg-[#E8E0D2] shadow-black/40 active:bg-white'
+                    ? 'bg-[#141210] hover:bg-[#201C19] text-[#FAF7F2] border-black/15 hover:border-[#C5A880]/50 shadow-black/15 hover:shadow-black/25'
+                    : 'bg-gradient-to-r from-[#FAF7F2] to-[#ECE5D8] hover:from-white hover:to-[#FAF7F2] text-[#141210] border-white/40 shadow-black/40 hover:shadow-[0_10px_35px_rgba(197,168,128,0.25)]'
                 }`}
               >
-                <UtensilsCrossed className="w-4 h-4 transition-transform group-hover:rotate-12" />
-                <span>{currentModelConfig.primaryCta}</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                <UtensilsCrossed className="w-4 h-4 stroke-[1.8] text-[#C5A880] transition-transform duration-300 group-hover:rotate-12" />
+                <span className="tracking-widest">{currentModelConfig.primaryCta}</span>
+                <ArrowRight className="w-4 h-4 stroke-[1.8] text-[#C5A880] sm:text-current transition-transform duration-300 group-hover:translate-x-1.5" />
               </button>
 
               {/* Contextual Secondary Button */}
               {operationalModel === 'table-qr' && (
                 <button
                   onClick={() => { sounds.playClick(); onOpenScanner(); }}
-                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl font-mono text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2.5 transition active:scale-[0.98] border cursor-pointer ${
+                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl font-sans font-semibold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2.5 transition-all duration-300 active:scale-[0.98] border cursor-pointer ${
                     isLight
-                      ? 'bg-[#EAE4D9] hover:bg-[#DFD8CC] active:bg-[#d6cfc1] text-[#12100E] border-black/15'
-                      : 'bg-[#1C1815] hover:bg-[#25201C] active:bg-[#2e2722] text-stone-200 border-white/15'
+                      ? 'bg-[#EAE4D9]/85 hover:bg-[#DFD8CC] active:bg-[#d6cfc1] text-[#12100E] border-black/15 hover:border-black/25 shadow-xs'
+                      : 'bg-[#1C1815]/90 hover:bg-[#25201C] active:bg-[#2e2722] text-[#FAF7F2] border-white/10 hover:border-[#C5A880]/30 shadow-xs'
                   }`}
                 >
-                  <UtensilsCrossed className="w-4 h-4 text-[#D04834]" />
+                  <UtensilsCrossed className="w-4 h-4 stroke-[1.8] text-[#D04834]" />
                   <span>SELECT DINING TABLE</span>
                 </button>
               )}
@@ -710,13 +753,13 @@ export function HeroSection({
               {operationalModel === 'self-serve' && (
                 <button
                   onClick={() => { sounds.playClick(); onExploreMenu(); }}
-                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl font-mono text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2.5 transition active:scale-[0.98] border cursor-pointer ${
+                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl font-sans font-semibold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2.5 transition-all duration-300 active:scale-[0.98] border cursor-pointer ${
                     isLight
-                      ? 'bg-[#EAE4D9] hover:bg-[#DFD8CC] active:bg-[#d6cfc1] text-[#12100E] border-black/15'
-                      : 'bg-[#1C1815] hover:bg-[#25201C] active:bg-[#2e2722] text-stone-200 border-white/15'
+                      ? 'bg-[#EAE4D9]/85 hover:bg-[#DFD8CC] active:bg-[#d6cfc1] text-[#12100E] border-black/15 hover:border-black/25 shadow-xs'
+                      : 'bg-[#1C1815]/90 hover:bg-[#25201C] active:bg-[#2e2722] text-[#FAF7F2] border-white/10 hover:border-[#C5A880]/30 shadow-xs'
                   }`}
                 >
-                  <Store className="w-4 h-4 text-cyan-500" />
+                  <Store className="w-4 h-4 stroke-[1.8] text-cyan-500" />
                   <span>COUNTER PICKUP</span>
                 </button>
               )}
@@ -727,13 +770,13 @@ export function HeroSection({
                     sounds.playClick();
                     if (onOpenReservation) onOpenReservation();
                   }}
-                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl font-mono text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2.5 transition active:scale-[0.98] border cursor-pointer ${
+                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl font-sans font-semibold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2.5 transition-all duration-300 active:scale-[0.98] border cursor-pointer ${
                     isLight
-                      ? 'bg-[#EAE4D9] hover:bg-[#DFD8CC] active:bg-[#d6cfc1] text-[#12100E] border-black/15'
-                      : 'bg-[#1C1815] hover:bg-[#25201C] active:bg-[#2e2722] text-stone-200 border-white/15'
+                      ? 'bg-[#EAE4D9]/85 hover:bg-[#DFD8CC] active:bg-[#d6cfc1] text-[#12100E] border-black/15 hover:border-black/25 shadow-xs'
+                      : 'bg-[#1C1815]/90 hover:bg-[#25201C] active:bg-[#2e2722] text-[#FAF7F2] border-white/10 hover:border-[#C5A880]/30 shadow-xs'
                   }`}
                 >
-                  <Calendar className="w-4 h-4 text-[#D04834]" />
+                  <Calendar className="w-4 h-4 stroke-[1.8] text-[#C5A880]" />
                   <span>BOOK A TABLE</span>
                 </button>
               )}
@@ -741,27 +784,27 @@ export function HeroSection({
               {operationalModel === 'delivery' && (
                 <button
                   onClick={() => { sounds.playClick(); onExploreMenu(); }}
-                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl font-mono text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2.5 transition active:scale-[0.98] border cursor-pointer ${
+                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl font-sans font-semibold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2.5 transition-all duration-300 active:scale-[0.98] border cursor-pointer ${
                     isLight
-                      ? 'bg-[#EAE4D9] hover:bg-[#DFD8CC] active:bg-[#d6cfc1] text-[#12100E] border-black/15'
-                      : 'bg-[#1C1815] hover:bg-[#25201C] active:bg-[#2e2722] text-stone-200 border-white/15'
+                      ? 'bg-[#EAE4D9]/85 hover:bg-[#DFD8CC] active:bg-[#d6cfc1] text-[#12100E] border-black/15 hover:border-black/25 shadow-xs'
+                      : 'bg-[#1C1815]/90 hover:bg-[#25201C] active:bg-[#2e2722] text-[#FAF7F2] border-white/10 hover:border-[#C5A880]/30 shadow-xs'
                   }`}
                 >
-                  <Truck className="w-4 h-4 text-emerald-600" />
+                  <Truck className="w-4 h-4 stroke-[1.8] text-emerald-500" />
                   <span>FAST DELIVERY</span>
                 </button>
               )}
 
               {operationalModel === 'hybrid' && (
-                <div className={`inline-flex rounded-xl border p-1 ${
-                  isLight ? 'bg-[#EAE4D9] border-black/15' : 'bg-[#1C1815] border-white/15'
+                <div className={`inline-flex rounded-2xl border p-1 ${
+                  isLight ? 'bg-[#EAE4D9]/85 border-black/15' : 'bg-[#1C1815]/90 border-white/10'
                 }`}>
                   <button
                     type="button"
                     onClick={() => { sounds.playClick(); setDiningMode('table'); }}
-                    className={`px-3.5 py-2 rounded-lg text-xs font-mono transition cursor-pointer ${
+                    className={`px-4 py-2.5 rounded-xl text-xs font-sans font-semibold tracking-wider uppercase transition cursor-pointer ${
                       diningMode === 'table'
-                        ? isLight ? 'bg-[#12100E] text-[#FAF7F2] font-bold shadow-md' : 'bg-[#FAF7F2] text-[#12100E] font-bold shadow-md'
+                        ? isLight ? 'bg-[#141210] text-[#FAF7F2] font-bold shadow-md' : 'bg-[#FAF7F2] text-[#141210] font-bold shadow-md'
                         : isLight ? 'text-stone-600 hover:text-black' : 'text-stone-400 hover:text-white'
                     }`}
                   >
@@ -770,9 +813,9 @@ export function HeroSection({
                   <button
                     type="button"
                     onClick={() => { sounds.playClick(); setDiningMode('delivery'); }}
-                    className={`px-3.5 py-2 rounded-lg text-xs font-mono transition cursor-pointer ${
+                    className={`px-4 py-2.5 rounded-xl text-xs font-sans font-semibold tracking-wider uppercase transition cursor-pointer ${
                       diningMode === 'delivery'
-                        ? isLight ? 'bg-[#12100E] text-[#FAF7F2] font-bold shadow-md' : 'bg-[#FAF7F2] text-[#12100E] font-bold shadow-md'
+                        ? isLight ? 'bg-[#141210] text-[#FAF7F2] font-bold shadow-md' : 'bg-[#FAF7F2] text-[#141210] font-bold shadow-md'
                         : isLight ? 'text-stone-600 hover:text-black' : 'text-stone-400 hover:text-white'
                     }`}
                   >
@@ -787,13 +830,13 @@ export function HeroSection({
                     sounds.playClick();
                     if (onOpenLoyaltyModal) onOpenLoyaltyModal();
                   }}
-                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl font-mono text-xs sm:text-sm tracking-wide flex items-center gap-2.5 transition border cursor-pointer ${
+                  className={`px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl font-sans font-semibold text-xs sm:text-sm tracking-wider uppercase flex items-center gap-2.5 transition-all duration-300 border cursor-pointer ${
                     isLight
-                      ? 'bg-[#EAE4D9] hover:bg-[#DFD8CC] text-[#12100E] border-black/15'
-                      : 'bg-[#1C1815] hover:bg-[#25201C] text-stone-200 border-white/15'
+                      ? 'bg-[#EAE4D9]/85 hover:bg-[#DFD8CC] text-[#12100E] border-black/15 hover:border-black/25 shadow-xs'
+                      : 'bg-[#1C1815]/90 hover:bg-[#25201C] text-[#FAF7F2] border-white/10 hover:border-[#C5A880]/30 shadow-xs'
                   }`}
                 >
-                  <Award className="w-4 h-4 text-[#D04834]" />
+                  <Award className="w-4 h-4 stroke-[1.8] text-[#C5A880]" />
                   <span>PUNCH CARD</span>
                 </button>
               )}
@@ -879,34 +922,28 @@ export function HeroSection({
                 </AnimatePresence>
 
                 {/* Subtle Cinematic Vignette */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none -z-0" />
 
                 {/* Floating Stamp Badge */}
-                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-[#12100E]/85 backdrop-blur-md border border-white/15 text-[10px] font-mono tracking-wider text-[#FAF7F2] font-bold">
+                <div className="absolute top-3 left-3 z-20 px-3 py-1 rounded-full bg-[#12100E]/85 backdrop-blur-md border border-white/15 text-[10px] font-mono tracking-wider text-[#FAF7F2] font-bold">
                   CHEF'S SIGNATURE
                 </div>
 
                 {/* Quick Add Main Dish Button */}
                 {operationalModel !== 'showcase' && (
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      sounds.playSuccess();
-                      const item = MENU_ITEMS.find(i => i.id === currentDish.id) || currentDish;
-                      addToCart(item, 1);
-                      setPairingToast(`${currentDish.name} added to order`);
-                      setTimeout(() => setPairingToast(null), 3000);
-                    }}
-                    className="absolute bottom-3 left-3 px-3 py-1.5 rounded-xl bg-[#12100E]/85 hover:bg-black backdrop-blur-md border border-white/20 text-white font-mono text-[10px] font-bold tracking-wider uppercase flex items-center gap-1.5 transition cursor-pointer active:scale-95 shadow-lg"
+                    type="button"
+                    onClick={(e) => handleQuickOrder(e, currentDish)}
+                    className="absolute bottom-3 left-3 z-30 px-3.5 py-2 rounded-xl bg-[#12100E]/90 hover:bg-black active:scale-95 backdrop-blur-md border border-[#C5A880]/60 hover:border-[#C5A880] text-white font-mono text-[10px] font-bold tracking-wider uppercase flex items-center gap-1.5 transition cursor-pointer shadow-2xl pointer-events-auto"
                     title={`Quick add ${currentDish.name} to order`}
                   >
-                    <Plus className="w-3 h-3 text-[#C5A880]" />
+                    <Plus className="w-3.5 h-3.5 text-[#C5A880] stroke-[3]" />
                     <span>Quick Order</span>
                   </button>
                 )}
 
                 {/* Floating Price Tag */}
-                <div className={`absolute bottom-3 right-3 px-3.5 py-1.5 rounded-xl font-number font-bold text-base tracking-tight shadow-xl ${
+                <div className={`absolute bottom-3 right-3 z-20 px-3.5 py-1.5 rounded-xl font-number font-bold text-base tracking-tight shadow-xl ${
                   isLight ? 'bg-[#12100E] text-[#FAF7F2]' : 'bg-[#FAF7F2] text-[#12100E]'
                 }`}>
                   ₹{currentDish.price}

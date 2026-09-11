@@ -6,7 +6,7 @@ import { useCart } from '../../context/CartContext';
 import { useTheme } from '../../context/ThemeContext';
 import { sounds } from '../../utils/audio';
 
-export function SignatureHighlights({ onSelectItemForCustomize, onExploreAll, onRequireAuth, onOpenReservation }) {
+export function SignatureHighlights({ onSelectItemForCustomize, onExploreAll, onRequireAuth, onOpenReservation, onOpenCart }) {
   const { addToCart, operationalModel } = useCart();
   const { isLight } = useTheme();
 
@@ -23,10 +23,13 @@ export function SignatureHighlights({ onSelectItemForCustomize, onExploreAll, on
       return;
     }
 
-    if (item.customizable) {
+    if (item.customizable && onSelectItemForCustomize) {
       onSelectItemForCustomize(item);
     } else {
       addToCart(item, 1);
+      if (onOpenCart) {
+        setTimeout(() => onOpenCart(), 250);
+      }
     }
   };
 
