@@ -18,6 +18,7 @@ import {
   Flame,
   Coffee,
   CheckCircle2,
+  Check,
   MapPin,
   Sparkles,
   Plus
@@ -122,7 +123,7 @@ export function HeroSection({
   onOpenCart
 }) {
   const { isCustomerLoggedIn } = useAuth();
-  const { operationalModel, diningMode, setDiningMode, activeTable, addToCart } = useCart();
+  const { cart, operationalModel, diningMode, setDiningMode, activeTable, addToCart } = useCart();
   const { isLight } = useTheme();
   const currentModelConfig = MODEL_SYSTEM_CONFIG[operationalModel] || MODEL_SYSTEM_CONFIG['table-qr'];
 
@@ -130,6 +131,7 @@ export function HeroSection({
   const [direction, setDirection] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
   const [pairingToast, setPairingToast] = useState(null);
+  const [justAddedType, setJustAddedType] = useState(null); // { id: string, type: 'quick' | 'pair' }
 
   // Handle 1-click Quick Order
   const handleQuickOrder = (e, dish) => {
@@ -147,48 +149,45 @@ export function HeroSection({
     };
     addToCart(mainDishItem, 1);
 
-    setPairingToast(`${dish.name} added to table order`);
-    if (onOpenCart) {
-      setTimeout(() => {
-        onOpenCart();
-      }, 250);
-    }
-    setTimeout(() => setPairingToast(null), 3200);
+    setJustAddedType({ id: dish.id, type: 'quick' });
+    setTimeout(() => setJustAddedType(null), 2400);
+
+    setPairingToast({
+      title: dish.name,
+      subtitle: `Added to dining order • ₹${dish.price}`,
+      isPairing: false
+    });
+    setTimeout(() => setPairingToast(null), 4000);
   };
 
-  // Handle adding the chef's curated sommelier pairing bundle
+  // Handle adding the chef's curated sommelier pairing bundle at the exact discounted bundle price
   const handleAddCuratedPairing = (e, dish) => {
     e.stopPropagation();
     e.preventDefault();
     sounds.playSuccess();
     
-    // Add main dish
-    const mainDishItem = MENU_ITEMS.find(i => i.id === dish.id) || {
-      id: dish.id,
-      name: dish.name,
-      price: dish.price,
+    // Add as a verified curated tasting bundle at the advertised combo price
+    const bundleItem = {
+      id: `bundle-${dish.id}`,
+      name: dish.pairingBundleName || `${dish.name} Chef Pairing`,
+      price: dish.pairingBundlePrice,
       image: dish.image,
-      category: dish.shortCategory ? dish.shortCategory.toLowerCase() : 'all'
+      category: 'italian-specials',
+      isVeg: true,
+      isBundle: true,
+      description: `${dish.name} + ${dish.pairing.replace('Best paired with ', '')}`
     };
-    addToCart(mainDishItem, 1);
+    addToCart(bundleItem, 1, null, [], `Chef's Curated Pairing (Saves ₹${dish.pairingSavings})`);
 
-    // Add pairing companion items
-    if (dish.pairingItemIds && Array.isArray(dish.pairingItemIds)) {
-      dish.pairingItemIds.forEach(id => {
-        const compItem = MENU_ITEMS.find(i => i.id === id);
-        if (compItem) {
-          addToCart(compItem, 1);
-        }
-      });
-    }
+    setJustAddedType({ id: dish.id, type: 'pair' });
+    setTimeout(() => setJustAddedType(null), 2400);
 
-    setPairingToast(`${dish.pairingBundleName || 'Chef Pairing Bundle'} added to table order`);
-    if (onOpenCart) {
-      setTimeout(() => {
-        onOpenCart();
-      }, 250);
-    }
-    setTimeout(() => setPairingToast(null), 3200);
+    setPairingToast({
+      title: dish.pairingBundleName || 'Chef Pairing Bundle',
+      subtitle: `Tasting bundle added at ₹${dish.pairingBundlePrice} (Saved ₹${dish.pairingSavings})`,
+      isPairing: true
+    });
+    setTimeout(() => setPairingToast(null), 4000);
   };
 
   // Subtle 3D Card Tilt Physics
@@ -235,6 +234,8 @@ export function HeroSection({
   };
 
   const currentDish = CAMPAIGN_DISHES[currentIndex];
+  const currentDishInCartQty = cart?.find(i => i.item?.id === currentDish.id || i.cartItemId?.startsWith(currentDish.id))?.quantity || 0;
+  const currentBundleInCartQty = cart?.find(i => i.item?.id === `bundle-${currentDish.id}` || i.cartItemId?.startsWith(`bundle-${currentDish.id}`))?.quantity || 0;
 
   return (
     <section className={`relative pt-8 sm:pt-14 pb-16 sm:pb-24 overflow-hidden transition-colors duration-300 ${
@@ -468,18 +469,61 @@ export function HeroSection({
                       <button
                         type="button"
                         onClick={(e) => handleQuickOrder(e, currentDish)}
-                        className="px-2 py-1 rounded-lg bg-[#12100E] dark:bg-white text-white dark:text-[#12100E] font-mono text-[9px] font-bold transition active:scale-95 flex items-center gap-1 cursor-pointer shadow-sm"
+                        className={`px-2.5 py-1.5 rounded-lg font-sans text-[10px] font-bold transition active:scale-95 flex items-center gap-1 cursor-pointer shadow-sm border ${
+                          justAddedType?.id === currentDish.id && justAddedType?.type === 'quick'
+                            ? 'bg-[#C5A880] text-[#12100E] border-[#C5A880]'
+                            : currentDishInCartQty > 0
+                            ? 'bg-[#181513] text-[#FAF7F2] border-[#C5A880]/60'
+                            : isLight
+                            ? 'bg-[#141210] text-white border-black/15'
+                            : 'bg-white text-[#12100E] border-white/20'
+                        }`}
+                        title={`Quick add ${currentDish.name} (₹${currentDish.price}) to order`}
                       >
-                        <Plus className="w-2.5 h-2.5" />
-                        <span>Order</span>
+                        {justAddedType?.id === currentDish.id && justAddedType?.type === 'quick' ? (
+                          <>
+                            <Check className="w-2.5 h-2.5 stroke-[2.5]" />
+                            <span>Added</span>
+                          </>
+                        ) : currentDishInCartQty > 0 ? (
+                          <>
+                            <Check className="w-2.5 h-2.5 text-[#C5A880] stroke-[2.5]" />
+                            <span>In Cart ({currentDishInCartQty})</span>
+                          </>
+                        ) : (
+                          <>
+                            <Plus className="w-2.5 h-2.5 stroke-[2.5]" />
+                            <span>Add</span>
+                          </>
+                        )}
                       </button>
 
                       <button
                         type="button"
                         onClick={(e) => handleAddCuratedPairing(e, currentDish)}
-                        className="px-2 py-1 rounded-lg bg-[#C5A880] text-[#12100E] font-mono text-[9px] font-bold transition active:scale-95 flex items-center gap-1 cursor-pointer shadow-sm"
+                        className={`px-2.5 py-1.5 rounded-lg font-sans text-[10px] font-bold transition active:scale-95 flex items-center gap-1 cursor-pointer shadow-sm border ${
+                          justAddedType?.id === currentDish.id && justAddedType?.type === 'pair'
+                            ? 'bg-emerald-600 text-white border-emerald-500'
+                            : 'bg-[#C5A880] hover:bg-[#B89358] text-[#12100E] border-[#C5A880]'
+                        }`}
+                        title={`Add ${currentDish.pairingBundleName} bundle for ₹${currentDish.pairingBundlePrice} (Save ₹${currentDish.pairingSavings})`}
                       >
-                        <span>Pair ₹{currentDish.pairingBundlePrice}</span>
+                        {justAddedType?.id === currentDish.id && justAddedType?.type === 'pair' ? (
+                          <>
+                            <Check className="w-2.5 h-2.5 stroke-[2.5]" />
+                            <span>Paired!</span>
+                          </>
+                        ) : currentBundleInCartQty > 0 ? (
+                          <>
+                            <Check className="w-2.5 h-2.5 stroke-[2.5]" />
+                            <span>Paired ({currentBundleInCartQty})</span>
+                          </>
+                        ) : (
+                          <>
+                            <Plus className="w-2.5 h-2.5 stroke-[2.5]" />
+                            <span>Pair ₹{currentDish.pairingBundlePrice}</span>
+                          </>
+                        )}
                       </button>
                     </div>
                   )}
@@ -934,11 +978,31 @@ export function HeroSection({
                   <button
                     type="button"
                     onClick={(e) => handleQuickOrder(e, currentDish)}
-                    className="absolute bottom-3 left-3 z-30 px-3.5 py-2 rounded-xl bg-[#12100E]/90 hover:bg-black active:scale-95 backdrop-blur-md border border-[#C5A880]/60 hover:border-[#C5A880] text-white font-mono text-[10px] font-bold tracking-wider uppercase flex items-center gap-1.5 transition cursor-pointer shadow-2xl pointer-events-auto"
-                    title={`Quick add ${currentDish.name} to order`}
+                    className={`absolute bottom-3 left-3 z-30 px-3.5 py-2 rounded-xl backdrop-blur-md border font-sans text-xs font-semibold tracking-wide flex items-center gap-1.5 transition-all duration-200 cursor-pointer shadow-2xl pointer-events-auto active:scale-95 ${
+                      justAddedType?.id === currentDish.id && justAddedType?.type === 'quick'
+                        ? 'bg-[#C5A880] text-[#12100E] border-[#C5A880] shadow-[0_0_20px_rgba(197,168,128,0.4)]'
+                        : currentDishInCartQty > 0
+                        ? 'bg-[#181513]/95 text-[#FAF7F2] border-[#C5A880]/80 hover:border-[#C5A880]'
+                        : 'bg-[#12100E]/90 hover:bg-black text-white border-[#C5A880]/50 hover:border-[#C5A880]'
+                    }`}
+                    title={`Quick add ${currentDish.name} (₹${currentDish.price}) to order`}
                   >
-                    <Plus className="w-3.5 h-3.5 text-[#C5A880] stroke-[3]" />
-                    <span>Quick Order</span>
+                    {justAddedType?.id === currentDish.id && justAddedType?.type === 'quick' ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                        <span>Added</span>
+                      </>
+                    ) : currentDishInCartQty > 0 ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-[#C5A880] stroke-[2.5]" />
+                        <span>In Order ({currentDishInCartQty})</span>
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-3.5 h-3.5 text-[#C5A880] stroke-[2.5]" />
+                        <span>Quick Order</span>
+                      </>
+                    )}
                   </button>
                 )}
 
@@ -983,11 +1047,33 @@ export function HeroSection({
 
                   {operationalModel !== 'showcase' && (
                     <button
+                      type="button"
                       onClick={(e) => handleAddCuratedPairing(e, currentDish)}
-                      className="px-3.5 py-2 rounded-xl bg-[#C5A880] hover:bg-[#B89358] text-[#12100E] font-mono text-[10px] font-bold tracking-wider uppercase shrink-0 transition flex items-center gap-1.5 cursor-pointer shadow-md active:scale-95"
+                      className={`px-3.5 py-2 rounded-xl font-sans text-xs font-semibold tracking-wide uppercase shrink-0 transition-all duration-200 flex items-center gap-1.5 cursor-pointer shadow-md active:scale-95 border ${
+                        justAddedType?.id === currentDish.id && justAddedType?.type === 'pair'
+                          ? 'bg-emerald-600 text-white border-emerald-500 shadow-emerald-900/30'
+                          : currentBundleInCartQty > 0
+                          ? 'bg-[#C5A880] text-[#12100E] border-[#C5A880] shadow-stone-900/20'
+                          : 'bg-[#C5A880] hover:bg-[#B89358] text-[#12100E] border-[#C5A880] shadow-sm'
+                      }`}
+                      title={`Order ${currentDish.pairingBundleName} for ₹${currentDish.pairingBundlePrice} (Save ₹${currentDish.pairingSavings})`}
                     >
-                      <Plus className="w-3 h-3 stroke-[2.5]" />
-                      <span>Pair ₹{currentDish.pairingBundlePrice}</span>
+                      {justAddedType?.id === currentDish.id && justAddedType?.type === 'pair' ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                          <span>Bundle Added!</span>
+                        </>
+                      ) : currentBundleInCartQty > 0 ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                          <span>Paired ({currentBundleInCartQty}) • ₹{currentDish.pairingBundlePrice}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                          <span>Pair ₹{currentDish.pairingBundlePrice}</span>
+                        </>
+                      )}
                     </button>
                   )}
                 </div>
@@ -1041,19 +1127,35 @@ export function HeroSection({
 
       </div>
 
-      {/* Sommelier Pairing Added Live Toast */}
+      {/* Sommelier Pairing & Quick Order Added Live Toast */}
       <AnimatePresence>
         {pairingToast && (
           <motion.div
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="fixed top-28 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-2xl bg-[#141210]/95 border border-[#C5A880]/50 text-[#FAF7F2] shadow-2xl backdrop-blur-xl flex items-center gap-3 text-xs font-mono"
+            className="fixed top-24 sm:top-28 left-1/2 -translate-x-1/2 z-50 px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl bg-[#141210]/95 border border-[#C5A880]/50 text-[#FAF7F2] shadow-2xl backdrop-blur-xl flex items-center gap-3 sm:gap-4 max-w-[92vw] sm:max-w-md pointer-events-auto"
           >
-            <div className="w-6 h-6 rounded-full bg-[#C5A880]/20 flex items-center justify-center text-[#C5A880]">
-              <CheckCircle2 className="w-4 h-4" />
+            <div className="w-7 h-7 rounded-full bg-[#C5A880]/20 flex items-center justify-center text-[#C5A880] shrink-0">
+              <Check className="w-4 h-4 stroke-[2.5]" />
             </div>
-            <span>{pairingToast}</span>
+            <div className="min-w-0 text-left flex-1">
+              <p className="font-sans font-bold text-xs truncate text-white">{pairingToast.title}</p>
+              <p className="font-mono text-[10px] text-stone-300 truncate">{pairingToast.subtitle}</p>
+            </div>
+            {onOpenCart && (
+              <button
+                type="button"
+                onClick={() => {
+                  setPairingToast(null);
+                  onOpenCart();
+                }}
+                className="px-3 py-1.5 rounded-xl bg-[#C5A880] hover:bg-[#B89358] text-[#12100E] font-sans font-bold text-xs uppercase tracking-wider shrink-0 transition active:scale-95 cursor-pointer shadow-sm flex items-center gap-1"
+              >
+                <span>View Bag</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

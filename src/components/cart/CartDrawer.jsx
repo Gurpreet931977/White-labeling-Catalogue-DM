@@ -602,6 +602,11 @@ export function CartDrawer({
                                   +{cartItem.addons.map(a => a.name).join(', ')}
                                 </p>
                               )}
+                              {cartItem.notes && (
+                                <p className="text-[10px] text-[#C5A880] font-sans font-medium truncate">
+                                  {cartItem.notes}
+                                </p>
+                              )}
                             </div>
                           </div>
 
