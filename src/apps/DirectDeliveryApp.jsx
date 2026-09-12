@@ -39,7 +39,9 @@ import {
   Radio,
   CircleDot,
   CheckCircle2,
-  Sliders
+  Sliders,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { sounds } from '../utils/audio';
 
@@ -52,7 +54,11 @@ import { sounds } from '../utils/audio';
  * High-fidelity animated electric delivery courier with rotating spoke wheels,
  * suspension vibration, rising steam curls from thermal box, headlight beam & moving road dashes.
  */
-function LottieDeliveryRider({ className = "w-28 h-20", isMoving = true, badgeText }) {
+function LottieDeliveryRider({ className = "w-28 h-20", isMoving = true, badgeText, isLight = true }) {
+  const riderColor = isLight ? "#1C1612" : "#FAF7F2";
+  const roadColor = isLight ? "#D8CCBE" : "#33251D";
+  const boxBorder = isLight ? "#1C1612" : "#FAF7F2";
+
   return (
     <div className={`relative inline-flex flex-col items-center justify-center ${className}`}>
       <svg viewBox="0 0 160 100" className="w-full h-full overflow-visible" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -72,7 +78,7 @@ function LottieDeliveryRider({ className = "w-28 h-20", isMoving = true, badgeTe
 
         {/* Road surface speed dashes */}
         <g opacity="0.6">
-          <line x1="8" y1="88" x2="152" y2="88" stroke="#33251D" strokeWidth="2" strokeDasharray="10 8" />
+          <line x1="8" y1="88" x2="152" y2="88" stroke={roadColor} strokeWidth="2" strokeDasharray="10 8" />
           {isMoving && (
             <motion.line
               x1="0"
@@ -94,16 +100,16 @@ function LottieDeliveryRider({ className = "w-28 h-20", isMoving = true, badgeTe
           transition={{ repeat: Infinity, duration: 0.65, ease: "easeInOut" }}
         >
           {/* Thermal Delivery Backpack on rear rack */}
-          <rect x="22" y="34" width="28" height="28" rx="5" fill="#C26D38" stroke="#FAF7F2" strokeWidth="1.5" />
+          <rect x="22" y="34" width="28" height="28" rx="5" fill="#C26D38" stroke={boxBorder} strokeWidth="1.5" />
           <line x1="22" y1="44" x2="50" y2="44" stroke="#120F0D" strokeWidth="1.5" />
           <line x1="36" y1="34" x2="36" y2="62" stroke="#120F0D" strokeWidth="1.5" />
           {/* Active thermal LED dot */}
-          <circle cx="44" cy="38" r="2" fill="#4ADE80" className="animate-pulse" />
+          <circle cx="44" cy="38" r="2" fill="#16A34A" className="animate-pulse" />
 
           {/* Steam curls drifting from thermal box micro-vents */}
           <motion.path
             d="M 30 30 Q 28 22, 32 16"
-            stroke="#DFBA84"
+            stroke="#C26D38"
             strokeWidth="1.5"
             strokeLinecap="round"
             fill="none"
@@ -112,7 +118,7 @@ function LottieDeliveryRider({ className = "w-28 h-20", isMoving = true, badgeTe
           />
           <motion.path
             d="M 38 31 Q 42 23, 38 17"
-            stroke="#DFBA84"
+            stroke="#C26D38"
             strokeWidth="1.5"
             strokeLinecap="round"
             fill="none"
@@ -122,49 +128,49 @@ function LottieDeliveryRider({ className = "w-28 h-20", isMoving = true, badgeTe
 
           {/* Rider Silhouette */}
           {/* Back & Arms */}
-          <path d="M 48 46 L 62 50 L 76 58 L 92 56" stroke="#FAF7F2" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          <path d="M 48 46 L 62 50 L 76 58 L 92 56" stroke={riderColor} strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
           {/* Helmet */}
-          <circle cx="62" cy="32" r="8" fill="#1C1814" stroke="#DFBA84" strokeWidth="2" />
+          <circle cx="62" cy="32" r="8" fill={isLight ? "#F5EFE6" : "#1C1814"} stroke="#C26D38" strokeWidth="2" />
           {/* Helmet aerodynamic visor */}
-          <path d="M 64 31 Q 70 32, 68 36" stroke="#4ADE80" strokeWidth="2" strokeLinecap="round" fill="none" />
+          <path d="M 64 31 Q 70 32, 68 36" stroke="#16A34A" strokeWidth="2" strokeLinecap="round" fill="none" />
 
           {/* Scooter Frame */}
           <path d="M 38 76 L 68 76 L 88 68 L 102 54" stroke="url(#scooterBodyGrad)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
           {/* Handlebar */}
-          <line x1="100" y1="52" x2="108" y2="52" stroke="#FAF7F2" strokeWidth="3" strokeLinecap="round" />
+          <line x1="100" y1="52" x2="108" y2="52" stroke={riderColor} strokeWidth="3" strokeLinecap="round" />
           {/* Headlight lens */}
           <circle cx="106" cy="54" r="3.5" fill="#DFBA84" />
 
           {/* Rear Wheel with rotating spokes */}
           <g transform="translate(36, 76)">
-            <circle cx="0" cy="0" r="12" fill="#14100D" stroke="#DFBA84" strokeWidth="2.5" />
+            <circle cx="0" cy="0" r="12" fill={isLight ? "#EDE5DA" : "#14100D"} stroke="#C26D38" strokeWidth="2.5" />
             <circle cx="0" cy="0" r="4" fill="#C26D38" />
             {isMoving && (
               <motion.g
                 animate={{ rotate: 360 }}
                 transition={{ repeat: Infinity, duration: 0.45, ease: "linear" }}
               >
-                <line x1="-10" y1="0" x2="10" y2="0" stroke="#FAF7F2" strokeWidth="1.2" opacity="0.85" />
-                <line x1="0" y1="-10" x2="0" y2="10" stroke="#FAF7F2" strokeWidth="1.2" opacity="0.85" />
-                <line x1="-7" y1="-7" x2="7" y2="7" stroke="#FAF7F2" strokeWidth="1" opacity="0.6" />
-                <line x1="-7" y1="7" x2="7" y2="-7" stroke="#FAF7F2" strokeWidth="1" opacity="0.6" />
+                <line x1="-10" y1="0" x2="10" y2="0" stroke={riderColor} strokeWidth="1.2" opacity="0.85" />
+                <line x1="0" y1="-10" x2="0" y2="10" stroke={riderColor} strokeWidth="1.2" opacity="0.85" />
+                <line x1="-7" y1="-7" x2="7" y2="7" stroke={riderColor} strokeWidth="1" opacity="0.6" />
+                <line x1="-7" y1="7" x2="7" y2="-7" stroke={riderColor} strokeWidth="1" opacity="0.6" />
               </motion.g>
             )}
           </g>
 
           {/* Front Wheel with rotating spokes */}
           <g transform="translate(108, 76)">
-            <circle cx="0" cy="0" r="12" fill="#14100D" stroke="#DFBA84" strokeWidth="2.5" />
+            <circle cx="0" cy="0" r="12" fill={isLight ? "#EDE5DA" : "#14100D"} stroke="#C26D38" strokeWidth="2.5" />
             <circle cx="0" cy="0" r="4" fill="#C26D38" />
             {isMoving && (
               <motion.g
                 animate={{ rotate: 360 }}
                 transition={{ repeat: Infinity, duration: 0.45, ease: "linear" }}
               >
-                <line x1="-10" y1="0" x2="10" y2="0" stroke="#FAF7F2" strokeWidth="1.2" opacity="0.85" />
-                <line x1="0" y1="-10" x2="0" y2="10" stroke="#FAF7F2" strokeWidth="1.2" opacity="0.85" />
-                <line x1="-7" y1="-7" x2="7" y2="7" stroke="#FAF7F2" strokeWidth="1" opacity="0.6" />
-                <line x1="-7" y1="7" x2="7" y2="-7" stroke="#FAF7F2" strokeWidth="1" opacity="0.6" />
+                <line x1="-10" y1="0" x2="10" y2="0" stroke={riderColor} strokeWidth="1.2" opacity="0.85" />
+                <line x1="0" y1="-10" x2="0" y2="10" stroke={riderColor} strokeWidth="1.2" opacity="0.85" />
+                <line x1="-7" y1="-7" x2="7" y2="7" stroke={riderColor} strokeWidth="1" opacity="0.6" />
+                <line x1="-7" y1="7" x2="7" y2="-7" stroke={riderColor} strokeWidth="1" opacity="0.6" />
               </motion.g>
             )}
           </g>
@@ -172,7 +178,9 @@ function LottieDeliveryRider({ className = "w-28 h-20", isMoving = true, badgeTe
       </svg>
 
       {badgeText && (
-        <span className="mt-1 px-2.5 py-0.5 rounded-full bg-black/90 border border-[#C26D38]/60 text-[9px] font-mono text-[#DFBA84] whitespace-nowrap shadow-md">
+        <span className={`mt-1 px-2.5 py-0.5 rounded-full border text-[9px] font-mono whitespace-nowrap shadow-xs ${
+          isLight ? 'bg-white border-[#E8DFC9] text-[#B35E2A] font-bold' : 'bg-black/90 border-[#C26D38]/60 text-[#DFBA84]'
+        }`}>
           {badgeText}
         </span>
       )}
@@ -185,7 +193,7 @@ function LottieDeliveryRider({ className = "w-28 h-20", isMoving = true, badgeTe
  * Live GPS radar with rotating 360-degree sweep gradient, concentric expanding shockwaves,
  * and a pulsing satellite beacon.
  */
-function LottieRadarScanner({ size = 110 }) {
+function LottieRadarScanner({ size = 110, isLight = true }) {
   return (
     <div className="relative flex items-center justify-center shrink-0" style={{ width: size, height: size }}>
       {/* Wave 1 */}
@@ -196,7 +204,7 @@ function LottieRadarScanner({ size = 110 }) {
       />
       {/* Wave 2 */}
       <motion.div
-        className="absolute inset-0 rounded-full border border-[#DFBA84]"
+        className="absolute inset-0 rounded-full border border-[#E0864B]"
         animate={{ scale: [0.25, 1.25], opacity: [0.85, 0] }}
         transition={{ repeat: Infinity, duration: 2.4, delay: 0.8, ease: "easeOut" }}
       />
@@ -208,19 +216,19 @@ function LottieRadarScanner({ size = 110 }) {
       />
 
       {/* Subtle concentric grid rings */}
-      <div className="absolute inset-2 rounded-full border border-white/10" />
-      <div className="absolute inset-6 rounded-full border border-white/10" />
-      <div className="absolute inset-10 rounded-full border border-white/10" />
+      <div className={`absolute inset-2 rounded-full border ${isLight ? 'border-[#C26D38]/15' : 'border-white/10'}`} />
+      <div className={`absolute inset-6 rounded-full border ${isLight ? 'border-[#C26D38]/15' : 'border-white/10'}`} />
+      <div className={`absolute inset-10 rounded-full border ${isLight ? 'border-[#C26D38]/15' : 'border-white/10'}`} />
 
       {/* Crosshair lines */}
-      <div className="absolute w-full h-[1px] bg-white/10" />
-      <div className="absolute h-full w-[1px] bg-white/10" />
+      <div className={`absolute w-full h-[1px] ${isLight ? 'bg-[#C26D38]/20' : 'bg-white/10'}`} />
+      <div className={`absolute h-full w-[1px] ${isLight ? 'bg-[#C26D38]/20' : 'bg-white/10'}`} />
 
       {/* Rotating 360-degree radar sweep beam */}
       <motion.div
         className="absolute inset-0 rounded-full"
         style={{
-          background: 'conic-gradient(from 0deg, rgba(194, 109, 56, 0.45) 0deg, rgba(223, 186, 132, 0.15) 45deg, transparent 70deg, transparent 360deg)'
+          background: 'conic-gradient(from 0deg, rgba(194, 109, 56, 0.4) 0deg, rgba(223, 186, 132, 0.15) 45deg, transparent 70deg, transparent 360deg)'
         }}
         animate={{ rotate: 360 }}
         transition={{ repeat: Infinity, duration: 3.2, ease: "linear" }}
@@ -245,7 +253,7 @@ function LottieKitchenSteamFlame({ size = 36 }) {
         {/* Rising steam curls */}
         <motion.path
           d="M 14 18 Q 11 12, 15 7"
-          stroke="#DFBA84"
+          stroke="#C26D38"
           strokeWidth="1.5"
           strokeLinecap="round"
           animate={{ opacity: [0, 0.85, 0], y: [0, -6] }}
@@ -253,7 +261,7 @@ function LottieKitchenSteamFlame({ size = 36 }) {
         />
         <motion.path
           d="M 20 20 Q 24 13, 20 7"
-          stroke="#DFBA84"
+          stroke="#C26D38"
           strokeWidth="1.5"
           strokeLinecap="round"
           animate={{ opacity: [0, 0.85, 0], y: [0, -7] }}
@@ -261,7 +269,7 @@ function LottieKitchenSteamFlame({ size = 36 }) {
         />
         <motion.path
           d="M 26 19 Q 23 13, 26 8"
-          stroke="#DFBA84"
+          stroke="#C26D38"
           strokeWidth="1.5"
           strokeLinecap="round"
           animate={{ opacity: [0, 0.85, 0], y: [0, -6] }}
@@ -307,7 +315,7 @@ function LottieCelebrationBurst() {
         const rad = (angle * Math.PI) / 180;
         const x = Math.cos(rad) * dist;
         const y = Math.sin(rad) * dist;
-        const colors = ['#C26D38', '#DFBA84', '#FAF7F2', '#E0864B', '#F3D1A5'];
+        const colors = ['#C26D38', '#DFBA84', '#1C1612', '#E0864B', '#F3D1A5'];
         const color = colors[i % colors.length];
 
         return (
@@ -342,9 +350,11 @@ function LottieCelebrationBurst() {
  * 5. LottieTamperSeal:
  * Self-drawing circular path with spring-loaded checkmark.
  */
-function LottieTamperSeal({ label = "HOT THERMAL SEALED", verified = true }) {
+function LottieTamperSeal({ label = "HOT THERMAL SEALED", isLight = true }) {
   return (
-    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#181310] border border-[#3A2A20] shadow-sm">
+    <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border shadow-xs ${
+      isLight ? 'bg-[#FAF6F0] border-[#E8DFC9]' : 'bg-[#181310] border-[#3A2A20]'
+    }`}>
       <svg className="w-4 h-4 text-[#C26D38]" viewBox="0 0 36 36" fill="none">
         <motion.circle
           cx="18"
@@ -359,7 +369,7 @@ function LottieTamperSeal({ label = "HOT THERMAL SEALED", verified = true }) {
         />
         <motion.path
           d="M 12 18 L 16 22 L 24 14"
-          stroke="#DFBA84"
+          stroke="#B35E2A"
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -368,7 +378,7 @@ function LottieTamperSeal({ label = "HOT THERMAL SEALED", verified = true }) {
           transition={{ delay: 0.5, duration: 0.45, ease: "backOut" }}
         />
       </svg>
-      <span className="font-mono text-[10px] text-[#DFBA84] font-bold tracking-wider uppercase">
+      <span className="font-mono text-[10px] text-[#B35E2A] font-bold tracking-wider uppercase">
         {label}
       </span>
     </div>
@@ -379,31 +389,35 @@ function LottieTamperSeal({ label = "HOT THERMAL SEALED", verified = true }) {
  * 6. LottieFreeDeliveryMeter:
  * Fluid progress bar with sliding delivery scooter indicator.
  */
-function LottieFreeDeliveryMeter({ subtotal, threshold }) {
+function LottieFreeDeliveryMeter({ subtotal, threshold, isLight = true }) {
   const isFree = subtotal >= threshold;
   const pct = Math.min(100, Math.round((subtotal / threshold) * 100));
 
   return (
-    <div className="p-4 rounded-2xl bg-[#1D1713] border border-[#33261D] space-y-2 relative overflow-hidden">
+    <div className={`p-4 rounded-2xl border space-y-2 relative overflow-hidden transition-colors ${
+      isLight ? 'bg-[#FAF6F0] border-[#E8DFC9]' : 'bg-[#1D1713] border-[#33261D]'
+    }`}>
       {isFree && (
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="absolute inset-0 bg-gradient-to-r from-[#C26D38]/15 via-[#DFBA84]/15 to-[#C26D38]/15 pointer-events-none"
+          className="absolute inset-0 bg-gradient-to-r from-[#C26D38]/10 via-[#DFBA84]/15 to-[#C26D38]/10 pointer-events-none"
         />
       )}
 
       <div className="flex items-center justify-between text-xs font-mono relative z-10">
-        <span className="text-stone-300 flex items-center gap-1.5">
+        <span className={`flex items-center gap-1.5 ${isLight ? 'text-[#3D3128]' : 'text-stone-300'}`}>
           <Truck className="w-3.5 h-3.5 text-[#C26D38]" />
-          <span>
+          <span className="font-medium">
             {isFree ? 'Free Doorstep Delivery Unlocked!' : `Add ₹${threshold - subtotal} more for FREE Delivery`}
           </span>
         </span>
-        <span className="text-[#DFBA84] font-bold">₹{subtotal} / ₹{threshold}</span>
+        <span className="text-[#C26D38] font-bold">₹{subtotal} / ₹{threshold}</span>
       </div>
 
-      <div className="relative w-full h-3 rounded-full bg-black/50 overflow-visible p-0.5">
+      <div className={`relative w-full h-3 rounded-full overflow-visible p-0.5 ${
+        isLight ? 'bg-[#EAE0D2]' : 'bg-black/50'
+      }`}>
         {/* Progress track */}
         <motion.div
           initial={{ width: 0 }}
@@ -412,7 +426,7 @@ function LottieFreeDeliveryMeter({ subtotal, threshold }) {
           className="h-full bg-gradient-to-r from-[#C26D38] via-[#E0864B] to-[#DFBA84] rounded-full relative"
         >
           {/* Shimmer sweep */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse rounded-full" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-pulse rounded-full" />
         </motion.div>
 
         {/* Sliding Scooter indicator */}
@@ -421,7 +435,9 @@ function LottieFreeDeliveryMeter({ subtotal, threshold }) {
           animate={{ left: `calc(${pct}% - 10px)` }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          <div className="w-5 h-5 rounded-full bg-[#FAF7F2] border-2 border-[#C26D38] shadow-md flex items-center justify-center">
+          <div className={`w-5 h-5 rounded-full border-2 border-[#C26D38] shadow-md flex items-center justify-center ${
+            isLight ? 'bg-white' : 'bg-[#FAF7F2]'
+          }`}>
             <Bike className="w-3 h-3 text-[#C26D38]" />
           </div>
         </motion.div>
@@ -547,6 +563,10 @@ const DELIVERY_MENU = [
 ];
 
 export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
+  // Ambience Palette Mode: 'light' (DEFAULT - Sunlit Linen Cafe) | 'dark' (Midnight Atelier)
+  const [ambience, setAmbience] = useState('light');
+  const isLight = ambience === 'light';
+
   // Operational View Modes: 'storefront' | 'kitchen-kds' | 'courier-rider'
   const [activeMode, setActiveMode] = useState('storefront');
 
@@ -652,7 +672,7 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
   };
 
   // Add customized item to cart with flying micro-particle
-  const handleAddToCart = (e) => {
+  const handleAddToCart = () => {
     if (!customizingItem) return;
     sounds.playClick();
     triggerCartBump();
@@ -772,7 +792,9 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
     : DELIVERY_MENU.filter((i) => i.category === activeCategory);
 
   return (
-    <div className="min-h-screen bg-[#0F0D0B] text-[#FAF7F2] font-sans selection:bg-[#C26D38] selection:text-white overflow-x-hidden relative">
+    <div className={`min-h-screen font-sans selection:bg-[#C26D38] selection:text-white overflow-x-hidden relative transition-colors duration-300 ${
+      isLight ? 'bg-[#FBF9F6] text-[#1C1612]' : 'bg-[#0F0D0B] text-[#FAF7F2]'
+    }`}>
       
       {/* Celebration Burst Overlay */}
       {showCelebration && <LottieCelebrationBurst />}
@@ -796,35 +818,45 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
       {/* --------------------------------------------------------------------- */}
       {/* TOP HEADER & OPERATIONAL VIEW SWITCHER                                */}
       {/* --------------------------------------------------------------------- */}
-      <header className="sticky top-0 inset-x-0 z-40 bg-[#0F0D0B]/95 backdrop-blur-xl border-b border-[#28201A] py-3 px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      <header className={`sticky top-0 inset-x-0 z-40 backdrop-blur-xl border-b py-3 px-4 sm:px-8 transition-colors duration-300 ${
+        isLight ? 'bg-[#FFFFFF]/90 border-[#E8DFC9] shadow-xs' : 'bg-[#0F0D0B]/95 border-[#28201A]'
+      }`}>
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-4">
           
           {/* Left Brand Identifier */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <button
               onClick={() => {
                 sounds.playClick();
                 if (onBackToVariants) onBackToVariants();
                 else if (onBackToCatalogue) onBackToCatalogue();
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.04] hover:bg-[#C26D38] text-stone-300 hover:text-white border border-white/10 hover:border-[#C26D38] text-xs font-mono font-medium transition cursor-pointer"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono font-medium transition cursor-pointer border ${
+                isLight 
+                  ? 'bg-[#F5EFE6] hover:bg-[#EAE0D2] text-[#3D3128] border-[#DFD3C3]' 
+                  : 'bg-white/[0.04] hover:bg-[#C26D38] text-stone-300 hover:text-white border-white/10 hover:border-[#C26D38]'
+              }`}
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Back to Models</span>
             </button>
 
-            <span className="hidden sm:inline text-white/20">•</span>
+            <span className={isLight ? "hidden sm:inline text-black/20" : "hidden sm:inline text-white/20"}>•</span>
 
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#C26D38] shadow-[0_0_8px_#C26D38] animate-pulse"></span>
-              <span className="font-mono text-xs font-bold tracking-[0.2em] text-[#FAF7F2] uppercase">
+              <span className={`font-mono text-xs font-bold tracking-[0.18em] uppercase ${
+                isLight ? 'text-[#1C1612]' : 'text-[#FAF7F2]'
+              }`}>
                 VELOUR <span className="text-[#C26D38]">//</span> DIRECT DELIVERY
               </span>
             </div>
           </div>
 
           {/* Center 3-in-1 View Switcher */}
-          <div className="hidden md:flex items-center gap-1 p-1 rounded-full bg-[#181310] border border-[#2B211A]">
+          <div className={`hidden md:flex items-center gap-1 p-1 rounded-full border transition-colors ${
+            isLight ? 'bg-[#F3ECE1] border-[#E2D6C5]' : 'bg-[#181310] border-[#2B211A]'
+          }`}>
             {[
               { id: 'storefront', label: 'Online Storefront', icon: ShoppingBag },
               { id: 'kitchen-kds', label: 'Kitchen KDS Dispatch', icon: Utensils },
@@ -842,7 +874,7 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                   className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-mono transition cursor-pointer relative ${
                     isActive
                       ? 'bg-[#C26D38] text-white font-bold shadow-md'
-                      : 'text-stone-400 hover:text-white'
+                      : isLight ? 'text-[#6B5A4E] hover:text-[#1C1612]' : 'text-stone-400 hover:text-white'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -852,19 +884,23 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
             })}
           </div>
 
-          {/* Right: Address Trigger & Bag */}
-          <div className="flex items-center gap-2.5">
+          {/* Right: Address Trigger, Ambience Toggle & Bag */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
             {/* Address Pill Trigger */}
             <button
               onClick={() => {
                 sounds.playClick();
                 setIsAddressModalOpen(true);
               }}
-              className="hidden lg:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1A1512] hover:bg-[#261E19] text-xs font-mono border border-[#33271F] hover:border-[#C26D38]/50 transition cursor-pointer"
+              className={`hidden lg:flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono border transition cursor-pointer ${
+                isLight 
+                  ? 'bg-[#F5EFE6] hover:bg-[#EAE0D2] text-[#1C1612] border-[#DFD3C3]' 
+                  : 'bg-[#1A1512] hover:bg-[#261E19] text-stone-300 border-[#33271F] hover:border-[#C26D38]/50'
+              }`}
             >
               <MapPin className="w-3.5 h-3.5 text-[#C26D38]" />
-              <span className="text-stone-300 truncate max-w-[170px]">{address.flatNo}, {address.area}</span>
-              <span className="text-[10px] text-[#DFBA84] font-bold">({address.estimatedMins}m)</span>
+              <span className="truncate max-w-[150px]">{address.flatNo}, {address.area}</span>
+              <span className="text-[10px] text-[#C26D38] font-bold">({address.estimatedMins}m)</span>
             </button>
 
             {/* Active Order Live Tracker Badge */}
@@ -874,14 +910,34 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                   sounds.playClick();
                   setIsLiveTrackingOpen(true);
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#C26D38]/15 border border-[#C26D38]/50 text-[#FAF7F2] text-xs font-mono font-bold tracking-wider uppercase hover:bg-[#C26D38]/25 transition cursor-pointer shadow-sm"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-mono font-bold tracking-wider uppercase transition cursor-pointer shadow-xs ${
+                  isLight 
+                    ? 'bg-[#C26D38]/10 border-[#C26D38]/30 text-[#C26D38] hover:bg-[#C26D38]/20' 
+                    : 'bg-[#C26D38]/15 border-[#C26D38]/50 text-[#FAF7F2] hover:bg-[#C26D38]/25'
+                }`}
               >
                 <span className="w-2 h-2 rounded-full bg-[#C26D38] animate-ping" />
                 <Bike className="w-3.5 h-3.5 text-[#C26D38]" />
                 <span className="hidden sm:inline">{activeOrder.id}</span>
-                <span className="text-[10px] text-[#DFBA84]">({activeOrder.etaMins}m)</span>
+                <span className="text-[10px] text-[#B35E2A]">({activeOrder.etaMins}m)</span>
               </button>
             )}
+
+            {/* Light / Dark Mode Ambience Switcher */}
+            <button
+              onClick={() => {
+                sounds.playClick();
+                setAmbience(isLight ? 'dark' : 'light');
+              }}
+              className={`p-2 rounded-full border transition cursor-pointer ${
+                isLight 
+                  ? 'bg-[#F5EFE6] hover:bg-[#EAE0D2] border-[#DFD3C3] text-[#C26D38]' 
+                  : 'bg-white/5 hover:bg-white/10 border-white/10 text-[#DFBA84]'
+              }`}
+              title={isLight ? "Switch to Midnight Dark Mode" : "Switch to Sunlit Light Mode"}
+            >
+              {isLight ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+            </button>
 
             {/* Basket Bag Trigger with Spring Bounce */}
             {activeMode === 'storefront' && (
@@ -892,7 +948,7 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                   sounds.playClick();
                   setIsCartOpen(true);
                 }}
-                className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#C26D38] to-[#D47E48] hover:brightness-110 text-white font-mono text-xs font-bold tracking-wide uppercase transition cursor-pointer shadow-md"
+                className="flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-gradient-to-r from-[#C26D38] to-[#D47E48] hover:brightness-110 text-white font-mono text-xs font-bold tracking-wide uppercase transition cursor-pointer shadow-md"
               >
                 <ShoppingBag className="w-3.5 h-3.5" />
                 <span>Bag ({cart.reduce((s, i) => s + i.qty, 0)})</span>
@@ -907,22 +963,30 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
       {/* --------------------------------------------------------------------- */}
       {/* 0% AGGREGATOR COMMISSION BANNER & LIVE ROI SAVINGS TICKER             */}
       {/* --------------------------------------------------------------------- */}
-      <div className="py-2.5 px-4 bg-gradient-to-r from-[#1C1612] via-[#241A14] to-[#1C1612] border-b border-[#33251D] text-xs font-mono">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-stone-300">
+      <div className={`py-2.5 px-4 border-b text-xs font-mono transition-colors duration-300 ${
+        isLight 
+          ? 'bg-[#F5EFE6] border-[#E8DFC9] text-[#4A3D32]' 
+          : 'bg-gradient-to-r from-[#1C1612] via-[#241A14] to-[#1C1612] border-[#33251D] text-stone-300'
+      }`}>
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-[#C26D38]/20 border border-[#C26D38]/50 text-[#DFBA84] font-bold text-[10px] tracking-wider uppercase flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-[#DFBA84]" />
+            <span className={`px-2.5 py-0.5 rounded-full border font-bold text-[10px] tracking-wider uppercase flex items-center gap-1 ${
+              isLight 
+                ? 'bg-[#C26D38]/15 border-[#C26D38]/30 text-[#C26D38]' 
+                : 'bg-[#C26D38]/20 border-[#C26D38]/50 text-[#DFBA84]'
+            }`}>
+              <Sparkles className="w-3 h-3" />
               0% COMMISSION DIRECT
             </span>
-            <span className="text-stone-300">Direct Kitchen to Doorstep • Zero 30% Swiggy / Zomato Markups</span>
+            <span>Direct Kitchen to Doorstep • Zero 30% Swiggy / Zomato Markups</span>
           </div>
 
           <div className="flex items-center gap-4 text-[11px]">
-            <span className="text-[#DFBA84]">
-              Customer Savings: <strong>₹{aggregatorComparisonSavings}</strong> on this basket
+            <span>
+              Customer Savings: <strong className={isLight ? "text-[#B35E2A]" : "text-[#DFBA84]"}>₹{aggregatorComparisonSavings}</strong> on this basket
             </span>
-            <span className="hidden sm:inline text-stone-500">•</span>
-            <span className="hidden sm:inline text-stone-400">
+            <span className={isLight ? "hidden sm:inline text-black/20" : "hidden sm:inline text-stone-500"}>•</span>
+            <span className={isLight ? "hidden sm:inline text-[#6B5A4E]" : "hidden sm:inline text-stone-400"}>
               Kitchen Radius: <strong>8.5 km Express Zone</strong>
             </span>
           </div>
@@ -936,30 +1000,40 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
         <main className="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-10">
           
           {/* Hero Showcase: Cloud Kitchen & Direct Doorstep Delivery */}
-          <section className="relative rounded-[32px] overflow-hidden border border-[#2D231C] p-6 sm:p-10 bg-gradient-to-b from-[#181310] to-[#120F0D] shadow-2xl">
+          <section className={`relative rounded-[32px] overflow-hidden border p-6 sm:p-10 transition-colors duration-300 ${
+            isLight 
+              ? 'bg-white border-[#E8DFC9] shadow-[0_20px_50px_rgba(40,25,15,0.06)]' 
+              : 'bg-gradient-to-b from-[#181310] to-[#120F0D] border-[#2D231C] shadow-2xl'
+          }`}>
             
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               
               <div className="lg:col-span-7 space-y-5 text-left">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs font-mono text-[#DFBA84]">
+                <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-mono ${
+                  isLight ? 'bg-[#F6EFE6] border-[#E5DACB] text-[#B35E2A]' : 'bg-white/[0.04] border-white/10 text-[#DFBA84]'
+                }`}>
                   <LottieKitchenSteamFlame size={20} />
                   <span>WOOD-FIRED SOURDOUGH &amp; TAMPER-SEALED COLD BREWS</span>
                 </div>
 
-                <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#FAF7F2] leading-[1.1]">
+                <h1 className={`font-serif text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] ${
+                  isLight ? 'text-[#16120F]' : 'text-[#FAF7F2]'
+                }`}>
                   Doorstep dining without <br />
-                  <span className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#DFBA84] via-[#FAF7F2] to-[#C26D38]">
+                  <span className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#C26D38] via-[#B35E2A] to-[#8C4A1F]">
                     aggregator markups
                   </span>.
                 </h1>
 
-                <p className="text-sm sm:text-base text-stone-400 font-sans leading-relaxed max-w-xl">
+                <p className={`text-sm sm:text-base font-sans leading-relaxed max-w-xl ${
+                  isLight ? 'text-[#665547]' : 'text-stone-400'
+                }`}>
                   Order direct from our artisanal cloud kitchen. Sealed in micro-vented thermal packaging, dispatched via dedicated electric couriers, and tracked live to your exact flat number.
                 </p>
 
                 {/* Free Delivery Target Indicator with Lottie Fluid Meter */}
                 <div className="max-w-lg">
-                  <LottieFreeDeliveryMeter subtotal={subtotal} threshold={freeDeliveryThreshold} />
+                  <LottieFreeDeliveryMeter subtotal={subtotal} threshold={freeDeliveryThreshold} isLight={isLight} />
                 </div>
 
                 {/* Address Bar Action & Tamper Seal Badge */}
@@ -969,49 +1043,61 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                       sounds.playClick();
                       setIsAddressModalOpen(true);
                     }}
-                    className="px-5 py-3 rounded-full bg-[#241A14] hover:bg-[#2E211A] text-white border border-[#3D2D22] text-xs font-mono flex items-center gap-2 transition cursor-pointer shadow-sm hover:border-[#C26D38]"
+                    className={`px-5 py-3 rounded-full text-xs font-mono flex items-center gap-2 transition cursor-pointer border shadow-xs ${
+                      isLight 
+                        ? 'bg-[#F5EFE6] hover:bg-[#EAE0D2] text-[#1C1612] border-[#DFD3C3]' 
+                        : 'bg-[#241A14] hover:bg-[#2E211A] text-white border-[#3D2D22]'
+                    }`}
                   >
                     <MapPin className="w-4 h-4 text-[#C26D38]" />
                     <span>Change Address: {address.preset} ({address.area})</span>
                   </button>
 
-                  <LottieTamperSeal label="THERMAL SEALED" />
+                  <LottieTamperSeal label="THERMAL SEALED" isLight={isLight} />
 
-                  <div className="flex items-center gap-2 text-xs font-mono text-stone-400">
-                    <Clock className="w-3.5 h-3.5 text-[#DFBA84]" />
-                    <span>Est. Doorstep ETA: <strong className="text-white">{address.estimatedMins} mins</strong></span>
+                  <div className={`flex items-center gap-2 text-xs font-mono ${
+                    isLight ? 'text-[#6B5A4E]' : 'text-stone-400'
+                  }`}>
+                    <Clock className="w-3.5 h-3.5 text-[#C26D38]" />
+                    <span>Est. Doorstep ETA: <strong className={isLight ? "text-[#1C1612]" : "text-white"}>{address.estimatedMins} mins</strong></span>
                   </div>
                 </div>
               </div>
 
               {/* Right Hero Card with Animated Scooter Badge & Image */}
               <div className="lg:col-span-5 relative">
-                <div className="relative rounded-3xl overflow-hidden border border-[#33271F] shadow-2xl group">
+                <div className={`relative rounded-3xl overflow-hidden border shadow-xl group ${
+                  isLight ? 'border-[#E8DFC9]' : 'border-[#33271F]'
+                }`}>
                   <img
                     src="https://images.unsplash.com/photo-1604382355076-af4b0eb60143?auto=format&fit=crop&w=800&q=80"
                     alt="Artisan Sourdough Pizza Delivery"
                     className="w-full h-[320px] object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
 
                   {/* Lottie Courier Badge floating in top right */}
                   <div className="absolute top-4 right-4 z-20">
-                    <div className="p-2.5 rounded-2xl bg-black/80 backdrop-blur-md border border-white/20 shadow-xl">
-                      <LottieDeliveryRider className="w-24 h-14" isMoving={true} badgeText="DIRECT COURIER" />
+                    <div className={`p-2.5 rounded-2xl backdrop-blur-md border shadow-lg ${
+                      isLight ? 'bg-white/95 border-[#E8DFC9]' : 'bg-black/80 border-white/20'
+                    }`}>
+                      <LottieDeliveryRider className="w-24 h-14" isMoving={true} badgeText="DIRECT COURIER" isLight={isLight} />
                     </div>
                   </div>
 
                   <div className="absolute top-4 left-4 z-20">
-                    <span className="px-3 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-[10px] font-mono text-white font-semibold uppercase">
+                    <span className="px-3 py-1 rounded-full bg-white/90 backdrop-blur-md border border-black/10 text-[10px] font-mono text-[#1C1612] font-semibold uppercase shadow-xs">
                       VENTILATED THERMAL BOX
                     </span>
                   </div>
 
-                  <div className="absolute bottom-4 inset-x-4 p-4 rounded-2xl bg-black/80 backdrop-blur-xl border border-white/15 text-white">
+                  <div className={`absolute bottom-4 inset-x-4 p-4 rounded-2xl backdrop-blur-xl border shadow-md ${
+                    isLight ? 'bg-white/95 border-[#E8DFC9] text-[#1C1612]' : 'bg-black/80 border-white/15 text-white'
+                  }`}>
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-serif font-bold text-base">48h Fermented Margherita Rustica</p>
-                        <p className="text-[11px] text-stone-300 mt-0.5">Delivered piping hot with blistered crust intact</p>
+                        <p className={`text-[11px] mt-0.5 ${isLight ? 'text-[#665547]' : 'text-stone-300'}`}>Delivered piping hot with blistered crust intact</p>
                       </div>
                       <span className="font-mono font-bold text-[#C26D38] text-base">₹495</span>
                     </div>
@@ -1024,7 +1110,9 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
           </section>
 
           {/* Category Filter Pills */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-b border-[#241C16] pb-4">
+          <div className={`flex flex-wrap items-center justify-between gap-4 pt-2 border-b pb-4 ${
+            isLight ? 'border-[#E8DFC9]' : 'border-[#241C16]'
+          }`}>
             <div className="flex flex-wrap items-center gap-2">
               {[
                 { id: 'all', label: 'All Items' },
@@ -1043,7 +1131,9 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                   className={`px-4 py-2 rounded-full text-xs font-mono transition cursor-pointer border ${
                     activeCategory === cat.id
                       ? 'bg-[#C26D38] text-white border-[#C26D38] font-bold shadow-md'
-                      : 'bg-[#181310] hover:bg-[#221A15] text-stone-400 hover:text-white border-[#2E231A]'
+                      : isLight 
+                        ? 'bg-white hover:bg-[#F6EFE6] text-[#5C4C40] hover:text-[#1C1612] border-[#E8DFC9] shadow-2xs' 
+                        : 'bg-[#181310] hover:bg-[#221A15] text-stone-400 hover:text-white border-[#2E231A]'
                   }`}
                 >
                   {cat.label}
@@ -1051,7 +1141,7 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
               ))}
             </div>
 
-            <span className="text-xs font-mono text-stone-500">
+            <span className={`text-xs font-mono ${isLight ? 'text-[#8C7B6E]' : 'text-stone-500'}`}>
               Showing {filteredMenu.length} delivery items
             </span>
           </div>
@@ -1063,15 +1153,19 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                 key={item.id}
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.25 }}
-                className="group rounded-3xl overflow-hidden bg-[#16120F] border border-[#2A2018] hover:border-[#C26D38]/60 transition-all duration-300 flex flex-col justify-between shadow-lg"
+                className={`group rounded-3xl overflow-hidden border transition-all duration-300 flex flex-col justify-between ${
+                  isLight 
+                    ? 'bg-white border-[#E8DFC9] shadow-[0_8px_25px_rgba(40,25,15,0.05)] hover:border-[#C26D38]/60 hover:shadow-[0_16px_35px_rgba(194,109,56,0.12)]' 
+                    : 'bg-[#16120F] border-[#2A2018] hover:border-[#C26D38]/60 shadow-lg'
+                }`}
               >
-                <div className="relative aspect-[16/10] overflow-hidden bg-black/20">
+                <div className="relative aspect-[16/10] overflow-hidden bg-black/10">
                   <img
                     src={item.image}
                     alt={item.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#16120F] via-transparent to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 
                   <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
                     {item.popular && (
@@ -1079,7 +1173,7 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                         KITCHEN BESTSELLER
                       </span>
                     )}
-                    <span className="ml-auto px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-[10px] font-mono text-white">
+                    <span className="ml-auto px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-md border border-black/10 text-[10px] font-mono text-[#1C1612] font-semibold shadow-xs">
                       {item.prepTime}
                     </span>
                   </div>
@@ -1088,20 +1182,28 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                 <div className="p-6 space-y-3 flex-grow flex flex-col justify-between">
                   <div className="space-y-1">
                     <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-serif text-lg font-bold text-[#FAF7F2] leading-snug group-hover:text-[#DFBA84] transition-colors">
+                      <h3 className={`font-serif text-lg font-bold leading-snug group-hover:text-[#C26D38] transition-colors ${
+                        isLight ? 'text-[#16120F]' : 'text-[#FAF7F2]'
+                      }`}>
                         {item.name}
                       </h3>
                       <span className="font-mono text-sm font-bold text-[#C26D38] shrink-0">
                         ₹{item.price}
                       </span>
                     </div>
-                    <p className="text-xs text-stone-400 font-sans line-clamp-2">
+                    <p className={`text-xs font-sans line-clamp-2 ${
+                      isLight ? 'text-[#665547]' : 'text-stone-400'
+                    }`}>
                       {item.description}
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-[#261D16] flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-mono text-stone-500 truncate">
+                  <div className={`pt-3 border-t flex items-center justify-between gap-2 ${
+                    isLight ? 'border-[#F0E8DD]' : 'border-[#261D16]'
+                  }`}>
+                    <span className={`text-[11px] font-mono truncate ${
+                      isLight ? 'text-[#8C7B6E]' : 'text-stone-500'
+                    }`}>
                       Thermal Pack
                     </span>
 
@@ -1109,7 +1211,11 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                       {/* Quick Add Button */}
                       <button
                         onClick={() => handleQuickAdd(item)}
-                        className="p-2 rounded-xl bg-[#201813] hover:bg-[#C26D38]/30 text-stone-300 hover:text-white border border-[#33261D] transition cursor-pointer"
+                        className={`p-2 rounded-xl transition cursor-pointer border ${
+                          isLight 
+                            ? 'bg-[#FAF6F0] hover:bg-[#F0E6D8] text-[#3D3128] border-[#E5DACB]' 
+                            : 'bg-[#201813] hover:bg-[#C26D38]/30 text-stone-300 border-[#33261D]'
+                        }`}
                         title="Quick Add 1"
                       >
                         <Plus className="w-3.5 h-3.5" />
@@ -1123,7 +1229,11 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                           setSelectedCrust('Classic Sourdough');
                           setSelectedAddons(['Truffle Olive Drizzle (+₹60)']);
                         }}
-                        className="px-3.5 py-2 rounded-xl bg-[#251B15] hover:bg-[#C26D38] text-white font-mono text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border border-[#38281E] hover:border-[#C26D38] shadow-sm active:scale-95"
+                        className={`px-3.5 py-2 rounded-xl font-mono text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border shadow-xs active:scale-95 ${
+                          isLight 
+                            ? 'bg-[#F5EFE6] hover:bg-[#C26D38] text-[#2E241E] hover:text-white border-[#DFD3C3] hover:border-[#C26D38]' 
+                            : 'bg-[#251B15] hover:bg-[#C26D38] text-white border-[#38281E] hover:border-[#C26D38]'
+                        }`}
                       >
                         <span>Customize</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -1144,7 +1254,9 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
       {/* --------------------------------------------------------------------- */}
       {activeMode === 'kitchen-kds' && (
         <main className="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-6">
-          <div className="flex items-center justify-between border-b border-[#28201A] pb-4">
+          <div className={`flex items-center justify-between border-b pb-4 ${
+            isLight ? 'border-[#E8DFC9]' : 'border-[#28201A]'
+          }`}>
             <div>
               <span className="font-mono text-xs text-[#C26D38] uppercase tracking-widest font-semibold flex items-center gap-1.5">
                 <LottieKitchenSteamFlame size={18} />
@@ -1154,10 +1266,12 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
             </div>
 
             <div className="flex items-center gap-3 font-mono text-xs">
-              <span className="px-3 py-1.5 rounded-full bg-[#1A1512] border border-[#2D221A] text-stone-300">
+              <span className={`px-3 py-1.5 rounded-full border ${
+                isLight ? 'bg-white border-[#E8DFC9] text-[#3D3128]' : 'bg-[#1A1512] border-[#2D221A] text-stone-300'
+              }`}>
                 Oven Hearth: <strong>3 Active</strong>
               </span>
-              <span className="px-3 py-1.5 rounded-full bg-[#C26D38]/20 border border-[#C26D38]/40 text-[#DFBA84]">
+              <span className="px-3 py-1.5 rounded-full bg-[#C26D38]/15 border border-[#C26D38]/30 text-[#B35E2A] font-bold">
                 Avg Prep Velocity: <strong>14.2 mins</strong>
               </span>
             </div>
@@ -1165,30 +1279,32 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Active Ticket 1 */}
-            <div className="p-6 rounded-3xl bg-[#16120F] border border-[#C26D38] space-y-4 shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[#C26D38]/10 rounded-full blur-2xl pointer-events-none" />
-
-              <div className="flex items-center justify-between pb-3 border-b border-[#2A2018]">
+            <div className={`p-6 rounded-3xl border space-y-4 shadow-xl relative overflow-hidden ${
+              isLight ? 'bg-white border-[#C26D38]' : 'bg-[#16120F] border-[#C26D38]'
+            }`}>
+              <div className="flex items-center justify-between pb-3 border-b border-[#E8DFC9]">
                 <div>
                   <span className="font-mono text-lg font-bold text-[#C26D38]">{activeOrder.id}</span>
-                  <p className="text-[11px] font-mono text-stone-400">Placed at {activeOrder.placedAt}</p>
+                  <p className={`text-[11px] font-mono ${isLight ? 'text-[#8C7B6E]' : 'text-stone-400'}`}>Placed at {activeOrder.placedAt}</p>
                 </div>
-                <span className="px-2.5 py-1 rounded-full bg-[#C26D38]/20 text-[#DFBA84] text-[10px] font-mono font-bold uppercase">
+                <span className="px-2.5 py-1 rounded-full bg-[#C26D38]/15 text-[#B35E2A] text-[10px] font-mono font-bold uppercase">
                   STATUS: {activeOrder.status}
                 </span>
               </div>
 
               <div className="space-y-2 text-xs font-mono">
-                <p className="text-stone-300"><strong>Customer:</strong> {address.recipientName} ({address.recipientPhone})</p>
-                <p className="text-stone-300"><strong>Dropoff:</strong> {address.flatNo}, {address.area}</p>
-                <p className="text-stone-400"><strong>Rider Notes:</strong> {address.riderNotes}</p>
+                <p><strong>Customer:</strong> {address.recipientName} ({address.recipientPhone})</p>
+                <p><strong>Dropoff:</strong> {address.flatNo}, {address.area}</p>
+                <p className={isLight ? "text-[#8C7B6E]" : "text-stone-400"}><strong>Rider Notes:</strong> {address.riderNotes}</p>
               </div>
 
-              <div className="p-3 rounded-2xl bg-[#201813] border border-[#33261D] space-y-2 text-xs">
-                <span className="font-mono text-[10px] text-stone-400 uppercase">PREPARATION CHECKLIST:</span>
-                <p className="font-bold text-white">• 1x 48h Fermented Margherita Rustica (Extra Truffle Oil)</p>
-                <p className="font-bold text-white">• 1x Reserve Ethiopian Cold Drip (500ml Glass Bottle Sealed)</p>
-                <p className="text-stone-400 text-[11px]">• Packed with insulated thermal liner &amp; tamper tape</p>
+              <div className={`p-3 rounded-2xl border space-y-2 text-xs ${
+                isLight ? 'bg-[#FAF6F0] border-[#E8DFC9]' : 'bg-[#201813] border-[#33261D]'
+              }`}>
+                <span className={`font-mono text-[10px] uppercase ${isLight ? 'text-[#8C7B6E]' : 'text-stone-400'}`}>PREPARATION CHECKLIST:</span>
+                <p className="font-bold">• 1x 48h Fermented Margherita Rustica (Extra Truffle Oil)</p>
+                <p className="font-bold">• 1x Reserve Ethiopian Cold Drip (500ml Glass Bottle Sealed)</p>
+                <p className={`text-[11px] ${isLight ? 'text-[#8C7B6E]' : 'text-stone-400'}`}>• Packed with insulated thermal liner &amp; tamper tape</p>
               </div>
 
               <div className="pt-2 flex flex-col gap-2">
@@ -1203,41 +1319,53 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
             </div>
 
             {/* In-Oven Prep Ticket 2 */}
-            <div className="p-6 rounded-3xl bg-[#16120F] border border-[#2A2018] space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-[#2A2018]">
+            <div className={`p-6 rounded-3xl border space-y-4 ${
+              isLight ? 'bg-white border-[#E8DFC9] shadow-sm' : 'bg-[#16120F] border-[#2A2018]'
+            }`}>
+              <div className={`flex items-center justify-between pb-3 border-b ${
+                isLight ? 'border-[#E8DFC9]' : 'border-[#2A2018]'
+              }`}>
                 <div>
-                  <span className="font-mono text-lg font-bold text-white">DELIV-#84918</span>
-                  <p className="text-[11px] font-mono text-stone-400">Placed 12m ago</p>
+                  <span className="font-mono text-lg font-bold">DELIV-#84918</span>
+                  <p className={`text-[11px] font-mono ${isLight ? 'text-[#8C7B6E]' : 'text-stone-400'}`}>Placed 12m ago</p>
                 </div>
-                <span className="px-2.5 py-1 rounded-full bg-white/10 text-stone-300 text-[10px] font-mono font-bold uppercase">
+                <span className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase ${
+                  isLight ? 'bg-[#F5EFE6] text-[#3D3128]' : 'bg-white/10 text-stone-300'
+                }`}>
                   OVEN HEARTH
                 </span>
               </div>
               <div className="space-y-1 text-xs">
-                <p className="font-bold text-white">• 1x Wild Chanterelle &amp; White Truffle Pizza</p>
-                <p className="font-bold text-white">• 1x Tiramisu Classico (Glass Jar)</p>
+                <p className="font-bold">• 1x Wild Chanterelle &amp; White Truffle Pizza</p>
+                <p className="font-bold">• 1x Tiramisu Classico (Glass Jar)</p>
               </div>
-              <p className="text-xs text-stone-400">Courier Assigned: Vikrant M. (Arrived at kitchen pickup bay)</p>
+              <p className={`text-xs ${isLight ? 'text-[#8C7B6E]' : 'text-stone-400'}`}>Courier Assigned: Vikrant M. (Arrived at kitchen pickup bay)</p>
               <button
                 onClick={() => playChime()}
-                className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-stone-200 font-mono text-xs font-medium cursor-pointer"
+                className={`w-full py-2.5 rounded-xl font-mono text-xs font-medium cursor-pointer transition border ${
+                  isLight ? 'bg-[#FAF6F0] hover:bg-[#F0E6D8] border-[#E8DFC9] text-[#3D3128]' : 'bg-white/10 hover:bg-white/15 text-stone-200'
+                }`}
               >
                 Promote to Packing Station
               </button>
             </div>
 
             {/* Completed Ticket 3 */}
-            <div className="p-6 rounded-3xl bg-[#16120F] border border-[#2A2018] space-y-4 opacity-75">
-              <div className="flex items-center justify-between pb-3 border-b border-[#2A2018]">
+            <div className={`p-6 rounded-3xl border space-y-4 opacity-80 ${
+              isLight ? 'bg-white border-[#E8DFC9] shadow-sm' : 'bg-[#16120F] border-[#2A2018]'
+            }`}>
+              <div className={`flex items-center justify-between pb-3 border-b ${
+                isLight ? 'border-[#E8DFC9]' : 'border-[#2A2018]'
+              }`}>
                 <div>
-                  <span className="font-mono text-lg font-bold text-stone-300">DELIV-#84915</span>
-                  <p className="text-[11px] font-mono text-stone-500">Delivered 18m ago</p>
+                  <span className="font-mono text-lg font-bold text-[#8C7B6E]">DELIV-#84915</span>
+                  <p className="text-[11px] font-mono text-[#8C7B6E]">Delivered 18m ago</p>
                 </div>
-                <span className="px-2.5 py-1 rounded-full bg-[#3B5038]/30 text-[#8FA876] text-[10px] font-mono font-bold uppercase">
+                <span className="px-2.5 py-1 rounded-full bg-[#16A34A]/15 text-[#16A34A] text-[10px] font-mono font-bold uppercase">
                   COMPLETED
                 </span>
               </div>
-              <p className="text-xs text-stone-400 font-mono">Delivered to Koramangala 4th Block • ₹820 COD Settled</p>
+              <p className="text-xs text-[#8C7B6E] font-mono">Delivered to Koramangala 4th Block • ₹820 COD Settled</p>
             </div>
           </div>
         </main>
@@ -1248,7 +1376,9 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
       {/* --------------------------------------------------------------------- */}
       {activeMode === 'courier-rider' && (
         <main className="max-w-4xl mx-auto px-4 sm:px-8 py-8 space-y-6">
-          <div className="flex items-center justify-between border-b border-[#28201A] pb-4">
+          <div className={`flex items-center justify-between border-b pb-4 ${
+            isLight ? 'border-[#E8DFC9]' : 'border-[#28201A]'
+          }`}>
             <div>
               <span className="font-mono text-xs text-[#C26D38] uppercase tracking-widest font-semibold flex items-center gap-1.5">
                 <Bike className="w-3.5 h-3.5" />
@@ -1256,61 +1386,69 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
               </span>
               <h2 className="font-serif text-2xl font-bold">Rider Dispatch &amp; Doorstep Dropoff</h2>
             </div>
-            <span className="px-3 py-1 rounded-full bg-[#3B5038]/30 text-[#DFBA84] font-mono text-xs font-bold flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#4ADE80] animate-ping" />
+            <span className="px-3 py-1 rounded-full bg-[#16A34A]/15 text-[#16A34A] border border-[#16A34A]/30 font-mono text-xs font-bold flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-ping" />
               GPS Active
             </span>
           </div>
 
-          <div className="p-6 sm:p-8 rounded-3xl bg-[#16120F] border border-[#33271F] space-y-6 shadow-2xl">
+          <div className={`p-6 sm:p-8 rounded-3xl border space-y-6 shadow-xl ${
+            isLight ? 'bg-white border-[#E8DFC9]' : 'bg-[#16120F] border-[#33271F]'
+          }`}>
             {/* Courier Bio Header */}
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-[#1D1713] border border-[#2E231B]">
+            <div className={`flex items-center justify-between p-4 rounded-2xl border ${
+              isLight ? 'bg-[#FAF6F0] border-[#E8DFC9]' : 'bg-[#1D1713] border-[#2E231B]'
+            }`}>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-[#C26D38] text-white flex items-center justify-center font-bold text-base shadow-md">
                   RS
                 </div>
                 <div>
-                  <h4 className="font-serif font-bold text-base text-white">{activeOrder.courier.name}</h4>
-                  <p className="text-xs text-stone-400 font-mono">{activeOrder.courier.vehicle}</p>
+                  <h4 className="font-serif font-bold text-base">{activeOrder.courier.name}</h4>
+                  <p className={`text-xs font-mono ${isLight ? 'text-[#8C7B6E]' : 'text-stone-400'}`}>{activeOrder.courier.vehicle}</p>
                 </div>
               </div>
               <div className="text-right font-mono text-xs">
-                <span className="text-[#DFBA84] font-bold flex items-center justify-end gap-1">
-                  <Sparkles className="w-3.5 h-3.5 text-[#DFBA84]" />
+                <span className="text-[#C26D38] font-bold flex items-center justify-end gap-1">
+                  <Sparkles className="w-3.5 h-3.5 text-[#C26D38]" />
                   {activeOrder.courier.rating}
                 </span>
-                <p className="text-stone-400">{activeOrder.courier.deliveries} trips</p>
+                <p className={isLight ? "text-[#8C7B6E]" : "text-stone-400"}>{activeOrder.courier.deliveries} trips</p>
               </div>
             </div>
 
             {/* Courier Rider Lottie Vector Graphic */}
-            <div className="p-6 rounded-2xl bg-[#14100D] border border-[#2A2018] flex items-center justify-center">
-              <LottieDeliveryRider className="w-48 h-28" isMoving={true} badgeText="SCOOTER IN TRANSIT" />
+            <div className={`p-6 rounded-2xl border flex items-center justify-center ${
+              isLight ? 'bg-[#FAF6F0] border-[#E8DFC9]' : 'bg-[#14100D] border-[#2A2018]'
+            }`}>
+              <LottieDeliveryRider className="w-48 h-28" isMoving={true} badgeText="SCOOTER IN TRANSIT" isLight={isLight} />
             </div>
 
             {/* Current Active Delivery Job */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-mono text-[#DFBA84] uppercase font-bold">CURRENT TRIP ASSIGNMENT</span>
-                  <h3 className="font-mono text-xl font-bold text-white mt-0.5">{activeOrder.id}</h3>
+                  <span className="text-xs font-mono text-[#C26D38] uppercase font-bold">CURRENT TRIP ASSIGNMENT</span>
+                  <h3 className="font-mono text-xl font-bold mt-0.5">{activeOrder.id}</h3>
                 </div>
                 <span className="px-3 py-1 rounded-full bg-[#C26D38] text-white font-mono text-xs font-bold">
                   ETA ~{activeOrder.etaMins} Mins
                 </span>
               </div>
 
-              <div className="p-4 rounded-2xl bg-[#201813] border border-[#33261D] space-y-3 font-mono text-xs">
+              <div className={`p-4 rounded-2xl border space-y-3 font-mono text-xs ${
+                isLight ? 'bg-[#FAF6F0] border-[#E8DFC9]' : 'bg-[#201813] border-[#33261D]'
+              }`}>
                 <div className="flex items-start gap-2">
                   <MapPin className="w-4 h-4 text-[#C26D38] shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-white font-bold">{address.flatNo}, {address.building}</p>
-                    <p className="text-stone-400">{address.area} (Landmark: {address.landmark})</p>
+                    <p className="font-bold">{address.flatNo}, {address.building}</p>
+                    <p className={isLight ? "text-[#8C7B6E]" : "text-stone-400"}>{address.area} (Landmark: {address.landmark})</p>
                   </div>
                 </div>
-                <div className="pt-2 border-t border-white/10 flex items-center justify-between">
-                  <span className="text-stone-400">Rider Instructions:</span>
-                  <span className="text-[#DFBA84]">{address.riderNotes}</span>
+                <div className="pt-2 border-t border-black/10 flex items-center justify-between">
+                  <span className={isLight ? "text-[#8C7B6E]" : "text-stone-400"}>Rider Instructions:</span>
+                  <span className="text-[#B35E2A] font-bold">{address.riderNotes}</span>
                 </div>
               </div>
 
@@ -1318,7 +1456,11 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <a
                   href={`tel:${address.recipientPhone}`}
-                  className="py-3 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-white font-mono text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer"
+                  className={`py-3 px-4 rounded-xl font-mono text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer border ${
+                    isLight 
+                      ? 'bg-[#FAF6F0] hover:bg-[#F0E6D8] border-[#E8DFC9] text-[#3D3128]' 
+                      : 'bg-white/10 hover:bg-white/15 text-white border-white/10'
+                  }`}
                 >
                   <Phone className="w-4 h-4 text-[#C26D38]" />
                   <span>Call Customer</span>
@@ -1329,7 +1471,7 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                     handleFastForward('delivered', 0);
                     sounds.playSuccess();
                   }}
-                  className="py-3 px-4 rounded-xl bg-gradient-to-r from-[#C26D38] to-[#D47E48] text-white font-mono text-xs font-bold flex items-center justify-center gap-2 shadow-lg cursor-pointer hover:brightness-110 transition"
+                  className="py-3 px-4 rounded-xl bg-gradient-to-r from-[#C26D38] to-[#D47E48] text-white font-mono text-xs font-bold flex items-center justify-center gap-2 shadow-lg cursor-pointer hover:brightness-110 transition active:scale-95"
                 >
                   <Check className="w-4 h-4" />
                   <span>Mark Handed Over &amp; Complete</span>
@@ -1351,27 +1493,33 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setCustomizingItem(null)}
-              className="fixed inset-0 bg-black/80 backdrop-blur-md"
+              className="fixed inset-0 bg-black/60 backdrop-blur-md"
             ></motion.div>
 
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg rounded-[32px] bg-[#16120F] border border-[#33261D] p-6 sm:p-8 z-10 space-y-6 shadow-2xl"
+              className={`relative w-full max-w-lg rounded-[32px] border p-6 sm:p-8 z-10 space-y-6 shadow-2xl ${
+                isLight ? 'bg-[#FAF8F5] border-[#E8DFC9] text-[#16120F]' : 'bg-[#16120F] border-[#33261D] text-white'
+              }`}
             >
               {/* Top Modal Header */}
-              <div className="flex items-start justify-between pb-3 border-b border-[#281F18]">
+              <div className={`flex items-start justify-between pb-3 border-b ${
+                isLight ? 'border-[#E8DFC9]' : 'border-[#281F18]'
+              }`}>
                 <div>
-                  <span className="font-mono text-xs text-[#C26D38] uppercase tracking-wider">
+                  <span className="font-mono text-xs text-[#C26D38] uppercase tracking-wider font-bold">
                     DOORSTEP CUSTOMIZATION
                   </span>
-                  <h3 className="font-serif text-2xl font-bold text-white">{customizingItem.name}</h3>
-                  <p className="text-xs text-stone-400 font-mono mt-0.5">Base Price: ₹{customizingItem.price}</p>
+                  <h3 className="font-serif text-2xl font-bold">{customizingItem.name}</h3>
+                  <p className={`text-xs font-mono mt-0.5 ${isLight ? 'text-[#8C7B6E]' : 'text-stone-400'}`}>Base Price: ₹{customizingItem.price}</p>
                 </div>
                 <button
                   onClick={() => setCustomizingItem(null)}
-                  className="p-2 rounded-full hover:bg-white/10 text-stone-400 hover:text-white transition cursor-pointer"
+                  className={`p-2 rounded-full transition cursor-pointer ${
+                    isLight ? 'hover:bg-black/5 text-[#8C7B6E] hover:text-[#16120F]' : 'hover:bg-white/10 text-stone-400 hover:text-white'
+                  }`}
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -1379,7 +1527,9 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
 
               {/* Crust / Base Selection */}
               <div className="space-y-2">
-                <label className="text-xs font-mono text-stone-300 uppercase">1. Sourdough Crust &amp; Base Style:</label>
+                <label className={`text-xs font-mono uppercase font-bold ${
+                  isLight ? 'text-[#3D3128]' : 'text-stone-300'
+                }`}>1. Sourdough Crust &amp; Base Style:</label>
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     'Classic Sourdough',
@@ -1396,7 +1546,9 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                       className={`p-3 rounded-xl text-left text-xs font-mono transition border cursor-pointer ${
                         selectedCrust === crust
                           ? 'bg-[#C26D38] text-white border-[#C26D38] font-bold shadow-sm'
-                          : 'bg-[#1D1713] text-stone-400 border-[#2E2219] hover:text-white'
+                          : isLight
+                            ? 'bg-white text-[#5C4C40] border-[#E5DACB] hover:bg-[#F6EFE6] hover:text-[#1C1612]'
+                            : 'bg-[#1D1713] text-stone-400 border-[#2E2219] hover:text-white'
                       }`}
                     >
                       {crust}
@@ -1407,7 +1559,9 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
 
               {/* Gourmet Addons & Finishing Drizzles */}
               <div className="space-y-2">
-                <label className="text-xs font-mono text-stone-300 uppercase">2. Gourmet Add-Ons (+₹60 each):</label>
+                <label className={`text-xs font-mono uppercase font-bold ${
+                  isLight ? 'text-[#3D3128]' : 'text-stone-300'
+                }`}>2. Gourmet Add-Ons (+₹60 each):</label>
                 <div className="space-y-2">
                   {[
                     'Truffle Olive Drizzle (+₹60)',
@@ -1420,8 +1574,10 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                       onClick={() => toggleAddon(addon)}
                       className={`w-full p-3 rounded-xl text-left text-xs font-mono flex items-center justify-between transition border cursor-pointer ${
                         selectedAddons.includes(addon)
-                          ? 'bg-[#C26D38]/20 border-[#C26D38] text-white font-bold'
-                          : 'bg-[#1D1713] border-[#2E2219] text-stone-400 hover:text-white'
+                          ? 'bg-[#C26D38]/15 border-[#C26D38] text-[#B35E2A] font-bold'
+                          : isLight
+                            ? 'bg-white border-[#E5DACB] text-[#5C4C40] hover:bg-[#F6EFE6] hover:text-[#1C1612]'
+                            : 'bg-[#1D1713] border-[#2E2219] text-stone-400 hover:text-white'
                       }`}
                     >
                       <span>{addon}</span>
@@ -1458,25 +1614,31 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsAddressModalOpen(false)}
-              className="fixed inset-0 bg-black/80 backdrop-blur-md"
+              className="fixed inset-0 bg-black/60 backdrop-blur-md"
             ></motion.div>
 
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg rounded-[32px] bg-[#16120F] border border-[#33261D] p-6 sm:p-8 z-10 space-y-6 shadow-2xl"
+              className={`relative w-full max-w-lg rounded-[32px] border p-6 sm:p-8 z-10 space-y-6 shadow-2xl ${
+                isLight ? 'bg-[#FAF8F5] border-[#E8DFC9] text-[#16120F]' : 'bg-[#16120F] border-[#33261D] text-white'
+              }`}
             >
-              <div className="flex items-center justify-between pb-3 border-b border-[#281F18]">
+              <div className={`flex items-center justify-between pb-3 border-b ${
+                isLight ? 'border-[#E8DFC9]' : 'border-[#281F18]'
+              }`}>
                 <div>
-                  <span className="font-mono text-xs text-[#C26D38] uppercase tracking-wider">
+                  <span className="font-mono text-xs text-[#C26D38] uppercase tracking-wider font-bold">
                     DOORSTEP ADDRESS CAPTURE
                   </span>
-                  <h3 className="font-serif text-2xl font-bold text-white">Delivery Coordinates</h3>
+                  <h3 className="font-serif text-2xl font-bold">Delivery Coordinates</h3>
                 </div>
                 <button
                   onClick={() => setIsAddressModalOpen(false)}
-                  className="p-2 rounded-full hover:bg-white/10 text-stone-400 hover:text-white transition cursor-pointer"
+                  className={`p-2 rounded-full transition cursor-pointer ${
+                    isLight ? 'hover:bg-black/5 text-[#8C7B6E] hover:text-[#16120F]' : 'hover:bg-white/10 text-stone-400 hover:text-white'
+                  }`}
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -1484,7 +1646,9 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
 
               {/* Preset selector */}
               <div className="space-y-1">
-                <label className="text-[11px] font-mono text-stone-400">ADDRESS PRESET</label>
+                <label className={`text-[11px] font-mono font-bold uppercase ${
+                  isLight ? 'text-[#6B5A4E]' : 'text-stone-400'
+                }`}>ADDRESS PRESET</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { id: 'Home', icon: Home },
@@ -1502,8 +1666,10 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                         }}
                         className={`p-2.5 rounded-xl text-xs font-mono flex items-center justify-center gap-1.5 transition border cursor-pointer ${
                           address.preset === p.id
-                            ? 'bg-[#C26D38] text-white border-[#C26D38] font-bold'
-                            : 'bg-[#1E1713] text-stone-400 border-[#2D221A] hover:text-white'
+                            ? 'bg-[#C26D38] text-white border-[#C26D38] font-bold shadow-xs'
+                            : isLight
+                              ? 'bg-white text-[#5C4C40] border-[#E5DACB] hover:text-[#1C1612]'
+                              : 'bg-[#1E1713] text-stone-400 border-[#2D221A] hover:text-white'
                         }`}
                       >
                         <Icon className="w-3.5 h-3.5" />
@@ -1517,59 +1683,71 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
               <div className="space-y-3 font-mono text-xs">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <label className="text-stone-400">FLAT / SUITE NO.</label>
+                    <label className={isLight ? "text-[#6B5A4E]" : "text-stone-400"}>FLAT / SUITE NO.</label>
                     <input
                       type="text"
                       value={address.flatNo}
                       onChange={(e) => setAddress({ ...address, flatNo: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#1D1713] border border-[#33261D] text-white font-sans focus:outline-none focus:border-[#C26D38]"
+                      className={`w-full px-3.5 py-2.5 rounded-xl font-sans border focus:outline-none focus:border-[#C26D38] shadow-2xs ${
+                        isLight ? 'bg-white border-[#DFD3C3] text-[#16120F]' : 'bg-[#1D1713] border-[#33261D] text-white'
+                      }`}
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-stone-400">BUILDING / COMPLEX</label>
+                    <label className={isLight ? "text-[#6B5A4E]" : "text-stone-400"}>BUILDING / COMPLEX</label>
                     <input
                       type="text"
                       value={address.building}
                       onChange={(e) => setAddress({ ...address, building: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#1D1713] border border-[#33261D] text-white font-sans focus:outline-none focus:border-[#C26D38]"
+                      className={`w-full px-3.5 py-2.5 rounded-xl font-sans border focus:outline-none focus:border-[#C26D38] shadow-2xs ${
+                        isLight ? 'bg-white border-[#DFD3C3] text-[#16120F]' : 'bg-[#1D1713] border-[#33261D] text-white'
+                      }`}
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-stone-400">STREET / AREA / SECTOR</label>
+                  <label className={isLight ? "text-[#6B5A4E]" : "text-stone-400"}>STREET / AREA / SECTOR</label>
                   <input
                     type="text"
                     value={address.area}
                     onChange={(e) => setAddress({ ...address, area: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#1D1713] border border-[#33261D] text-white font-sans focus:outline-none focus:border-[#C26D38]"
+                    className={`w-full px-3.5 py-2.5 rounded-xl font-sans border focus:outline-none focus:border-[#C26D38] shadow-2xs ${
+                      isLight ? 'bg-white border-[#DFD3C3] text-[#16120F]' : 'bg-[#1D1713] border-[#33261D] text-white'
+                    }`}
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-stone-400">LANDMARK</label>
+                  <label className={isLight ? "text-[#6B5A4E]" : "text-stone-400"}>LANDMARK</label>
                   <input
                     type="text"
                     value={address.landmark}
                     onChange={(e) => setAddress({ ...address, landmark: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#1D1713] border border-[#33261D] text-white font-sans focus:outline-none focus:border-[#C26D38]"
+                    className={`w-full px-3.5 py-2.5 rounded-xl font-sans border focus:outline-none focus:border-[#C26D38] shadow-2xs ${
+                      isLight ? 'bg-white border-[#DFD3C3] text-[#16120F]' : 'bg-[#1D1713] border-[#33261D] text-white'
+                    }`}
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-stone-400">INSTRUCTIONS FOR RIDER</label>
+                  <label className={isLight ? "text-[#6B5A4E]" : "text-stone-400"}>INSTRUCTIONS FOR RIDER</label>
                   <input
                     type="text"
                     value={address.riderNotes}
                     onChange={(e) => setAddress({ ...address, riderNotes: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#1D1713] border border-[#33261D] text-white font-sans focus:outline-none focus:border-[#C26D38]"
+                    className={`w-full px-3.5 py-2.5 rounded-xl font-sans border focus:outline-none focus:border-[#C26D38] shadow-2xs ${
+                      isLight ? 'bg-white border-[#DFD3C3] text-[#16120F]' : 'bg-[#1D1713] border-[#33261D] text-white'
+                    }`}
                   />
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-[#201813] border border-[#33261D] flex items-center justify-between text-xs font-mono">
-                <span className="text-stone-400">Calculated Radius from Kitchen:</span>
-                <span className="text-[#DFBA84] font-bold">{address.distanceKm} km ({address.estimatedMins} mins)</span>
+              <div className={`p-3.5 rounded-2xl border flex items-center justify-between text-xs font-mono ${
+                isLight ? 'bg-[#F5EFE6] border-[#E5DACB] text-[#5C4C40]' : 'bg-[#201813] border-[#33261D] text-stone-400'
+              }`}>
+                <span>Calculated Radius from Kitchen:</span>
+                <span className="text-[#B35E2A] font-bold">{address.distanceKm} km ({address.estimatedMins} mins)</span>
               </div>
 
               <button
@@ -1577,7 +1755,7 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                   sounds.playSuccess();
                   setIsAddressModalOpen(false);
                 }}
-                className="w-full py-3.5 rounded-2xl bg-[#C26D38] hover:bg-[#B35E2A] text-white font-mono text-xs font-bold uppercase tracking-wider transition cursor-pointer"
+                className="w-full py-3.5 rounded-2xl bg-[#C26D38] hover:bg-[#B35E2A] text-white font-mono text-xs font-bold uppercase tracking-wider transition cursor-pointer shadow-md"
               >
                 Save Delivery Address
               </button>
@@ -1597,7 +1775,7 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsCartOpen(false)}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm"
             ></motion.div>
 
             <motion.div
@@ -1605,35 +1783,43 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="relative w-full max-w-md h-full bg-[#16120F] border-l border-[#33261D] z-10 flex flex-col justify-between shadow-2xl p-6 overflow-y-auto"
+              className={`relative w-full max-w-md h-full border-l z-10 flex flex-col justify-between shadow-2xl p-6 overflow-y-auto ${
+                isLight ? 'bg-[#FAF8F5] border-[#E8DFC9] text-[#16120F]' : 'bg-[#16120F] border-[#33261D] text-white'
+              }`}
             >
               {/* Drawer Top Header */}
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#281F18]">
+                <div className={`flex items-center justify-between pb-3 border-b ${
+                  isLight ? 'border-[#E8DFC9]' : 'border-[#281F18]'
+                }`}>
                   <div className="flex items-center gap-2">
                     <ShoppingBag className="w-5 h-5 text-[#C26D38]" />
-                    <h3 className="font-serif text-xl font-bold text-white">Your Delivery Bag</h3>
+                    <h3 className="font-serif text-xl font-bold">Your Delivery Bag</h3>
                   </div>
                   <button
                     onClick={() => setIsCartOpen(false)}
-                    className="p-2 rounded-full hover:bg-white/10 text-stone-400 hover:text-white transition cursor-pointer"
+                    className={`p-2 rounded-full transition cursor-pointer ${
+                      isLight ? 'hover:bg-black/5 text-[#8C7B6E] hover:text-[#16120F]' : 'hover:bg-white/10 text-stone-400 hover:text-white'
+                    }`}
                   >
                     <X className="w-5 h-5" />
                   </button>
                 </div>
 
                 {/* Free Delivery Meter inside Bag */}
-                <LottieFreeDeliveryMeter subtotal={subtotal} threshold={freeDeliveryThreshold} />
+                <LottieFreeDeliveryMeter subtotal={subtotal} threshold={freeDeliveryThreshold} isLight={isLight} />
 
                 {/* Address Summary chip */}
-                <div className="p-3 rounded-2xl bg-[#1D1713] border border-[#2E2219] flex items-center justify-between text-xs font-mono">
+                <div className={`p-3 rounded-2xl border flex items-center justify-between text-xs font-mono ${
+                  isLight ? 'bg-white border-[#E8DFC9]' : 'bg-[#1D1713] border-[#2E2219]'
+                }`}>
                   <div className="flex items-center gap-2 truncate">
-                    <MapPin className="w-3.5 h-3.5 text-[#C26D38]" />
-                    <span className="truncate text-stone-300">{address.flatNo}, {address.area}</span>
+                    <MapPin className="w-3.5 h-3.5 text-[#C26D38] shrink-0" />
+                    <span className="truncate">{address.flatNo}, {address.area}</span>
                   </div>
                   <button
                     onClick={() => setIsAddressModalOpen(true)}
-                    className="text-[#DFBA84] hover:underline shrink-0 font-bold ml-2 cursor-pointer"
+                    className="text-[#C26D38] hover:underline shrink-0 font-bold ml-2 cursor-pointer"
                   >
                     Edit
                   </button>
@@ -1642,33 +1828,37 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                 {/* Cart Items List */}
                 <div className="space-y-3 max-h-[38vh] overflow-y-auto pr-1">
                   {cart.length === 0 ? (
-                    <div className="py-12 text-center text-stone-500 font-mono text-xs">
+                    <div className="py-12 text-center text-[#8C7B6E] font-mono text-xs">
                       Your bag is empty. Add artisanal items from the menu!
                     </div>
                   ) : (
                     cart.map((item, idx) => (
                       <div
                         key={item.id}
-                        className="p-3.5 rounded-2xl bg-[#1E1713] border border-[#2D221A] space-y-2"
+                        className={`p-3.5 rounded-2xl border space-y-2 shadow-2xs ${
+                          isLight ? 'bg-white border-[#E8DFC9]' : 'bg-[#1E1713] border-[#2D221A]'
+                        }`}
                       >
                         <div className="flex items-start justify-between">
                           <div>
-                            <h4 className="font-serif text-sm font-bold text-white leading-snug">{item.name}</h4>
-                            <p className="text-[11px] font-mono text-[#DFBA84] mt-0.5">{item.crust}</p>
+                            <h4 className="font-serif text-sm font-bold leading-snug">{item.name}</h4>
+                            <p className="text-[11px] font-mono text-[#C26D38] mt-0.5">{item.crust}</p>
                           </div>
-                          <span className="font-mono text-xs font-bold text-white">
+                          <span className="font-mono text-xs font-bold text-[#C26D38]">
                             ₹{item.itemTotal * item.qty}
                           </span>
                         </div>
 
                         {item.addons && item.addons.length > 0 && (
-                          <p className="text-[10px] font-mono text-stone-400">
+                          <p className={`text-[10px] font-mono ${isLight ? 'text-[#8C7B6E]' : 'text-stone-400'}`}>
                             + {item.addons.join(', ')}
                           </p>
                         )}
 
                         <div className="flex items-center justify-between pt-1">
-                          <div className="flex items-center gap-2 bg-[#140F0C] rounded-lg p-1 border border-white/5">
+                          <div className={`flex items-center gap-2 rounded-lg p-1 border ${
+                            isLight ? 'bg-[#F5EFE6] border-[#E2D6C5]' : 'bg-[#140F0C] border-white/5'
+                          }`}>
                             <button
                               onClick={() => {
                                 sounds.playClick();
@@ -1678,7 +1868,9 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                                     .filter((i) => i.qty > 0)
                                 );
                               }}
-                              className="p-1 rounded hover:bg-white/10 text-stone-400 hover:text-white"
+                              className={`p-1 rounded transition ${
+                                isLight ? 'hover:bg-black/5 text-[#5C4C40]' : 'hover:bg-white/10 text-stone-400 hover:text-white'
+                              }`}
                             >
                               <Minus className="w-3 h-3" />
                             </button>
@@ -1690,13 +1882,15 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                                   prev.map((i, index) => (index === idx ? { ...i, qty: i.qty + 1 } : i))
                                 );
                               }}
-                              className="p-1 rounded hover:bg-white/10 text-stone-400 hover:text-white"
+                              className={`p-1 rounded transition ${
+                                isLight ? 'hover:bg-black/5 text-[#5C4C40]' : 'hover:bg-white/10 text-stone-400 hover:text-white'
+                              }`}
                             >
                               <Plus className="w-3 h-3" />
                             </button>
                           </div>
 
-                          <span className="text-[10px] font-mono text-stone-500">
+                          <span className={`text-[10px] font-mono ${isLight ? 'text-[#8C7B6E]' : 'text-stone-500'}`}>
                             Thermal sealed
                           </span>
                         </div>
@@ -1712,11 +1906,19 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                     placeholder="Coupon: FIRSTDRIPP"
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value)}
-                    className="flex-1 px-3 py-2 rounded-xl bg-[#1D1713] border border-[#33261D] text-xs font-mono text-white placeholder-stone-500 focus:outline-none focus:border-[#C26D38]"
+                    className={`flex-1 px-3 py-2 rounded-xl text-xs font-mono border focus:outline-none focus:border-[#C26D38] shadow-2xs ${
+                      isLight 
+                        ? 'bg-white border-[#DFD3C3] text-[#16120F] placeholder-stone-400' 
+                        : 'bg-[#1D1713] border-[#33261D] text-white placeholder-stone-500'
+                    }`}
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2 rounded-xl bg-[#251B15] hover:bg-[#C26D38] text-white font-mono text-xs font-bold transition border border-[#38281E] cursor-pointer"
+                    className={`px-4 py-2 rounded-xl font-mono text-xs font-bold transition border cursor-pointer ${
+                      isLight 
+                        ? 'bg-[#F5EFE6] hover:bg-[#C26D38] text-[#2E241E] hover:text-white border-[#DFD3C3]' 
+                        : 'bg-[#251B15] hover:bg-[#C26D38] text-white border-[#38281E]'
+                    }`}
                   >
                     Apply
                   </button>
@@ -1724,29 +1926,33 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
               </div>
 
               {/* Drawer Bottom Checkout & Bill */}
-              <div className="pt-4 border-t border-[#281F18] space-y-3">
+              <div className={`pt-4 border-t space-y-3 ${
+                isLight ? 'border-[#E8DFC9]' : 'border-[#281F18]'
+              }`}>
                 <div className="space-y-1.5 font-mono text-xs">
-                  <div className="flex justify-between text-stone-400">
+                  <div className={`flex justify-between ${isLight ? 'text-[#6B5A4E]' : 'text-stone-400'}`}>
                     <span>Item Subtotal:</span>
-                    <span className="text-white">₹{subtotal}</span>
+                    <span className={isLight ? "text-[#16120F] font-semibold" : "text-white"}>₹{subtotal}</span>
                   </div>
-                  <div className="flex justify-between text-stone-400">
+                  <div className={`flex justify-between ${isLight ? 'text-[#6B5A4E]' : 'text-stone-400'}`}>
                     <span>Doorstep Transit Fee:</span>
-                    <span className={deliveryFee === 0 ? 'text-[#4ADE80] font-bold' : 'text-white'}>
+                    <span className={deliveryFee === 0 ? 'text-[#16A34A] font-bold' : (isLight ? 'text-[#16120F]' : 'text-white')}>
                       {deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}
                     </span>
                   </div>
-                  <div className="flex justify-between text-stone-400">
+                  <div className={`flex justify-between ${isLight ? 'text-[#6B5A4E]' : 'text-stone-400'}`}>
                     <span>Ventilated Thermal Pouch:</span>
-                    <span className="text-white">₹{packagingFee}</span>
+                    <span className={isLight ? "text-[#16120F]" : "text-white"}>₹{packagingFee}</span>
                   </div>
                   {appliedDiscount > 0 && (
-                    <div className="flex justify-between text-[#DFBA84]">
+                    <div className="flex justify-between text-[#C26D38] font-bold">
                       <span>Promo Savings:</span>
                       <span>-₹{appliedDiscount}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-base font-bold text-white pt-2 border-t border-[#2B2018]">
+                  <div className={`flex justify-between text-base font-bold pt-2 border-t ${
+                    isLight ? 'border-[#E8DFC9] text-[#16120F]' : 'border-[#2B2018] text-white'
+                  }`}>
                     <span>Total Amount:</span>
                     <span className="text-[#C26D38]">₹{finalTotal}</span>
                   </div>
@@ -1770,8 +1976,10 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                         }}
                         className={`p-2 rounded-xl text-[10px] font-mono flex flex-col items-center gap-1 transition border cursor-pointer ${
                           paymentMethod === p.id
-                            ? 'bg-[#C26D38] text-white border-[#C26D38] font-bold'
-                            : 'bg-[#1D1713] text-stone-400 border-[#2D221A]'
+                            ? 'bg-[#C26D38] text-white border-[#C26D38] font-bold shadow-xs'
+                            : isLight 
+                              ? 'bg-white text-[#5C4C40] border-[#E5DACB]' 
+                              : 'bg-[#1D1713] text-stone-400 border-[#2D221A]'
                         }`}
                       >
                         <Icon className="w-3.5 h-3.5" />
@@ -1807,17 +2015,21 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsLiveTrackingOpen(false)}
-              className="fixed inset-0 bg-black/85 backdrop-blur-md"
+              className="fixed inset-0 bg-black/75 backdrop-blur-md"
             ></motion.div>
 
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-2xl rounded-[32px] bg-[#16120F] border border-[#33271F] p-6 sm:p-8 z-10 space-y-6 shadow-2xl max-h-[92vh] overflow-y-auto"
+              className={`relative w-full max-w-2xl rounded-[32px] border p-6 sm:p-8 z-10 space-y-6 shadow-2xl max-h-[92vh] overflow-y-auto ${
+                isLight ? 'bg-[#FAF8F5] border-[#E8DFC9] text-[#16120F]' : 'bg-[#16120F] border-[#33271F] text-white'
+              }`}
             >
               {/* Top Modal Header */}
-              <div className="flex items-start justify-between pb-4 border-b border-[#281F18]">
+              <div className={`flex items-start justify-between pb-4 border-b ${
+                isLight ? 'border-[#E8DFC9]' : 'border-[#281F18]'
+              }`}>
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-[#C26D38] animate-ping"></span>
@@ -1825,25 +2037,27 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                       LIVE GPS COURIER RADAR
                     </span>
                   </div>
-                  <h3 className="font-serif text-2xl font-bold text-white mt-0.5">{activeOrder.id}</h3>
-                  <p className="text-xs text-stone-400 font-mono">
+                  <h3 className="font-serif text-2xl font-bold mt-0.5">{activeOrder.id}</h3>
+                  <p className={`text-xs font-mono ${isLight ? 'text-[#8C7B6E]' : 'text-stone-400'}`}>
                     Destination: {address.flatNo}, {address.area}
                   </p>
                 </div>
                 <button
                   onClick={() => setIsLiveTrackingOpen(false)}
-                  className="p-2 rounded-full hover:bg-white/10 text-stone-400 hover:text-white transition cursor-pointer"
+                  className={`p-2 rounded-full transition cursor-pointer ${
+                    isLight ? 'hover:bg-black/5 text-[#8C7B6E] hover:text-[#16120F]' : 'hover:bg-white/10 text-stone-400 hover:text-white'
+                  }`}
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              {/* Lottie-style Animated GPS Radar & Journey Map */}
-              <div className="relative h-56 sm:h-64 rounded-2xl overflow-hidden bg-[#100D0B] border border-[#2B2019] p-4 flex flex-col justify-between">
+              {/* Lottie-style Animated GPS Radar & Journey Map (High-Tech Contrast Map) */}
+              <div className="relative h-56 sm:h-64 rounded-2xl overflow-hidden bg-[#14100D] border border-[#2B2019] p-4 flex flex-col justify-between shadow-inner">
                 
                 {/* Background Radar Scanner Animation */}
                 <div className="absolute -right-6 -bottom-6 opacity-30 pointer-events-none">
-                  <LottieRadarScanner size={220} />
+                  <LottieRadarScanner size={220} isLight={false} />
                 </div>
 
                 {/* SVG Animated Route Polyline */}
@@ -1878,7 +2092,7 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                 {/* Animated Rider Pin along the route */}
                 <div className="relative z-10 flex items-center justify-center">
                   <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-black/90 border border-[#C26D38] text-white text-xs font-mono shadow-2xl backdrop-blur-md">
-                    <LottieDeliveryRider className="w-16 h-10" isMoving={true} />
+                    <LottieDeliveryRider className="w-16 h-10" isMoving={true} isLight={false} />
                     <div>
                       <p className="font-bold text-white">Courier In Transit</p>
                       <p className="text-[10px] text-[#DFBA84]">{address.distanceKm} km away on Ather 450X</p>
@@ -1892,13 +2106,15 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                     <MapPin className="w-4 h-4 text-[#C26D38]" />
                     <span>{address.flatNo}</span>
                   </span>
-                  <LottieTamperSeal label="THERMAL SEAL VERIFIED" />
+                  <LottieTamperSeal label="THERMAL SEAL VERIFIED" isLight={false} />
                 </div>
               </div>
 
               {/* 4-Stage Fulfillment Stepper with Animated Micro-Indicators */}
               <div className="space-y-3">
-                <span className="font-mono text-xs text-stone-400 uppercase">ORDER LIFECYCLE PROGRESSION:</span>
+                <span className={`font-mono text-xs uppercase font-bold ${
+                  isLight ? 'text-[#6B5A4E]' : 'text-stone-400'
+                }`}>ORDER LIFECYCLE PROGRESSION:</span>
                 
                 <div className="grid grid-cols-4 gap-2 text-center font-mono text-[10px]">
                   {[
@@ -1917,13 +2133,13 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
                         key={s.id}
                         className={`p-2.5 rounded-xl border transition flex flex-col items-center gap-1 ${
                           isCurrent
-                            ? 'bg-[#C26D38]/20 border-[#C26D38] text-white shadow-md'
+                            ? 'bg-[#C26D38]/15 border-[#C26D38] text-[#B35E2A] font-bold shadow-xs'
                             : isDone
-                              ? 'bg-white/5 border-white/10 text-stone-300'
-                              : 'bg-black/20 border-white/5 text-stone-600'
+                              ? isLight ? 'bg-white border-[#E5DACB] text-[#1C1612]' : 'bg-white/5 border-white/10 text-stone-300'
+                              : isLight ? 'bg-[#F5EFE6] border-[#EAE0D2] text-[#8C7B6E]' : 'bg-black/20 border-white/5 text-stone-600'
                         }`}
                       >
-                        <Icon className={`w-3.5 h-3.5 ${isCurrent ? 'text-[#C26D38] animate-bounce' : isDone ? 'text-[#DFBA84]' : 'text-stone-600'}`} />
+                        <Icon className={`w-3.5 h-3.5 ${isCurrent ? 'text-[#C26D38] animate-bounce' : isDone ? 'text-[#C26D38]' : 'text-stone-400'}`} />
                         <p className="font-bold">{s.label}</p>
                         <p className="text-[9px] opacity-75">{s.desc}</p>
                       </div>
@@ -1933,20 +2149,26 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
               </div>
 
               {/* Assigned Courier Bio & Contact */}
-              <div className="p-4 rounded-2xl bg-[#1D1713] border border-[#2E221B] flex items-center justify-between">
+              <div className={`p-4 rounded-2xl border flex items-center justify-between shadow-2xs ${
+                isLight ? 'bg-white border-[#E8DFC9]' : 'bg-[#1D1713] border-[#2E221B]'
+              }`}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#C26D38] text-white font-bold flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-[#C26D38] text-white font-bold flex items-center justify-center shadow-xs">
                     RS
                   </div>
                   <div>
-                    <h4 className="font-serif font-bold text-sm text-white">{activeOrder.courier.name}</h4>
-                    <p className="text-[11px] text-stone-400 font-mono">{activeOrder.courier.vehicle}</p>
+                    <h4 className="font-serif font-bold text-sm">{activeOrder.courier.name}</h4>
+                    <p className={`text-[11px] font-mono ${isLight ? 'text-[#8C7B6E]' : 'text-stone-400'}`}>{activeOrder.courier.vehicle}</p>
                   </div>
                 </div>
 
                 <a
                   href={`tel:${activeOrder.courier.phone}`}
-                  className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 text-white font-mono text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
+                  className={`px-4 py-2 rounded-full font-mono text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border ${
+                    isLight 
+                      ? 'bg-[#FAF6F0] hover:bg-[#F0E6D8] border-[#E8DFC9] text-[#3D3128]' 
+                      : 'bg-white/10 hover:bg-white/15 text-white border-white/10'
+                  }`}
                 >
                   <Phone className="w-3.5 h-3.5 text-[#C26D38]" />
                   <span>Call Courier</span>
@@ -1954,20 +2176,30 @@ export function DirectDeliveryApp({ onBackToVariants, onBackToCatalogue }) {
               </div>
 
               {/* Fast-Forward Simulation Demo Controls */}
-              <div className="p-4 rounded-2xl bg-[#201813] border border-[#33261D] space-y-2">
-                <span className="font-mono text-[10px] text-[#DFBA84] uppercase tracking-wider block">
+              <div className={`p-4 rounded-2xl border space-y-2 ${
+                isLight ? 'bg-[#F5EFE6] border-[#E5DACB]' : 'bg-[#201813] border-[#33261D]'
+              }`}>
+                <span className="font-mono text-[10px] text-[#B35E2A] uppercase tracking-wider block font-bold">
                   DEMO CONTROLS: FAST-FORWARD ORDER LIFECYCLE
                 </span>
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={() => handleFastForward('cooking', 20)}
-                    className="py-2 px-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-stone-300 text-[11px] font-mono transition cursor-pointer"
+                    className={`py-2 px-2.5 rounded-xl text-[11px] font-mono transition cursor-pointer border ${
+                      isLight 
+                        ? 'bg-white hover:bg-[#F0E6D8] border-[#DFD3C3] text-[#3D3128]' 
+                        : 'bg-white/5 hover:bg-white/10 text-stone-300 border-white/10'
+                    }`}
                   >
                     1. In Oven Prep
                   </button>
                   <button
                     onClick={() => handleFastForward('in-transit', 12)}
-                    className="py-2 px-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-stone-300 text-[11px] font-mono transition cursor-pointer"
+                    className={`py-2 px-2.5 rounded-xl text-[11px] font-mono transition cursor-pointer border ${
+                      isLight 
+                        ? 'bg-white hover:bg-[#F0E6D8] border-[#DFD3C3] text-[#3D3128]' 
+                        : 'bg-white/5 hover:bg-white/10 text-stone-300 border-white/10'
+                    }`}
                   >
                     2. Dispatch Courier
                   </button>

@@ -531,7 +531,7 @@ export function HealthyMenuLandingApp({ onBackToVariants, onBackToCatalogue }) {
       {/* --------------------------------------------------------------------- */}
       {/* REDESIGNED HERO SECTION: Deeply Engaging, Creative & Visualistic       */}
       {/* --------------------------------------------------------------------- */}
-      <section className="relative pt-8 sm:pt-14 pb-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-10">
+      <section className="relative pt-6 sm:pt-8 pb-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-6 sm:space-y-7">
         
         {/* Ambient Soft Sunlit Illumination */}
         <div className={`absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] sm:w-[1000px] h-[500px] rounded-full blur-3xl pointer-events-none -z-10 transition-colors duration-700 ${
@@ -540,23 +540,32 @@ export function HealthyMenuLandingApp({ onBackToVariants, onBackToCatalogue }) {
             : 'bg-gradient-to-b from-[#C5A880]/15 via-[#DFBA84]/5 to-transparent'
         }`}></div>
 
-        {/* 1. Vitality & Daily Rhythm Mood Switcher Ribbon */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
-          <div className="flex items-center gap-2">
+        {/* 1. Vitality & Daily Rhythm Mood Switcher Ribbon (Encapsulated & Aligned Control Card) */}
+        <div className={`p-2 sm:p-2.5 rounded-2xl border flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs transition-colors ${
+          isSunlit 
+            ? 'bg-white border-[#E8DFC9]' 
+            : 'bg-[#181411] border-[#2E251E]'
+        }`}>
+          <div className="flex items-center gap-2 pl-2">
             <Sparkles className={`w-4 h-4 ${isSunlit ? 'text-[#C26D38]' : 'text-[#C5A880]'}`} />
-            <span className={`font-mono text-xs uppercase tracking-widest font-semibold ${
+            <span className={`font-mono text-xs uppercase tracking-widest font-bold ${
+              isSunlit ? 'text-[#1C1612]' : 'text-[#FAF7F2]'
+            }`}>
+              SELECT YOUR RHYTHM:
+            </span>
+            <span className={`hidden sm:inline text-xs font-sans ${
               isSunlit ? 'text-[#7D6E63]' : 'text-[#D8CEBF]/70'
             }`}>
-              Select your rhythm right now:
+              Tailored culinary craft for your daily rhythm
             </span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5">
             {[
-              { label: 'Midday Cognitive Focus', idx: 0, tag: 'BOWL 01' },
-              { label: 'Post-Workout Recovery', idx: 1, tag: 'MAIN 02' },
-              { label: 'Leisure Weekend Brunch', idx: 2, tag: 'TARTINE 03' },
-              { label: 'Antioxidant Reset', idx: 3, tag: 'ELIXIR 04' }
+              { label: 'Midday Focus', idx: 0, fullLabel: 'Midday Cognitive Focus' },
+              { label: 'Post-Workout', idx: 1, fullLabel: 'Post-Workout Recovery' },
+              { label: 'Weekend Brunch', idx: 2, fullLabel: 'Leisure Weekend Brunch' },
+              { label: 'Antioxidant Reset', idx: 3, fullLabel: 'Antioxidant Reset' }
             ].map((mood) => (
               <button
                 key={mood.idx}
@@ -564,15 +573,16 @@ export function HealthyMenuLandingApp({ onBackToVariants, onBackToCatalogue }) {
                   sounds.playClick();
                   setHeroDishIdx(mood.idx);
                 }}
-                className={`px-3 py-1.5 rounded-full text-xs font-mono transition cursor-pointer border ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-mono transition cursor-pointer border ${
                   heroDishIdx === mood.idx
                     ? isSunlit
-                      ? 'bg-[#C26D38] text-white border-[#C26D38] font-bold shadow-sm'
-                      : 'bg-[#C5A880] text-[#120F0D] border-[#C5A880] font-bold shadow-sm'
+                      ? 'bg-[#C26D38] text-white border-[#C26D38] font-bold shadow-xs'
+                      : 'bg-[#C5A880] text-[#120F0D] border-[#C5A880] font-bold shadow-xs'
                     : isSunlit
-                      ? 'bg-white hover:bg-[#F3ECE0] text-[#5C4D42] border-[#E8DFC9]'
-                      : 'bg-[#1A1613] hover:bg-[#26201B] text-[#D8CEBF]/70 border-[#2E251E]'
+                      ? 'bg-[#FAF8F5] hover:bg-[#F3ECE0] text-[#5C4D42] border-[#E8DFC9]'
+                      : 'bg-[#1F1A15] hover:bg-[#26201B] text-[#D8CEBF]/70 border-[#2E251E]'
                 }`}
+                title={mood.fullLabel}
               >
                 {mood.label}
               </button>
@@ -580,14 +590,14 @@ export function HealthyMenuLandingApp({ onBackToVariants, onBackToCatalogue }) {
           </div>
         </div>
 
-        {/* 2. Main Asymmetrical Editorial Composition */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+        {/* 2. Main Asymmetrical Editorial Composition (Top-Aligned Baseline) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
           
-          {/* Left Column: Narrative, Accolades & Actions (6.5 cols) */}
+          {/* Left Column: Narrative, Accolades & Actions (6 cols) */}
           <div className="lg:col-span-6 space-y-6 text-left">
             
-            {/* Atelier Micro Badge */}
-            <div className={`inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-[11px] font-mono tracking-widest uppercase border shadow-sm ${
+            {/* Atelier Micro Badge (Height-matched with right lens switcher) */}
+            <div className={`h-11 inline-flex items-center gap-2.5 px-4 rounded-full text-[11px] font-mono tracking-widest uppercase border shadow-xs ${
               isSunlit 
                 ? 'bg-white border-[#E8DFC9] text-[#3B5038]' 
                 : 'bg-[#161311] border-[#2E251E] text-[#C5A880]'
@@ -679,10 +689,10 @@ export function HealthyMenuLandingApp({ onBackToVariants, onBackToCatalogue }) {
           {/* Right Column: Interactive Visual Platter Centerpiece (6 cols) */}
           <div className="lg:col-span-6 space-y-3">
             
-            {/* 3-Mode Lens Switcher: Plated vs Deconstructed vs Nutrition */}
-            <div className={`p-1.5 rounded-2xl flex items-center justify-between border transition ${
+            {/* 3-Mode Lens Switcher: Plated vs Deconstructed vs Nutrition (Height-matched h-11) */}
+            <div className={`h-11 px-2 rounded-2xl flex items-center justify-between border transition ${
               isSunlit 
-                ? 'bg-white border-[#E8DFC9] shadow-sm' 
+                ? 'bg-white border-[#E8DFC9] shadow-xs' 
                 : 'bg-[#181411] border-[#2E251E]'
             }`}>
               <div className="flex items-center gap-1">
