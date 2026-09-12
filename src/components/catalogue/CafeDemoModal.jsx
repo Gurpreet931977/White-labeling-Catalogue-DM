@@ -263,6 +263,22 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
                         </div>
                       ))}
                     </div>
+
+                    <div className="pt-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          sounds.playClick();
+                          onClose();
+                          window.location.hash = 'showcase';
+                        }}
+                        className="w-full py-2.5 px-3 rounded-xl bg-[#C5A880]/15 hover:bg-[#C5A880]/25 text-[#FAF7F2] border border-[#C5A880]/40 text-xs font-sans font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      >
+                        <Compass className="w-3.5 h-3.5 text-[#C5A880]" />
+                        <span>Launch Full Brand Showcase Landing Page</span>
+                        <ArrowUpRight className="w-3.5 h-3.5 text-[#C5A880]" />
+                      </button>
+                    </div>
                   </div>
                 )}
 

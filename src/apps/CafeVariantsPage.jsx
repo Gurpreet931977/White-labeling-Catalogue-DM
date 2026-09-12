@@ -24,7 +24,7 @@ import { InstantQuoteDrawer } from '../components/catalogue/InstantQuoteDrawer';
 import { DrippFooter } from '../components/catalogue/DrippFooter';
 import { sounds } from '../utils/audio';
 
-export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo, onLaunchLoyaltyApp }) {
+export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo, onLaunchLoyaltyApp, onLaunchShowcaseApp }) {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [selectedVariantModal, setSelectedVariantModal] = useState(null);
   const [isQuoteOpen, setIsQuoteOpen] = useState(false);
@@ -263,6 +263,9 @@ export function CafeVariantsPage({ onBackToCatalogue, onLaunchTHCDemo, onLaunchL
                       window.dispatchEvent(new CustomEvent('thc_model_change', { detail: { model: item.id } }));
                       if (item.id === 'gamified-loyalty') {
                         if (onLaunchLoyaltyApp) onLaunchLoyaltyApp();
+                        else onLaunchTHCDemo();
+                      } else if (item.id === 'showcase') {
+                        if (onLaunchShowcaseApp) onLaunchShowcaseApp();
                         else onLaunchTHCDemo();
                       } else {
                         onLaunchTHCDemo();

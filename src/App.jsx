@@ -4,12 +4,14 @@ import { CafeVariantsPage } from './apps/CafeVariantsPage';
 import { WhiteLabelStudio } from './apps/WhiteLabelStudio';
 import CafeApp from './apps/CafeApp';
 import { GamifiedLoyaltyApp } from './apps/GamifiedLoyaltyApp';
+import { HealthyMenuLandingApp } from './apps/HealthyMenuLandingApp';
 import { StudioPasswordGate, isStudioAuthenticated } from './components/studio/StudioPasswordGate';
 
 export default function App() {
   const getInitialAppMode = () => {
     try {
       const hash = (typeof window !== 'undefined' ? window.location.hash : '').toLowerCase();
+      if (hash.includes('showcase') || hash.includes('healthy-menu') || hash.includes('landing-page')) return 'showcase-app';
       if (hash.includes('loyalty')) return 'loyalty-app';
       if (hash.includes('cafe-demo')) return 'cafe-demo';
       if (hash.includes('cafe-options') || hash.includes('variants')) return 'cafe-variants';
@@ -18,7 +20,7 @@ export default function App() {
     return 'catalogue';
   };
 
-  // Support 'catalogue' (default), 'studio', 'cafe-variants', 'cafe-demo', or 'loyalty-app'
+  // Support 'catalogue' (default), 'studio', 'cafe-variants', 'cafe-demo', 'loyalty-app', or 'showcase-app'
   const [appMode, setAppMode] = useState(getInitialAppMode);
 
   // Studio password gate — persists for this browser tab session only
@@ -27,7 +29,9 @@ export default function App() {
   // Keep hash in sync for clean URL sharing & browser back/forward
   useEffect(() => {
     try {
-      if (appMode === 'loyalty-app') {
+      if (appMode === 'showcase-app') {
+        window.location.hash = 'showcase';
+      } else if (appMode === 'loyalty-app') {
         window.location.hash = 'loyalty';
       } else if (appMode === 'cafe-demo') {
         window.location.hash = 'cafe-demo';
@@ -38,6 +42,9 @@ export default function App() {
       } else {
         const hash = window.location.hash.toLowerCase();
         if (
+          hash.includes('showcase') ||
+          hash.includes('healthy-menu') ||
+          hash.includes('landing-page') ||
           hash.includes('loyalty') ||
           hash.includes('cafe-demo') || 
           hash.includes('cafe-options') || 
@@ -57,11 +64,13 @@ export default function App() {
       try {
         const hash = window.location.hash.toLowerCase();
         // In-page section jumps should never switch appMode
-        if (hash.startsWith('#section-')) {
+        if (hash.startsWith('#section-') || hash.startsWith('#menu') || hash.startsWith('#philosophy') || hash.startsWith('#explore') || hash.startsWith('#steps') || hash.startsWith('#faq')) {
           return;
         }
 
-        if (hash.includes('loyalty')) {
+        if (hash.includes('showcase') || hash.includes('healthy-menu') || hash.includes('landing-page')) {
+          setAppMode('showcase-app');
+        } else if (hash.includes('loyalty')) {
           setAppMode('loyalty-app');
         } else if (hash.includes('cafe-demo')) {
           setAppMode('cafe-demo');
@@ -82,9 +91,11 @@ export default function App() {
   useEffect(() => {
     const handleModelChange = (e) => {
       const model = e?.detail?.model;
-      if (model === 'gamified-loyalty') {
+      if (model === 'showcase') {
+        setAppMode('showcase-app');
+      } else if (model === 'gamified-loyalty') {
         setAppMode('loyalty-app');
-      } else if (model && appMode === 'loyalty-app') {
+      } else if (model && (appMode === 'loyalty-app' || appMode === 'showcase-app')) {
         setAppMode('cafe-demo');
       }
     };
@@ -92,7 +103,17 @@ export default function App() {
     return () => window.removeEventListener('thc_model_change', handleModelChange);
   }, [appMode]);
 
-  // 1. Dedicated Gamified Coffee & Bakery Loyalty Pass (ARCHETYPE 07)
+  // 1. Dedicated Framer "Healthy Menu" Brand Showcase Landing Page (ARCHETYPE 03)
+  if (appMode === 'showcase-app') {
+    return (
+      <HealthyMenuLandingApp
+        onBackToVariants={() => setAppMode('cafe-variants')}
+        onBackToCatalogue={() => setAppMode('catalogue')}
+      />
+    );
+  }
+
+  // 2. Dedicated Gamified Coffee & Bakery Loyalty Pass (ARCHETYPE 07)
   if (appMode === 'loyalty-app') {
     return (
       <GamifiedLoyaltyApp
@@ -102,7 +123,7 @@ export default function App() {
     );
   }
 
-  // 2. Live THC Cafe Web App
+  // 3. Live THC Cafe Web App
   if (appMode === 'cafe-demo') {
     return (
       <CafeApp 
@@ -112,13 +133,14 @@ export default function App() {
     );
   }
 
-  // 3. Dedicated 7-Model Cafe Architecture Choice Page
+  // 4. Dedicated 7-Model Cafe Architecture Choice Page
   if (appMode === 'cafe-variants') {
     return (
       <CafeVariantsPage 
         onBackToCatalogue={() => setAppMode('catalogue')}
         onLaunchTHCDemo={() => setAppMode('cafe-demo')}
         onLaunchLoyaltyApp={() => setAppMode('loyalty-app')}
+        onLaunchShowcaseApp={() => setAppMode('showcase-app')}
       />
     );
   }
