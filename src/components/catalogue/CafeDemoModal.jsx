@@ -318,6 +318,20 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
                         <span className="text-[#C5A880] font-bold">0% (Keep 100% Profits)</span>
                       </div>
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        sounds.playClick();
+                        onClose();
+                        window.location.hash = 'delivery';
+                        window.dispatchEvent(new CustomEvent('thc_model_change', { detail: { model: 'delivery' } }));
+                      }}
+                      className="w-full py-2.5 px-3.5 rounded-xl bg-[#C5A880]/15 hover:bg-[#C5A880]/25 border border-[#C5A880]/40 text-[#DFBA84] hover:text-white font-mono text-xs flex items-center justify-center gap-2 cursor-pointer transition shadow-sm"
+                    >
+                      <span>Launch Dedicated Delivery Storefront</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 )}
 

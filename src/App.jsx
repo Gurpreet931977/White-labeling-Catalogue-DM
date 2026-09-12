@@ -6,12 +6,14 @@ import CafeApp from './apps/CafeApp';
 import { GamifiedLoyaltyApp } from './apps/GamifiedLoyaltyApp';
 import { HealthyMenuLandingApp } from './apps/HealthyMenuLandingApp';
 import { SelfServeCounterApp } from './apps/SelfServeCounterApp';
+import { DirectDeliveryApp } from './apps/DirectDeliveryApp';
 import { StudioPasswordGate, isStudioAuthenticated } from './components/studio/StudioPasswordGate';
 
 export default function App() {
   const getInitialAppMode = () => {
     try {
       const hash = (typeof window !== 'undefined' ? window.location.hash : '').toLowerCase();
+      if (hash.includes('delivery') || hash.includes('doorstep') || hash.includes('cloud-kitchen')) return 'delivery-app';
       if (hash.includes('self-serve') || hash.includes('counter-pickup') || hash.includes('qsr')) return 'self-serve-app';
       if (hash.includes('showcase') || hash.includes('healthy-menu') || hash.includes('landing-page')) return 'showcase-app';
       if (hash.includes('loyalty')) return 'loyalty-app';
@@ -22,7 +24,7 @@ export default function App() {
     return 'catalogue';
   };
 
-  // Support 'catalogue' (default), 'studio', 'cafe-variants', 'cafe-demo', 'loyalty-app', or 'showcase-app'
+  // Support 'catalogue' (default), 'studio', 'cafe-variants', 'cafe-demo', 'loyalty-app', 'showcase-app', 'self-serve-app', or 'delivery-app'
   const [appMode, setAppMode] = useState(getInitialAppMode);
 
   // Studio password gate — persists for this browser tab session only
@@ -31,7 +33,9 @@ export default function App() {
   // Keep hash in sync for clean URL sharing & browser back/forward
   useEffect(() => {
     try {
-      if (appMode === 'self-serve-app') {
+      if (appMode === 'delivery-app') {
+        window.location.hash = 'delivery';
+      } else if (appMode === 'self-serve-app') {
         window.location.hash = 'self-serve';
       } else if (appMode === 'showcase-app') {
         window.location.hash = 'showcase';
@@ -46,6 +50,9 @@ export default function App() {
       } else {
         const hash = window.location.hash.toLowerCase();
         if (
+          hash.includes('delivery') ||
+          hash.includes('doorstep') ||
+          hash.includes('cloud-kitchen') ||
           hash.includes('self-serve') ||
           hash.includes('counter-pickup') ||
           hash.includes('qsr') ||
@@ -75,7 +82,9 @@ export default function App() {
           return;
         }
 
-        if (hash.includes('self-serve') || hash.includes('counter-pickup') || hash.includes('qsr')) {
+        if (hash.includes('delivery') || hash.includes('doorstep') || hash.includes('cloud-kitchen')) {
+          setAppMode('delivery-app');
+        } else if (hash.includes('self-serve') || hash.includes('counter-pickup') || hash.includes('qsr')) {
           setAppMode('self-serve-app');
         } else if (hash.includes('showcase') || hash.includes('healthy-menu') || hash.includes('landing-page')) {
           setAppMode('showcase-app');
@@ -100,13 +109,15 @@ export default function App() {
   useEffect(() => {
     const handleModelChange = (e) => {
       const model = e?.detail?.model;
-      if (model === 'self-serve') {
+      if (model === 'delivery') {
+        setAppMode('delivery-app');
+      } else if (model === 'self-serve') {
         setAppMode('self-serve-app');
       } else if (model === 'showcase') {
         setAppMode('showcase-app');
       } else if (model === 'gamified-loyalty') {
         setAppMode('loyalty-app');
-      } else if (model && (appMode === 'loyalty-app' || appMode === 'showcase-app' || appMode === 'self-serve-app')) {
+      } else if (model && (appMode === 'loyalty-app' || appMode === 'showcase-app' || appMode === 'self-serve-app' || appMode === 'delivery-app')) {
         setAppMode('cafe-demo');
       }
     };
@@ -114,7 +125,17 @@ export default function App() {
     return () => window.removeEventListener('thc_model_change', handleModelChange);
   }, [appMode]);
 
-  // 1. Dedicated Express Self-Serve & Counter Pickup QSR (ARCHETYPE 02)
+  // 1. Dedicated Independent Online Delivery & Cloud Kitchen Platform (ARCHETYPE 04)
+  if (appMode === 'delivery-app') {
+    return (
+      <DirectDeliveryApp
+        onBackToVariants={() => setAppMode('cafe-variants')}
+        onBackToCatalogue={() => setAppMode('catalogue')}
+      />
+    );
+  }
+
+  // 2. Dedicated Express Self-Serve & Counter Pickup QSR (ARCHETYPE 02)
   if (appMode === 'self-serve-app') {
     return (
       <SelfServeCounterApp
@@ -124,7 +145,7 @@ export default function App() {
     );
   }
 
-  // 2. Dedicated Framer "Healthy Menu" Brand Showcase Landing Page (ARCHETYPE 03)
+  // 3. Dedicated Framer "Healthy Menu" Brand Showcase Landing Page (ARCHETYPE 03)
   if (appMode === 'showcase-app') {
     return (
       <HealthyMenuLandingApp
@@ -134,7 +155,7 @@ export default function App() {
     );
   }
 
-  // 3. Dedicated Gamified Coffee & Bakery Loyalty Pass (ARCHETYPE 07)
+  // 4. Dedicated Gamified Coffee & Bakery Loyalty Pass (ARCHETYPE 07)
   if (appMode === 'loyalty-app') {
     return (
       <GamifiedLoyaltyApp
@@ -144,7 +165,7 @@ export default function App() {
     );
   }
 
-  // 4. Live THC Cafe Web App
+  // 5. Live THC Cafe Web App
   if (appMode === 'cafe-demo') {
     return (
       <CafeApp 
@@ -154,7 +175,7 @@ export default function App() {
     );
   }
 
-  // 5. Dedicated 7-Model Cafe Architecture Choice Page
+  // 6. Dedicated 7-Model Cafe Architecture Choice Page
   if (appMode === 'cafe-variants') {
     return (
       <CafeVariantsPage 
@@ -163,6 +184,7 @@ export default function App() {
         onLaunchLoyaltyApp={() => setAppMode('loyalty-app')}
         onLaunchShowcaseApp={() => setAppMode('showcase-app')}
         onLaunchSelfServeApp={() => setAppMode('self-serve-app')}
+        onLaunchDeliveryApp={() => setAppMode('delivery-app')}
       />
     );
   }
