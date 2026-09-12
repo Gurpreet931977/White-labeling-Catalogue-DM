@@ -17,7 +17,8 @@ import {
   Compass,
   QrCode,
   Gift,
-  Zap
+  Zap,
+  ArrowUpRight
 } from 'lucide-react';
 import { sounds } from '../../utils/audio';
 
@@ -237,6 +238,21 @@ export function CafeDemoModal({ variant, isOpen, onClose, onOpenQuote }) {
                       <span className="px-3 py-1.5 rounded-full bg-[#C5A880]/15 text-[#E6D5B8] font-mono text-xs font-bold border border-[#C5A880]/30">
                         EXPRESS QUEUE
                       </span>
+                    </div>
+
+                    <div className="pt-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          sounds.playClick();
+                          onClose();
+                          window.location.hash = 'self-serve';
+                        }}
+                        className="w-full py-2.5 px-3 rounded-xl bg-[#C5A880]/15 hover:bg-[#C5A880]/25 text-[#FAF7F2] border border-[#C5A880]/40 text-xs font-sans font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer"
+                      >
+                        <span>Launch Full Express Self-Serve & Counter Pickup App</span>
+                        <ArrowUpRight className="w-3.5 h-3.5 text-[#C5A880]" />
+                      </button>
                     </div>
                   </div>
                 )}
